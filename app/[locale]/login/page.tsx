@@ -16,6 +16,17 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [signupSuccess, setSignupSuccess] = useState(false);
+
+  // URL 파라미터에서 signup 성공 여부 확인
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('signup') === 'success') {
+      setSignupSuccess(true);
+      // URL에서 파라미터 제거
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, []);
 
   // 이미 로그인되어 있으면 대시보드로 리다이렉트
   useEffect(() => {
@@ -70,6 +81,14 @@ export default function LoginPage() {
         {/* Login Form */}
         <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
+            {signupSuccess && (
+              <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl flex items-center gap-2">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                <span>회원가입이 완료되었습니다! 로그인해주세요.</span>
+              </div>
+            )}
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl">
                 {error}

@@ -80,9 +80,10 @@ export const authApi = {
       }
     );
     
-    if (response.data?.token) {
-      tokenManager.set(response.data.token);
-    }
+    // 회원가입 시 토큰 저장하지 않음 (자동 로그인 방지)
+    // if (response.data?.token) {
+    //   tokenManager.set(response.data.token);
+    // }
     
     return response;
   },

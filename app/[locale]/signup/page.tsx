@@ -64,8 +64,9 @@ export default function SignupPage() {
         return;
       }
 
-      // 회원가입 성공 - Context가 업데이트되면 useEffect에서 자동으로 리다이렉트됨
+      // 회원가입 성공 - 로그인 페이지로 이동
       setLoading(false);
+      router.push(`/${locale}/login?signup=success`);
     } catch (err: any) {
       console.error('Signup error:', err);
       setError(err.message || t('signupError'));

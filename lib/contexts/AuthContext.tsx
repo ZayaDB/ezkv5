@@ -81,7 +81,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { success: false, error: response.error };
       }
       if (response.data?.user) {
-        setUser(response.data.user);
+        // 회원가입 성공 - 자동 로그인하지 않음 (로그인 페이지로 이동)
+        // setUser(response.data.user); // 제거 - 자동 로그인 방지
         return { success: true };
       }
       return { success: false, error: '회원가입에 실패했습니다.' };
