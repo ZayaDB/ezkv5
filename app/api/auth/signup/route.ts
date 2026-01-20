@@ -6,7 +6,11 @@ import { generateToken } from '@/lib/auth/jwt';
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('Signup API called');
+    console.log('MONGODB_URI:', process.env.MONGODB_URI ? 'Set' : 'Not set');
+    
     await connectDB();
+    console.log('Database connected');
 
     const { email, password, name, role, locale } = await request.json();
 
@@ -63,8 +67,16 @@ export async function POST(request: NextRequest) {
     );
   } catch (error: any) {
     console.error('Signup error:', error);
+    console.error('Error details:', {
+      message: error.message,
+      name: error.name,
+      stack: error.stack,
+    });
     return NextResponse.json(
-      { error: error.message || '회원가입 중 오류가 발생했습니다.' },
+      { 
+        error: error.message || '회원가입 중 오류가 발생했습니다.',
+        details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      },
       { status: 500 }
     );
   }
