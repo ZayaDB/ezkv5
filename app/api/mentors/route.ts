@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
     const total = await Mentor.countDocuments(filter);
 
     return NextResponse.json({
-      mentors: mentors.map((mentor) => ({
+      mentors: mentors.map((mentor: any) => ({
         id: mentor._id.toString(),
         userId: mentor.userId._id?.toString() || mentor.userId.toString(),
         name: mentor.userId.name || 'Unknown',
@@ -135,8 +135,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         mentor: {
-          id: mentor._id.toString(),
-          userId: mentor.userId.toString(),
+          id: (mentor as any)._id.toString(),
+          userId: (mentor as any).userId.toString(),
           title: mentor.title,
           location: mentor.location,
           languages: mentor.languages,

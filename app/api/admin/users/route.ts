@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
 
     // 각 사용자의 멘토 프로필 정보 추가
     const usersWithMentorInfo = await Promise.all(
-      users.map(async (user) => {
+      users.map(async (user: any) => {
         let mentorProfile = null;
         if (user.role === 'mentor') {
           mentorProfile = await Mentor.findOne({ userId: user._id })
@@ -65,12 +65,12 @@ export async function GET(request: NextRequest) {
           updatedAt: user.updatedAt,
           mentorProfile: mentorProfile
             ? {
-                title: mentorProfile.title,
-                location: mentorProfile.location,
-                specialties: mentorProfile.specialties,
-                rating: mentorProfile.rating,
-                reviewCount: mentorProfile.reviewCount,
-                verified: mentorProfile.verified,
+                title: (mentorProfile as any).title,
+                location: (mentorProfile as any).location,
+                specialties: (mentorProfile as any).specialties,
+                rating: (mentorProfile as any).rating,
+                reviewCount: (mentorProfile as any).reviewCount,
+                verified: (mentorProfile as any).verified,
               }
             : null,
         };

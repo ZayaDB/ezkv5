@@ -24,16 +24,18 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    const userData = user as any;
+
     return NextResponse.json({
       user: {
-        id: user._id.toString(),
-        email: user.email,
-        name: user.name,
-        role: user.role,
-        locale: user.locale,
-        avatar: user.avatar,
-        bio: user.bio,
-        createdAt: user.createdAt,
+        id: userData._id.toString(),
+        email: userData.email,
+        name: userData.name,
+        role: userData.role,
+        locale: userData.locale,
+        avatar: userData.avatar,
+        bio: userData.bio,
+        createdAt: userData.createdAt,
       },
     });
   } catch (error: any) {

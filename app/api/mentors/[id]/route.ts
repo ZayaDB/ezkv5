@@ -22,26 +22,28 @@ export async function GET(
       );
     }
 
+    const mentorData = mentor as any;
+
     return NextResponse.json({
-      id: mentor._id.toString(),
-      userId: mentor.userId._id?.toString() || mentor.userId.toString(),
-      name: mentor.userId.name || 'Unknown',
-      email: mentor.userId.email,
-      avatar: mentor.userId.avatar,
-      locale: mentor.userId.locale,
-      title: mentor.title,
-      location: mentor.location,
-      languages: mentor.languages,
-      specialties: mentor.specialties,
-      price: mentor.price,
-      availability: mentor.availability,
-      photo: mentor.photo,
-      verified: mentor.verified,
-      bio: mentor.bio,
-      rating: mentor.rating,
-      reviewCount: mentor.reviewCount,
-      createdAt: mentor.createdAt,
-      updatedAt: mentor.updatedAt,
+      id: mentorData._id.toString(),
+      userId: mentorData.userId._id?.toString() || mentorData.userId.toString(),
+      name: mentorData.userId.name || 'Unknown',
+      email: mentorData.userId.email,
+      avatar: mentorData.userId.avatar,
+      locale: mentorData.userId.locale,
+      title: mentorData.title,
+      location: mentorData.location,
+      languages: mentorData.languages,
+      specialties: mentorData.specialties,
+      price: mentorData.price,
+      availability: mentorData.availability,
+      photo: mentorData.photo,
+      verified: mentorData.verified,
+      bio: mentorData.bio,
+      rating: mentorData.rating,
+      reviewCount: mentorData.reviewCount,
+      createdAt: mentorData.createdAt,
+      updatedAt: mentorData.updatedAt,
     });
   } catch (error: any) {
     console.error('Get mentor error:', error);
@@ -90,22 +92,24 @@ export async function PUT(
       .populate('userId', 'name email avatar')
       .lean();
 
+    const updatedMentorData = updatedMentor as any;
+
     return NextResponse.json({
       mentor: {
-        id: updatedMentor!._id.toString(),
-        userId: updatedMentor!.userId._id?.toString() || updatedMentor!.userId.toString(),
-        name: updatedMentor!.userId.name || 'Unknown',
-        title: updatedMentor!.title,
-        location: updatedMentor!.location,
-        languages: updatedMentor!.languages,
-        specialties: updatedMentor!.specialties,
-        price: updatedMentor!.price,
-        availability: updatedMentor!.availability,
-        photo: updatedMentor!.photo,
-        verified: updatedMentor!.verified,
-        bio: updatedMentor!.bio,
-        rating: updatedMentor!.rating,
-        reviewCount: updatedMentor!.reviewCount,
+        id: updatedMentorData._id.toString(),
+        userId: updatedMentorData.userId._id?.toString() || updatedMentorData.userId.toString(),
+        name: updatedMentorData.userId.name || 'Unknown',
+        title: updatedMentorData.title,
+        location: updatedMentorData.location,
+        languages: updatedMentorData.languages,
+        specialties: updatedMentorData.specialties,
+        price: updatedMentorData.price,
+        availability: updatedMentorData.availability,
+        photo: updatedMentorData.photo,
+        verified: updatedMentorData.verified,
+        bio: updatedMentorData.bio,
+        rating: updatedMentorData.rating,
+        reviewCount: updatedMentorData.reviewCount,
       },
     });
   } catch (error: any) {
