@@ -1,0 +1,129 @@
+{
+  "common": {
+    "home": "홈",
+    "mentors": "멘토",
+    "lectures": "강의",
+    "community": "커뮤니티",
+    "freelancers": "프리랜서",
+    "studyInKorea": "한국 유학",
+    "language": "언어",
+    "search": "검색",
+    "login": "로그인",
+    "signup": "회원가입",
+    "logout": "로그아웃",
+    "dashboard": "대시보드",
+    "profile": "프로필"
+  },
+  "home": {
+    "title": "한국 유학을 위한 신뢰할 수 있는 가이드",
+    "subtitle": "당신의 길을 걸어온 멘토들과 연결하세요. 비자, 주거, 학업, 그리고 그 사이의 모든 것에 대한 도움을 받으세요.",
+    "cta": "멘토 찾기",
+    "trustedBy": "10,000명 이상의 학생들이 신뢰합니다",
+    "activeIn": "50개 이상의 국가에서 활성화"
+  },
+  "mentors": {
+    "title": "멘토 찾기",
+    "subtitle": "2,547명의 멘토가 대기 중입니다",
+    "filter": "필터",
+    "categories": {
+      "visa": "비자 & 이민",
+      "housing": "주거",
+      "healthcare": "의료",
+      "academic": "학업 지원",
+      "career": "커리어 & 프리랜서",
+      "dailyLife": "일상 생활"
+    }
+  },
+  "lectures": {
+    "title": "강의",
+    "subtitle": "온라인 및 오프라인 강의",
+    "online": "온라인",
+    "offline": "오프라인",
+    "all": "전체"
+  },
+  "community": {
+    "title": "커뮤니티 그룹",
+    "subtitle": "경험을 공유하고 다른 사람들과 연결하세요",
+    "join": "가입하기"
+  },
+  "freelancers": {
+    "title": "프리랜서 그룹",
+    "subtitle": "프리랜서 일자리와 기회를 찾으세요",
+    "join": "가입하기"
+  },
+  "studyInKorea": {
+    "title": "한국에서 공부하기",
+    "subtitle": "한국 유학에 대한 모든 정보",
+    "visa": "비자 정보",
+    "housing": "주거 정보",
+    "hospital": "병원 정보",
+    "lifeTips": "생활 팁"
+  },
+  "chatbot": {
+    "title": "MentorLink AI 어시스턴트",
+    "placeholder": "질문을 입력하세요...",
+    "send": "전송",
+    "thinking": "생각 중...",
+    "error": "오류가 발생했습니다. 다시 시도해주세요."
+  },
+  "auth": {
+    "login": "로그인",
+    "signUp": "회원가입",
+    "logout": "로그아웃",
+    "welcomeBack": "다시 오신 것을 환영합니다",
+    "createAccount": "새 계정 만들기",
+    "email": "이메일",
+    "password": "비밀번호",
+    "name": "이름",
+    "role": "역할",
+    "mentee": "멘티",
+    "mentor": "멘토",
+    "menteeDesc": "도움을 받는 학생",
+    "mentorDesc": "도움을 주는 멘토",
+    "confirmPassword": "비밀번호 확인",
+    "rememberMe": "로그인 상태 유지",
+    "forgotPassword": "비밀번호를 잊으셨나요?",
+    "noAccount": "계정이 없으신가요?",
+    "haveAccount": "이미 계정이 있으신가요?",
+    "emailPlaceholder": "your@email.com",
+    "passwordPlaceholder": "비밀번호를 입력하세요",
+    "namePlaceholder": "이름을 입력하세요",
+    "confirmPasswordPlaceholder": "비밀번호를 다시 입력하세요",
+    "invalidCredentials": "이메일 또는 비밀번호가 올바르지 않습니다",
+    "passwordMismatch": "비밀번호가 일치하지 않습니다",
+    "passwordTooShort": "비밀번호는 최소 6자 이상이어야 합니다",
+    "loginError": "로그인 중 오류가 발생했습니다",
+    "signupError": "회원가입 중 오류가 발생했습니다",
+    "loggingIn": "로그인 중...",
+    "creatingAccount": "계정 생성 중..."
+  },
+  "dashboard": {
+    "title": "대시보드",
+    "welcome": "환영합니다",
+    "upcomingSessions": "예정된 세션",
+    "recentMessages": "최근 메시지",
+    "myMentors": "내 멘토",
+    "myMentees": "내 멘티",
+    "progress": "진행 상황",
+    "tasks": "할 일",
+    "recommended": "추천",
+    "noSessions": "예정된 세션이 없습니다",
+    "noMessages": "메시지가 없습니다",
+    "viewAll": "전체 보기",
+    "bookSession": "세션 예약하기"
+  },
+  "profile": {
+    "title": "프로필",
+    "edit": "편집",
+    "save": "저장",
+    "cancel": "취소",
+    "name": "이름",
+    "email": "이메일",
+    "bio": "소개",
+    "location": "위치",
+    "languages": "언어",
+    "specialties": "전문 분야"
+  }
+}
+
+

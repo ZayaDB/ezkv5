@@ -1,0 +1,131 @@
+{
+  "common": {
+    "home": "Home",
+    "mentors": "Mentors",
+    "lectures": "Lectures",
+    "community": "Community",
+    "freelancers": "Freelancers",
+    "studyInKorea": "Study in Korea",
+    "language": "Language",
+    "search": "Search",
+    "login": "Login",
+    "signup": "Sign Up",
+    "logout": "Logout",
+    "dashboard": "Dashboard",
+    "profile": "Profile"
+  },
+  "home": {
+    "title": "Your trusted guide to studying in Korea",
+    "subtitle": "Connect with mentors who've walked your path. Get help with visas, housing, studies, and everything in between.",
+    "cta": "Find Your Mentor",
+    "trustedBy": "Trusted by 10,000+ students",
+    "activeIn": "Active in 50+ countries"
+  },
+  "mentors": {
+    "title": "Find Your Mentor",
+    "subtitle": "2,547 mentors available",
+    "filter": "Filter",
+    "categories": {
+      "visa": "Visa & Immigration",
+      "housing": "Housing",
+      "healthcare": "Healthcare",
+      "academic": "Academic Support",
+      "career": "Career & Freelance",
+      "dailyLife": "Daily Life"
+    }
+  },
+  "lectures": {
+    "title": "Lectures",
+    "subtitle": "Online and offline lectures",
+    "online": "Online",
+    "offline": "Offline",
+    "all": "All"
+  },
+  "community": {
+    "title": "Community Groups",
+    "subtitle": "Share experiences and connect with others",
+    "join": "Join"
+  },
+  "freelancers": {
+    "title": "Freelancer Groups",
+    "subtitle": "Find freelance jobs and opportunities",
+    "join": "Join"
+  },
+  "studyInKorea": {
+    "title": "Study in Korea",
+    "subtitle": "All information about studying in Korea",
+    "visa": "Visa Information",
+    "housing": "Housing Information",
+    "hospital": "Hospital Information",
+    "lifeTips": "Life Tips"
+  },
+  "chatbot": {
+    "title": "MentorLink AI Assistant",
+    "placeholder": "Ask a question...",
+    "send": "Send",
+    "thinking": "Thinking...",
+    "error": "An error occurred. Please try again."
+  },
+  "auth": {
+    "login": "Login",
+    "signUp": "Sign Up",
+    "logout": "Logout",
+    "welcomeBack": "Welcome back",
+    "createAccount": "Create your account",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "role": "Role",
+    "mentee": "Mentee",
+    "mentor": "Mentor",
+    "menteeDesc": "Student seeking help",
+    "mentorDesc": "Mentor providing help",
+    "confirmPassword": "Confirm Password",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "emailPlaceholder": "your@email.com",
+    "passwordPlaceholder": "Enter your password",
+    "namePlaceholder": "Enter your name",
+    "confirmPasswordPlaceholder": "Re-enter your password",
+    "invalidCredentials": "Invalid email or password",
+    "passwordMismatch": "Passwords do not match",
+    "passwordTooShort": "Password must be at least 6 characters",
+    "loginError": "An error occurred during login",
+    "signupError": "An error occurred during signup",
+    "loggingIn": "Logging in...",
+    "creatingAccount": "Creating account..."
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome",
+    "upcomingSessions": "Upcoming Sessions",
+    "recentMessages": "Recent Messages",
+    "myMentors": "My Mentors",
+    "myMentees": "My Mentees",
+    "progress": "Progress",
+    "tasks": "Tasks",
+    "recommended": "Recommended",
+    "noSessions": "No upcoming sessions",
+    "noMessages": "No messages",
+    "viewAll": "View All",
+    "bookSession": "Book a Session",
+    "menteeGreeting": "Grow with your mentors",
+    "mentorGreeting": "Help your mentees"
+  },
+  "profile": {
+    "title": "Profile",
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "name": "Name",
+    "email": "Email",
+    "bio": "Bio",
+    "location": "Location",
+    "languages": "Languages",
+    "specialties": "Specialties"
+  }
+}
+
+

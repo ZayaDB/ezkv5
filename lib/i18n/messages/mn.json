@@ -1,0 +1,131 @@
+{
+  "common": {
+    "home": "Нүүр",
+    "mentors": "Ментор",
+    "lectures": "Лекц",
+    "community": "Нийгэмлэг",
+    "freelancers": "Чөлөөт ажилчин",
+    "studyInKorea": "Солонгос суралцах",
+    "language": "Хэл",
+    "search": "Хайх",
+    "login": "Нэвтрэх",
+    "signup": "Бүртгүүлэх",
+    "logout": "Гарах",
+    "dashboard": "Хяналтын самбар",
+    "profile": "Профайл"
+  },
+  "home": {
+    "title": "Солонгост суралцах найдвартай хөтөч",
+    "subtitle": "Таны замыг туулсан менторуудтай холбогдоорой. Виза, орон сууц, суралцалт болон бусад бүх зүйлд туслалцаа аваарай.",
+    "cta": "Ментор олох",
+    "trustedBy": "10,000+ оюутнууд итгэж байна",
+    "activeIn": "50+ улсад идэвхтэй"
+  },
+  "mentors": {
+    "title": "Ментор олох",
+    "subtitle": "2,547 ментор бэлэн байна",
+    "filter": "Шүүх",
+    "categories": {
+      "visa": "Виз ба цагаачлал",
+      "housing": "Орон сууц",
+      "healthcare": "Эрүүл мэнд",
+      "academic": "Боловсролын дэмжлэг",
+      "career": "Карьер ба чөлөөт ажил",
+      "dailyLife": "Өдөр тутмын амьдрал"
+    }
+  },
+  "lectures": {
+    "title": "Лекц",
+    "subtitle": "Онлайн болон оффлайн лекц",
+    "online": "Онлайн",
+    "offline": "Оффлайн",
+    "all": "Бүгд"
+  },
+  "community": {
+    "title": "Нийгэмлэгийн бүлгүүд",
+    "subtitle": "Туршлага хуваалцаж, бусдадтай холбогдоорой",
+    "join": "Нэгдэх"
+  },
+  "freelancers": {
+    "title": "Чөлөөт ажилчдын бүлгүүд",
+    "subtitle": "Чөлөөт ажлын байр болон боломжууд олох",
+    "join": "Нэгдэх"
+  },
+  "studyInKorea": {
+    "title": "Солонгост суралцах",
+    "subtitle": "Солонгост суралцахтай холбоотой бүх мэдээлэл",
+    "visa": "Виз мэдээлэл",
+    "housing": "Орон сууцны мэдээлэл",
+    "hospital": "Эмнэлгийн мэдээлэл",
+    "lifeTips": "Амьдралын зөвлөмж"
+  },
+  "chatbot": {
+    "title": "MentorLink AI Туслах",
+    "placeholder": "Асуулт асуу...",
+    "send": "Илгээх",
+    "thinking": "Бодож байна...",
+    "error": "Алдаа гарлаа. Дахин оролдоно уу."
+  },
+  "auth": {
+    "login": "Нэвтрэх",
+    "signUp": "Бүртгүүлэх",
+    "logout": "Гарах",
+    "welcomeBack": "Дахин тавтай морилно уу",
+    "createAccount": "Шинэ бүртгэл үүсгэх",
+    "email": "Имэйл",
+    "password": "Нууц үг",
+    "name": "Нэр",
+    "role": "Үүрэг",
+    "mentee": "Оюутан",
+    "mentor": "Ментор",
+    "menteeDesc": "Тусламж хайж буй оюутан",
+    "mentorDesc": "Тусламж үзүүлж буй ментор",
+    "confirmPassword": "Нууц үг баталгаажуулах",
+    "rememberMe": "Намайг сана",
+    "forgotPassword": "Нууц үгээ мартсан уу?",
+    "noAccount": "Бүртгэлгүй юу?",
+    "haveAccount": "Бүртгэлтэй юу?",
+    "emailPlaceholder": "your@email.com",
+    "passwordPlaceholder": "Нууц үгээ оруулна уу",
+    "namePlaceholder": "Нэрээ оруулна уу",
+    "confirmPasswordPlaceholder": "Нууц үгээ дахин оруулна уу",
+    "invalidCredentials": "Имэйл эсвэл нууц үг буруу байна",
+    "passwordMismatch": "Нууц үг таарахгүй байна",
+    "passwordTooShort": "Нууц үг хамгийн багадаа 6 тэмдэгт байх ёстой",
+    "loginError": "Нэвтрэхэд алдаа гарлаа",
+    "signupError": "Бүртгүүлэхэд алдаа гарлаа",
+    "loggingIn": "Нэвтэрч байна...",
+    "creatingAccount": "Бүртгэл үүсгэж байна..."
+  },
+  "dashboard": {
+    "title": "Хяналтын самбар",
+    "welcome": "Тавтай морилно уу",
+    "upcomingSessions": "Дараагийн хурал",
+    "recentMessages": "Сүүлийн мессеж",
+    "myMentors": "Миний менторууд",
+    "myMentees": "Миний оюутнууд",
+    "progress": "Явц",
+    "tasks": "Даалгавар",
+    "recommended": "Зөвлөмж",
+    "noSessions": "Дараагийн хурал байхгүй",
+    "noMessages": "Мессеж байхгүй",
+    "viewAll": "Бүгдийг харах",
+    "bookSession": "Хурал захиалах",
+    "menteeGreeting": "Менторуудтайгаа хамтдаа хөгжинө үү",
+    "mentorGreeting": "Оюутнуудаа туслаарай"
+  },
+  "profile": {
+    "title": "Профайл",
+    "edit": "Засах",
+    "save": "Хадгалах",
+    "cancel": "Цуцлах",
+    "name": "Нэр",
+    "email": "Имэйл",
+    "bio": "Танилцуулга",
+    "location": "Байршил",
+    "languages": "Хэл",
+    "specialties": "Мэргэшил"
+  }
+}
+
+
