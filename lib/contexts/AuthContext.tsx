@@ -10,6 +10,9 @@ interface User {
   role: 'mentee' | 'mentor' | 'admin';
   locale?: string;
   avatar?: string;
+  bio?: string;
+  location?: string;
+  languages?: string[];
 }
 
 interface AuthContextType {
