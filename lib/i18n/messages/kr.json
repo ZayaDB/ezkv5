@@ -122,7 +122,126 @@
     "bio": "소개",
     "location": "위치",
     "languages": "언어",
-    "specialties": "전문 분야"
+    "specialties": "전문 분야",
+    "myPage": "님의 마이페이지",
+    "tabs": {
+      "overview": "전체 현황",
+      "lectures": "강의 관리",
+      "schedule": "스케줄",
+      "statistics": "통계",
+      "growth": "성장 기록",
+      "info": "정보 관리"
+    },
+    "stats": {
+      "totalLectures": "수강 중인 강의",
+      "completedLectures": "개 완료",
+      "upcomingSessions": "예정된 세션",
+      "completedSessions": "개 완료",
+      "totalStudyHours": "총 학습 시간",
+      "currentWeekHours": "이번 주",
+      "achievements": "달성한 목표",
+      "keepGoing": "계속 화이팅!"
+    },
+    "weeklyGoal": {
+      "title": "이번 주 학습 목표",
+      "hoursLeft": "목표까지",
+      "hoursRemaining": "시간 남았습니다"
+    },
+    "recentLectures": {
+      "title": "최근 수강 강의",
+      "viewAll": "전체 보기",
+      "category": "카테고리",
+      "progress": "완료",
+      "enrolledDate": "등록일",
+      "completed": "완료",
+      "inProgress": "진행 중"
+    },
+    "upcomingSessions": {
+      "title": "예정된 멘토링 세션",
+      "viewAll": "전체 보기",
+      "online": "온라인",
+      "offline": "오프라인",
+      "viewDetails": "상세 보기"
+    },
+    "achievements": {
+      "title": "최근 달성 기록",
+      "viewAll": "전체 보기"
+    },
+    "lectures": {
+      "all": "전체",
+      "inProgress": "진행 중",
+      "completed": "완료",
+      "analysis": {
+        "title": "강의 학습 분석",
+        "avgCompletion": "평균 완료율",
+        "monthlyHours": "이번 달 학습 시간",
+        "goalProgress": "목표 대비",
+        "topCategory": "가장 많이 수강한 카테고리",
+        "lecturesCount": "개 강의"
+      },
+      "progress": "진행률"
+    },
+    "schedule": {
+      "title": "일정 관리",
+      "upcoming": "예정된 일정",
+      "days": ["일", "월", "화", "수", "목", "금", "토"]
+    },
+    "statistics": {
+      "totalHours": "총 학습 시간",
+      "hoursThisMonth": "이번 달",
+      "completedLectures": "완료한 강의",
+      "completionRate": "완료율",
+      "mentoringSessions": "멘토링 세션",
+      "avgSatisfaction": "평균 만족도",
+      "streak": "연속 학습일",
+      "bestStreak": "최고 기록",
+      "learningProgress": "학습 진행 추이",
+      "categoryBreakdown": "카테고리별 학습 현황",
+      "hours": "시간"
+    },
+    "growth": {
+      "goals": {
+        "title": "목표 설정",
+        "newGoal": "새 목표",
+        "deadline": "마감",
+        "completed": "완료",
+        "inProgress": "진행 중",
+        "progress": "완료"
+      },
+      "achievements": {
+        "title": "달성 기록"
+      },
+      "streak": {
+        "title": "연속 학습 기록",
+        "current": "연속",
+        "days": "일 학습 중!",
+        "best": "최고 기록",
+        "daysStreak": "일 연속 학습"
+      }
+    },
+    "info": {
+      "basicInfo": {
+        "title": "기본 정보",
+        "bioPlaceholder": "자기소개를 입력하세요...",
+        "bioEmpty": "자기소개를 입력해주세요.",
+        "locationPlaceholder": "예: 서울시 강남구",
+        "locationEmpty": "위치를 입력해주세요."
+      },
+      "accountSettings": {
+        "title": "계정 설정",
+        "emailNotifications": "이메일 알림 설정",
+        "notifications": "알림 설정",
+        "language": "언어 설정",
+        "privacy": "개인정보 처리방침"
+      }
+    },
+    "loading": "로딩 중...",
+    "saving": "저장 중...",
+    "roles": {
+      "mentee": "멘티",
+      "mentor": "멘토",
+      "admin": "관리자"
+    }
   }
 }
 

@@ -28,13 +28,13 @@ export default function LoginPage() {
     }
   }, []);
 
-  // 이미 로그인되어 있으면 대시보드로 리다이렉트
+  // 이미 로그인되어 있으면 프로필로 리다이렉트
   useEffect(() => {
     if (user) {
       if (user.role === 'admin') {
         router.push(`/${locale}/admin/dashboard`);
       } else {
-        router.push(`/${locale}/dashboard`);
+        router.push(`/${locale}/profile`);
       }
     }
   }, [user, router, locale]);

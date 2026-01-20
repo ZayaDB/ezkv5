@@ -155,12 +155,12 @@ export default function Header() {
                         </Link>
                       ) : (
                         <Link
-                          href={getLocalizedPath('/dashboard')}
+                          href={getLocalizedPath('/profile')}
                           className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
                           onClick={() => setUserMenuOpen(false)}
                         >
                           <Settings className="w-4 h-4" />
-                          <span>{t('dashboard')}</span>
+                          <span>{t('profile')}</span>
                         </Link>
                       )}
                       
@@ -287,12 +287,12 @@ export default function Header() {
                     </Link>
                   ) : (
                     <Link
-                      href={getLocalizedPath('/dashboard')}
+                      href={getLocalizedPath('/profile')}
                       className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors mb-2"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       <Settings className="w-5 h-5" />
-                      <span>{t('dashboard')}</span>
+                      <span>{t('profile')}</span>
                     </Link>
                   )}
                   

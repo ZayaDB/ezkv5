@@ -124,7 +124,126 @@
     "bio": "Bio",
     "location": "Location",
     "languages": "Languages",
-    "specialties": "Specialties"
+    "specialties": "Specialties",
+    "myPage": "'s My Page",
+    "tabs": {
+      "overview": "Overview",
+      "lectures": "Lectures",
+      "schedule": "Schedule",
+      "statistics": "Statistics",
+      "growth": "Growth",
+      "info": "Info"
+    },
+    "stats": {
+      "totalLectures": "Enrolled Lectures",
+      "completedLectures": "completed",
+      "upcomingSessions": "Upcoming Sessions",
+      "completedSessions": "completed",
+      "totalStudyHours": "Total Study Hours",
+      "currentWeekHours": "This week",
+      "achievements": "Achievements",
+      "keepGoing": "Keep it up!"
+    },
+    "weeklyGoal": {
+      "title": "Weekly Learning Goal",
+      "hoursLeft": "hours left to reach goal",
+      "hoursRemaining": "hours remaining"
+    },
+    "recentLectures": {
+      "title": "Recent Lectures",
+      "viewAll": "View All",
+      "category": "Category",
+      "progress": "complete",
+      "enrolledDate": "Enrolled",
+      "completed": "Completed",
+      "inProgress": "In Progress"
+    },
+    "upcomingSessions": {
+      "title": "Upcoming Mentoring Sessions",
+      "viewAll": "View All",
+      "online": "Online",
+      "offline": "Offline",
+      "viewDetails": "View Details"
+    },
+    "achievements": {
+      "title": "Recent Achievements",
+      "viewAll": "View All"
+    },
+    "lectures": {
+      "all": "All",
+      "inProgress": "In Progress",
+      "completed": "Completed",
+      "analysis": {
+        "title": "Lecture Learning Analysis",
+        "avgCompletion": "Average Completion Rate",
+        "monthlyHours": "Monthly Study Hours",
+        "goalProgress": "vs Goal",
+        "topCategory": "Most Studied Category",
+        "lecturesCount": "lectures"
+      },
+      "progress": "Progress"
+    },
+    "schedule": {
+      "title": "Schedule Management",
+      "upcoming": "Upcoming Schedule",
+      "days": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+    },
+    "statistics": {
+      "totalHours": "Total Study Hours",
+      "hoursThisMonth": "This month",
+      "completedLectures": "Completed Lectures",
+      "completionRate": "completion rate",
+      "mentoringSessions": "Mentoring Sessions",
+      "avgSatisfaction": "avg satisfaction",
+      "streak": "Learning Streak",
+      "bestStreak": "Best record",
+      "learningProgress": "Learning Progress Trend",
+      "categoryBreakdown": "Learning by Category",
+      "hours": "hours"
+    },
+    "growth": {
+      "goals": {
+        "title": "Goal Setting",
+        "newGoal": "New Goal",
+        "deadline": "Deadline",
+        "completed": "Completed",
+        "inProgress": "In Progress",
+        "progress": "complete"
+      },
+      "achievements": {
+        "title": "Achievements"
+      },
+      "streak": {
+        "title": "Learning Streak",
+        "current": "days in a row!",
+        "days": "Consecutive",
+        "best": "Best record",
+        "daysStreak": "days streak"
+      }
+    },
+    "info": {
+      "basicInfo": {
+        "title": "Basic Information",
+        "bioPlaceholder": "Enter your bio...",
+        "bioEmpty": "Please enter your bio.",
+        "locationPlaceholder": "e.g., Gangnam-gu, Seoul",
+        "locationEmpty": "Please enter your location."
+      },
+      "accountSettings": {
+        "title": "Account Settings",
+        "emailNotifications": "Email Notification Settings",
+        "notifications": "Notification Settings",
+        "language": "Language Settings",
+        "privacy": "Privacy Policy"
+      }
+    },
+    "loading": "Loading...",
+    "saving": "Saving...",
+    "roles": {
+      "mentee": "Mentee",
+      "mentor": "Mentor",
+      "admin": "Admin"
+    }
   }
 }
 

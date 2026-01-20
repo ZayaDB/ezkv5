@@ -124,7 +124,126 @@
     "bio": "Танилцуулга",
     "location": "Байршил",
     "languages": "Хэл",
-    "specialties": "Мэргэшил"
+    "specialties": "Мэргэшил",
+    "myPage": "-ийн хувийн хуудас",
+    "tabs": {
+      "overview": "Ерөнхий",
+      "lectures": "Лекц удирдлага",
+      "schedule": "Хуваарь",
+      "statistics": "Статистик",
+      "growth": "Хөгжил",
+      "info": "Мэдээлэл"
+    },
+    "stats": {
+      "totalLectures": "Бүртгүүлсэн лекц",
+      "completedLectures": "дууссан",
+      "upcomingSessions": "Дараагийн хурал",
+      "completedSessions": "дууссан",
+      "totalStudyHours": "Нийт суралцах цаг",
+      "currentWeekHours": "Энэ долоо хоног",
+      "achievements": "Амжилт",
+      "keepGoing": "Үргэлжлүүлээрэй!"
+    },
+    "weeklyGoal": {
+      "title": "Долоо хоногийн суралцах зорилго",
+      "hoursLeft": "зорилгод хүрэхэд үлдсэн цаг",
+      "hoursRemaining": "цаг үлдсэн"
+    },
+    "recentLectures": {
+      "title": "Сүүлийн лекц",
+      "viewAll": "Бүгдийг харах",
+      "category": "Ангилал",
+      "progress": "дууссан",
+      "enrolledDate": "Бүртгүүлсэн",
+      "completed": "Дууссан",
+      "inProgress": "Явж байна"
+    },
+    "upcomingSessions": {
+      "title": "Дараагийн менторийн хурал",
+      "viewAll": "Бүгдийг харах",
+      "online": "Онлайн",
+      "offline": "Оффлайн",
+      "viewDetails": "Дэлгэрэнгүй харах"
+    },
+    "achievements": {
+      "title": "Сүүлийн амжилт",
+      "viewAll": "Бүгдийг харах"
+    },
+    "lectures": {
+      "all": "Бүгд",
+      "inProgress": "Явж байна",
+      "completed": "Дууссан",
+      "analysis": {
+        "title": "Лекцийн суралцах шинжилгээ",
+        "avgCompletion": "Дундаж дуусгах хувь",
+        "monthlyHours": "Сарын суралцах цаг",
+        "goalProgress": "зорилготой харьцуулахад",
+        "topCategory": "Хамгийн их судалсан ангилал",
+        "lecturesCount": "лекц"
+      },
+      "progress": "Явц"
+    },
+    "schedule": {
+      "title": "Хуваарийн удирдлага",
+      "upcoming": "Дараагийн хуваарь",
+      "days": ["Ням", "Дав", "Мяг", "Лха", "Пүр", "Баа", "Бям"]
+    },
+    "statistics": {
+      "totalHours": "Нийт суралцах цаг",
+      "hoursThisMonth": "Энэ сар",
+      "completedLectures": "Дууссан лекц",
+      "completionRate": "дуусгах хувь",
+      "mentoringSessions": "Менторийн хурал",
+      "avgSatisfaction": "дундаж сэтгэл ханамж",
+      "streak": "Суралцах дараалал",
+      "bestStreak": "Хамгийн сайн амжилт",
+      "learningProgress": "Суралцах явцын чиг хандлага",
+      "categoryBreakdown": "Ангилалаар суралцах",
+      "hours": "цаг"
+    },
+    "growth": {
+      "goals": {
+        "title": "Зорилго тогтоох",
+        "newGoal": "Шинэ зорилго",
+        "deadline": "Эцсийн хугацаа",
+        "completed": "Дууссан",
+        "inProgress": "Явж байна",
+        "progress": "дууссан"
+      },
+      "achievements": {
+        "title": "Амжилт"
+      },
+      "streak": {
+        "title": "Суралцах дараалал",
+        "current": "өдөр дараалан!",
+        "days": "Дараалсан",
+        "best": "Хамгийн сайн амжилт",
+        "daysStreak": "өдрийн дараалал"
+      }
+    },
+    "info": {
+      "basicInfo": {
+        "title": "Үндсэн мэдээлэл",
+        "bioPlaceholder": "Танилцуулгаа оруулна уу...",
+        "bioEmpty": "Танилцуулгаа оруулна уу.",
+        "locationPlaceholder": "Жишээ: Ганнам дүүрэг, Сөүл",
+        "locationEmpty": "Байршлаа оруулна уу."
+      },
+      "accountSettings": {
+        "title": "Бүртгэлийн тохиргоо",
+        "emailNotifications": "Имэйл мэдэгдлийн тохиргоо",
+        "notifications": "Мэдэгдлийн тохиргоо",
+        "language": "Хэлний тохиргоо",
+        "privacy": "Хувийн мэдээллийн бодлого"
+      }
+    },
+    "loading": "Ачааллаж байна...",
+    "saving": "Хадгалж байна...",
+    "roles": {
+      "mentee": "Оюутан",
+      "mentor": "Ментор",
+      "admin": "Админ"
+    }
   }
 }
 
