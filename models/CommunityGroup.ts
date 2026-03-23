@@ -45,5 +45,5 @@ const CommunityGroupSchema = new Schema<ICommunityGroup>(
 CommunityGroupSchema.index({ category: 1 });
 CommunityGroupSchema.index({ tags: 1 });
 
-export default mongoose.models.CommunityGroup || mongoose.model<ICommunityGroup>('CommunityGroup', CommunityGroupSchema);
+export default mongoose.models?.CommunityGroup || mongoose.model<ICommunityGroup>('CommunityGroup', CommunityGroupSchema);
 

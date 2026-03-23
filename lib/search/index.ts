@@ -1,5 +1,11 @@
 import { Mentor, Lecture, CommunityGroup, FreelancerGroup, StudyInfo } from '@/types';
-import { mockMentors, mockLectures, mockCommunityGroups, mockFreelancerGroups, mockStudyInfo } from '@/data/mockData';
+import {
+  queryMentors,
+  queryLectures,
+  queryCommunityGroups,
+  queryFreelancerGroups,
+  queryStudyInfos,
+} from '@/lib/data/queries';
 
 export interface SearchResult {
   type: 'mentor' | 'lecture' | 'community' | 'freelancer' | 'studyInfo';
@@ -9,17 +15,36 @@ export interface SearchResult {
   url: string;
 }
 
-export function searchContent(query: string, locale: string = 'kr'): SearchResult[] {
-  const lowerQuery = query.toLowerCase();
+function match(q: string, ...fields: (string | undefined)[]): boolean {
+  const lower = q.toLowerCase();
+  return fields.some((f) => (f || '').toLowerCase().includes(lower));
+}
+
+export async function searchContent(query: string, locale: string = 'kr'): Promise<SearchResult[]> {
+  const trimmed = query.trim();
+  if (!trimmed) return [];
+
+  const lowerQuery = trimmed.toLowerCase();
   const results: SearchResult[] = [];
 
-  // Search mentors
-  mockMentors.forEach((mentor) => {
+  const [{ mentors }, { lectures }, communities, freelancers, studyItems] = await Promise.all([
+    queryMentors({ limit: 80 }),
+    queryLectures({ limit: 80 }),
+    queryCommunityGroups({ limit: 80 }),
+    queryFreelancerGroups({ limit: 80 }),
+    queryStudyInfos(),
+  ]);
+
+  mentors.forEach((mentor: Mentor) => {
     if (
-      mentor.name.toLowerCase().includes(lowerQuery) ||
-      mentor.title.toLowerCase().includes(lowerQuery) ||
-      mentor.specialties.some((s) => s.toLowerCase().includes(lowerQuery)) ||
-      mentor.bio.toLowerCase().includes(lowerQuery)
+      match(
+        lowerQuery,
+        mentor.name,
+        mentor.title,
+        mentor.bio,
+        mentor.specialties.join(' '),
+        mentor.location
+      )
     ) {
       results.push({
         type: 'mentor',
@@ -31,13 +56,15 @@ export function searchContent(query: string, locale: string = 'kr'): SearchResul
     }
   });
 
-  // Search lectures
-  mockLectures.forEach((lecture) => {
+  lectures.forEach((lecture: Lecture) => {
     if (
-      lecture.title.toLowerCase().includes(lowerQuery) ||
-      lecture.instructor.toLowerCase().includes(lowerQuery) ||
-      lecture.category.toLowerCase().includes(lowerQuery) ||
-      lecture.description.toLowerCase().includes(lowerQuery)
+      match(
+        lowerQuery,
+        lecture.title,
+        lecture.instructor,
+        lecture.category,
+        lecture.description
+      )
     ) {
       results.push({
         type: 'lecture',
@@ -49,12 +76,9 @@ export function searchContent(query: string, locale: string = 'kr'): SearchResul
     }
   });
 
-  // Search community groups
-  mockCommunityGroups.forEach((group) => {
+  communities.forEach((group: CommunityGroup) => {
     if (
-      group.name.toLowerCase().includes(lowerQuery) ||
-      group.description.toLowerCase().includes(lowerQuery) ||
-      group.tags.some((tag) => tag.toLowerCase().includes(lowerQuery))
+      match(lowerQuery, group.name, group.description, group.category, group.tags.join(' '))
     ) {
       results.push({
         type: 'community',
@@ -66,13 +90,8 @@ export function searchContent(query: string, locale: string = 'kr'): SearchResul
     }
   });
 
-  // Search freelancer groups
-  mockFreelancerGroups.forEach((group) => {
-    if (
-      group.name.toLowerCase().includes(lowerQuery) ||
-      group.description.toLowerCase().includes(lowerQuery) ||
-      group.category.toLowerCase().includes(lowerQuery)
-    ) {
+  freelancers.forEach((group: FreelancerGroup) => {
+    if (match(lowerQuery, group.name, group.description, group.category)) {
       results.push({
         type: 'freelancer',
         id: group.id,
@@ -83,25 +102,25 @@ export function searchContent(query: string, locale: string = 'kr'): SearchResul
     }
   });
 
-  // Search study info
-  mockStudyInfo.forEach((info) => {
+  studyItems.forEach((info: StudyInfo) => {
     if (
-      info.title.toLowerCase().includes(lowerQuery) ||
-      info.content.toLowerCase().includes(lowerQuery) ||
-      info.tags.some((tag) => tag.toLowerCase().includes(lowerQuery))
+      match(
+        lowerQuery,
+        info.title,
+        info.content,
+        info.tags.join(' '),
+        info.category
+      )
     ) {
       results.push({
         type: 'studyInfo',
         id: info.id,
         title: info.title,
-        description: info.content.substring(0, 100),
-        url: `/${locale}/study-in-korea#${info.category}`,
+        description: info.content.substring(0, 120),
+        url: `/${locale}/study-in-korea#article-${info.id}`,
       });
     }
   });
 
-  return results.slice(0, 10); // Limit to 10 results
+  return results.slice(0, 12);
 }
-
-
-

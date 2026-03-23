@@ -2,64 +2,33 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db/mongodb';
 import Mentor from '@/models/Mentor';
 import { authenticateRequest } from '@/lib/middleware/auth';
+import { queryMentors } from '@/lib/data/queries';
 
 // GET: 멘토 목록 조회
 export async function GET(request: NextRequest) {
   try {
-    await connectDB();
-
     const { searchParams } = new URL(request.url);
     const category = searchParams.get('category');
     const location = searchParams.get('location');
     const specialty = searchParams.get('specialty');
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '12');
-    const skip = (page - 1) * limit;
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const limit = parseInt(searchParams.get('limit') || '12', 10);
 
-    // 필터 조건 구성
-    const filter: any = {};
-    if (category) {
-      filter.specialties = { $in: [category] };
-    }
-    if (location) {
-      filter.location = { $regex: location, $options: 'i' };
-    }
-    if (specialty) {
-      filter.specialties = { $in: [specialty] };
-    }
-
-    // 멘토 조회 (인증 불필요)
-    const mentors = await Mentor.find(filter)
-      .populate('userId', 'name email avatar')
-      .sort({ rating: -1, createdAt: -1 })
-      .skip(skip)
-      .limit(limit)
-      .lean();
-
-    const total = await Mentor.countDocuments(filter);
+    const { mentors, total } = await queryMentors({
+      category: category || undefined,
+      location: location || undefined,
+      specialty: specialty || undefined,
+      page,
+      limit,
+    });
 
     return NextResponse.json({
-      mentors: mentors.map((mentor: any) => ({
-        id: mentor._id.toString(),
-        userId: mentor.userId._id?.toString() || mentor.userId.toString(),
-        name: mentor.userId.name || 'Unknown',
-        title: mentor.title,
-        location: mentor.location,
-        languages: mentor.languages,
-        specialties: mentor.specialties,
-        price: mentor.price,
-        availability: mentor.availability,
-        photo: mentor.photo,
-        verified: mentor.verified,
-        bio: mentor.bio,
-        rating: mentor.rating,
-        reviewCount: mentor.reviewCount,
-      })),
+      mentors,
       pagination: {
         page,
         limit,
         total,
-        pages: Math.ceil(total / limit),
+        pages: Math.ceil(total / limit) || 1,
       },
     });
   } catch (error: any) {

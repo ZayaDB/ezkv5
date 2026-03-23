@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import { useAuth } from "@/lib/contexts/AuthContext";
+import { authApi } from "@/lib/api/client";
 import {
   Settings,
   User as UserIcon,
@@ -36,7 +37,7 @@ export default function ProfilePage() {
   const t = useTranslations("profile");
   const locale = useLocale();
   const router = useRouter();
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, refreshUser } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -47,6 +48,7 @@ export default function ProfilePage() {
     languages: [] as string[],
   });
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState("");
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -66,7 +68,19 @@ export default function ProfilePage() {
 
   const handleSave = async () => {
     setSaving(true);
-    // TODO: API로 사용자 정보 업데이트
+    setSaveError("");
+    const res = await authApi.updateProfile({
+      name: formData.name,
+      bio: formData.bio,
+      location: formData.location,
+      languages: formData.languages,
+    });
+    if (res.error) {
+      setSaveError(res.error);
+      setSaving(false);
+      return;
+    }
+    await refreshUser();
     setIsEditing(false);
     setSaving(false);
   };
@@ -932,6 +946,10 @@ export default function ProfilePage() {
                     </div>
                   )}
                 </div>
+
+                {saveError && (
+                  <p className="text-sm text-red-600 mb-2">{saveError}</p>
+                )}
 
                 {isEditing && (
                   <div className="flex gap-3">

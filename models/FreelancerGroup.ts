@@ -44,5 +44,5 @@ const FreelancerGroupSchema = new Schema<IFreelancerGroup>(
 
 FreelancerGroupSchema.index({ category: 1 });
 
-export default mongoose.models.FreelancerGroup || mongoose.model<IFreelancerGroup>('FreelancerGroup', FreelancerGroupSchema);
+export default mongoose.models?.FreelancerGroup || mongoose.model<IFreelancerGroup>('FreelancerGroup', FreelancerGroupSchema);
 

@@ -41,5 +41,5 @@ const StudyInfoSchema = new Schema<IStudyInfo>(
 StudyInfoSchema.index({ category: 1 });
 StudyInfoSchema.index({ tags: 1 });
 
-export default mongoose.models.StudyInfo || mongoose.model<IStudyInfo>('StudyInfo', StudyInfoSchema);
+export default mongoose.models?.StudyInfo || mongoose.model<IStudyInfo>('StudyInfo', StudyInfoSchema);
 

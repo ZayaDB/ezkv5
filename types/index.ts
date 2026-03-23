@@ -1,5 +1,7 @@
 export interface Mentor {
   id: string;
+  /** 멘토 문서와 연결된 사용자 ID (API·관리용) */
+  userId?: string;
   name: string;
   title: string;
   location: string;
@@ -9,7 +11,7 @@ export interface Mentor {
   specialties: string[];
   price: number | 'Free';
   availability: 'available' | 'limited' | 'unavailable';
-  photo: string;
+  photo?: string;
   verified: boolean;
   bio: string;
 }

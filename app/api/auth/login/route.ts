@@ -18,9 +18,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // 이메일을 소문자로 변환하고 공백 제거
+    const normalizedEmail = email.toLowerCase().trim();
+
     // Find user
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: normalizedEmail });
     if (!user) {
+      console.log(`Login attempt failed: User not found for email: ${normalizedEmail}`);
       return NextResponse.json(
         { error: '이메일 또는 비밀번호가 올바르지 않습니다.' },
         { status: 401 }
@@ -30,11 +34,14 @@ export async function POST(request: NextRequest) {
     // Check password
     const isPasswordValid = await comparePassword(password, user.password);
     if (!isPasswordValid) {
+      console.log(`Login attempt failed: Invalid password for email: ${normalizedEmail}`);
       return NextResponse.json(
         { error: '이메일 또는 비밀번호가 올바르지 않습니다.' },
         { status: 401 }
       );
     }
+
+    console.log(`Login successful: ${normalizedEmail} (role: ${user.role})`);
 
     // Generate token
     const token = generateToken({
@@ -52,6 +59,9 @@ export async function POST(request: NextRequest) {
         role: user.role,
         locale: user.locale,
         avatar: user.avatar,
+        bio: user.bio,
+        location: user.location,
+        languages: user.languages || [],
       },
       token,
     });

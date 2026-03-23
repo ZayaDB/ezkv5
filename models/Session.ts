@@ -55,5 +55,5 @@ SessionSchema.index({ mentorId: 1, date: 1 });
 SessionSchema.index({ menteeId: 1, date: 1 });
 SessionSchema.index({ status: 1 });
 
-export default mongoose.models.Session || mongoose.model<ISession>('Session', SessionSchema);
+export default mongoose.models?.Session || mongoose.model<ISession>('Session', SessionSchema);
 

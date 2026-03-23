@@ -71,5 +71,5 @@ LectureSchema.index({ category: 1 });
 LectureSchema.index({ type: 1 });
 LectureSchema.index({ rating: -1 });
 
-export default mongoose.models.Lecture || mongoose.model<ILecture>('Lecture', LectureSchema);
+export default mongoose.models?.Lecture || mongoose.model<ILecture>('Lecture', LectureSchema);
 

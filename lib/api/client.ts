@@ -126,6 +126,25 @@ export const authApi = {
       return null;
     }
   },
+
+  updateProfile: async (data: {
+    name?: string;
+    bio?: string;
+    location?: string;
+    languages?: string[];
+    locale?: string;
+  }) => {
+    return apiRequest<{ user: any }>('/api/auth/me', {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  },
+};
+
+export const contentApi = {
+  getLecture: (id: string) => apiRequest<any>(`/api/lectures/${id}`),
+  getCommunity: (id: string) => apiRequest<any>(`/api/community/${id}`),
+  getFreelancer: (id: string) => apiRequest<any>(`/api/freelancers/${id}`),
 };
 
 // Mentors API

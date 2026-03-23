@@ -8,6 +8,8 @@ export interface IUser extends Document {
   avatar?: string;
   locale: string;
   bio?: string;
+  location?: string;
+  languages?: string[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -47,11 +49,18 @@ const UserSchema = new Schema<IUser>(
     bio: {
       type: String,
     },
+    location: {
+      type: String,
+    },
+    languages: {
+      type: [String],
+      default: [],
+    },
   },
   {
     timestamps: true,
   }
 );
 
-export default mongoose.models.User || mongoose.model<IUser>('User', UserSchema);
+export default mongoose.models?.User || mongoose.model<IUser>('User', UserSchema);
 

@@ -16,8 +16,7 @@ export async function getChatbotResponse(
   context: ChatContext
 ): Promise<{ response: string; links?: SearchResult[] }> {
   try {
-    // First, search internal content
-    const searchResults = searchContent(message, context.locale);
+    const searchResults = await searchContent(message, context.locale);
 
     // Build system prompt with site context
     const localeNames: Record<string, string> = {
@@ -54,7 +53,7 @@ Example responses:
       : message;
 
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4-turbo-preview',
+      model: 'gpt-4o-mini',
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userMessage },

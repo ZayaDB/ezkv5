@@ -144,7 +144,7 @@ export default function Header() {
                         <div className="text-xs text-gray-500 truncate">{user?.email || ''}</div>
                       </div>
                       
-                      {user?.role === 'admin' ? (
+                      {user?.role === 'admin' && (
                         <Link
                           href={getLocalizedPath('/admin/dashboard')}
                           className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
@@ -153,17 +153,7 @@ export default function Header() {
                           <Settings className="w-4 h-4" />
                           <span>관리자 대시보드</span>
                         </Link>
-                      ) : (
-                        <Link
-                          href={getLocalizedPath('/profile')}
-                          className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
-                          onClick={() => setUserMenuOpen(false)}
-                        >
-                          <Settings className="w-4 h-4" />
-                          <span>{t('profile')}</span>
-                        </Link>
                       )}
-                      
                       <Link
                         href={getLocalizedPath('/profile')}
                         className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
@@ -276,7 +266,7 @@ export default function Header() {
                     </div>
                   </div>
                   
-                  {user?.role === 'admin' ? (
+                  {user?.role === 'admin' && (
                     <Link
                       href={getLocalizedPath('/admin/dashboard')}
                       className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors mb-2"
@@ -285,17 +275,7 @@ export default function Header() {
                       <Settings className="w-5 h-5" />
                       <span>관리자 대시보드</span>
                     </Link>
-                  ) : (
-                    <Link
-                      href={getLocalizedPath('/profile')}
-                      className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors mb-2"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      <Settings className="w-5 h-5" />
-                      <span>{t('profile')}</span>
-                    </Link>
                   )}
-                  
                   <Link
                     href={getLocalizedPath('/profile')}
                     className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors mb-2"

@@ -37,5 +37,5 @@ const MessageSchema = new Schema<IMessage>(
 MessageSchema.index({ fromId: 1, toId: 1, createdAt: -1 });
 MessageSchema.index({ toId: 1, read: 1 });
 
-export default mongoose.models.Message || mongoose.model<IMessage>('Message', MessageSchema);
+export default mongoose.models?.Message || mongoose.model<IMessage>('Message', MessageSchema);
 

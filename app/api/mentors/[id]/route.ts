@@ -23,14 +23,19 @@ export async function GET(
     }
 
     const mentorData = mentor as any;
+    const pop = mentorData.userId;
+    const uid =
+      pop && typeof pop === 'object' && pop._id
+        ? pop
+        : { _id: mentorData.userId, name: '멘토', email: undefined, avatar: undefined, locale: undefined };
 
     return NextResponse.json({
       id: mentorData._id.toString(),
-      userId: mentorData.userId._id?.toString() || mentorData.userId.toString(),
-      name: mentorData.userId.name || 'Unknown',
-      email: mentorData.userId.email,
-      avatar: mentorData.userId.avatar,
-      locale: mentorData.userId.locale,
+      userId: uid._id?.toString?.() || String(mentorData.userId),
+      name: uid.name || '멘토',
+      email: uid.email,
+      avatar: uid.avatar,
+      locale: uid.locale,
       title: mentorData.title,
       location: mentorData.location,
       languages: mentorData.languages,

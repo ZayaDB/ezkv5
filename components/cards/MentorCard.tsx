@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Mentor } from '@/types';
 import { Star, MapPin, CheckCircle, ArrowRight } from 'lucide-react';
 import { useLocale } from 'next-intl';
+import { formatMentorHourlyPrice } from '@/lib/format/price';
 
 interface MentorCardProps {
   mentor: Mentor;
@@ -11,6 +12,7 @@ interface MentorCardProps {
 
 export default function MentorCard({ mentor }: MentorCardProps) {
   const locale = useLocale();
+  const priceDisplay = formatMentorHourlyPrice(mentor.price);
 
   return (
     <Link href={`/${locale}/mentors/${mentor.id}`}>
@@ -65,11 +67,9 @@ export default function MentorCard({ mentor }: MentorCardProps) {
 
           <div className="flex items-center justify-between pt-5 border-t border-gray-100">
             <div>
-              <span className="text-3xl font-extrabold text-gray-900">
-                {mentor.price === 'Free' ? '무료' : `₩${(mentor.price * 1300).toLocaleString()}`}
-              </span>
-              {mentor.price !== 'Free' && (
-                <span className="text-sm text-gray-500 ml-1">/시간</span>
+              <span className="text-3xl font-extrabold text-gray-900">{priceDisplay.label}</span>
+              {priceDisplay.suffix && (
+                <span className="text-sm text-gray-500 ml-1">{priceDisplay.suffix}</span>
               )}
             </div>
             <div className="flex items-center gap-2">

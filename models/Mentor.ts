@@ -82,5 +82,5 @@ MentorSchema.index({ specialties: 1 });
 MentorSchema.index({ location: 1 });
 MentorSchema.index({ rating: -1 });
 
-export default mongoose.models.Mentor || mongoose.model<IMentor>('Mentor', MentorSchema);
+export default mongoose.models?.Mentor || mongoose.model<IMentor>('Mentor', MentorSchema);
 

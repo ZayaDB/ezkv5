@@ -43,5 +43,5 @@ const ReviewSchema = new Schema<IReview>(
 ReviewSchema.index({ mentorId: 1, createdAt: -1 });
 ReviewSchema.index({ menteeId: 1 });
 
-export default mongoose.models.Review || mongoose.model<IReview>('Review', ReviewSchema);
+export default mongoose.models?.Review || mongoose.model<IReview>('Review', ReviewSchema);
 
