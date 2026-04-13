@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
-import { contentApi } from '@/lib/api/client';
+import { contentApi, enrollmentApi } from '@/lib/api/client';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import Link from 'next/link';
 import { Star, Users, Clock, PlayCircle, ArrowLeft, CheckCircle } from 'lucide-react';
@@ -32,6 +32,9 @@ export default function LectureDetailPage() {
   const id = params.id as string;
 
   const [lecture, setLecture] = useState<Lecture | null | undefined>(undefined);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isEnrolled, setIsEnrolled] = useState(false);
+  const [enrollMessage, setEnrollMessage] = useState('');
 
   const load = useCallback(async () => {
     const res = await contentApi.getLecture(id);
@@ -45,6 +48,21 @@ export default function LectureDetailPage() {
   useEffect(() => {
     load();
   }, [load]);
+
+  useEffect(() => {
+    let active = true;
+    const checkEnrollment = async () => {
+      if (!isAuthenticated) return;
+      const res = await enrollmentApi.getMine();
+      const list = res.data?.enrollments || [];
+      if (!active) return;
+      setIsEnrolled(list.some((e: any) => e?.lecture?.id === id));
+    };
+    checkEnrollment();
+    return () => {
+      active = false;
+    };
+  }, [id, isAuthenticated]);
 
   if (lecture === undefined) {
     return (
@@ -69,12 +87,22 @@ export default function LectureDetailPage() {
 
   const syllabus = syllabusFromDescription(lecture.description);
 
-  const enroll = () => {
+  const enroll = async () => {
     if (!isAuthenticated) {
       router.push(`/${locale}/login`);
       return;
     }
-    alert('수강 신청·결제 연동은 준비 중입니다. 곧 오픈됩니다.');
+    if (isEnrolled || isSubmitting) return;
+    setIsSubmitting(true);
+    setEnrollMessage('');
+    const res = await enrollmentApi.create(id);
+    setIsSubmitting(false);
+    if (res.error) {
+      setEnrollMessage(res.error);
+      return;
+    }
+    setIsEnrolled(true);
+    setEnrollMessage('수강 신청이 완료되었습니다.');
   };
 
   return (
@@ -138,11 +166,15 @@ export default function LectureDetailPage() {
                 <button
                   type="button"
                   onClick={enroll}
-                  className="px-8 py-4 bg-white text-primary-600 rounded-xl font-bold hover:bg-gray-50 transition-all shadow-lg hover:scale-105"
+                  disabled={isSubmitting || isEnrolled}
+                  className="px-8 py-4 bg-white text-primary-600 rounded-xl font-bold hover:bg-gray-50 transition-all shadow-lg hover:scale-105 disabled:opacity-70 disabled:cursor-not-allowed"
                 >
-                  지금 등록하기
+                  {isSubmitting ? '신청 중...' : isEnrolled ? '수강 신청 완료' : '지금 등록하기'}
                 </button>
               </div>
+              {enrollMessage && (
+                <p className="text-sm font-semibold text-white/90 mt-3">{enrollMessage}</p>
+              )}
             </div>
           </div>
         </div>
@@ -195,10 +227,14 @@ export default function LectureDetailPage() {
                 <button
                   type="button"
                   onClick={enroll}
-                  className="w-full bg-gradient-to-r from-primary-500 to-accent-500 text-white py-4 rounded-xl font-bold hover:shadow-lg transition-all hover:scale-[1.02]"
+                  disabled={isSubmitting || isEnrolled}
+                  className="w-full bg-gradient-to-r from-primary-500 to-accent-500 text-white py-4 rounded-xl font-bold hover:shadow-lg transition-all hover:scale-[1.02] disabled:opacity-70 disabled:cursor-not-allowed"
                 >
-                  지금 등록하기
+                  {isSubmitting ? '신청 중...' : isEnrolled ? '수강 신청 완료' : '지금 등록하기'}
                 </button>
+                {enrollMessage && (
+                  <p className="text-xs text-primary-700 font-semibold">{enrollMessage}</p>
+                )}
               </div>
             </div>
           </div>

@@ -162,6 +162,35 @@ export default function Header() {
                         <User className="w-4 h-4" />
                         <span>{t('profile')}</span>
                       </Link>
+                      <div className="px-4 pt-2 pb-1 text-xs font-semibold text-gray-500">{t('myActivity')}</div>
+                      <Link
+                        href={getLocalizedPath('/my/enrollments')}
+                        className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
+                        onClick={() => setUserMenuOpen(false)}
+                      >
+                        <span>{t('myEnrollments')}</span>
+                      </Link>
+                      <Link
+                        href={getLocalizedPath('/my/sessions')}
+                        className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
+                        onClick={() => setUserMenuOpen(false)}
+                      >
+                        <span>{t('mySessions')}</span>
+                      </Link>
+                      <Link
+                        href={getLocalizedPath('/my/community')}
+                        className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
+                        onClick={() => setUserMenuOpen(false)}
+                      >
+                        <span>{t('myCommunity')}</span>
+                      </Link>
+                      <Link
+                        href={getLocalizedPath('/my/freelancers')}
+                        className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
+                        onClick={() => setUserMenuOpen(false)}
+                      >
+                        <span>{t('myFreelancers')}</span>
+                      </Link>
                       
                       <div className="border-t border-gray-100 my-1"></div>
                       
@@ -283,6 +312,35 @@ export default function Header() {
                   >
                     <User className="w-5 h-5" />
                     <span>{t('profile')}</span>
+                  </Link>
+                  <div className="px-4 pt-2 pb-1 text-xs font-semibold text-gray-500">{t('myActivity')}</div>
+                  <Link
+                    href={getLocalizedPath('/my/enrollments')}
+                    className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors mb-2"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <span>{t('myEnrollments')}</span>
+                  </Link>
+                  <Link
+                    href={getLocalizedPath('/my/sessions')}
+                    className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors mb-2"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <span>{t('mySessions')}</span>
+                  </Link>
+                  <Link
+                    href={getLocalizedPath('/my/community')}
+                    className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors mb-2"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <span>{t('myCommunity')}</span>
+                  </Link>
+                  <Link
+                    href={getLocalizedPath('/my/freelancers')}
+                    className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors mb-2"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <span>{t('myFreelancers')}</span>
                   </Link>
                   
                   <button

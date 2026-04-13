@@ -12,7 +12,12 @@
     "signup": "Sign Up",
     "logout": "Logout",
     "dashboard": "Dashboard",
-    "profile": "Profile"
+    "profile": "Profile",
+    "myActivity": "My Activity",
+    "myEnrollments": "My Enrollments",
+    "mySessions": "My Sessions",
+    "myCommunity": "My Community",
+    "myFreelancers": "My Freelancers"
   },
   "home": {
     "title": "Your trusted guide to studying in Korea",
@@ -244,6 +249,59 @@
       "mentor": "Mentor",
       "admin": "Admin"
     }
+  },
+  "dashboardV2": {
+    "loading": "Loading dashboard...",
+    "premium": "MentorLink Premium Dashboard",
+    "title": "{name}'s dashboard",
+    "subtitle": "Manage learning, network, and earnings in one place.",
+    "modeMentee": "Student mode",
+    "modeMentor": "Mentor mode",
+    "panelMentee": "Student operations",
+    "panelMentor": "Mentor operations",
+    "mentee": {
+      "quick1Title": "Find courses",
+      "quick1Desc": "Browse and enroll in relevant courses.",
+      "quick2Title": "Mentor matching",
+      "quick2Desc": "Find mentors for visa, housing, and career.",
+      "quick3Title": "Join community",
+      "quick3Desc": "Network by region, nationality, and interests.",
+      "quick4Title": "Find opportunities",
+      "quick4Desc": "Check freelance groups for job posts."
+    },
+    "mentor": {
+      "quick1Title": "Schedule management",
+      "quick1Desc": "Track and prepare session schedules.",
+      "quick2Title": "Course operations",
+      "quick2Desc": "Manage your courses and applicants.",
+      "quick3Title": "Brand activity",
+      "quick3Desc": "Build trust and visibility in community.",
+      "quick4Title": "Earnings/Payouts (soon)",
+      "quick4Desc": "Revenue, payout, and receipts will be added."
+    },
+    "today": "Today's actions",
+    "todo1": "Update profile and language preferences",
+    "todo2": "Review {count} enrolled course(s)",
+    "todo3": "Check {count} upcoming session(s)",
+    "myEnrollments": "My Enrollments",
+    "mySessions": "My Sessions",
+    "myCommunity": "My Community",
+    "myFreelancers": "My Freelancers",
+    "studyHubTitle": "Study in Korea Hub",
+    "studyHubDesc": "{count} guides for visa, housing, hospital, and life tips",
+    "go": "Go",
+    "recentEnrollments": "Recent enrollments",
+    "emptyEnrollments": "No enrollment history yet.",
+    "lecture": "Lecture",
+    "category": "Category",
+    "recentSessions": "Recent sessions",
+    "emptySessions": "No upcoming sessions.",
+    "mentorLabel": "Mentor",
+    "complete": "Complete",
+    "cancel": "Cancel",
+    "adminDesc": "Check operations metrics and user management.",
+    "stats": "Stats",
+    "users": "Users"
   }
 }
 

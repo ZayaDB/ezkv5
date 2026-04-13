@@ -91,6 +91,15 @@ export default function AdminDashboardPage() {
           <p className="text-xl text-white/90">
             {currentUser?.name}님, 환영합니다
           </p>
+          <div className="mt-4">
+            <button
+              type="button"
+              onClick={() => router.push(`/${locale}/admin/moderation`)}
+              className="px-4 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white font-semibold"
+            >
+              운영 검수 큐
+            </button>
+          </div>
         </div>
       </div>
 

@@ -37,6 +37,10 @@ export default function AdminUsersPage() {
   const [roleFilter, setRoleFilter] = useState<string>('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [moderationSummary, setModerationSummary] = useState({
+    communityPending: 0,
+    freelancerPending: 0,
+  });
 
   useEffect(() => {
     if (!authLoading && (!currentUser || currentUser.role !== 'admin')) {
@@ -45,6 +49,7 @@ export default function AdminUsersPage() {
     }
     if (currentUser && currentUser.role === 'admin') {
       loadUsers();
+      loadModerationSummary();
     }
   }, [page, search, roleFilter, currentUser, authLoading, locale, router]);
 
@@ -76,6 +81,16 @@ export default function AdminUsersPage() {
     loadUsers();
   };
 
+  const loadModerationSummary = async () => {
+    const response = await adminApi.getModerationQueue();
+    if (response.data) {
+      setModerationSummary({
+        communityPending: response.data.communityPending?.length || 0,
+        freelancerPending: response.data.freelancerPending?.length || 0,
+      });
+    }
+  };
+
   if (authLoading || (loading && users.length === 0) || !currentUser) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center">
@@ -102,6 +117,25 @@ export default function AdminUsersPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
+            <p className="text-sm text-gray-600 mb-1">커뮤니티 대기 신청</p>
+            <p className="text-3xl font-extrabold text-purple-700">{moderationSummary.communityPending}</p>
+          </div>
+          <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
+            <p className="text-sm text-gray-600 mb-1">프리랜서 대기 신청</p>
+            <p className="text-3xl font-extrabold text-orange-700">{moderationSummary.freelancerPending}</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => router.push(`/${locale}/admin/moderation`)}
+            className="bg-gradient-to-r from-primary-500 to-accent-500 text-white rounded-2xl p-5 text-left shadow-lg hover:opacity-95 transition-opacity"
+          >
+            <p className="text-sm text-white/90 mb-1">운영 검수로 이동</p>
+            <p className="text-xl font-bold">승인/거절 처리하기</p>
+          </button>
+        </div>
+
         {/* Filters */}
         <div className="mb-8 bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
           <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-4">

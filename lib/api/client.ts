@@ -139,12 +139,33 @@ export const authApi = {
       body: JSON.stringify(data),
     });
   },
+
+  switchRole: async (targetRole: "mentee" | "mentor") => {
+    const response = await apiRequest<{ user: any; token: string }>("/api/auth/switch-role", {
+      method: "POST",
+      body: JSON.stringify({ targetRole }),
+    });
+
+    if (response.data?.token) {
+      tokenManager.set(response.data.token);
+    }
+
+    return response;
+  },
 };
 
 export const contentApi = {
   getLecture: (id: string) => apiRequest<any>(`/api/lectures/${id}`),
   getCommunity: (id: string) => apiRequest<any>(`/api/community/${id}`),
   getFreelancer: (id: string) => apiRequest<any>(`/api/freelancers/${id}`),
+  joinCommunity: (id: string) =>
+    apiRequest<any>(`/api/community/${id}/join`, {
+      method: "POST",
+    }),
+  applyFreelancer: (id: string) =>
+    apiRequest<any>(`/api/freelancers/${id}/apply`, {
+      method: "POST",
+    }),
 };
 
 // Mentors API
@@ -194,6 +215,79 @@ export const adminApi = {
     return apiRequest<{ users: any[]; pagination: any }>(
       `/api/admin/users?${queryParams.toString()}`
     );
+  },
+  getModerationQueue: async () => {
+    return apiRequest<any>("/api/admin/moderation");
+  },
+  updateModerationStatus: async (payload: {
+    type: "community" | "freelancer";
+    id: string;
+    status: string;
+  }) => {
+    return apiRequest<any>("/api/admin/moderation", {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    });
+  },
+};
+
+export const enrollmentApi = {
+  getMine: async () => {
+    return apiRequest<{ enrollments: any[] }>("/api/enrollments");
+  },
+  create: async (lectureId: string) => {
+    return apiRequest<{ enrollment: any }>("/api/enrollments", {
+      method: "POST",
+      body: JSON.stringify({ lectureId }),
+    });
+  },
+  updateStatus: async (
+    enrollmentId: string,
+    status: "active" | "completed" | "cancelled"
+  ) => {
+    return apiRequest<{ enrollment: any }>(`/api/enrollments/${enrollmentId}`, {
+      method: "PATCH",
+      body: JSON.stringify({ status }),
+    });
+  },
+};
+
+export const sessionApi = {
+  getMine: async () => {
+    return apiRequest<{ sessions: any[] }>("/api/sessions");
+  },
+  create: async (payload: {
+    mentorId: string;
+    date: string;
+    duration?: number;
+    type?: "online" | "offline";
+    notes?: string;
+  }) => {
+    return apiRequest<{ session: any }>("/api/sessions", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
+  updateStatus: async (
+    sessionId: string,
+    status: "upcoming" | "completed" | "cancelled"
+  ) => {
+    return apiRequest<{ session: any }>(`/api/sessions/${sessionId}`, {
+      method: "PATCH",
+      body: JSON.stringify({ status }),
+    });
+  },
+};
+
+export const communityApi = {
+  getMyMemberships: async () => {
+    return apiRequest<{ memberships: any[] }>("/api/community-memberships");
+  },
+};
+
+export const freelancerApi = {
+  getMyApplications: async () => {
+    return apiRequest<{ applications: any[] }>("/api/freelancer-applications");
   },
 };
 

@@ -29,6 +29,7 @@ interface AuthContextType {
   }) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   refreshUser: () => Promise<void>;
+  switchRole: (targetRole: 'mentee' | 'mentor') => Promise<{ success: boolean; error?: string }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -96,6 +97,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   };
 
+  const switchRole = async (targetRole: 'mentee' | 'mentor') => {
+    try {
+      const response = await authApi.switchRole(targetRole);
+      if (response.error) {
+        return { success: false, error: response.error };
+      }
+      if (response.data?.user) {
+        setUser(response.data.user);
+        return { success: true };
+      }
+      return { success: false, error: '역할 전환에 실패했습니다.' };
+    } catch (error: any) {
+      return { success: false, error: error.message || '역할 전환 중 오류가 발생했습니다.' };
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -106,6 +123,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signup,
         logout,
         refreshUser,
+        switchRole,
       }}
     >
       {children}

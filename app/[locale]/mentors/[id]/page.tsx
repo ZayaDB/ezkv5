@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
-import { mentorsApi } from '@/lib/api/client';
+import { mentorsApi, sessionApi } from '@/lib/api/client';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import { storage } from '@/lib/storage';
 import Link from 'next/link';
@@ -30,6 +30,8 @@ export default function MentorDetailPage() {
 
   const [mentor, setMentor] = useState<MentorDetail | null | undefined>(undefined);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [isBooking, setIsBooking] = useState(false);
+  const [bookingMessage, setBookingMessage] = useState('');
 
   const load = useCallback(async () => {
     const res = await mentorsApi.getById(id);
@@ -69,12 +71,32 @@ export default function MentorDetailPage() {
 
   const priceDisplay = formatMentorHourlyPrice(mentor.price);
 
-  const handleBookSession = () => {
+  const handleBookSession = async () => {
     if (!isAuthenticated) {
       router.push(`/${locale}/login`);
       return;
     }
-    alert('세션 예약은 곧 결제·일정 연동과 함께 제공됩니다. 문의는 플랫폼 내 메시지(준비 중)를 이용해 주세요.');
+    if (isBooking) return;
+    setIsBooking(true);
+    setBookingMessage('');
+
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(14, 0, 0, 0);
+
+    const result = await sessionApi.create({
+      mentorId: mentor.id,
+      date: tomorrow.toISOString(),
+      duration: 60,
+      type: 'online',
+    });
+
+    setIsBooking(false);
+    if (result.error) {
+      setBookingMessage(result.error);
+      return;
+    }
+    setBookingMessage('세션 예약 요청이 접수되었습니다. 대시보드에서 일정을 확인하세요.');
   };
 
   const toggleFavorite = () => {
@@ -138,9 +160,10 @@ export default function MentorDetailPage() {
               <button
                 type="button"
                 onClick={handleBookSession}
-                className="px-8 py-4 bg-white text-primary-600 rounded-xl font-bold hover:bg-gray-50 transition-all shadow-lg hover:scale-105"
+                disabled={isBooking}
+                className="px-8 py-4 bg-white text-primary-600 rounded-xl font-bold hover:bg-gray-50 transition-all shadow-lg hover:scale-105 disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                세션 예약하기
+                {isBooking ? '예약 중...' : '세션 예약하기'}
               </button>
             </div>
           </div>
@@ -201,9 +224,10 @@ export default function MentorDetailPage() {
                 <button
                   type="button"
                   onClick={handleBookSession}
-                  className="w-full bg-gradient-to-r from-primary-500 to-accent-500 text-white py-4 rounded-xl font-bold hover:shadow-lg transition-all hover:scale-[1.02]"
+                  disabled={isBooking}
+                  className="w-full bg-gradient-to-r from-primary-500 to-accent-500 text-white py-4 rounded-xl font-bold hover:shadow-lg transition-all hover:scale-[1.02] disabled:opacity-70 disabled:cursor-not-allowed"
                 >
-                  세션 예약하기
+                  {isBooking ? '예약 중...' : '세션 예약하기'}
                 </button>
                 <button
                   type="button"
@@ -213,6 +237,9 @@ export default function MentorDetailPage() {
                   <MessageCircle className="w-5 h-5 inline mr-2" />
                   메시지 보내기
                 </button>
+                {bookingMessage && (
+                  <p className="text-xs text-primary-700 font-semibold">{bookingMessage}</p>
+                )}
               </div>
             </div>
 

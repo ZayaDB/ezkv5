@@ -18,6 +18,8 @@ export default function CommunityDetailPage() {
   const id = params.id as string;
 
   const [group, setGroup] = useState<CommunityGroup | null | undefined>(undefined);
+  const [joining, setJoining] = useState(false);
+  const [joinMessage, setJoinMessage] = useState('');
 
   const load = useCallback(async () => {
     const res = await contentApi.getCommunity(id);
@@ -32,12 +34,21 @@ export default function CommunityDetailPage() {
     load();
   }, [load]);
 
-  const handleJoin = () => {
+  const handleJoin = async () => {
     if (!isAuthenticated) {
       router.push(`/${locale}/login`);
       return;
     }
-    alert(`${group?.name} 가입 요청이 접수되었습니다. (승인·채팅 연동은 준비 중입니다)`);
+    if (joining) return;
+    setJoining(true);
+    setJoinMessage('');
+    const res = await contentApi.joinCommunity(id);
+    setJoining(false);
+    if (res.error) {
+      setJoinMessage(res.error);
+      return;
+    }
+    setJoinMessage(`${group?.name} 가입 요청이 접수되었습니다.`);
   };
 
   if (group === undefined) {
@@ -103,10 +114,12 @@ export default function CommunityDetailPage() {
               <button
                 type="button"
                 onClick={handleJoin}
-                className="px-8 py-4 bg-white text-primary-600 rounded-xl font-bold hover:bg-gray-50 transition-all shadow-lg hover:scale-105"
+                disabled={joining}
+                className="px-8 py-4 bg-white text-primary-600 rounded-xl font-bold hover:bg-gray-50 transition-all shadow-lg hover:scale-105 disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                {t('join')}
+                {joining ? '처리 중...' : t('join')}
               </button>
+              {joinMessage && <p className="text-sm font-semibold text-white/90 mt-3">{joinMessage}</p>}
             </div>
           </div>
         </div>
@@ -156,10 +169,12 @@ export default function CommunityDetailPage() {
                 <button
                   type="button"
                   onClick={handleJoin}
-                  className="w-full bg-gradient-to-r from-primary-500 to-accent-500 text-white py-3 rounded-xl font-bold hover:shadow-lg transition-all"
+                  disabled={joining}
+                  className="w-full bg-gradient-to-r from-primary-500 to-accent-500 text-white py-3 rounded-xl font-bold hover:shadow-lg transition-all disabled:opacity-70 disabled:cursor-not-allowed"
                 >
-                  {t('join')}
+                  {joining ? '처리 중...' : t('join')}
                 </button>
+                {joinMessage && <p className="text-xs text-primary-700 font-semibold">{joinMessage}</p>}
               </div>
             </div>
           </div>

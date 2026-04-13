@@ -18,6 +18,8 @@ export default function FreelancerDetailPage() {
   const id = params.id as string;
 
   const [group, setGroup] = useState<FreelancerGroup | null | undefined>(undefined);
+  const [applying, setApplying] = useState(false);
+  const [applyMessage, setApplyMessage] = useState('');
 
   const load = useCallback(async () => {
     const res = await contentApi.getFreelancer(id);
@@ -32,12 +34,21 @@ export default function FreelancerDetailPage() {
     load();
   }, [load]);
 
-  const handleJoin = () => {
+  const handleJoin = async () => {
     if (!isAuthenticated) {
       router.push(`/${locale}/login`);
       return;
     }
-    alert(`${group?.name}에 참여 신청되었습니다. (채팅·계약 연동은 준비 중입니다)`);
+    if (applying) return;
+    setApplying(true);
+    setApplyMessage('');
+    const res = await contentApi.applyFreelancer(id);
+    setApplying(false);
+    if (res.error) {
+      setApplyMessage(res.error);
+      return;
+    }
+    setApplyMessage(`${group?.name} 참여 신청이 접수되었습니다.`);
   };
 
   if (group === undefined) {
@@ -122,10 +133,12 @@ export default function FreelancerDetailPage() {
               <button
                 type="button"
                 onClick={handleJoin}
-                className="px-8 py-4 bg-white text-primary-600 rounded-xl font-bold hover:bg-gray-50 transition-all shadow-lg hover:scale-105"
+                disabled={applying}
+                className="px-8 py-4 bg-white text-primary-600 rounded-xl font-bold hover:bg-gray-50 transition-all shadow-lg hover:scale-105 disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                {t('join')}
+                {applying ? '처리 중...' : t('join')}
               </button>
+              {applyMessage && <p className="text-sm font-semibold text-white/90 mt-3">{applyMessage}</p>}
             </div>
           </div>
         </div>
@@ -156,9 +169,10 @@ export default function FreelancerDetailPage() {
                       <button
                         type="button"
                         onClick={handleJoin}
-                        className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors text-sm font-semibold shrink-0"
+                        disabled={applying}
+                        className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors text-sm font-semibold shrink-0 disabled:opacity-70 disabled:cursor-not-allowed"
                       >
-                        지원하기
+                        {applying ? '처리 중...' : '지원하기'}
                       </button>
                     </div>
                   </div>
@@ -182,10 +196,12 @@ export default function FreelancerDetailPage() {
                 <button
                   type="button"
                   onClick={handleJoin}
-                  className="w-full bg-gradient-to-r from-primary-500 to-accent-500 text-white py-3 rounded-xl font-bold hover:shadow-lg transition-all"
+                  disabled={applying}
+                  className="w-full bg-gradient-to-r from-primary-500 to-accent-500 text-white py-3 rounded-xl font-bold hover:shadow-lg transition-all disabled:opacity-70 disabled:cursor-not-allowed"
                 >
-                  {t('join')}
+                  {applying ? '처리 중...' : t('join')}
                 </button>
+                {applyMessage && <p className="text-xs text-primary-700 font-semibold">{applyMessage}</p>}
               </div>
             </div>
           </div>

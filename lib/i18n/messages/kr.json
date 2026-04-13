@@ -12,7 +12,12 @@
     "signup": "회원가입",
     "logout": "로그아웃",
     "dashboard": "대시보드",
-    "profile": "프로필"
+    "profile": "프로필",
+    "myActivity": "내 활동",
+    "myEnrollments": "내 수강",
+    "mySessions": "내 세션",
+    "myCommunity": "내 커뮤니티",
+    "myFreelancers": "내 프리랜서"
   },
   "home": {
     "title": "한국 유학을 위한 신뢰할 수 있는 가이드",
@@ -77,7 +82,7 @@
     "name": "이름",
     "role": "역할",
     "mentee": "멘티",
-    "mentor": "멘토",
+    "mentorLabel": "멘토",
     "menteeDesc": "도움을 받는 학생",
     "mentorDesc": "도움을 주는 멘토",
     "confirmPassword": "비밀번호 확인",
@@ -242,6 +247,59 @@
       "mentor": "멘토",
       "admin": "관리자"
     }
+  },
+  "dashboardV2": {
+    "loading": "대시보드를 불러오는 중...",
+    "premium": "MentorLink Premium Dashboard",
+    "title": "{name}님의 대시보드",
+    "subtitle": "학습, 네트워크, 수익 활동을 한 화면에서 관리합니다.",
+    "modeMentee": "학생 모드",
+    "modeMentor": "멘토 모드",
+    "panelMentee": "학생 운영 패널",
+    "panelMentor": "멘토 운영 패널",
+    "mentee": {
+      "quick1Title": "수강 강의 찾기",
+      "quick1Desc": "필요한 강의를 탐색하고 신청하세요.",
+      "quick2Title": "멘토 매칭",
+      "quick2Desc": "비자, 주거, 취업 분야 멘토를 찾아보세요.",
+      "quick3Title": "커뮤니티 참여",
+      "quick3Desc": "지역/국적/관심사 그룹에서 네트워킹하세요.",
+      "quick4Title": "일거리 확인",
+      "quick4Desc": "프리랜서 그룹에서 구인 정보를 확인하세요."
+    },
+    "mentor": {
+      "quick1Title": "스케줄 관리",
+      "quick1Desc": "상담/강의 일정을 점검하고 준비하세요.",
+      "quick2Title": "강의 운영",
+      "quick2Desc": "개설 강의 현황과 신청 흐름을 확인하세요.",
+      "quick3Title": "브랜드 활동",
+      "quick3Desc": "커뮤니티에서 전문성을 노출하고 신뢰를 쌓으세요.",
+      "quick4Title": "수익/정산(예정)",
+      "quick4Desc": "매출, 정산, 영수증 영역을 단계적으로 반영합니다."
+    },
+    "today": "오늘의 추천 액션",
+    "todo1": "프로필 정보와 언어 설정을 최신으로 업데이트",
+    "todo2": "내 수강 강의 {count}개 점검",
+    "todo3": "예정 세션 {count}개 확인",
+    "myEnrollments": "내 수강",
+    "mySessions": "내 세션",
+    "myCommunity": "내 커뮤니티",
+    "myFreelancers": "내 프리랜서",
+    "studyHubTitle": "유학 정보 허브",
+    "studyHubDesc": "비자, 주거, 병원, 생활팁 가이드 {count}개",
+    "go": "바로 가기",
+    "recentEnrollments": "최근 수강 신청",
+    "emptyEnrollments": "아직 수강 신청 내역이 없습니다.",
+    "lecture": "강의",
+    "category": "카테고리",
+    "recentSessions": "최근 세션 일정",
+    "emptySessions": "예정된 세션이 없습니다.",
+    "mentorLabel": "멘토",
+    "complete": "완료",
+    "cancel": "취소",
+    "adminDesc": "운영 지표와 사용자 관리를 확인하세요.",
+    "stats": "통계",
+    "users": "사용자"
   }
 }
 
