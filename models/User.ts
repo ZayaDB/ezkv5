@@ -9,6 +9,8 @@ export interface IUser extends Document {
   locale: string;
   bio?: string;
   location?: string;
+  phone?: string;
+  address?: string;
   languages?: string[];
   createdAt: Date;
   updatedAt: Date;
@@ -50,6 +52,12 @@ const UserSchema = new Schema<IUser>(
       type: String,
     },
     location: {
+      type: String,
+    },
+    phone: {
+      type: String,
+    },
+    address: {
       type: String,
     },
     languages: {

@@ -129,8 +129,13 @@ export const authApi = {
 
   updateProfile: async (data: {
     name?: string;
+    avatar?: string;
     bio?: string;
     location?: string;
+    phone?: string;
+    address?: string;
+    currentPassword?: string;
+    newPassword?: string;
     languages?: string[];
     locale?: string;
   }) => {

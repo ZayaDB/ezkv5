@@ -61,12 +61,18 @@ function ProfilePageContent() {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
+    avatar: "",
     bio: "",
     location: "",
+    phone: "",
+    address: "",
     languages: [] as string[],
   });
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
 
   const [mentorTitle, setMentorTitle] = useState("");
   const [mentorLocation, setMentorLocation] = useState("");
@@ -116,8 +122,11 @@ function ProfilePageContent() {
     if (user) {
       setFormData({
         name: user.name,
+        avatar: user.avatar || "",
         bio: user.bio || "",
         location: user.location || "",
+        phone: user.phone || "",
+        address: user.address || "",
         languages: user.languages || [],
       });
     }
@@ -162,13 +171,26 @@ function ProfilePageContent() {
   }, [tStatus]);
 
   const handleSave = async () => {
+    if (newPassword && newPassword !== confirmNewPassword) {
+      setSaveError(tp("info.passwordMismatch"));
+      return;
+    }
+    if (newPassword && newPassword.length < 6) {
+      setSaveError(tp("info.passwordTooShort"));
+      return;
+    }
     setSaving(true);
     setSaveError("");
     const res = await authApi.updateProfile({
       name: formData.name,
+      avatar: formData.avatar,
       bio: formData.bio,
       location: formData.location,
+      phone: formData.phone,
+      address: formData.address,
       languages: formData.languages,
+      currentPassword: currentPassword || undefined,
+      newPassword: newPassword || undefined,
     });
     if (res.error) {
       setSaveError(res.error);
@@ -176,8 +198,27 @@ function ProfilePageContent() {
       return;
     }
     await refreshUser();
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmNewPassword("");
     setIsEditing(false);
     setSaving(false);
+  };
+
+  const handleAvatarUpload = (file: File) => {
+    if (!file.type.startsWith("image/")) {
+      setSaveError(tp("info.avatarImageOnly"));
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      setSaveError(tp("info.avatarTooLarge"));
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      setFormData((prev) => ({ ...prev, avatar: String(reader.result || "") }));
+    };
+    reader.readAsDataURL(file);
   };
 
   const submitMentorApplication = async () => {
@@ -239,11 +280,19 @@ function ProfilePageContent() {
         />
       )}
       <header className="border-b border-slate-200 bg-white">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-slate-900 text-white flex items-center justify-center text-xl font-bold">
-              {user.name.charAt(0).toUpperCase()}
-            </div>
+            {formData.avatar ? (
+              <img
+                src={formData.avatar}
+                alt={user.name}
+                className="w-14 h-14 rounded-2xl object-cover ring-1 ring-slate-200"
+              />
+            ) : (
+              <div className="w-14 h-14 rounded-2xl bg-slate-900 text-white flex items-center justify-center text-xl font-bold">
+                {user.name.charAt(0).toUpperCase()}
+              </div>
+            )}
             <div>
               <h1 className="text-2xl font-bold text-slate-900">{tp("title")}</h1>
               <p className="text-sm text-slate-500 mt-0.5">
@@ -255,33 +304,7 @@ function ProfilePageContent() {
         </div>
       </header>
 
-      <div className="border-b border-slate-200 bg-white sticky top-20 z-30">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex gap-1 overflow-x-auto">
-          {tabs.map((x) => {
-            const Icon = x.icon;
-            return (
-              <button
-                key={x.id}
-                type="button"
-                onClick={() => {
-                  setTab(x.id);
-                  router.replace(`/${locale}/profile?tab=${x.id}`, { scroll: false });
-                }}
-                className={`flex items-center gap-2 px-4 py-3 text-sm font-semibold whitespace-nowrap border-b-2 transition-colors ${
-                  tab === x.id
-                    ? "border-primary-600 text-primary-600"
-                    : "border-transparent text-slate-600 hover:text-slate-900"
-                }`}
-              >
-                <Icon className="w-4 h-4" />
-                {x.label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      <div className="w-full px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         {tab === "overview" && (
           <>
             <p className="text-sm text-slate-600">{tp("overview.subtitle")}</p>
@@ -323,7 +346,7 @@ function ProfilePageContent() {
                 {tp("overview.goMentors")}
               </Link>
               <Link
-                href={`/${locale}/dashboard`}
+                href={`/${locale}/my/dashboard`}
                 className="rounded-xl bg-white px-4 py-2 text-sm font-semibold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50"
               >
                 {tp("overview.goDashboard")}
@@ -337,7 +360,7 @@ function ProfilePageContent() {
                   type="button"
                   onClick={() => {
                     setTab("mentor");
-                    router.replace(`/${locale}/profile?tab=mentor`, { scroll: false });
+                    router.replace(`/${locale}/my/profile?tab=mentor`, { scroll: false });
                   }}
                   className="mt-3 inline-flex rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700"
                 >
@@ -671,6 +694,55 @@ function ProfilePageContent() {
                 )}
               </div>
               <div>
+                <label className="text-sm font-medium text-slate-700">{tp("info.avatarLabel")}</label>
+                {isEditing ? (
+                  <div className="mt-2 flex items-center gap-3">
+                    {formData.avatar ? (
+                      <img
+                        src={formData.avatar}
+                        alt={user.name}
+                        className="w-16 h-16 rounded-xl object-cover ring-1 ring-slate-200"
+                      />
+                    ) : (
+                      <div className="w-16 h-16 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400 text-xs">
+                        N/A
+                      </div>
+                    )}
+                    <div className="flex flex-col gap-2">
+                      <label className="inline-flex cursor-pointer rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">
+                        {tp("info.avatarUpload")}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) handleAvatarUpload(file);
+                          }}
+                        />
+                      </label>
+                      {formData.avatar && (
+                        <button
+                          type="button"
+                          onClick={() => setFormData({ ...formData, avatar: "" })}
+                          className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                        >
+                          {tp("info.avatarRemove")}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ) : formData.avatar ? (
+                  <img
+                    src={formData.avatar}
+                    alt={user.name}
+                    className="mt-2 w-16 h-16 rounded-xl object-cover ring-1 ring-slate-200"
+                  />
+                ) : (
+                  <p className="mt-1 text-sm text-slate-700">—</p>
+                )}
+              </div>
+              <div>
                 <label className="text-sm font-medium text-slate-700">{tProf("email")}</label>
                 <p className="mt-1 text-sm text-slate-600">{user.email}</p>
                 <p className="text-xs text-slate-400 mt-1">{tp("info.emailHelp")}</p>
@@ -700,6 +772,70 @@ function ProfilePageContent() {
                   <p className="mt-1 text-sm text-slate-700">{formData.location || "—"}</p>
                 )}
               </div>
+              <div>
+                <label className="text-sm font-medium text-slate-700">{tp("info.phoneLabel")}</label>
+                {isEditing ? (
+                  <input
+                    className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    placeholder={tp("info.phonePlaceholder")}
+                  />
+                ) : (
+                  <p className="mt-1 text-sm text-slate-700">{formData.phone || "—"}</p>
+                )}
+              </div>
+              <div>
+                <label className="text-sm font-medium text-slate-700">{tp("info.addressLabel")}</label>
+                {isEditing ? (
+                  <input
+                    className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                    value={formData.address}
+                    onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                    placeholder={tp("info.addressPlaceholder")}
+                  />
+                ) : (
+                  <p className="mt-1 text-sm text-slate-700">{formData.address || "—"}</p>
+                )}
+              </div>
+              {isEditing && (
+                <>
+                  <div className="border-t border-slate-200 pt-4">
+                    <p className="text-sm font-semibold text-slate-800">{tp("info.passwordTitle")}</p>
+                    <p className="text-xs text-slate-500 mt-1">{tp("info.passwordHelp")}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-slate-700">{tp("info.currentPassword")}</label>
+                    <input
+                      type="password"
+                      className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      placeholder={tp("info.currentPassword")}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-slate-700">{tp("info.newPassword")}</label>
+                    <input
+                      type="password"
+                      className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      placeholder={tp("info.newPassword")}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-slate-700">{tp("info.confirmNewPassword")}</label>
+                    <input
+                      type="password"
+                      className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                      value={confirmNewPassword}
+                      onChange={(e) => setConfirmNewPassword(e.target.value)}
+                      placeholder={tp("info.confirmNewPassword")}
+                    />
+                  </div>
+                </>
+              )}
               {saveError && <p className="text-sm text-red-600">{saveError}</p>}
               <div className="flex gap-2">
                 {!isEditing ? (

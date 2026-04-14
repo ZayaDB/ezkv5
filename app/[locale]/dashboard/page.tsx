@@ -19,7 +19,7 @@ import {
   Wallet,
 } from "lucide-react";
 import { useAuth } from "@/lib/contexts/AuthContext";
-import { enrollmentApi, mentorsApi, sessionApi } from "@/lib/api/client";
+import { communityApi, enrollmentApi, freelancerApi, mentorsApi, sessionApi } from "@/lib/api/client";
 import StatusBadge from "@/components/ui/StatusBadge";
 import PlatformCard from "@/components/ui/PlatformCard";
 import Toast from "@/components/ui/Toast";
@@ -119,30 +119,38 @@ export default function DashboardPage() {
 
   const loadDashboardData = useCallback(async () => {
     setLoadingStats(true);
-    const [mentors, lectures, community, freelancers, studyInfo, enrollments, sessions] =
+    const [studyInfo, enrollments, sessions, memberships, applications] =
       await Promise.all([
-        safeJson<{ pagination?: { total?: number }; mentors?: unknown[] }>("/api/mentors?limit=1"),
-        safeJson<{ pagination?: { total?: number }; lectures?: unknown[] }>("/api/lectures?limit=1"),
-        safeJson<{ groups?: unknown[] }>("/api/community"),
-        safeJson<{ groups?: unknown[] }>("/api/freelancers"),
         safeJson<{ items?: unknown[] }>("/api/study-info"),
         user ? enrollmentApi.getMine() : Promise.resolve(null),
         user ? sessionApi.getMine() : Promise.resolve(null),
+        user ? communityApi.getMyMemberships() : Promise.resolve(null),
+        user ? freelancerApi.getMyApplications() : Promise.resolve(null),
       ]);
 
+    const myEnrollments = enrollments?.data?.enrollments || [];
+    const mySessions = sessions?.data?.sessions || [];
+    const myMemberships = memberships?.data?.memberships || [];
+    const myApplications = applications?.data?.applications || [];
+    const uniqueMentorIds = new Set(
+      mySessions
+        .map((s: { mentorId?: string | null }) => s?.mentorId)
+        .filter((mentorId): mentorId is string => Boolean(mentorId))
+    );
+
     setStats({
-      mentorsCount: mentors?.pagination?.total ?? mentors?.mentors?.length ?? 0,
-      lecturesCount: lectures?.pagination?.total ?? lectures?.lectures?.length ?? 0,
-      communityCount: community?.groups?.length ?? 0,
-      freelancerCount: freelancers?.groups?.length ?? 0,
+      mentorsCount: uniqueMentorIds.size,
+      lecturesCount: myEnrollments.length,
+      communityCount: myMemberships.length,
+      freelancerCount: myApplications.length,
       studyInfoCount: studyInfo?.items?.length ?? 0,
-      myEnrollmentsCount: enrollments?.data?.enrollments?.length ?? 0,
+      myEnrollmentsCount: myEnrollments.length,
       myUpcomingSessionsCount:
-        sessions?.data?.sessions?.filter((s: { status?: string }) => s?.status === "upcoming")
+        mySessions.filter((s: { status?: string }) => s?.status === "upcoming")
           ?.length ?? 0,
     });
-    setRecentEnrollments((enrollments?.data?.enrollments || []).slice(0, 3));
-    setRecentSessions((sessions?.data?.sessions || []).slice(0, 3));
+    setRecentEnrollments(myEnrollments.slice(0, 3));
+    setRecentSessions(mySessions.slice(0, 3));
     setLoadingStats(false);
   }, [user]);
 
@@ -275,16 +283,29 @@ export default function DashboardPage() {
       )}
 
       <header className="border-b border-slate-200/80 bg-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-10">
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
             <div className="max-w-2xl">
               <p className="text-xs font-semibold uppercase tracking-wider text-primary-600 mb-2 flex items-center gap-2">
                 <Sparkles className="w-3.5 h-3.5" />
                 {t("premium")}
               </p>
-              <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900">
-                {t("title", { name: user.name })}
-              </h1>
+              <div className="flex items-center gap-3">
+                {user.avatar ? (
+                  <img
+                    src={user.avatar}
+                    alt={user.name}
+                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl object-cover ring-1 ring-slate-200"
+                  />
+                ) : (
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center text-lg font-bold">
+                    {user.name.charAt(0).toUpperCase()}
+                  </div>
+                )}
+                <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900">
+                  {t("title", { name: user.name })}
+                </h1>
+              </div>
               <p className="mt-2 text-slate-600 leading-relaxed">{t("subtitle")}</p>
             </div>
             <div className="inline-flex rounded-xl bg-slate-100 p-1 ring-1 ring-slate-200/80 self-start">
@@ -360,7 +381,7 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8 py-10 space-y-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
           {summaryCards.map((card) => {
             const Icon = card.icon;
@@ -421,7 +442,7 @@ export default function DashboardPage() {
                   <p className="mt-5 text-sm text-slate-600 leading-relaxed">
                     {t("mentorApplyHint")}{" "}
                     <Link
-                      href={`/${locale}/profile?tab=mentor`}
+                      href={`/${locale}/my/profile?tab=mentor`}
                       className="font-semibold text-primary-600 hover:underline"
                     >
                       {t("mentorApplyLink")}
@@ -432,7 +453,7 @@ export default function DashboardPage() {
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <QuickLink
-                  href={`/${locale}/profile`}
+                  href={`/${locale}/my/profile`}
                   icon={Calendar}
                   title={t("mentor.quick1Title")}
                   desc={t("mentor.quick1Desc")}
@@ -456,7 +477,7 @@ export default function DashboardPage() {
                   desc={t("mentor.quick3Desc")}
                 />
                 <QuickLink
-                  href={`/${locale}/profile`}
+                  href={`/${locale}/my/profile`}
                   icon={Wallet}
                   title={t("mentor.quick4Title")}
                   desc={t("mentor.quick4Desc")}

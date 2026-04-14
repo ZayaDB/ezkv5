@@ -42,7 +42,7 @@ export default function MentorLectureNewPage() {
   }
 
   if (!user || (user.role !== "mentor" && user.role !== "admin")) {
-    router.replace(`/${locale}/profile?tab=mentor`);
+    router.replace(`/${locale}/my/profile?tab=mentor`);
     return null;
   }
 
@@ -64,7 +64,7 @@ export default function MentorLectureNewPage() {
       return;
     }
     setToast({ message: t("success"), variant: "success" });
-    setTimeout(() => router.push(`/${locale}/profile?tab=mentor`), 800);
+    setTimeout(() => router.push(`/${locale}/my/profile?tab=mentor`), 800);
   };
 
   return (
@@ -79,7 +79,7 @@ export default function MentorLectureNewPage() {
       )}
       <div className="max-w-lg mx-auto space-y-6">
         <Link
-          href={`/${locale}/profile?tab=mentor`}
+          href={`/${locale}/my/profile?tab=mentor`}
           className="inline-flex items-center text-sm font-medium text-slate-600 hover:text-slate-900"
         >
           <ArrowLeft className="w-4 h-4 mr-1" />

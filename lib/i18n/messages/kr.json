@@ -86,6 +86,7 @@
     "name": "이름",
     "role": "역할",
     "mentee": "멘티",
+    "mentor": "멘토",
     "mentorLabel": "멘토",
     "menteeDesc": "도움을 받는 학생",
     "mentorDesc": "도움을 주는 멘토",
@@ -310,7 +311,23 @@
     "info": {
       "title": "기본 정보",
       "emailHelp": "이메일은 보안상 여기서 변경하지 않습니다.",
-      "save": "저장"
+      "save": "저장",
+      "avatarLabel": "프로필 사진",
+      "avatarUpload": "사진 업로드",
+      "avatarRemove": "사진 제거",
+      "avatarImageOnly": "이미지 파일만 업로드할 수 있습니다.",
+      "avatarTooLarge": "이미지 크기는 2MB 이하여야 합니다.",
+      "phoneLabel": "전화번호",
+      "phonePlaceholder": "예: 010-1234-5678",
+      "addressLabel": "집주소",
+      "addressPlaceholder": "예: 서울시 강남구 ...",
+      "passwordTitle": "비밀번호 변경",
+      "passwordHelp": "비밀번호를 바꾸려면 현재 비밀번호와 새 비밀번호를 입력하세요.",
+      "currentPassword": "현재 비밀번호",
+      "newPassword": "새 비밀번호",
+      "confirmNewPassword": "새 비밀번호 확인",
+      "passwordMismatch": "새 비밀번호가 일치하지 않습니다.",
+      "passwordTooShort": "새 비밀번호는 최소 6자 이상이어야 합니다."
     },
     "lectureNew": {
       "title": "강의 등록",
@@ -395,7 +412,7 @@
     "toastSessionOk": "세션 상태가 갱신되었습니다.",
     "toastSessionErr": "세션 상태를 변경하지 못했습니다.",
     "mentorApplyHint": "멘토로 활동하려면 마이페이지의 멘토 탭에서 신청 후 관리자 승인을 받으세요.",
-    "mentorApplyLink": "마이페이지로 이동"
+    "mentorApplyLink": "멘토 신청하기"
   },
   "status": {
     "enrollment": {

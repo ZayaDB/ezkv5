@@ -12,6 +12,8 @@ interface User {
   avatar?: string;
   bio?: string;
   location?: string;
+  phone?: string;
+  address?: string;
   languages?: string[];
 }
 

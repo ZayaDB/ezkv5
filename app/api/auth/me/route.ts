@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db/mongodb';
 import User from '@/models/User';
 import { authenticateRequest } from '@/lib/middleware/auth';
+import { comparePassword, hashPassword } from '@/lib/auth/password';
 
 function publicUser(userData: Record<string, unknown>) {
   return {
@@ -13,6 +14,8 @@ function publicUser(userData: Record<string, unknown>) {
     avatar: userData.avatar,
     bio: userData.bio,
     location: userData.location,
+    phone: userData.phone,
+    address: userData.address,
     languages: userData.languages || [],
     createdAt: userData.createdAt,
   };
@@ -55,14 +58,38 @@ export async function PATCH(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { name, bio, location, languages, locale } = body;
+    const { name, avatar, bio, location, phone, address, languages, locale, currentPassword, newPassword } = body;
 
     const update: Record<string, unknown> = {};
     if (typeof name === 'string' && name.trim()) update.name = name.trim();
+    if (typeof avatar === 'string') update.avatar = avatar;
     if (typeof bio === 'string') update.bio = bio;
     if (typeof location === 'string') update.location = location;
+    if (typeof phone === 'string') update.phone = phone;
+    if (typeof address === 'string') update.address = address;
     if (Array.isArray(languages)) update.languages = languages.filter((x: unknown) => typeof x === 'string');
     if (locale === 'kr' || locale === 'en' || locale === 'mn') update.locale = locale;
+
+    if (newPassword !== undefined && newPassword !== null && newPassword !== '') {
+      if (typeof newPassword !== 'string' || newPassword.length < 6) {
+        return NextResponse.json({ error: '새 비밀번호는 최소 6자 이상이어야 합니다.' }, { status: 400 });
+      }
+      if (typeof currentPassword !== 'string' || !currentPassword) {
+        return NextResponse.json({ error: '현재 비밀번호를 입력해 주세요.' }, { status: 400 });
+      }
+      const userForPassword = await User.findById(auth.userId).select('+password').lean();
+      if (!userForPassword) {
+        return NextResponse.json({ error: '사용자를 찾을 수 없습니다.' }, { status: 404 });
+      }
+      const ok = await comparePassword(
+        currentPassword,
+        (userForPassword as { password?: string }).password || ''
+      );
+      if (!ok) {
+        return NextResponse.json({ error: '현재 비밀번호가 올바르지 않습니다.' }, { status: 400 });
+      }
+      update.password = await hashPassword(newPassword);
+    }
 
     if (Object.keys(update).length === 0) {
       return NextResponse.json({ error: '수정할 항목이 없습니다.' }, { status: 400 });

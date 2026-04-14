@@ -39,16 +39,16 @@ export default function MySpaceLayout({ children }: { children: React.ReactNode 
   const base = `/${locale}/my`;
   const navItems: NavItem[] = [
     {
-      href: `/${locale}/dashboard`,
+      href: `${base}/dashboard`,
       label: t("navDashboard"),
       icon: LayoutDashboard,
-      active: (p) => /\/dashboard$/.test(p),
+      active: (p) => p.includes("/my/dashboard"),
     },
     {
-      href: `/${locale}/profile`,
+      href: `${base}/profile?tab=info`,
       label: t("navProfile"),
       icon: UserRound,
-      active: (p) => /\/profile/.test(p) && !p.includes("/mentor"),
+      active: (p) => p.includes("/my/profile"),
     },
     {
       href: `${base}/inquiries`,
@@ -62,12 +62,16 @@ export default function MySpaceLayout({ children }: { children: React.ReactNode 
       icon: CalendarDays,
       active: (p) => p.includes("/my/schedule"),
     },
-    {
-      href: `${base}/lectures`,
-      label: t("navLectures"),
-      icon: GraduationCap,
-      active: (p) => p.includes("/my/lectures"),
-    },
+    ...(user?.role === "mentor" || user?.role === "admin"
+      ? [
+          {
+            href: `${base}/lectures`,
+            label: t("navLectures"),
+            icon: GraduationCap,
+            active: (p: string) => p.includes("/my/lectures"),
+          },
+        ]
+      : []),
     {
       href: `${base}/receipts`,
       label: t("navReceipts"),
@@ -98,7 +102,7 @@ export default function MySpaceLayout({ children }: { children: React.ReactNode 
 
   return (
     <div className="min-h-screen bg-zinc-50 flex flex-col md:flex-row">
-      <aside className="md:w-56 shrink-0 border-b md:border-b-0 md:border-r border-zinc-200 bg-white md:min-h-screen">
+      <aside className="md:w-60 shrink-0 border-b md:border-b-0 md:border-r border-zinc-200 bg-white md:min-h-screen">
         <div className="p-4 md:p-5">
           <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 mb-3">
             {t("title")}
@@ -125,7 +129,7 @@ export default function MySpaceLayout({ children }: { children: React.ReactNode 
           </nav>
         </div>
       </aside>
-      <main className="flex-1 min-w-0 px-4 py-6 md:px-10 md:py-10">{children}</main>
+      <main className="flex-1 min-w-0 px-3 py-5 sm:px-6 sm:py-8 lg:px-8 lg:py-10">{children}</main>
     </div>
   );
 }

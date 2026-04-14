@@ -312,7 +312,23 @@
     "info": {
       "title": "Basic information",
       "emailHelp": "Email cannot be changed here.",
-      "save": "Save"
+      "save": "Save",
+      "avatarLabel": "Profile photo",
+      "avatarUpload": "Upload photo",
+      "avatarRemove": "Remove photo",
+      "avatarImageOnly": "Only image files can be uploaded.",
+      "avatarTooLarge": "Image size must be 2MB or less.",
+      "phoneLabel": "Phone number",
+      "phonePlaceholder": "e.g. 010-1234-5678",
+      "addressLabel": "Home address",
+      "addressPlaceholder": "e.g. Seoul, Gangnam-gu ...",
+      "passwordTitle": "Change password",
+      "passwordHelp": "Enter current password and new password to update it.",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "confirmNewPassword": "Confirm new password",
+      "passwordMismatch": "New passwords do not match.",
+      "passwordTooShort": "New password must be at least 6 characters."
     },
     "lectureNew": {
       "title": "Create course",
@@ -397,7 +413,7 @@
     "toastSessionOk": "Session status updated.",
     "toastSessionErr": "Could not update session status.",
     "mentorApplyHint": "To teach as a mentor, apply on My page → Mentor tab and wait for admin approval.",
-    "mentorApplyLink": "Go to My page"
+    "mentorApplyLink": "Apply as mentor"
   },
   "status": {
     "enrollment": {

@@ -61,9 +61,9 @@ export default function MySchedulePage() {
   }
 
   return (
-    <div className="max-w-3xl space-y-6">
+    <div className="w-full space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-zinc-900 tracking-tight">{t("title")}</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-zinc-900 tracking-tight">{t("title")}</h1>
         <p className="text-sm text-zinc-600 mt-1">{t("subtitle")}</p>
       </div>
 

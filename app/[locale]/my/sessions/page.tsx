@@ -103,16 +103,16 @@ export default function MySessionsPage() {
           closeLabel={tCommon("close")}
         />
       )}
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6">
+      <div className="w-full space-y-6">
         <Link
-          href={`/${locale}/dashboard`}
+          href={`/${locale}/my/dashboard`}
           className="inline-flex items-center text-sm font-medium text-slate-600 hover:text-slate-900"
         >
           <ArrowLeft className="w-4 h-4 mr-1" />
           {tMy("backDashboard")}
         </Link>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">{t("title")}</h1>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">{t("title")}</h1>
           <p className="text-sm text-slate-600 mt-1 leading-relaxed">{t("subtitle")}</p>
         </div>
 
@@ -177,7 +177,7 @@ export default function MySessionsPage() {
                   )}
                   <button
                     type="button"
-                    onClick={() => router.push(`/${locale}/dashboard`)}
+                    onClick={() => router.push(`/${locale}/my/dashboard`)}
                     className="inline-flex items-center text-sm font-semibold text-primary-600 hover:underline"
                   >
                     <CalendarCheck2 className="w-4 h-4 mr-1" />

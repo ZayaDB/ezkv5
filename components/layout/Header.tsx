@@ -12,7 +12,6 @@ import {
   ChevronDown,
   ShieldCheck,
   LayoutDashboard,
-  PanelLeftClose,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { locales } from '@/lib/i18n/config';
@@ -52,12 +51,6 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link
-              href={getLocalizedPath('')}
-              className="text-gray-600 hover:text-primary-500 transition-colors"
-            >
-              {t('home')}
-            </Link>
             <Link
               href={getLocalizedPath('/mentors')}
               className="text-gray-600 hover:text-primary-500 transition-colors"
@@ -133,9 +126,17 @@ export default function Header() {
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
                   className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-gray-100 transition-colors group"
                 >
-                  <div className="w-10 h-10 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center text-white font-bold shadow-md group-hover:shadow-lg transition-shadow">
-                    {user?.name?.charAt(0) || 'U'}
-                  </div>
+                  {user?.avatar ? (
+                    <img
+                      src={user.avatar}
+                      alt={user?.name || 'User'}
+                      className="w-10 h-10 rounded-full object-cover shadow-md ring-1 ring-gray-200 group-hover:shadow-lg transition-shadow"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center text-white font-bold shadow-md group-hover:shadow-lg transition-shadow">
+                      {user?.name?.charAt(0) || 'U'}
+                    </div>
+                  )}
                   <div className="hidden lg:block text-left">
                     <div className="text-sm font-semibold text-gray-900">{user?.name || 'User'}</div>
                     <div className="text-xs text-gray-500">{user?.email || ''}</div>
@@ -177,7 +178,7 @@ export default function Header() {
                       )}
                       {user?.role !== "admin" && (
                         <Link
-                          href={getLocalizedPath("/dashboard")}
+                          href={getLocalizedPath("/my/dashboard")}
                           className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
                           onClick={() => setUserMenuOpen(false)}
                         >
@@ -186,20 +187,12 @@ export default function Header() {
                         </Link>
                       )}
                       <Link
-                        href={getLocalizedPath("/my/lectures")}
-                        className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
-                        onClick={() => setUserMenuOpen(false)}
-                      >
-                        <PanelLeftClose className="w-4 h-4 text-primary-600" />
-                        <span>{t("mySpace")}</span>
-                      </Link>
-                      <Link
-                        href={getLocalizedPath('/profile')}
+                        href={getLocalizedPath("/my/profile?tab=info")}
                         className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
                         onClick={() => setUserMenuOpen(false)}
                       >
                         <User className="w-4 h-4" />
-                        <span>{t('profile')}</span>
+                        <span>{t("profile")}</span>
                       </Link>
                       <div className="px-4 pt-2 pb-1 text-xs font-semibold text-gray-500">{t('myActivity')}</div>
                       <Link
@@ -280,13 +273,6 @@ export default function Header() {
           <div className="md:hidden py-4 border-t border-gray-200">
             <div className="flex flex-col space-y-4">
               <Link
-                href={getLocalizedPath('')}
-                className="text-gray-600 hover:text-primary-500 transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {t('home')}
-              </Link>
-              <Link
                 href={getLocalizedPath('/mentors')}
                 className="text-gray-600 hover:text-primary-500 transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
@@ -325,9 +311,17 @@ export default function Header() {
               {isAuthenticated ? (
                 <div className="pt-4 border-t border-gray-200">
                   <div className="flex items-center gap-3 mb-4 px-2">
-                    <div className="w-12 h-12 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center text-white font-bold shadow-md">
-                      {user?.name?.charAt(0) || 'U'}
-                    </div>
+                    {user?.avatar ? (
+                      <img
+                        src={user.avatar}
+                        alt={user?.name || 'User'}
+                        className="w-12 h-12 rounded-full object-cover shadow-md ring-1 ring-gray-200"
+                      />
+                    ) : (
+                      <div className="w-12 h-12 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center text-white font-bold shadow-md">
+                        {user?.name?.charAt(0) || 'U'}
+                      </div>
+                    )}
                     <div className="flex-1">
                       <div className="text-sm font-semibold text-gray-900">{user?.name || 'User'}</div>
                       <div className="text-xs text-gray-500 truncate">{user?.email || ''}</div>
@@ -356,7 +350,7 @@ export default function Header() {
                   )}
                   {user?.role !== "admin" && (
                     <Link
-                      href={getLocalizedPath("/dashboard")}
+                      href={getLocalizedPath("/my/dashboard")}
                       className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors mb-2"
                       onClick={() => setMobileMenuOpen(false)}
                     >
@@ -365,20 +359,12 @@ export default function Header() {
                     </Link>
                   )}
                   <Link
-                    href={getLocalizedPath("/my/lectures")}
-                    className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors mb-2"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <PanelLeftClose className="w-5 h-5 text-primary-600" />
-                    <span>{t("mySpace")}</span>
-                  </Link>
-                  <Link
-                    href={getLocalizedPath('/profile')}
+                    href={getLocalizedPath("/my/profile?tab=info")}
                     className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors mb-2"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     <User className="w-5 h-5" />
-                    <span>{t('profile')}</span>
+                    <span>{t("profile")}</span>
                   </Link>
                   <div className="px-4 pt-2 pb-1 text-xs font-semibold text-gray-500">{t('myActivity')}</div>
                   <Link

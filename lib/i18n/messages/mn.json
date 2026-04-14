@@ -312,7 +312,23 @@
     "info": {
       "title": "Үндсэн мэдээлэл",
       "emailHelp": "Имэйлийг энд өөрчилж болохгүй.",
-      "save": "Хадгалах"
+      "save": "Хадгалах",
+      "avatarLabel": "Профайл зураг",
+      "avatarUpload": "Зураг оруулах",
+      "avatarRemove": "Зураг устгах",
+      "avatarImageOnly": "Зөвхөн зургийн файл оруулна.",
+      "avatarTooLarge": "Зургийн хэмжээ 2MB-ээс ихгүй байх ёстой.",
+      "phoneLabel": "Утасны дугаар",
+      "phonePlaceholder": "Ж: 010-1234-5678",
+      "addressLabel": "Гэрийн хаяг",
+      "addressPlaceholder": "Ж: Seoul, Gangnam-gu ...",
+      "passwordTitle": "Нууц үг солих",
+      "passwordHelp": "Солих бол одоогийн ба шинэ нууц үгээ оруулна уу.",
+      "currentPassword": "Одоогийн нууц үг",
+      "newPassword": "Шинэ нууц үг",
+      "confirmNewPassword": "Шинэ нууц үг давтах",
+      "passwordMismatch": "Шинэ нууц үг таарахгүй байна.",
+      "passwordTooShort": "Шинэ нууц үг хамгийн багадаа 6 тэмдэгт байна."
     },
     "lectureNew": {
       "title": "Лекц бүртгэх",
@@ -397,7 +413,7 @@
     "toastSessionOk": "Уулзалтын төлөв шинэчлэгдлээ.",
     "toastSessionErr": "Уулзалтын төлөвийг шинэчлэж чадсангүй.",
     "mentorApplyHint": "Ментор болохын тулд Миний хуудас → Ментор табаас хүсэлт илгээж админ зөвшөөрөл аваарай.",
-    "mentorApplyLink": "Миний хуудас руу"
+    "mentorApplyLink": "Менторт хүсэлт гаргах"
   },
   "status": {
     "enrollment": {

@@ -9,7 +9,7 @@ export default function MyIndexPage() {
   const locale = useLocale();
 
   useEffect(() => {
-    router.replace(`/${locale}/my/lectures`);
+    router.replace(`/${locale}/my/dashboard`);
   }, [router, locale]);
 
   return (

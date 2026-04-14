@@ -29,7 +29,7 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale}>
-      <body className="min-h-screen flex flex-col">
+      <body className="min-h-screen flex flex-col font-sans">
         <NextIntlClientProvider messages={messages}>
           <AuthProvider>
             <Header />
