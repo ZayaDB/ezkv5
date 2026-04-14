@@ -2,7 +2,18 @@
 
 import Link from 'next/link';
 import { useTranslations, useLocale } from 'next-intl';
-import { Globe, Menu, X, User, LogOut, Settings, ChevronDown } from 'lucide-react';
+import {
+  Globe,
+  Menu,
+  X,
+  User,
+  LogOut,
+  Settings,
+  ChevronDown,
+  ShieldCheck,
+  LayoutDashboard,
+  PanelLeftClose,
+} from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { locales } from '@/lib/i18n/config';
 import { useAuth } from '@/lib/contexts/AuthContext';
@@ -145,15 +156,43 @@ export default function Header() {
                       </div>
                       
                       {user?.role === 'admin' && (
+                        <>
+                          <Link
+                            href={getLocalizedPath('/admin/dashboard')}
+                            className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
+                            onClick={() => setUserMenuOpen(false)}
+                          >
+                            <Settings className="w-4 h-4" />
+                            <span>{t('adminDashboard')}</span>
+                          </Link>
+                          <Link
+                            href={getLocalizedPath('/admin/moderation')}
+                            className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
+                            onClick={() => setUserMenuOpen(false)}
+                          >
+                            <ShieldCheck className="w-4 h-4" />
+                            <span>{t('adminModerationQueue')}</span>
+                          </Link>
+                        </>
+                      )}
+                      {user?.role !== "admin" && (
                         <Link
-                          href={getLocalizedPath('/admin/dashboard')}
+                          href={getLocalizedPath("/dashboard")}
                           className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
                           onClick={() => setUserMenuOpen(false)}
                         >
-                          <Settings className="w-4 h-4" />
-                          <span>관리자 대시보드</span>
+                          <LayoutDashboard className="w-4 h-4" />
+                          <span>{t("dashboard")}</span>
                         </Link>
                       )}
+                      <Link
+                        href={getLocalizedPath("/my/lectures")}
+                        className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
+                        onClick={() => setUserMenuOpen(false)}
+                      >
+                        <PanelLeftClose className="w-4 h-4 text-primary-600" />
+                        <span>{t("mySpace")}</span>
+                      </Link>
                       <Link
                         href={getLocalizedPath('/profile')}
                         className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
@@ -296,15 +335,43 @@ export default function Header() {
                   </div>
                   
                   {user?.role === 'admin' && (
+                    <>
+                      <Link
+                        href={getLocalizedPath('/admin/dashboard')}
+                        className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors mb-2"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <Settings className="w-5 h-5" />
+                        <span>{t('adminDashboard')}</span>
+                      </Link>
+                      <Link
+                        href={getLocalizedPath('/admin/moderation')}
+                        className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors mb-2"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <ShieldCheck className="w-5 h-5" />
+                        <span>{t('adminModerationQueue')}</span>
+                      </Link>
+                    </>
+                  )}
+                  {user?.role !== "admin" && (
                     <Link
-                      href={getLocalizedPath('/admin/dashboard')}
+                      href={getLocalizedPath("/dashboard")}
                       className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors mb-2"
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      <Settings className="w-5 h-5" />
-                      <span>관리자 대시보드</span>
+                      <LayoutDashboard className="w-5 h-5" />
+                      <span>{t("dashboard")}</span>
                     </Link>
                   )}
+                  <Link
+                    href={getLocalizedPath("/my/lectures")}
+                    className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors mb-2"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <PanelLeftClose className="w-5 h-5 text-primary-600" />
+                    <span>{t("mySpace")}</span>
+                  </Link>
                   <Link
                     href={getLocalizedPath('/profile')}
                     className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors mb-2"

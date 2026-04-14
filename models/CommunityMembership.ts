@@ -3,7 +3,7 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface ICommunityMembership extends Document {
   userId: mongoose.Types.ObjectId;
   groupId: mongoose.Types.ObjectId;
-  status: "pending" | "approved";
+  status: "pending" | "approved" | "rejected";
   createdAt: Date;
   updatedAt: Date;
 }
@@ -24,7 +24,7 @@ const CommunityMembershipSchema = new Schema<ICommunityMembership>(
     },
     status: {
       type: String,
-      enum: ["pending", "approved"],
+      enum: ["pending", "approved", "rejected"],
       default: "pending",
     },
   },

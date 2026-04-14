@@ -3,6 +3,8 @@ import connectDB from "@/lib/db/mongodb";
 import { authenticateRequest } from "@/lib/middleware/auth";
 import CommunityMembership from "@/models/CommunityMembership";
 import FreelancerApplication from "@/models/FreelancerApplication";
+import Mentor from "@/models/Mentor";
+import User from "@/models/User";
 
 export async function GET(request: NextRequest) {
   try {
@@ -12,7 +14,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "관리자 권한이 필요합니다." }, { status: 403 });
     }
 
-    const [communityPending, freelancerPending] = await Promise.all([
+    const [communityPending, freelancerPending, mentorPending] = await Promise.all([
       CommunityMembership.find({ status: "pending" })
         .populate("userId", "name email")
         .populate("groupId", "name category")
@@ -25,9 +27,22 @@ export async function GET(request: NextRequest) {
         .sort({ createdAt: -1 })
         .limit(100)
         .lean(),
+      Mentor.find({ approvalStatus: "pending" })
+        .populate("userId", "name email")
+        .sort({ createdAt: -1 })
+        .limit(100)
+        .lean(),
     ]);
 
     return NextResponse.json({
+      mentorPending: mentorPending.map((r: any) => ({
+        id: String(r._id),
+        createdAt: r.createdAt,
+        user: r.userId ? { id: String(r.userId._id), name: r.userId.name, email: r.userId.email } : null,
+        title: r.title,
+        location: r.location,
+        specialties: r.specialties,
+      })),
       communityPending: communityPending.map((r: any) => ({
         id: String(r._id),
         createdAt: r.createdAt,
@@ -64,8 +79,11 @@ export async function PATCH(request: NextRequest) {
     }
 
     if (type === "community") {
-      if (!["pending", "approved"].includes(status)) {
-        return NextResponse.json({ error: "community status는 pending/approved만 허용됩니다." }, { status: 400 });
+      if (!["pending", "approved", "rejected"].includes(status)) {
+        return NextResponse.json(
+          { error: "community status는 pending/approved/rejected만 허용됩니다." },
+          { status: 400 }
+        );
       }
       const updated = await CommunityMembership.findByIdAndUpdate(id, { $set: { status } }, { new: true }).lean();
       if (!updated) return NextResponse.json({ error: "요청 대상을 찾을 수 없습니다." }, { status: 404 });
@@ -84,7 +102,38 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ ok: true, item: { id: String((updated as any)._id), status: (updated as any).status } });
     }
 
-    return NextResponse.json({ error: "type은 community 또는 freelancer여야 합니다." }, { status: 400 });
+    if (type === "mentor") {
+      if (!["approved", "rejected"].includes(status)) {
+        return NextResponse.json(
+          { error: "mentor status는 approved/rejected만 허용됩니다." },
+          { status: 400 }
+        );
+      }
+      const mentor = await Mentor.findById(id).lean();
+      if (!mentor) return NextResponse.json({ error: "요청 대상을 찾을 수 없습니다." }, { status: 404 });
+      const userId = String((mentor as any).userId);
+
+      if (status === "approved") {
+        await Mentor.findByIdAndUpdate(id, {
+          $set: { approvalStatus: "approved", verified: true },
+        });
+        await User.findByIdAndUpdate(userId, { $set: { role: "mentor" } });
+      } else {
+        await Mentor.findByIdAndUpdate(id, {
+          $set: { approvalStatus: "rejected", verified: false },
+        });
+      }
+
+      return NextResponse.json({
+        ok: true,
+        item: { id, approvalStatus: status },
+      });
+    }
+
+    return NextResponse.json(
+      { error: "type은 community, freelancer, mentor 중 하나여야 합니다." },
+      { status: 400 }
+    );
   } catch (error: any) {
     console.error("Patch moderation status error:", error);
     return NextResponse.json(

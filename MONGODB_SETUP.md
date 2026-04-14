@@ -45,21 +45,31 @@ net start MongoDB
 초기 테스트 데이터를 삽입하려면:
 
 ```bash
+# PowerShell 예시
+$env:SEED_USER_PASSWORD="원하는_강한_비밀번호"
 npm run seed
 ```
 
 이 명령어는 다음을 생성합니다:
-- 테스트 사용자 3명 (멘티, 멘토, 관리자)
+- 테스트 사용자 6명 (멘티/멘토)
 - 샘플 멘토 프로필
 - 샘플 강의
 - 샘플 커뮤니티 그룹
 - 샘플 프리랜서 그룹
 - 샘플 한국 유학 정보
 
-**테스트 계정:**
-- 멘티: `mentee@example.com` / `password123`
-- 멘토: `mentor@example.com` / `password123`
-- 관리자: `admin@example.com` / `password123`
+**테스트 계정(비밀번호는 환경변수 값):**
+- 멘티: `mentee@example.com`
+- 멘토: `mentor@example.com`
+
+관리자 계정은 별도 생성:
+
+```bash
+# PowerShell 예시
+$env:ADMIN_EMAIL="owner@yourdomain.com"
+$env:ADMIN_PASSWORD="강한_비밀번호"
+npx tsx scripts/create-admin.ts
+```
 
 ## 📊 데이터베이스 구조
 
@@ -97,7 +107,7 @@ curl -X POST http://localhost:3000/api/auth/signup \
   -H "Content-Type: application/json" \
   -d '{
     "email": "test@example.com",
-    "password": "password123",
+    "password": "YOUR_PASSWORD",
     "name": "테스트 사용자",
     "role": "mentee",
     "locale": "kr"
@@ -111,7 +121,7 @@ curl -X POST http://localhost:3000/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{
     "email": "test@example.com",
-    "password": "password123"
+    "password": "YOUR_PASSWORD"
   }'
 ```
 

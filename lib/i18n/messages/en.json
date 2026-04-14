@@ -12,12 +12,16 @@
     "signup": "Sign Up",
     "logout": "Logout",
     "dashboard": "Dashboard",
+    "mySpace": "My space",
     "profile": "Profile",
     "myActivity": "My Activity",
     "myEnrollments": "My Enrollments",
     "mySessions": "My Sessions",
     "myCommunity": "My Community",
-    "myFreelancers": "My Freelancers"
+    "myFreelancers": "My Freelancers",
+    "adminDashboard": "Admin dashboard",
+    "adminModerationQueue": "Moderation queue",
+    "close": "Close"
   },
   "home": {
     "title": "Your trusted guide to studying in Korea",
@@ -250,6 +254,84 @@
       "admin": "Admin"
     }
   },
+  "profilePage": {
+    "title": "My page",
+    "loading": "Loading...",
+    "tabs": {
+      "overview": "Overview",
+      "learning": "My courses",
+      "sessions": "Sessions",
+      "mentor": "Mentor",
+      "info": "Profile"
+    },
+    "overview": {
+      "subtitle": "A live summary from your enrollments and sessions.",
+      "enrollments": "Enrollments",
+      "sessions": "Sessions",
+      "goLectures": "Browse courses",
+      "goMentors": "Find mentors",
+      "goDashboard": "Dashboard",
+      "mentorCta": "Apply as mentor",
+      "mentorCtaDesc": "Submit your mentor profile on the Mentor tab. After admin approval you can switch to mentor mode."
+    },
+    "learning": {
+      "subtitle": "Courses you enrolled in.",
+      "empty": "No enrollments yet.",
+      "view": "View course"
+    },
+    "sessions": {
+      "subtitle": "Mentor sessions you booked.",
+      "empty": "No sessions yet.",
+      "with": "Mentor"
+    },
+    "mentor": {
+      "title": "Mentor application & activity",
+      "applyLead": "Students can also apply for a public mentor profile.",
+      "pending": "Under review. When approved, your account becomes mentor and you can use mentor mode on the dashboard.",
+      "rejected": "Application was rejected. Update your profile and submit again.",
+      "approvedMentee": "Approved. Your account role is mentor. If menus look stale, log out and log in again.",
+      "formTitle": "Mentor profile application",
+      "mentorTitleLabel": "Headline",
+      "locationLabel": "Location",
+      "bioLabel": "Bio",
+      "languagesLabel": "Languages (comma-separated)",
+      "specialtiesLabel": "Specialties (comma-separated)",
+      "priceLabel": "Session price (KRW)",
+      "avail": "Availability",
+      "availAvailable": "Available",
+      "availLimited": "Limited",
+      "availUnavailable": "Unavailable",
+      "submit": "Submit application",
+      "mentorRoleTitle": "Mentor profile",
+      "publicProfile": "Public profile",
+      "editProfile": "Edit profile",
+      "createCourse": "Create course",
+      "myCourses": "My courses",
+      "noCourses": "No courses yet."
+    },
+    "info": {
+      "title": "Basic information",
+      "emailHelp": "Email cannot be changed here.",
+      "save": "Save"
+    },
+    "lectureNew": {
+      "title": "Create course",
+      "back": "My page",
+      "subtitle": "Publish a course as a mentor.",
+      "courseTitle": "Title",
+      "type": "Type",
+      "online": "Online",
+      "offline": "Offline",
+      "category": "Category",
+      "price": "Price (KRW)",
+      "duration": "Duration / weeks",
+      "description": "Description",
+      "imageUrl": "Thumbnail URL (optional)",
+      "submit": "Publish",
+      "success": "Course created.",
+      "error": "Could not create course."
+    }
+  },
   "dashboardV2": {
     "loading": "Loading dashboard...",
     "premium": "MentorLink Premium Dashboard",
@@ -277,7 +359,9 @@
       "quick3Title": "Brand activity",
       "quick3Desc": "Build trust and visibility in community.",
       "quick4Title": "Earnings/Payouts (soon)",
-      "quick4Desc": "Revenue, payout, and receipts will be added."
+      "quick4Desc": "Revenue, payout, and receipts will be added.",
+      "quick5Title": "Create a course",
+      "quick5Desc": "Publish a new course and accept enrollments."
     },
     "today": "Today's actions",
     "todo1": "Update profile and language preferences",
@@ -301,7 +385,186 @@
     "cancel": "Cancel",
     "adminDesc": "Check operations metrics and user management.",
     "stats": "Stats",
-    "users": "Users"
+    "users": "Users",
+    "statMentors": "Mentors",
+    "statLectures": "Courses",
+    "statCommunity": "Community",
+    "statFreelancers": "Freelancers",
+    "roleSwitchFailed": "Could not switch role.",
+    "mentorModeDisabledHint": "Mentor mode is available after your mentor application is approved.",
+    "adminTools": "Admin tools",
+    "moderationQueue": "Moderation queue",
+    "toastSessionOk": "Session status updated.",
+    "toastSessionErr": "Could not update session status.",
+    "mentorApplyHint": "To teach as a mentor, apply on My page → Mentor tab and wait for admin approval.",
+    "mentorApplyLink": "Go to My page"
+  },
+  "status": {
+    "enrollment": {
+      "active": "In progress",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "session": {
+      "upcoming": "Upcoming",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "payment": {
+      "pending": "Payment pending",
+      "paid": "Paid",
+      "refunded": "Refunded"
+    },
+    "communityMembership": {
+      "pending": "Pending review",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "freelancerApplication": {
+      "pending": "Pending review",
+      "accepted": "Accepted",
+      "rejected": "Rejected"
+    },
+    "moderation": {
+      "pending": "Pending"
+    }
+  },
+  "adminModeration": {
+    "loading": "Loading moderation queue...",
+    "title": "Moderation queue",
+    "subtitle": "Review mentor applications, community joins, and freelancer applications.",
+    "backAdmin": "Admin dashboard",
+    "searchPlaceholder": "Search by name, email, or group",
+    "total": "{count} total",
+    "tabAll": "All",
+    "tabCommunity": "Community",
+    "tabFreelancer": "Freelancer",
+    "tabMentor": "Mentor",
+    "mentorTitle": "Mentor applications",
+    "emptyMentor": "No pending mentor applications.",
+    "mentorSpec": "Focus",
+    "communityTitle": "Community join requests",
+    "freelancerTitle": "Freelancer applications",
+    "emptyCommunity": "No pending community requests.",
+    "emptyFreelancer": "No pending freelancer applications.",
+    "approve": "Approve",
+    "reject": "Reject",
+    "prev": "Previous",
+    "next": "Next",
+    "page": "{current} / {total}",
+    "toastApproved": "Updated successfully.",
+    "toastRejected": "Rejected successfully.",
+    "toastError": "Action failed. Please try again."
+  },
+  "myPages": {
+    "backDashboard": "Dashboard",
+    "appliedAt": "Applied",
+    "members": "{count} members",
+    "deleted": "Removed item",
+    "enrollments": {
+      "loading": "Loading enrollments...",
+      "title": "My enrollments",
+      "subtitle": "Track your courses and statuses.",
+      "emptyTitle": "No enrollments yet.",
+      "emptyCta": "Browse courses",
+      "viewLecture": "View course",
+      "complete": "Mark complete",
+      "cancel": "Cancel",
+      "toastErr": "Could not update status.",
+      "toastOk": "Status updated."
+    },
+    "sessions": {
+      "loading": "Loading sessions...",
+      "title": "My sessions",
+      "subtitle": "See your mentor sessions and statuses.",
+      "emptyTitle": "No sessions yet.",
+      "emptyCta": "Find mentors",
+      "minutes": "{n} min",
+      "typeOnline": "Online",
+      "typeOffline": "Offline",
+      "changeOnDashboard": "Change status on dashboard",
+      "complete": "Complete",
+      "cancel": "Cancel",
+      "toastErr": "Could not update session.",
+      "toastOk": "Session updated."
+    },
+    "community": {
+      "loading": "Loading applications...",
+      "title": "My community requests",
+      "subtitle": "Track join requests and approvals.",
+      "emptyTitle": "No applications yet.",
+      "emptyCta": "Browse community",
+      "viewGroup": "View community"
+    },
+    "freelancers": {
+      "loading": "Loading applications...",
+      "title": "My freelancer applications",
+      "subtitle": "Track applications to freelance groups.",
+      "emptyTitle": "No applications yet.",
+      "emptyCta": "Browse freelancers",
+      "viewGroup": "View group"
+    },
+    "shell": {
+      "title": "My space",
+      "navDashboard": "Dashboard",
+      "navProfile": "My profile",
+      "navInquiries": "Support",
+      "navSchedule": "Schedule",
+      "navLectures": "Courses",
+      "navReceipts": "Receipts & billing",
+      "navActivity": "Activity & posts",
+      "navEnrollments": "Enrollments (list)"
+    },
+    "schedule": {
+      "title": "Schedule",
+      "subtitle": "Mentoring sessions by date.",
+      "empty": "No sessions scheduled.",
+      "sessionWith": "With {name}"
+    },
+    "lecturesHub": {
+      "title": "Courses",
+      "subtitle": "Enrolled courses vs courses you teach.",
+      "enrolled": "Enrolled",
+      "teaching": "Teaching",
+      "emptyEnrolled": "No enrollments yet.",
+      "emptyTeaching": "No courses created or no mentor access.",
+      "newLecture": "Create course",
+      "view": "View"
+    },
+    "inquiries": {
+      "formTitle": "New inquiry",
+      "title": "Support",
+      "subtitle": "Questions you sent to the team and replies.",
+      "subject": "Subject",
+      "body": "Message",
+      "submit": "Submit",
+      "empty": "No inquiries yet.",
+      "loading": "Loading...",
+      "statusOpen": "Open",
+      "statusAnswered": "Answered",
+      "adminReply": "Team reply",
+      "delete": "Delete",
+      "edit": "Edit",
+      "save": "Save",
+      "cancel": "Cancel",
+      "created": "Submitted."
+    },
+    "receipts": {
+      "title": "Receipts & billing",
+      "subtitle": "Payment status for enrollments.",
+      "empty": "No billing records.",
+      "lecture": "Course",
+      "amount": "Price",
+      "payment": "Payment",
+      "enrolledAt": "Enrolled"
+    },
+    "activity": {
+      "title": "Activity & posts",
+      "subtitle": "Jump to community, freelancers, and enrollments.",
+      "enrollments": "My enrollments",
+      "community": "My community",
+      "freelancers": "My freelancers"
+    }
   }
 }
 

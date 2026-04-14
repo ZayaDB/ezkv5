@@ -1,13 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { useLocale } from "next-intl";
+import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { freelancerApi } from "@/lib/api/client";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { ArrowLeft, Briefcase } from "lucide-react";
 import StatusBadge from "@/components/ui/StatusBadge";
+import LoadingState from "@/components/ui/LoadingState";
+import PlatformCard from "@/components/ui/PlatformCard";
 
 interface ApplicationItem {
   id: string;
@@ -22,6 +24,12 @@ interface ApplicationItem {
   } | null;
 }
 
+function appLabel(t: (key: string) => string, status: ApplicationItem["status"]) {
+  if (status === "pending") return t("freelancerApplication.pending");
+  if (status === "accepted") return t("freelancerApplication.accepted");
+  return t("freelancerApplication.rejected");
+}
+
 function appTone(status: ApplicationItem["status"]) {
   if (status === "accepted") return "green" as const;
   if (status === "rejected") return "red" as const;
@@ -30,10 +38,20 @@ function appTone(status: ApplicationItem["status"]) {
 
 export default function MyFreelancersPage() {
   const locale = useLocale();
+  const fmt = useFormatter();
   const router = useRouter();
+  const t = useTranslations("myPages.freelancers");
+  const tMy = useTranslations("myPages");
+  const tStatus = useTranslations("status");
   const { user, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState<ApplicationItem[]>([]);
+
+  const load = useCallback(async () => {
+    const res = await freelancerApi.getMyApplications();
+    setItems((res.data?.applications || []) as ApplicationItem[]);
+    setLoading(false);
+  }, []);
 
   useEffect(() => {
     if (!authLoading && !user) router.push(`/${locale}/login`);
@@ -41,59 +59,66 @@ export default function MyFreelancersPage() {
 
   useEffect(() => {
     let active = true;
-    const load = async () => {
+    const run = async () => {
       if (!user) return;
-      const res = await freelancerApi.getMyApplications();
+      await load();
       if (!active) return;
-      setItems((res.data?.applications || []) as ApplicationItem[]);
-      setLoading(false);
     };
-    load();
+    run();
     return () => {
       active = false;
     };
-  }, [user]);
+  }, [user, load]);
 
   if (authLoading || !user || loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
+    return <LoadingState message={t("loading")} />;
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <Link href={`/${locale}/dashboard`} className="inline-flex items-center text-gray-600 hover:text-gray-900 mb-6">
+    <div className="min-h-screen bg-slate-50">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6">
+        <Link
+          href={`/${locale}/dashboard`}
+          className="inline-flex items-center text-sm font-medium text-slate-600 hover:text-slate-900"
+        >
           <ArrowLeft className="w-4 h-4 mr-1" />
-          대시보드로
+          {tMy("backDashboard")}
         </Link>
-        <h1 className="text-3xl font-extrabold text-gray-900 mb-2">내 프리랜서 신청</h1>
-        <p className="text-gray-600 mb-8">지원한 프리랜서 그룹의 상태를 확인합니다.</p>
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">{t("title")}</h1>
+          <p className="text-sm text-slate-600 mt-1 leading-relaxed">{t("subtitle")}</p>
+        </div>
 
         {items.length === 0 ? (
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-lg p-8 text-center">
-            <p className="text-gray-600 mb-4">프리랜서 신청 내역이 없습니다.</p>
-            <Link href={`/${locale}/freelancers`} className="inline-flex px-4 py-2 rounded-xl bg-primary-600 text-white font-semibold">
-              프리랜서 보기
+          <PlatformCard className="text-center py-10">
+            <p className="text-slate-600 mb-4">{t("emptyTitle")}</p>
+            <Link
+              href={`/${locale}/freelancers`}
+              className="inline-flex rounded-xl bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700"
+            >
+              {t("emptyCta")}
             </Link>
-          </div>
+          </PlatformCard>
         ) : (
           <div className="space-y-4">
             {items.map((item) => (
-              <div key={item.id} className="bg-white rounded-2xl border border-gray-100 shadow-lg p-5">
+              <PlatformCard key={item.id}>
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <p className="text-xs text-gray-500 mb-1">
-                      신청일: {new Date(item.createdAt).toLocaleDateString("ko-KR")}
+                    <p className="text-xs text-slate-500 mb-1">
+                      {tMy("appliedAt")}:{" "}
+                      {fmt.dateTime(new Date(item.createdAt), {
+                        dateStyle: "medium",
+                      })}
                     </p>
-                    <h3 className="text-lg font-bold text-gray-900">{item.group?.name || "삭제된 그룹"}</h3>
-                    <p className="text-sm text-gray-600 mt-1">
-                      {item.group?.category || "-"} · 멤버 {item.group?.members?.toLocaleString("ko-KR") || 0}명
+                    <h3 className="text-lg font-semibold text-slate-900">
+                      {item.group?.name || tMy("deleted")}
+                    </h3>
+                    <p className="text-sm text-slate-600 mt-1">
+                      {item.group?.category || "—"} · {tMy("members", { count: item.group?.members ?? 0 })}
                     </p>
                   </div>
-                  <StatusBadge label={item.status} tone={appTone(item.status)} />
+                  <StatusBadge label={appLabel(tStatus, item.status)} tone={appTone(item.status)} />
                 </div>
                 {item.group?.id && (
                   <div className="mt-4">
@@ -102,11 +127,11 @@ export default function MyFreelancersPage() {
                       className="inline-flex items-center text-sm font-semibold text-primary-600 hover:underline"
                     >
                       <Briefcase className="w-4 h-4 mr-1" />
-                      그룹 보기
+                      {t("viewGroup")}
                     </Link>
                   </div>
                 )}
-              </div>
+              </PlatformCard>
             ))}
           </div>
         )}

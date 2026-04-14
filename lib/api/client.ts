@@ -192,6 +192,46 @@ export const mentorsApi = {
   getById: async (id: string) => {
     return apiRequest<any>(`/api/mentors/${id}`);
   },
+
+  getMine: async () => {
+    return apiRequest<{ mentor: any | null }>("/api/mentors/me");
+  },
+
+  apply: async (payload: {
+    title: string;
+    location: string;
+    bio: string;
+    languages?: string[];
+    specialties?: string[];
+    price?: number | string;
+    availability?: string;
+    photo?: string;
+  }) => {
+    return apiRequest<any>("/api/mentors", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
+};
+
+export const lecturesApi = {
+  getMine: async () => {
+    return apiRequest<{ lectures: any[] }>("/api/lectures?mine=1");
+  },
+  create: async (payload: {
+    title: string;
+    type: "online" | "offline";
+    category: string;
+    price: number;
+    duration: string;
+    description: string;
+    image?: string;
+  }) => {
+    return apiRequest<any>("/api/lectures", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
 };
 
 // Admin API
@@ -216,11 +256,31 @@ export const adminApi = {
       `/api/admin/users?${queryParams.toString()}`
     );
   },
+  getUserDetail: async (userId: string) => {
+    return apiRequest<any>(`/api/admin/users/${userId}`);
+  },
+  createAdminUser: async (payload: {
+    email: string;
+    name: string;
+    password: string;
+    locale?: 'kr' | 'en' | 'mn';
+  }) => {
+    return apiRequest<any>('/api/admin/users', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+  },
+  resetUserPassword: async (payload: { userId: string; newPassword: string }) => {
+    return apiRequest<any>('/api/admin/users', {
+      method: 'PATCH',
+      body: JSON.stringify(payload),
+    });
+  },
   getModerationQueue: async () => {
     return apiRequest<any>("/api/admin/moderation");
   },
   updateModerationStatus: async (payload: {
-    type: "community" | "freelancer";
+    type: "community" | "freelancer" | "mentor";
     id: string;
     status: string;
   }) => {
@@ -288,6 +348,29 @@ export const communityApi = {
 export const freelancerApi = {
   getMyApplications: async () => {
     return apiRequest<{ applications: any[] }>("/api/freelancer-applications");
+  },
+};
+
+export const inquiryApi = {
+  list: async () => {
+    return apiRequest<{ inquiries: any[] }>("/api/inquiries");
+  },
+  create: async (payload: { subject: string; body: string }) => {
+    return apiRequest<{ inquiry: any }>("/api/inquiries", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
+  update: async (id: string, payload: { subject?: string; body?: string }) => {
+    return apiRequest<{ inquiry: any }>(`/api/inquiries/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    });
+  },
+  remove: async (id: string) => {
+    return apiRequest<{ ok: boolean }>(`/api/inquiries/${id}`, {
+      method: "DELETE",
+    });
   },
 };
 

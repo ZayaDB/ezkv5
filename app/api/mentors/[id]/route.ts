@@ -23,6 +23,17 @@ export async function GET(
     }
 
     const mentorData = mentor as any;
+    const approvalStatus = mentorData.approvalStatus || 'approved';
+    const auth = authenticateRequest(request);
+    const ownerId = mentorData.userId?._id
+      ? String(mentorData.userId._id)
+      : String(mentorData.userId);
+    const isOwner = auth?.userId === ownerId;
+    const isAdmin = auth?.role === 'admin';
+    if (approvalStatus !== 'approved' && !isOwner && !isAdmin) {
+      return NextResponse.json({ error: '멘토를 찾을 수 없습니다.' }, { status: 404 });
+    }
+
     const pop = mentorData.userId;
     const uid =
       pop && typeof pop === 'object' && pop._id
@@ -89,9 +100,22 @@ export async function PUT(
     }
 
     const body = await request.json();
+    const allowed: Record<string, unknown> = {};
+    for (const key of [
+      'title',
+      'location',
+      'languages',
+      'specialties',
+      'price',
+      'availability',
+      'photo',
+      'bio',
+    ] as const) {
+      if (key in body) (allowed as any)[key] = body[key];
+    }
     const updatedMentor = await Mentor.findByIdAndUpdate(
       params.id,
-      { $set: body },
+      { $set: allowed },
       { new: true, runValidators: true }
     )
       .populate('userId', 'name email avatar')

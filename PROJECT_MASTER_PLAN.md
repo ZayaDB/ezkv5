@@ -145,6 +145,44 @@ MentorLink의 핵심 목적은 **한국에 온 유학생이 정착-학습-수익
 
 ---
 
+## 6.5) 결제 연동 전 상태 정책 (고정)
+
+결제(PG) 연동 전에도 **수강(Enrollment)**, **멘토 세션(Session)**, **관리자 검수(Community/Freelancer)** 상태는 아래 전이만 허용한다. 구현·UI·API는 이 표를 기준으로 맞춘다.
+
+### Enrollment (수강)
+
+| 현재 상태 | 허용되는 다음 상태 | 액터 |
+| --- | --- | --- |
+| active | completed, cancelled | 본인(학생) 또는 운영 정책에 따른 관리자(추후) |
+| completed | (종료) | — |
+| cancelled | (종료) | — |
+
+`paymentStatus`(pending / paid / refunded)는 결제 연동 후 PG 웹훅·환불 플로우와 동기화한다. 결제 전에는 주로 `pending`으로 두고 UI에만 표시할 수 있다.
+
+### Session (멘토링 예약)
+
+| 현재 상태 | 허용되는 다음 상태 | 액터 |
+| --- | --- | --- |
+| upcoming | completed, cancelled | 세션 소유(신청) 사용자 |
+| completed | (종료) | — |
+| cancelled | (종료) | — |
+
+### 관리자 검수 — 커뮤니티 멤버십
+
+| 현재 상태 | 허용되는 다음 상태 | 비고 |
+| --- | --- | --- |
+| pending | approved, rejected | 관리자만 PATCH |
+| approved | (가입 확정) | — |
+| rejected | pending | 동일 그룹에 대해 사용자가 **재신청** 시 문서를 pending으로 되돌림(중복 문서 없음) |
+
+### 관리자 검수 — 프리랜서 지원
+
+| 현재 상태 | 허용되는 다음 상태 | 액터 |
+| --- | --- | --- |
+| pending | accepted, rejected | 관리자 |
+
+---
+
 ## 7) 수익 모델 (초기안)
 
 - 강의 결제 수수료 (예: 10~20%)

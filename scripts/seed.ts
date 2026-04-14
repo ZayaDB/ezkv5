@@ -11,6 +11,9 @@ import Lecture from '../models/Lecture';
 import CommunityGroup from '../models/CommunityGroup';
 import FreelancerGroup from '../models/FreelancerGroup';
 import StudyInfo from '../models/StudyInfo';
+import { loadEnvLocal } from './load-env-local';
+
+loadEnvLocal();
 
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/mentorlink';
 
@@ -28,7 +31,11 @@ async function seed() {
     await FreelancerGroup.deleteMany({});
     await StudyInfo.deleteMany({});
 
-    const hashedPassword = await bcrypt.hash('password123', 10);
+    const seedUserPassword = process.env.SEED_USER_PASSWORD?.trim();
+    if (!seedUserPassword) {
+      throw new Error("SEED_USER_PASSWORD 환경변수가 필요합니다. (예: SEED_USER_PASSWORD='강한비밀번호')");
+    }
+    const hashedPassword = await bcrypt.hash(seedUserPassword, 10);
 
     console.log('👤 사용자 생성 중...');
     const users = await User.insertMany([
@@ -51,13 +58,6 @@ async function seed() {
         bio: '출입국·비자 실무 10년.',
         location: '서울',
         languages: ['한국어', '영어', '중국어'],
-      },
-      {
-        email: 'admin@example.com',
-        password: hashedPassword,
-        name: '관리자',
-        role: 'admin',
-        locale: 'kr',
       },
       {
         email: 'sarah.mentor@example.com',
@@ -98,7 +98,7 @@ async function seed() {
       },
     ]);
 
-    const [, uM1, , uSarah, uMinjun, uYuki, uHousing] = users;
+    const [, uM1, uSarah, uMinjun, uYuki, uHousing] = users;
 
     console.log(`✅ ${users.length}명의 사용자 생성 완료`);
 
@@ -114,6 +114,7 @@ async function seed() {
         availability: 'available',
         bio: '대학 국제처 및 출입국 업무 경험을 바탕으로 D-2 비자, 시간제 취업 허가, 졸업 후 체류(구직 등)까지 단계별로 안내합니다. 서류 체크리스트와 면접/등록 일정 조율도 도와드립니다.',
         verified: true,
+        approvalStatus: 'approved',
         rating: 4.9,
         reviewCount: 203,
       },
@@ -127,6 +128,7 @@ async function seed() {
         availability: 'limited',
         bio: 'I studied in Korea before practicing law. I help with document review, university compliance letters, and communicating with immigration in Korean and English.',
         verified: true,
+        approvalStatus: 'approved',
         rating: 4.95,
         reviewCount: 178,
       },
@@ -140,6 +142,7 @@ async function seed() {
         availability: 'available',
         bio: '외국인 개발자 채용 프로세스와 코딩 테스트 준비, 한국형 이력서/자기소개서 구조를 알려드립니다. 스타트업·중견기업 네트워킹 팁도 공유합니다.',
         verified: true,
+        approvalStatus: 'approved',
         rating: 4.8,
         reviewCount: 96,
       },
@@ -153,6 +156,7 @@ async function seed() {
         availability: 'available',
         bio: '지역별 월세 시세, 계약서 특약, 보증금 반환 분쟁 예방 등 주거 전반을 돕습니다. 신입생 오리엔테이션과 수강신청 전략도 상담 가능합니다.',
         verified: true,
+        approvalStatus: 'approved',
         rating: 4.7,
         reviewCount: 74,
       },
@@ -166,6 +170,7 @@ async function seed() {
         availability: 'available',
         bio: '고시원·원룸·쉐어하우스 비교부터 전입신고, 관리비 구조 설명까지 실무 중심으로 안내합니다. 사기 의심 매물 필터링 체크리스트를 제공합니다.',
         verified: true,
+        approvalStatus: 'approved',
         rating: 4.85,
         reviewCount: 141,
       },
@@ -396,10 +401,11 @@ async function seed() {
 
     console.log('\n🎉 시드 데이터 삽입 완료!');
     console.log('\n테스트 계정:');
-    console.log('  멘티: mentee@example.com / password123');
-    console.log('  멘토: mentor@example.com / password123');
-    console.log('  관리자: admin@example.com / password123');
-    console.log('  추가 멘토: sarah.mentor@example.com, minjun@example.com, yuki@example.com, housing@example.com / 동일 비밀번호');
+    console.log('  멘티: mentee@example.com');
+    console.log('  멘토: mentor@example.com');
+    console.log('  추가 멘토: sarah.mentor@example.com, minjun@example.com, yuki@example.com, housing@example.com');
+    console.log('  비밀번호: SEED_USER_PASSWORD 환경변수 값');
+    console.log('  관리자 계정은 시드에서 생성하지 않습니다. scripts/create-admin.ts를 사용하세요.');
 
     await mongoose.disconnect();
     console.log('\n👋 MongoDB 연결 종료');

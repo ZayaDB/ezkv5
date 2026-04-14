@@ -12,12 +12,16 @@
     "signup": "Бүртгүүлэх",
     "logout": "Гарах",
     "dashboard": "Хяналтын самбар",
+    "mySpace": "Миний орон зай",
     "profile": "Профайл",
     "myActivity": "Миний үйл ажиллагаа",
     "myEnrollments": "Миний лекцүүд",
     "mySessions": "Миний уулзалтууд",
     "myCommunity": "Миний нийгэмлэгүүд",
-    "myFreelancers": "Миний чөлөөт ажил"
+    "myFreelancers": "Миний чөлөөт ажил",
+    "adminDashboard": "Админ самбар",
+    "adminModerationQueue": "Шалгалтын дараалал",
+    "close": "Хаах"
   },
   "home": {
     "title": "Солонгост суралцах найдвартай хөтөч",
@@ -250,6 +254,84 @@
       "admin": "Админ"
     }
   },
+  "profilePage": {
+    "title": "Миний хуудас",
+    "loading": "Ачааллаж байна...",
+    "tabs": {
+      "overview": "Тойм",
+      "learning": "Миний лекцүүд",
+      "sessions": "Уулзалтууд",
+      "mentor": "Ментор",
+      "info": "Профайл"
+    },
+    "overview": {
+      "subtitle": "Бүртгэл болон уулзалтын тоо.",
+      "enrollments": "Бүртгэл",
+      "sessions": "Уулзалт",
+      "goLectures": "Лекц үзэх",
+      "goMentors": "Ментор хайх",
+      "goDashboard": "Самбар",
+      "mentorCta": "Ментор болох",
+      "mentorCtaDesc": "Ментор табаас профайл илгээ. Админ зөвшөөрсний дараа ментор горим ашиглана."
+    },
+    "learning": {
+      "subtitle": "Бүртгүүлсэн лекцүүд.",
+      "empty": "Лекц алга.",
+      "view": "Лекц нээх"
+    },
+    "sessions": {
+      "subtitle": "Захиалсан уулзалтууд.",
+      "empty": "Уулзалт алга.",
+      "with": "Ментор"
+    },
+    "mentor": {
+      "title": "Менторын хүсэлт",
+      "applyLead": "Оюутан ч менторын профайл илгээж болно.",
+      "pending": "Шалгалтад. Зөвшөөрөгдсөний дараа бүртгэл ментор болно.",
+      "rejected": "Татгалзсан. Засаад дахин илгээнэ үү.",
+      "approvedMentee": "Зөвшөөрөгдсөн. Дүр ментор болсон. Хэрэв цэс хуучин харагдвал дахин нэвтэрнэ үү.",
+      "formTitle": "Менторын профайл",
+      "mentorTitleLabel": "Гарчиг",
+      "locationLabel": "Байршил",
+      "bioLabel": "Танилцуулга",
+      "languagesLabel": "Хэл (таслалаар)",
+      "specialtiesLabel": "Мэргэжил (таслалаар)",
+      "priceLabel": "Үнэ (KRW)",
+      "avail": "Боломж",
+      "availAvailable": "Чөлөөтэй",
+      "availLimited": "Хязгаартай",
+      "availUnavailable": "Боломжгүй",
+      "submit": "Илгээх",
+      "mentorRoleTitle": "Менторын профайл",
+      "publicProfile": "Нээлттэй профайл",
+      "editProfile": "Засах",
+      "createCourse": "Шинэ лекц",
+      "myCourses": "Миний лекцүүд",
+      "noCourses": "Лекц алга."
+    },
+    "info": {
+      "title": "Үндсэн мэдээлэл",
+      "emailHelp": "Имэйлийг энд өөрчилж болохгүй.",
+      "save": "Хадгалах"
+    },
+    "lectureNew": {
+      "title": "Лекц бүртгэх",
+      "back": "Миний хуудас",
+      "subtitle": "Ментороор лекц нийтэлнэ.",
+      "courseTitle": "Гарчиг",
+      "type": "Төрөл",
+      "online": "Онлайн",
+      "offline": "Оффлайн",
+      "category": "Ангилал",
+      "price": "Үнэ (KRW)",
+      "duration": "Хугацаа",
+      "description": "Тайлбар",
+      "imageUrl": "Зураг URL (сонголттой)",
+      "submit": "Нийтлэх",
+      "success": "Бүртгэгдлээ.",
+      "error": "Алдаа гарлаа."
+    }
+  },
   "dashboardV2": {
     "loading": "Самбар ачааллаж байна...",
     "premium": "MentorLink Premium Dashboard",
@@ -277,7 +359,9 @@
       "quick3Title": "Брэнд идэвхжил",
       "quick3Desc": "Нийгэмлэгт итгэл, харагдах байдлаа өсгөх.",
       "quick4Title": "Орлого/тооцоо (удахгүй)",
-      "quick4Desc": "Орлого, тооцоо, баримтын хэсэг нэмэгдэнэ."
+      "quick4Desc": "Орлого, тооцоо, баримтын хэсэг нэмэгдэнэ.",
+      "quick5Title": "Лекц нээх",
+      "quick5Desc": "Шинэ лекц нийтлэж бүртгэл хүлээнэ."
     },
     "today": "Өнөөдрийн зөвлөмж",
     "todo1": "Профайл болон хэлний тохиргоогоо шинэчлэх",
@@ -301,7 +385,186 @@
     "cancel": "Цуцлах",
     "adminDesc": "Үйл ажиллагааны үзүүлэлт болон хэрэглэгчийн удирдлагыг харна.",
     "stats": "Статистик",
-    "users": "Хэрэглэгчид"
+    "users": "Хэрэглэгчид",
+    "statMentors": "Менторууд",
+    "statLectures": "Лекцүүд",
+    "statCommunity": "Нийгэмлэг",
+    "statFreelancers": "Чөлөөт ажил",
+    "roleSwitchFailed": "Дүр солиход алдаа гарлаа.",
+    "mentorModeDisabledHint": "Менторын хүсэлт админаар батлагдсаны дараа идэвхжинэ.",
+    "adminTools": "Админ хэрэгслүүд",
+    "moderationQueue": "Шалгалтын дараалал",
+    "toastSessionOk": "Уулзалтын төлөв шинэчлэгдлээ.",
+    "toastSessionErr": "Уулзалтын төлөвийг шинэчлэж чадсангүй.",
+    "mentorApplyHint": "Ментор болохын тулд Миний хуудас → Ментор табаас хүсэлт илгээж админ зөвшөөрөл аваарай.",
+    "mentorApplyLink": "Миний хуудас руу"
+  },
+  "status": {
+    "enrollment": {
+      "active": "Явж байна",
+      "completed": "Дууссан",
+      "cancelled": "Цуцлагдсан"
+    },
+    "session": {
+      "upcoming": "Төлөвлөгдсөн",
+      "completed": "Дууссан",
+      "cancelled": "Цуцлагдсан"
+    },
+    "payment": {
+      "pending": "Төлбөр хүлээгдэж байна",
+      "paid": "Төлөгдсөн",
+      "refunded": "Буцаалт"
+    },
+    "communityMembership": {
+      "pending": "Шалгалтад",
+      "approved": "Баталсан",
+      "rejected": "Татгалзсан"
+    },
+    "freelancerApplication": {
+      "pending": "Шалгалтад",
+      "accepted": "Зөвшөөрсөн",
+      "rejected": "Татгалзсан"
+    },
+    "moderation": {
+      "pending": "Хүлээгдэж байна"
+    }
+  },
+  "adminModeration": {
+    "loading": "Шалгалтын дарааллыг ачааллаж байна...",
+    "title": "Шалгалтын дараалал",
+    "subtitle": "Ментор, нийгэмлэг, freelance хүсэлтүүдийг шалгана.",
+    "backAdmin": "Админ самбар",
+    "searchPlaceholder": "Нэр, имэйл, бүлгээр хайх",
+    "total": "Нийт {count}",
+    "tabAll": "Бүгд",
+    "tabCommunity": "Нийгэмлэг",
+    "tabFreelancer": "Freelance",
+    "tabMentor": "Ментор",
+    "mentorTitle": "Менторын хүсэлт",
+    "emptyMentor": "Хүлээгдэж буй хүсэлт алга.",
+    "mentorSpec": "Чиглэл",
+    "communityTitle": "Нийгэмлэгийн элсэлт",
+    "freelancerTitle": "Freelance хүсэлт",
+    "emptyCommunity": "Хүлээгдэж буй хүсэлт алга.",
+    "emptyFreelancer": "Хүлээгдэж буй хүсэлт алга.",
+    "approve": "Зөвшөөрөх",
+    "reject": "Татгалзах",
+    "prev": "Өмнөх",
+    "next": "Дараах",
+    "page": "{current} / {total}",
+    "toastApproved": "Амжилттай шинэчлэгдлээ.",
+    "toastRejected": "Татгалзсан.",
+    "toastError": "Алдаа гарлаа. Дахин оролдоно уу."
+  },
+  "myPages": {
+    "backDashboard": "Самбар",
+    "appliedAt": "Илгээсэн",
+    "members": "{count} гишүүн",
+    "deleted": "Устгагдсан зүйл",
+    "enrollments": {
+      "loading": "Бүртгэлүүдийг ачааллаж байна...",
+      "title": "Миний лекцүүд",
+      "subtitle": "Бүртгэл болон төлөвийг хянах.",
+      "emptyTitle": "Бүртгэл алга.",
+      "emptyCta": "Лекц үзэх",
+      "viewLecture": "Лекц нээх",
+      "complete": "Дуусгах",
+      "cancel": "Цуцлах",
+      "toastErr": "Төлөвийг шинэчлэж чадсангүй.",
+      "toastOk": "Төлөв шинэчлэгдлээ."
+    },
+    "sessions": {
+      "loading": "Уулзалтуудыг ачааллаж байна...",
+      "title": "Миний уулзалтууд",
+      "subtitle": "Менторын уулзалтын хуваарь, төлөв.",
+      "emptyTitle": "Уулзалт алга.",
+      "emptyCta": "Ментор хайх",
+      "minutes": "{n} мин",
+      "typeOnline": "Онлайн",
+      "typeOffline": "Оффлайн",
+      "changeOnDashboard": "Самбараас төлөв өөрчлөх",
+      "complete": "Дуусгах",
+      "cancel": "Цуцлах",
+      "toastErr": "Уулзалтыг шинэчлэж чадсангүй.",
+      "toastOk": "Уулзалт шинэчлэгдлээ."
+    },
+    "community": {
+      "loading": "Хүсэлтүүдийг ачааллаж байна...",
+      "title": "Миний нийгэмлэгийн хүсэлт",
+      "subtitle": "Элсэлтийн төлөвийг хянах.",
+      "emptyTitle": "Хүсэлт алга.",
+      "emptyCta": "Нийгэмлэг үзэх",
+      "viewGroup": "Нийгэмлэг нээх"
+    },
+    "freelancers": {
+      "loading": "Хүсэлтүүдийг ачааллаж байна...",
+      "title": "Миний freelance хүсэлт",
+      "subtitle": "Бүлгийн хүсэлтүүдийн төлөв.",
+      "emptyTitle": "Хүсэлт алга.",
+      "emptyCta": "Freelance үзэх",
+      "viewGroup": "Бүлэг нээх"
+    },
+    "shell": {
+      "title": "Миний орон зай",
+      "navDashboard": "Самбар",
+      "navProfile": "Профайл",
+      "navInquiries": "Асуулга",
+      "navSchedule": "Хуваарь",
+      "navLectures": "Лекцүүд",
+      "navReceipts": "Төлбөр",
+      "navActivity": "Идэвх",
+      "navEnrollments": "Бүртгэлүүд"
+    },
+    "schedule": {
+      "title": "Хуваарь",
+      "subtitle": "Уулзалтын огноогоор.",
+      "empty": "Уулзалт алга.",
+      "sessionWith": "{name}"
+    },
+    "lecturesHub": {
+      "title": "Лекцүүд",
+      "subtitle": "Суралцаж буй ба зааж буй.",
+      "enrolled": "Суралцаж буй",
+      "teaching": "Засварлаж буй",
+      "emptyEnrolled": "Бүртгэл алга.",
+      "emptyTeaching": "Лекц үүсээгүй эсвэл эрх алга.",
+      "newLecture": "Шинэ лекц",
+      "view": "Нээх"
+    },
+    "inquiries": {
+      "formTitle": "Шинэ асуулга",
+      "title": "Асуулга",
+      "subtitle": "Админд илгээсэн асуулга.",
+      "subject": "Гарчиг",
+      "body": "Текст",
+      "submit": "Илгээх",
+      "empty": "Асуулга алга.",
+      "loading": "Ачааллаж байна...",
+      "statusOpen": "Нээлттэй",
+      "statusAnswered": "Хариулсан",
+      "adminReply": "Хариулт",
+      "delete": "Устгах",
+      "edit": "Засах",
+      "save": "Хадгалах",
+      "cancel": "Болих",
+      "created": "Илгээгдлээ."
+    },
+    "receipts": {
+      "title": "Төлбөр",
+      "subtitle": "Төлбөрийн төлөв.",
+      "empty": "Мэдээлэл алга.",
+      "lecture": "Лекц",
+      "amount": "Үнэ",
+      "payment": "Төлбөр",
+      "enrolledAt": "Огноо"
+    },
+    "activity": {
+      "title": "Идэвх",
+      "subtitle": "Нийгэмлэг, freelance, бүртгэл.",
+      "enrollments": "Бүртгэлүүд",
+      "community": "Нийгэмлэг",
+      "freelancers": "Freelance"
+    }
   }
 }
 

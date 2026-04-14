@@ -13,26 +13,32 @@ export async function GET(request: NextRequest) {
     }
 
     const docs = await Enrollment.find({ userId: auth.userId })
-      .populate("lectureId", "title category type duration price")
+      .populate("lectureId", "title category type duration price instructorId")
       .sort({ createdAt: -1 })
       .lean();
 
-    const enrollments = docs.map((doc: any) => ({
-      id: String(doc._id),
-      status: doc.status,
-      paymentStatus: doc.paymentStatus,
-      enrolledAt: doc.enrolledAt,
-      lecture: doc.lectureId
-        ? {
-            id: String(doc.lectureId._id),
-            title: doc.lectureId.title,
-            category: doc.lectureId.category,
-            type: doc.lectureId.type,
-            duration: doc.lectureId.duration,
-            price: doc.lectureId.price,
-          }
-        : null,
-    }));
+    const enrollments = docs
+      .filter((doc: any) => {
+        const lec = doc.lectureId;
+        if (!lec || !lec.instructorId) return true;
+        return String(lec.instructorId) !== auth.userId;
+      })
+      .map((doc: any) => ({
+        id: String(doc._id),
+        status: doc.status,
+        paymentStatus: doc.paymentStatus,
+        enrolledAt: doc.enrolledAt,
+        lecture: doc.lectureId
+          ? {
+              id: String(doc.lectureId._id),
+              title: doc.lectureId.title,
+              category: doc.lectureId.category,
+              type: doc.lectureId.type,
+              duration: doc.lectureId.duration,
+              price: doc.lectureId.price,
+            }
+          : null,
+      }));
 
     return NextResponse.json({ enrollments });
   } catch (error: any) {
@@ -60,6 +66,13 @@ export async function POST(request: NextRequest) {
     const lecture = await Lecture.findById(lectureId).lean();
     if (!lecture) {
       return NextResponse.json({ error: "강의를 찾을 수 없습니다." }, { status: 404 });
+    }
+
+    if (String((lecture as { instructorId?: unknown }).instructorId) === auth.userId) {
+      return NextResponse.json(
+        { error: "본인이 개설한 강의에는 수강 신청할 수 없습니다." },
+        { status: 400 }
+      );
     }
 
     const existing = await Enrollment.findOne({ userId: auth.userId, lectureId }).lean();

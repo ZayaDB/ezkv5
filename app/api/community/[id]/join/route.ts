@@ -26,6 +26,28 @@ export async function POST(
     }).lean();
 
     if (existing) {
+      if ((existing as { status?: string }).status === "rejected") {
+        const updated = await CommunityMembership.findByIdAndUpdate(
+          (existing as { _id: unknown })._id,
+          { $set: { status: "pending" } },
+          { new: true }
+        ).lean();
+        if (!updated) {
+          return NextResponse.json({ error: "가입 신청을 갱신하지 못했습니다." }, { status: 500 });
+        }
+        const u = updated as unknown as { _id: unknown; status: string; createdAt: Date };
+        return NextResponse.json(
+          {
+            membership: {
+              id: String(u._id),
+              groupId: params.id,
+              status: u.status,
+              createdAt: u.createdAt,
+            },
+          },
+          { status: 200 }
+        );
+      }
       return NextResponse.json({ error: "이미 가입 신청한 커뮤니티입니다." }, { status: 409 });
     }
 

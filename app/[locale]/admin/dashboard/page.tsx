@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useTranslations, useLocale } from 'next-intl';
+import { useLocale } from 'next-intl';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import { adminApi } from '@/lib/api/client';
 import { Users, GraduationCap, Calendar, TrendingUp, BarChart3, UserPlus, BookOpen } from 'lucide-react';
@@ -35,13 +35,17 @@ interface Stats {
 }
 
 export default function AdminDashboardPage() {
-  const t = useTranslations('dashboard');
   const locale = useLocale();
   const router = useRouter();
   const { user: currentUser, loading: authLoading } = useAuth();
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState<'all' | 'day' | 'month' | 'year'>('all');
+  const [moderationSummary, setModerationSummary] = useState({
+    mentorPending: 0,
+    communityPending: 0,
+    freelancerPending: 0,
+  });
 
   useEffect(() => {
     if (!authLoading && (!currentUser || currentUser.role !== 'admin')) {
@@ -50,6 +54,7 @@ export default function AdminDashboardPage() {
     }
     if (currentUser && currentUser.role === 'admin') {
       loadStats();
+      loadModerationSummary();
     }
   }, [period, currentUser, authLoading, locale, router]);
 
@@ -66,6 +71,17 @@ export default function AdminDashboardPage() {
       console.error('Error loading stats:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadModerationSummary = async () => {
+    const response = await adminApi.getModerationQueue();
+    if (response.data) {
+      setModerationSummary({
+        mentorPending: response.data.mentorPending?.length || 0,
+        communityPending: response.data.communityPending?.length || 0,
+        freelancerPending: response.data.freelancerPending?.length || 0,
+      });
     }
   };
 
@@ -91,7 +107,14 @@ export default function AdminDashboardPage() {
           <p className="text-xl text-white/90">
             {currentUser?.name}님, 환영합니다
           </p>
-          <div className="mt-4">
+          <div className="mt-4 flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => router.push(`/${locale}/admin/users`)}
+              className="px-4 py-2 rounded-xl bg-white text-primary-700 font-semibold hover:bg-white/90"
+            >
+              사용자 관리
+            </button>
             <button
               type="button"
               onClick={() => router.push(`/${locale}/admin/moderation`)}
@@ -104,6 +127,21 @@ export default function AdminDashboardPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
+            <p className="text-sm text-gray-600 mb-1">멘토 대기 신청</p>
+            <p className="text-3xl font-extrabold text-indigo-700">{moderationSummary.mentorPending}</p>
+          </div>
+          <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
+            <p className="text-sm text-gray-600 mb-1">커뮤니티 대기 신청</p>
+            <p className="text-3xl font-extrabold text-purple-700">{moderationSummary.communityPending}</p>
+          </div>
+          <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
+            <p className="text-sm text-gray-600 mb-1">프리랜서 대기 신청</p>
+            <p className="text-3xl font-extrabold text-orange-700">{moderationSummary.freelancerPending}</p>
+          </div>
+        </div>
+
         {/* Period Filter */}
         <div className="mb-8 bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
           <div className="flex gap-3">
@@ -213,7 +251,11 @@ export default function AdminDashboardPage() {
               역할별 통계
             </h2>
             <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+              <button
+                type="button"
+                onClick={() => router.push(`/${locale}/admin/users?role=mentee`)}
+                className="w-full flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors text-left"
+              >
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
                     <Users className="w-5 h-5 text-primary-600" />
@@ -221,7 +263,7 @@ export default function AdminDashboardPage() {
                   <span className="font-semibold text-gray-900">학생 (멘티)</span>
                 </div>
                 <span className="text-2xl font-bold text-primary-600">{stats.roleStats.mentee}</span>
-              </div>
+              </button>
               <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-accent-100 rounded-lg flex items-center justify-center">
@@ -281,7 +323,7 @@ export default function AdminDashboardPage() {
                   <div className="flex-1 bg-gray-100 rounded-full h-8 relative overflow-hidden">
                     <div
                       className="bg-gradient-to-r from-primary-500 to-accent-500 h-full rounded-full flex items-center justify-end pr-3"
-                      style={{ width: `${(item.count / Math.max(...stats.monthlySignups.map(m => m.count))) * 100}%` }}
+                      style={{ width: `${(item.count / Math.max(...stats.monthlySignups.map((m) => m.count))) * 100}%` }}
                     >
                       <span className="text-white text-sm font-semibold">{item.count}</span>
                     </div>
@@ -295,4 +337,3 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
-

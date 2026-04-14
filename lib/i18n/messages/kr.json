@@ -12,12 +12,16 @@
     "signup": "회원가입",
     "logout": "로그아웃",
     "dashboard": "대시보드",
+    "mySpace": "마이 스페이스",
     "profile": "프로필",
     "myActivity": "내 활동",
     "myEnrollments": "내 수강",
     "mySessions": "내 세션",
     "myCommunity": "내 커뮤니티",
-    "myFreelancers": "내 프리랜서"
+    "myFreelancers": "내 프리랜서",
+    "adminDashboard": "관리자 대시보드",
+    "adminModerationQueue": "검수 큐",
+    "close": "닫기"
   },
   "home": {
     "title": "한국 유학을 위한 신뢰할 수 있는 가이드",
@@ -248,6 +252,84 @@
       "admin": "관리자"
     }
   },
+  "profilePage": {
+    "title": "마이페이지",
+    "loading": "불러오는 중...",
+    "tabs": {
+      "overview": "현황",
+      "learning": "내 수강",
+      "sessions": "세션",
+      "mentor": "멘토",
+      "info": "내 정보"
+    },
+    "overview": {
+      "subtitle": "실제 수강·세션 데이터를 요약합니다.",
+      "enrollments": "수강 건수",
+      "sessions": "세션 건수",
+      "goLectures": "강의 둘러보기",
+      "goMentors": "멘토 찾기",
+      "goDashboard": "대시보드",
+      "mentorCta": "멘토 지원하기",
+      "mentorCtaDesc": "멘토 탭에서 프로필을 제출하면 관리자 승인 후 멘토 모드로 전환할 수 있습니다."
+    },
+    "learning": {
+      "subtitle": "신청한 강의 목록입니다.",
+      "empty": "수강 중인 강의가 없습니다.",
+      "view": "강의 보기"
+    },
+    "sessions": {
+      "subtitle": "예약한 멘토링 일정입니다.",
+      "empty": "예약된 세션이 없습니다.",
+      "with": "멘토"
+    },
+    "mentor": {
+      "title": "멘토 신청·활동",
+      "applyLead": "학생 계정으로도 멘토 공개 프로필을 신청할 수 있습니다.",
+      "pending": "심사 중입니다. 관리자가 승인하면 계정 역할이 멘토로 바뀌며, 대시보드에서 멘토 모드를 쓸 수 있습니다.",
+      "rejected": "신청이 반려되었습니다. 내용을 보완해 다시 제출하세요.",
+      "approvedMentee": "승인되었습니다. 역할이 멘토로 갱신되었습니다. 토큰이 오래되었다면 한 번 로그아웃 후 다시 로그인해 주세요.",
+      "formTitle": "멘토 프로필 신청",
+      "mentorTitleLabel": "노출 직함",
+      "locationLabel": "활동 지역",
+      "bioLabel": "소개",
+      "languagesLabel": "언어 (쉼표 구분)",
+      "specialtiesLabel": "전문 분야 (쉼표 구분)",
+      "priceLabel": "상담 가격(원)",
+      "avail": "예약 가능 상태",
+      "availAvailable": "여유",
+      "availLimited": "제한",
+      "availUnavailable": "불가",
+      "submit": "신청 제출",
+      "mentorRoleTitle": "멘토 프로필",
+      "publicProfile": "공개 프로필",
+      "editProfile": "프로필 수정",
+      "createCourse": "새 강의 등록",
+      "myCourses": "내 강의",
+      "noCourses": "등록한 강의가 없습니다."
+    },
+    "info": {
+      "title": "기본 정보",
+      "emailHelp": "이메일은 보안상 여기서 변경하지 않습니다.",
+      "save": "저장"
+    },
+    "lectureNew": {
+      "title": "강의 등록",
+      "back": "마이페이지",
+      "subtitle": "멘토로 강의를 공개합니다.",
+      "courseTitle": "강의명",
+      "type": "유형",
+      "online": "온라인",
+      "offline": "오프라인",
+      "category": "카테고리",
+      "price": "가격(원)",
+      "duration": "기간·회차",
+      "description": "상세 설명",
+      "imageUrl": "썸네일 URL (선택)",
+      "submit": "등록하기",
+      "success": "등록되었습니다.",
+      "error": "등록에 실패했습니다."
+    }
+  },
   "dashboardV2": {
     "loading": "대시보드를 불러오는 중...",
     "premium": "MentorLink Premium Dashboard",
@@ -275,7 +357,9 @@
       "quick3Title": "브랜드 활동",
       "quick3Desc": "커뮤니티에서 전문성을 노출하고 신뢰를 쌓으세요.",
       "quick4Title": "수익/정산(예정)",
-      "quick4Desc": "매출, 정산, 영수증 영역을 단계적으로 반영합니다."
+      "quick4Desc": "매출, 정산, 영수증 영역을 단계적으로 반영합니다.",
+      "quick5Title": "강의 개설",
+      "quick5Desc": "새 강의를 등록하고 수강 신청을 받습니다."
     },
     "today": "오늘의 추천 액션",
     "todo1": "프로필 정보와 언어 설정을 최신으로 업데이트",
@@ -299,7 +383,186 @@
     "cancel": "취소",
     "adminDesc": "운영 지표와 사용자 관리를 확인하세요.",
     "stats": "통계",
-    "users": "사용자"
+    "users": "사용자",
+    "statMentors": "멘토",
+    "statLectures": "강의",
+    "statCommunity": "커뮤니티",
+    "statFreelancers": "프리랜서",
+    "roleSwitchFailed": "역할 전환에 실패했습니다.",
+    "mentorModeDisabledHint": "멘토 신청이 관리자 승인된 뒤에만 멘토 모드를 사용할 수 있습니다.",
+    "adminTools": "운영 도구",
+    "moderationQueue": "검수 큐",
+    "toastSessionOk": "세션 상태가 갱신되었습니다.",
+    "toastSessionErr": "세션 상태를 변경하지 못했습니다.",
+    "mentorApplyHint": "멘토로 활동하려면 마이페이지의 멘토 탭에서 신청 후 관리자 승인을 받으세요.",
+    "mentorApplyLink": "마이페이지로 이동"
+  },
+  "status": {
+    "enrollment": {
+      "active": "진행 중",
+      "completed": "완료",
+      "cancelled": "취소됨"
+    },
+    "session": {
+      "upcoming": "예정",
+      "completed": "완료",
+      "cancelled": "취소됨"
+    },
+    "payment": {
+      "pending": "결제 대기",
+      "paid": "결제 완료",
+      "refunded": "환불"
+    },
+    "communityMembership": {
+      "pending": "심사 중",
+      "approved": "승인됨",
+      "rejected": "거절됨"
+    },
+    "freelancerApplication": {
+      "pending": "심사 중",
+      "accepted": "수락됨",
+      "rejected": "거절됨"
+    },
+    "moderation": {
+      "pending": "대기"
+    }
+  },
+  "adminModeration": {
+    "loading": "검수 큐를 불러오는 중...",
+    "title": "운영 검수 큐",
+    "subtitle": "멘토·커뮤니티·프리랜서 신청을 검토하고 상태를 변경합니다.",
+    "backAdmin": "관리자 대시보드",
+    "searchPlaceholder": "이름, 이메일, 그룹명 검색",
+    "total": "총 {count}건",
+    "tabAll": "전체",
+    "tabCommunity": "커뮤니티",
+    "tabFreelancer": "프리랜서",
+    "tabMentor": "멘토",
+    "mentorTitle": "멘토 신청",
+    "emptyMentor": "대기 중인 멘토 신청이 없습니다.",
+    "mentorSpec": "분야",
+    "communityTitle": "커뮤니티 가입",
+    "freelancerTitle": "프리랜서 지원",
+    "emptyCommunity": "대기 중인 커뮤니티 신청이 없습니다.",
+    "emptyFreelancer": "대기 중인 프리랜서 지원이 없습니다.",
+    "approve": "승인",
+    "reject": "거절",
+    "prev": "이전",
+    "next": "다음",
+    "page": "{current} / {total}",
+    "toastApproved": "처리되었습니다.",
+    "toastRejected": "거절 처리되었습니다.",
+    "toastError": "처리에 실패했습니다. 다시 시도해 주세요."
+  },
+  "myPages": {
+    "backDashboard": "대시보드",
+    "appliedAt": "신청일",
+    "members": "멤버 {count}명",
+    "deleted": "삭제된 항목",
+    "enrollments": {
+      "loading": "수강 내역을 불러오는 중...",
+      "title": "내 수강",
+      "subtitle": "신청한 강의와 진행 상태를 확인합니다.",
+      "emptyTitle": "수강 신청 내역이 없습니다.",
+      "emptyCta": "강의 둘러보기",
+      "viewLecture": "강의 상세",
+      "complete": "완료 처리",
+      "cancel": "취소",
+      "toastErr": "상태를 변경하지 못했습니다.",
+      "toastOk": "상태가 갱신되었습니다."
+    },
+    "sessions": {
+      "loading": "세션을 불러오는 중...",
+      "title": "내 세션",
+      "subtitle": "예약한 멘토 세션 일정과 상태를 확인합니다.",
+      "emptyTitle": "예약된 세션이 없습니다.",
+      "emptyCta": "멘토 찾기",
+      "minutes": "{n}분",
+      "typeOnline": "온라인",
+      "typeOffline": "오프라인",
+      "changeOnDashboard": "대시보드에서 상태 변경",
+      "complete": "완료",
+      "cancel": "취소",
+      "toastErr": "세션 상태를 변경하지 못했습니다.",
+      "toastOk": "세션 상태가 갱신되었습니다."
+    },
+    "community": {
+      "loading": "신청 내역을 불러오는 중...",
+      "title": "내 커뮤니티 신청",
+      "subtitle": "가입 신청한 커뮤니티의 심사 상태를 확인합니다.",
+      "emptyTitle": "신청 내역이 없습니다.",
+      "emptyCta": "커뮤니티 둘러보기",
+      "viewGroup": "커뮤니티 보기"
+    },
+    "freelancers": {
+      "loading": "지원 내역을 불러오는 중...",
+      "title": "내 프리랜서 지원",
+      "subtitle": "지원한 그룹의 심사 상태를 확인합니다.",
+      "emptyTitle": "지원 내역이 없습니다.",
+      "emptyCta": "프리랜서 둘러보기",
+      "viewGroup": "그룹 보기"
+    },
+    "shell": {
+      "title": "마이 스페이스",
+      "navDashboard": "대시보드",
+      "navProfile": "나의 정보",
+      "navInquiries": "문의 관리",
+      "navSchedule": "스케줄",
+      "navLectures": "강의 관리",
+      "navReceipts": "영수증·결제",
+      "navActivity": "활동·게시",
+      "navEnrollments": "내 수강 (목록)"
+    },
+    "schedule": {
+      "title": "스케줄",
+      "subtitle": "멘토링 세션 일정을 날짜별로 확인합니다.",
+      "empty": "예정된 세션이 없습니다.",
+      "sessionWith": "{name}님과"
+    },
+    "lecturesHub": {
+      "title": "강의 관리",
+      "subtitle": "수강 중인 강의와 내가 만든 강의를 구분해 표시합니다.",
+      "enrolled": "수강·신청한 강의",
+      "teaching": "내가 만든 강의",
+      "emptyEnrolled": "수강 신청 내역이 없습니다.",
+      "emptyTeaching": "개설한 강의가 없거나 멘토 권한이 없습니다.",
+      "newLecture": "강의 만들기",
+      "view": "보기"
+    },
+    "inquiries": {
+      "formTitle": "새 문의",
+      "title": "문의 관리",
+      "subtitle": "운영진에게 보낸 문의와 답변을 확인합니다.",
+      "subject": "제목",
+      "body": "내용",
+      "submit": "등록",
+      "empty": "등록된 문의가 없습니다.",
+      "loading": "불러오는 중...",
+      "statusOpen": "접수",
+      "statusAnswered": "답변 완료",
+      "adminReply": "운영 답변",
+      "delete": "삭제",
+      "edit": "수정",
+      "save": "저장",
+      "cancel": "취소",
+      "created": "등록되었습니다."
+    },
+    "receipts": {
+      "title": "영수증·결제",
+      "subtitle": "수강 결제 상태를 확인합니다.",
+      "empty": "결제 내역이 없습니다.",
+      "lecture": "강의",
+      "amount": "금액",
+      "payment": "결제",
+      "enrolledAt": "신청일"
+    },
+    "activity": {
+      "title": "활동·게시",
+      "subtitle": "커뮤니티·프리랜서·수강 신청으로 이동합니다.",
+      "enrollments": "내 수강 상세",
+      "community": "내 커뮤니티",
+      "freelancers": "내 프리랜서"
+    }
   }
 }
 

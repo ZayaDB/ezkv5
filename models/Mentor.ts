@@ -1,5 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
+export type MentorApprovalStatus = "pending" | "approved" | "rejected";
+
 export interface IMentor extends Document {
   userId: mongoose.Types.ObjectId;
   title: string;
@@ -10,6 +12,8 @@ export interface IMentor extends Document {
   availability: 'available' | 'limited' | 'unavailable';
   photo?: string;
   verified: boolean;
+  /** mentee가 신청 시 pending → 관리자 승인 시 approved */
+  approvalStatus?: MentorApprovalStatus;
   bio: string;
   rating: number;
   reviewCount: number;
@@ -56,6 +60,11 @@ const MentorSchema = new Schema<IMentor>(
     verified: {
       type: Boolean,
       default: false,
+    },
+    approvalStatus: {
+      type: String,
+      enum: ["pending", "approved", "rejected"],
+      default: "approved",
     },
     bio: {
       type: String,

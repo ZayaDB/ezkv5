@@ -1,10 +1,16 @@
 import connectDB from '@/lib/db/mongodb';
-import Mentor from '@/models/Mentor';
+import MentorModel from '@/models/Mentor';
 import Lecture from '@/models/Lecture';
 import CommunityGroup from '@/models/CommunityGroup';
 import FreelancerGroup from '@/models/FreelancerGroup';
 import StudyInfo from '@/models/StudyInfo';
-import type { Mentor, Lecture, CommunityGroup, FreelancerGroup, StudyInfo } from '@/types';
+import type {
+  Mentor as MentorDTO,
+  Lecture,
+  CommunityGroup,
+  FreelancerGroup,
+  StudyInfo,
+} from '@/types';
 
 function mentorDisplayName(userId: unknown): string {
   if (userId && typeof userId === 'object' && userId !== null && 'name' in userId) {
@@ -22,7 +28,7 @@ function mentorUserIdField(userId: unknown): string | undefined {
   return String(userId);
 }
 
-export function docToMentor(mentor: Record<string, unknown>): Mentor {
+export function docToMentor(mentor: Record<string, unknown>): MentorDTO {
   const uid = mentor.userId as Record<string, unknown> | undefined;
   const photo =
     (mentor.photo as string | undefined) ||
@@ -39,7 +45,7 @@ export function docToMentor(mentor: Record<string, unknown>): Mentor {
     reviewCount: Number(mentor.reviewCount) || 0,
     specialties: Array.isArray(mentor.specialties) ? (mentor.specialties as string[]) : [],
     price: mentor.price as number | 'Free',
-    availability: (mentor.availability as Mentor['availability']) || 'available',
+    availability: (mentor.availability as MentorDTO['availability']) || 'available',
     photo: photo || undefined,
     verified: Boolean(mentor.verified),
     bio: String(mentor.bio || ''),
@@ -106,7 +112,7 @@ export async function queryMentors(options?: {
   specialty?: string;
   page?: number;
   limit?: number;
-}): Promise<{ mentors: Mentor[]; total: number; page: number; limit: number }> {
+}): Promise<{ mentors: MentorDTO[]; total: number; page: number; limit: number }> {
   await connectDB();
   const page = options?.page ?? 1;
   const limit = options?.limit ?? 100;
@@ -123,14 +129,23 @@ export async function queryMentors(options?: {
     filter.specialties = { $in: [options.specialty] };
   }
 
-  const raw = await Mentor.find(filter)
+  const approvedOnly = {
+    $or: [
+      { approvalStatus: 'approved' },
+      { approvalStatus: { $exists: false } },
+    ],
+  };
+  const mergedFilter =
+    Object.keys(filter).length > 0 ? { $and: [filter, approvedOnly] } : approvedOnly;
+
+  const raw = await MentorModel.find(mergedFilter)
     .populate('userId', 'name email avatar')
     .sort({ rating: -1, createdAt: -1 })
     .skip(skip)
     .limit(limit)
     .lean();
 
-  const total = await Mentor.countDocuments(filter);
+  const total = await MentorModel.countDocuments(mergedFilter);
   return {
     mentors: raw.map((m) => docToMentor(m as Record<string, unknown>)),
     total,
@@ -139,11 +154,14 @@ export async function queryMentors(options?: {
   };
 }
 
-export async function queryMentorById(id: string): Promise<Mentor | null> {
+export async function queryMentorById(id: string): Promise<MentorDTO | null> {
   await connectDB();
-  const mentor = await Mentor.findById(id).populate('userId', 'name email avatar').lean();
+  const mentor = await MentorModel.findById(id).populate('userId', 'name email avatar').lean();
   if (!mentor) return null;
-  return docToMentor(mentor as Record<string, unknown>);
+  const row = mentor as Record<string, unknown>;
+  const st = row.approvalStatus as string | undefined;
+  if (st && st !== 'approved') return null;
+  return docToMentor(row);
 }
 
 export async function queryLectures(options?: {
@@ -246,7 +264,7 @@ export async function queryStudyInfoById(id: string): Promise<StudyInfo | null> 
 }
 
 /** 클라이언트 필터용: UI 카테고리 키 → 멘토 전문분야·소개 텍스트 키워드 매칭 */
-export function mentorMatchesCategoryKey(mentor: Mentor, key: string | null): boolean {
+export function mentorMatchesCategoryKey(mentor: MentorDTO, key: string | null): boolean {
   if (!key) return true;
   const text = [
     mentor.name,

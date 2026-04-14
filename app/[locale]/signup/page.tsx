@@ -28,7 +28,7 @@ export default function SignupPage() {
       if (user.role === 'admin') {
         router.push(`/${locale}/admin/dashboard`);
       } else {
-        router.push(`/${locale}/profile`);
+        router.push(`/${locale}/dashboard`);
       }
     }
   }, [user, router, locale]);

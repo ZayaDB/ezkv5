@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/db/mongodb";
 import User from "@/models/User";
+import Mentor from "@/models/Mentor";
 import { authenticateRequest } from "@/lib/middleware/auth";
 import { generateToken } from "@/lib/auth/jwt";
 
@@ -19,6 +20,20 @@ export async function POST(request: NextRequest) {
     const { targetRole } = await request.json();
     if (targetRole !== "mentee" && targetRole !== "mentor") {
       return NextResponse.json({ error: "유효하지 않은 역할입니다." }, { status: 400 });
+    }
+
+    if (targetRole === "mentor") {
+      const profile = await Mentor.findOne({ userId: auth.userId }).lean();
+      const st = profile ? (profile as { approvalStatus?: string }).approvalStatus || "approved" : null;
+      if (!profile || st !== "approved") {
+        return NextResponse.json(
+          {
+            error:
+              "멘토 전환은 관리자가 멘토 신청을 승인한 뒤에만 가능합니다. 마이페이지에서 신청 상태를 확인해 주세요.",
+          },
+          { status: 400 }
+        );
+      }
     }
 
     const updated = await User.findByIdAndUpdate(

@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { useLocale } from "next-intl";
+import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { enrollmentApi } from "@/lib/api/client";
 import { useAuth } from "@/lib/contexts/AuthContext";
@@ -10,6 +10,8 @@ import { BookOpen, ArrowLeft } from "lucide-react";
 import StatusBadge from "@/components/ui/StatusBadge";
 import LoadingState from "@/components/ui/LoadingState";
 import EmptyState from "@/components/ui/EmptyState";
+import PlatformCard from "@/components/ui/PlatformCard";
+import Toast from "@/components/ui/Toast";
 
 interface EnrollmentItem {
   id: string;
@@ -32,19 +34,49 @@ function statusTone(status: EnrollmentItem["status"]) {
   return "blue" as const;
 }
 
+function paymentTone(p: EnrollmentItem["paymentStatus"]) {
+  if (p === "paid") return "green" as const;
+  if (p === "refunded") return "red" as const;
+  return "gray" as const;
+}
+
+function enrollmentLabel(
+  t: (key: string) => string,
+  s: EnrollmentItem["status"]
+) {
+  if (s === "active") return t("enrollment.active");
+  if (s === "completed") return t("enrollment.completed");
+  return t("enrollment.cancelled");
+}
+
+function paymentLabel(t: (key: string) => string, p: EnrollmentItem["paymentStatus"]) {
+  if (p === "pending") return t("payment.pending");
+  if (p === "paid") return t("payment.paid");
+  return t("payment.refunded");
+}
+
 export default function MyEnrollmentsPage() {
   const locale = useLocale();
+  const fmt = useFormatter();
   const router = useRouter();
+  const t = useTranslations("myPages.enrollments");
+  const tMy = useTranslations("myPages");
+  const tStatus = useTranslations("status");
+  const tCommon = useTranslations("common");
   const { user, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState<EnrollmentItem[]>([]);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [toast, setToast] = useState<{
+    message: string;
+    variant: "success" | "error";
+  } | null>(null);
 
-  const loadEnrollments = async () => {
+  const loadEnrollments = useCallback(async () => {
     const res = await enrollmentApi.getMine();
     setItems((res.data?.enrollments || []) as EnrollmentItem[]);
     setLoading(false);
-  };
+  }, []);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -54,91 +86,120 @@ export default function MyEnrollmentsPage() {
 
   useEffect(() => {
     let active = true;
-    const load = async () => {
+    const run = async () => {
       if (!user) return;
-      if (!active) return;
       await loadEnrollments();
+      if (!active) return;
     };
-    load();
+    run();
     return () => {
       active = false;
     };
-  }, [user]);
+  }, [user, loadEnrollments]);
 
   const handleStatus = async (id: string, status: EnrollmentItem["status"]) => {
     setUpdatingId(id);
     const res = await enrollmentApi.updateStatus(id, status);
     setUpdatingId(null);
     if (res.error) {
-      alert(res.error);
+      setToast({ message: res.error || t("toastErr"), variant: "error" });
       return;
     }
+    setToast({ message: t("toastOk"), variant: "success" });
     await loadEnrollments();
   };
 
   if (authLoading || !user || loading) {
-    return <LoadingState message="수강 내역을 불러오는 중..." />;
+    return <LoadingState message={t("loading")} />;
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <Link href={`/${locale}/dashboard`} className="inline-flex items-center text-gray-600 hover:text-gray-900 mb-6">
+    <div className="min-h-screen bg-slate-50">
+      {toast && (
+        <Toast
+          message={toast.message}
+          variant={toast.variant}
+          onClose={() => setToast(null)}
+          closeLabel={tCommon("close")}
+        />
+      )}
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6">
+        <Link
+          href={`/${locale}/dashboard`}
+          className="inline-flex items-center text-sm font-medium text-slate-600 hover:text-slate-900"
+        >
           <ArrowLeft className="w-4 h-4 mr-1" />
-          대시보드로
+          {tMy("backDashboard")}
         </Link>
-        <h1 className="text-3xl font-extrabold text-gray-900 mb-2">내 수강 내역</h1>
-        <p className="text-gray-600 mb-8">신청한 강의와 상태를 확인할 수 있습니다.</p>
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">{t("title")}</h1>
+          <p className="text-sm text-slate-600 mt-1 leading-relaxed">{t("subtitle")}</p>
+        </div>
 
         {items.length === 0 ? (
           <EmptyState
-            title="아직 수강 신청한 강의가 없습니다."
-            actionLabel="강의 보러 가기"
+            title={t("emptyTitle")}
+            actionLabel={t("emptyCta")}
             actionHref={`/${locale}/lectures`}
           />
         ) : (
           <div className="space-y-4">
             {items.map((item) => (
-              <div key={item.id} className="bg-white rounded-2xl border border-gray-100 shadow-lg p-5">
+              <PlatformCard key={item.id}>
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
-                    <p className="text-xs text-gray-500 mb-1">
-                      신청일: {new Date(item.enrolledAt).toLocaleDateString("ko-KR")}
+                    <p className="text-xs text-slate-500 mb-1">
+                      {tMy("appliedAt")}:{" "}
+                      {fmt.dateTime(new Date(item.enrolledAt), {
+                        dateStyle: "medium",
+                      })}
                     </p>
-                    <h3 className="text-lg font-bold text-gray-900">
-                      {item.lecture?.title || "삭제된 강의"}
+                    <h3 className="text-lg font-semibold text-slate-900">
+                      {item.lecture?.title || tMy("deleted")}
                     </h3>
-                    <p className="text-sm text-gray-600 mt-1">
-                      {item.lecture?.category || "-"} · {item.lecture?.duration || "-"}
+                    <p className="text-sm text-slate-600 mt-1">
+                      {item.lecture?.category || "—"} · {item.lecture?.duration || "—"}
                     </p>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <StatusBadge label={item.status} tone={statusTone(item.status)} />
-                    <StatusBadge label={item.paymentStatus} tone="gray" />
+                  <div className="flex flex-wrap items-center gap-2">
+                    <StatusBadge
+                      label={enrollmentLabel(tStatus, item.status)}
+                      tone={statusTone(item.status)}
+                    />
+                    <StatusBadge
+                      label={paymentLabel(tStatus, item.paymentStatus)}
+                      tone={paymentTone(item.paymentStatus)}
+                    />
                   </div>
                 </div>
-                <div className="mt-4 flex items-center justify-between">
-                  <div className="text-sm font-semibold text-primary-700">
-                    {typeof item.lecture?.price === "number" ? `₩${item.lecture.price.toLocaleString("ko-KR")}` : "-"}
+                <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+                  <div className="text-sm font-semibold text-slate-800">
+                    {typeof item.lecture?.price === "number"
+                      ? fmt.number(item.lecture.price, {
+                          style: "currency",
+                          currency: "KRW",
+                          maximumFractionDigits: 0,
+                        })
+                      : "—"}
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     {item.status === "active" && (
                       <>
                         <button
                           type="button"
                           onClick={() => handleStatus(item.id, "completed")}
                           disabled={updatingId === item.id}
-                          className="px-2 py-1 text-xs rounded bg-green-100 text-green-700 font-semibold disabled:opacity-60"
+                          className="rounded-lg bg-emerald-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-emerald-700 disabled:opacity-60"
                         >
-                          완료
+                          {t("complete")}
                         </button>
                         <button
                           type="button"
                           onClick={() => handleStatus(item.id, "cancelled")}
                           disabled={updatingId === item.id}
-                          className="px-2 py-1 text-xs rounded bg-red-100 text-red-700 font-semibold disabled:opacity-60"
+                          className="rounded-lg bg-white px-2.5 py-1 text-xs font-semibold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50 disabled:opacity-60"
                         >
-                          취소
+                          {t("cancel")}
                         </button>
                       </>
                     )}
@@ -148,12 +209,12 @@ export default function MyEnrollmentsPage() {
                         className="inline-flex items-center text-sm font-semibold text-primary-600 hover:underline"
                       >
                         <BookOpen className="w-4 h-4 mr-1" />
-                        강의 보기
+                        {t("viewLecture")}
                       </Link>
                     )}
                   </div>
                 </div>
-              </div>
+              </PlatformCard>
             ))}
           </div>
         )}
