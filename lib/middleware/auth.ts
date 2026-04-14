@@ -48,9 +48,10 @@ export async function authenticateRequestDb(
   const auth = authenticateRequest(request);
   if (!auth) return null;
   await connectDB();
-  const u = await User.findById(auth.userId).select('role email').lean();
-  if (!u) return null;
-  const row = u as { role: string; email?: string };
+  const row = await User.findById(auth.userId)
+    .select('role email')
+    .lean<{ role: string; email?: string }>();
+  if (!row) return null;
   return {
     userId: auth.userId,
     email: row.email || auth.email,

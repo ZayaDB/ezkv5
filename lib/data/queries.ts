@@ -1,9 +1,9 @@
 import connectDB from '@/lib/db/mongodb';
 import MentorModel from '@/models/Mentor';
-import Lecture from '@/models/Lecture';
-import CommunityGroup from '@/models/CommunityGroup';
-import FreelancerGroup from '@/models/FreelancerGroup';
-import StudyInfo from '@/models/StudyInfo';
+import LectureModel from '@/models/Lecture';
+import CommunityGroupModel from '@/models/CommunityGroup';
+import FreelancerGroupModel from '@/models/FreelancerGroup';
+import StudyInfoModel from '@/models/StudyInfo';
 import type {
   Mentor as MentorDTO,
   Lecture,
@@ -179,14 +179,14 @@ export async function queryLectures(options?: {
   const limit = options?.limit ?? 100;
   const skip = (page - 1) * limit;
 
-  const raw = await Lecture.find(filter)
+  const raw = await LectureModel.find(filter)
     .populate('instructorId', 'name')
     .sort({ rating: -1, createdAt: -1 })
     .skip(skip)
     .limit(limit)
     .lean();
 
-  const total = await Lecture.countDocuments(filter);
+  const total = await LectureModel.countDocuments(filter);
   const lectures = raw.map((row) => {
     const r = row as Record<string, unknown>;
     const ins = r.instructorId as { name?: string } | undefined;
@@ -197,7 +197,7 @@ export async function queryLectures(options?: {
 
 export async function queryLectureById(id: string): Promise<Lecture | null> {
   await connectDB();
-  const row = await Lecture.findById(id).populate('instructorId', 'name').lean();
+  const row = await LectureModel.findById(id).populate('instructorId', 'name').lean();
   if (!row) return null;
   const r = row as Record<string, unknown>;
   const ins = r.instructorId as { name?: string } | undefined;
@@ -211,7 +211,7 @@ export async function queryCommunityGroups(options?: {
   await connectDB();
   const filter: Record<string, unknown> = {};
   if (options?.category) filter.category = options.category;
-  const raw = await CommunityGroup.find(filter)
+  const raw = await CommunityGroupModel.find(filter)
     .sort({ members: -1 })
     .limit(options?.limit ?? 200)
     .lean();
@@ -220,7 +220,7 @@ export async function queryCommunityGroups(options?: {
 
 export async function queryCommunityById(id: string): Promise<CommunityGroup | null> {
   await connectDB();
-  const doc = await CommunityGroup.findById(id).lean();
+  const doc = await CommunityGroupModel.findById(id).lean();
   if (!doc) return null;
   return docToCommunity(doc as Record<string, unknown>);
 }
@@ -232,7 +232,7 @@ export async function queryFreelancerGroups(options?: {
   await connectDB();
   const filter: Record<string, unknown> = {};
   if (options?.category) filter.category = options.category;
-  const raw = await FreelancerGroup.find(filter)
+  const raw = await FreelancerGroupModel.find(filter)
     .sort({ members: -1 })
     .limit(options?.limit ?? 200)
     .lean();
@@ -241,7 +241,7 @@ export async function queryFreelancerGroups(options?: {
 
 export async function queryFreelancerById(id: string): Promise<FreelancerGroup | null> {
   await connectDB();
-  const doc = await FreelancerGroup.findById(id).lean();
+  const doc = await FreelancerGroupModel.findById(id).lean();
   if (!doc) return null;
   return docToFreelancer(doc as Record<string, unknown>);
 }
@@ -252,13 +252,13 @@ export async function queryStudyInfos(options?: {
   await connectDB();
   const filter: Record<string, unknown> = {};
   if (options?.category) filter.category = options.category;
-  const raw = await StudyInfo.find(filter).sort({ createdAt: -1 }).lean();
+  const raw = await StudyInfoModel.find(filter).sort({ createdAt: -1 }).lean();
   return raw.map((d) => docToStudyInfo(d as Record<string, unknown>));
 }
 
 export async function queryStudyInfoById(id: string): Promise<StudyInfo | null> {
   await connectDB();
-  const doc = await StudyInfo.findById(id).lean();
+  const doc = await StudyInfoModel.findById(id).lean();
   if (!doc) return null;
   return docToStudyInfo(doc as Record<string, unknown>);
 }
