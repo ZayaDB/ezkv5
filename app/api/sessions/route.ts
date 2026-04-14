@@ -84,7 +84,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "유효하지 않은 날짜입니다." }, { status: 400 });
     }
 
-    const mentorUser = await User.findById((mentor as any).userId).select("name").lean();
+    const mentorUser = await User.findById((mentor as any).userId)
+      .select("name")
+      .lean<{ name?: string }>();
 
     const created = await Session.create({
       mentorId,
