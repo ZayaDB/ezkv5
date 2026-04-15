@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import { queryFreelancerGroups } from '@/lib/data/queries';
 import FreelancerCard from '@/components/cards/FreelancerCard';
 import EmptyState from '@/components/ui/EmptyState';
+import PublicFeedSection from '@/components/feed/PublicFeedSection';
 import type { FreelancerGroup } from '@/types';
 
 export default async function FreelancersPage({
@@ -30,7 +31,7 @@ export default async function FreelancersPage({
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-14">
         {groups.length === 0 ? (
           <EmptyState
             title="프리랜서 그룹이 없습니다"
@@ -45,6 +46,12 @@ export default async function FreelancersPage({
             ))}
           </div>
         )}
+
+        <section className="max-w-3xl mx-auto">
+          <h2 className="text-2xl font-bold text-zinc-900 tracking-tight mb-2">{t('feedSectionTitle')}</h2>
+          <p className="text-sm text-zinc-600 mb-6">{t('feedSectionSubtitle')}</p>
+          <PublicFeedSection feedType="freelancer" />
+        </section>
       </div>
     </div>
   );

@@ -196,7 +196,7 @@ export default function Header() {
                       </Link>
                       <div className="px-4 pt-2 pb-1 text-xs font-semibold text-gray-500">{t('myActivity')}</div>
                       <Link
-                        href={getLocalizedPath('/my/enrollments')}
+                        href={getLocalizedPath('/my/courses')}
                         className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
                         onClick={() => setUserMenuOpen(false)}
                       >
@@ -368,7 +368,7 @@ export default function Header() {
                   </Link>
                   <div className="px-4 pt-2 pb-1 text-xs font-semibold text-gray-500">{t('myActivity')}</div>
                   <Link
-                    href={getLocalizedPath('/my/enrollments')}
+                    href={getLocalizedPath('/my/courses')}
                     className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors mb-2"
                     onClick={() => setMobileMenuOpen(false)}
                   >

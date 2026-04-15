@@ -122,6 +122,13 @@ export default function AdminDashboardPage() {
             >
               운영 검수 큐
             </button>
+            <button
+              type="button"
+              onClick={() => router.push(`/${locale}/admin/inquiries`)}
+              className="px-4 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white font-semibold"
+            >
+              회원 문의
+            </button>
           </div>
         </div>
       </div>

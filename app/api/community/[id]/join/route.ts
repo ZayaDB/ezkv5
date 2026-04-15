@@ -26,35 +26,37 @@ export async function POST(
     }).lean();
 
     if (existing) {
-      if ((existing as { status?: string }).status === "rejected") {
-        const updated = await CommunityMembership.findByIdAndUpdate(
-          (existing as { _id: unknown })._id,
-          { $set: { status: "pending" } },
-          { new: true }
-        ).lean();
-        if (!updated) {
-          return NextResponse.json({ error: "가입 신청을 갱신하지 못했습니다." }, { status: 500 });
-        }
-        const u = updated as unknown as { _id: unknown; status: string; createdAt: Date };
-        return NextResponse.json(
-          {
-            membership: {
-              id: String(u._id),
-              groupId: params.id,
-              status: u.status,
-              createdAt: u.createdAt,
-            },
-          },
-          { status: 200 }
-        );
+      const st = (existing as { status?: string }).status;
+      if (st === "approved") {
+        return NextResponse.json({ error: "이미 가입한 커뮤니티입니다." }, { status: 409 });
       }
-      return NextResponse.json({ error: "이미 가입 신청한 커뮤니티입니다." }, { status: 409 });
+      /** 거절·대기(구버전) 모두 즉시 가입 처리 — 글·댓글은 관리자 사후 삭제로만 조정 */
+      const updated = await CommunityMembership.findByIdAndUpdate(
+        (existing as { _id: unknown })._id,
+        { $set: { status: "approved" } },
+        { new: true }
+      ).lean();
+      if (!updated) {
+        return NextResponse.json({ error: "가입 처리에 실패했습니다." }, { status: 500 });
+      }
+      const u = updated as unknown as { _id: unknown; status: string; createdAt: Date };
+      return NextResponse.json(
+        {
+          membership: {
+            id: String(u._id),
+            groupId: params.id,
+            status: u.status,
+            createdAt: u.createdAt,
+          },
+        },
+        { status: 200 }
+      );
     }
 
     const membership = await CommunityMembership.create({
       userId: auth.userId,
       groupId: params.id,
-      status: "pending",
+      status: "approved",
     });
 
     await CommunityGroup.findByIdAndUpdate(params.id, { $inc: { members: 1 } });

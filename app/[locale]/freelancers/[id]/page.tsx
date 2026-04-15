@@ -8,11 +8,13 @@ import { useAuth } from '@/lib/contexts/AuthContext';
 import Link from 'next/link';
 import { Users, Briefcase, ArrowLeft, TrendingUp } from 'lucide-react';
 import type { FreelancerGroup } from '@/types';
+import GroupPostFeed from '@/components/channel/GroupPostFeed';
 
 export default function FreelancerDetailPage() {
   const params = useParams();
   const locale = useLocale();
   const t = useTranslations('freelancers');
+  const tFeed = useTranslations('channelFeed');
   const router = useRouter();
   const { isAuthenticated } = useAuth();
   const id = params.id as string;
@@ -48,7 +50,7 @@ export default function FreelancerDetailPage() {
       setApplyMessage(res.error);
       return;
     }
-    setApplyMessage(`${group?.name} 참여 신청이 접수되었습니다.`);
+    setApplyMessage(t("joinSuccess"));
   };
 
   if (group === undefined) {
@@ -147,6 +149,11 @@ export default function FreelancerDetailPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">{tFeed('postsHeading')}</h2>
+              <p className="text-gray-600 text-sm mb-6">{tFeed("postsHint")}</p>
+              <GroupPostFeed channel="freelancer" channelId={id} />
+            </div>
             <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-2">샘플 채용 공고</h2>
               <p className="text-gray-600 text-sm mb-6">

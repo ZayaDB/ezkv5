@@ -25,13 +25,61 @@ export async function POST(
       groupId: params.id,
     }).lean();
     if (existing) {
+      const st = (existing as { status?: string }).status;
+      if (st === "accepted") {
+        return NextResponse.json({ error: "이미 참여 중인 그룹입니다." }, { status: 409 });
+      }
+      if (st === "pending") {
+        const updated = await FreelancerApplication.findByIdAndUpdate(
+          (existing as { _id: unknown })._id,
+          { $set: { status: "accepted" } },
+          { new: true }
+        ).lean();
+        if (!updated) {
+          return NextResponse.json({ error: "상태를 갱신하지 못했습니다." }, { status: 500 });
+        }
+        const u = updated as unknown as { _id: unknown; status: string; createdAt: Date };
+        return NextResponse.json(
+          {
+            application: {
+              id: String(u._id),
+              groupId: params.id,
+              status: u.status,
+              createdAt: u.createdAt,
+            },
+          },
+          { status: 200 }
+        );
+      }
+      if (st === "rejected") {
+        const updated = await FreelancerApplication.findByIdAndUpdate(
+          (existing as { _id: unknown })._id,
+          { $set: { status: "accepted" } },
+          { new: true }
+        ).lean();
+        if (!updated) {
+          return NextResponse.json({ error: "재참여 처리에 실패했습니다." }, { status: 500 });
+        }
+        const u = updated as unknown as { _id: unknown; status: string; createdAt: Date };
+        return NextResponse.json(
+          {
+            application: {
+              id: String(u._id),
+              groupId: params.id,
+              status: u.status,
+              createdAt: u.createdAt,
+            },
+          },
+          { status: 200 }
+        );
+      }
       return NextResponse.json({ error: "이미 지원한 그룹입니다." }, { status: 409 });
     }
 
     const application = await FreelancerApplication.create({
       userId: auth.userId,
       groupId: params.id,
-      status: "pending",
+      status: "accepted",
     });
 
     await FreelancerGroup.findByIdAndUpdate(params.id, { $inc: { members: 1 } });

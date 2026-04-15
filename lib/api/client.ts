@@ -294,6 +294,47 @@ export const adminApi = {
       body: JSON.stringify(payload),
     });
   },
+  getChannelPosts: async (limit?: number) => {
+    const q = limit ? `?limit=${limit}` : "";
+    return apiRequest<{ posts: any[] }>(`/api/admin/channel-posts${q}`);
+  },
+  deleteChannelPost: async (postId: string, reason: string) => {
+    return apiRequest<{ ok?: boolean; error?: string }>(`/api/admin/channel-posts/${postId}`, {
+      method: "DELETE",
+      body: JSON.stringify({ reason }),
+    });
+  },
+  listInquiries: async () => {
+    return apiRequest<{ inquiries: any[] }>("/api/admin/inquiries");
+  },
+  replyInquiry: async (id: string, adminReply: string) => {
+    return apiRequest<{ inquiry: any }>(`/api/admin/inquiries/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify({ adminReply }),
+    });
+  },
+};
+
+export const notificationsApi = {
+  list: async () => {
+    return apiRequest<{
+      notifications: {
+        id: string;
+        kind: string;
+        body: string;
+        readAt: string | null;
+        createdAt: string;
+        meta: { postTitle?: string; channelType?: string; channelId?: string };
+      }[];
+      unreadCount: number;
+    }>("/api/me/notifications");
+  },
+  markRead: async (payload: { all?: boolean; ids?: string[] }) => {
+    return apiRequest<{ ok: boolean; modified?: number }>("/api/me/notifications", {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    });
+  },
 };
 
 export const enrollmentApi = {
@@ -376,6 +417,157 @@ export const inquiryApi = {
     return apiRequest<{ ok: boolean }>(`/api/inquiries/${id}`, {
       method: "DELETE",
     });
+  },
+};
+
+export type ChannelFeedKind = "community" | "freelancer";
+
+export type PublicFeedKind = "community" | "freelancer";
+
+export const publicFeedApi = {
+  list: async (feed: PublicFeedKind) => {
+    return apiRequest<{ posts: any[] }>(`/api/feed/${feed}`);
+  },
+  create: async (feed: PublicFeedKind, payload: { body: string; attachmentUrls?: string[] }) => {
+    return apiRequest<{ post?: { id: string }; error?: string }>(`/api/feed/${feed}`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
+  listComments: async (feed: PublicFeedKind, postId: string) => {
+    return apiRequest<{ comments: any[] }>(`/api/feed/${feed}/${postId}/comments`);
+  },
+  addComment: async (feed: PublicFeedKind, postId: string, body: string) => {
+    return apiRequest<{ ok?: boolean; error?: string }>(`/api/feed/${feed}/${postId}/comments`, {
+      method: "POST",
+      body: JSON.stringify({ body }),
+    });
+  },
+  toggleLike: async (feed: PublicFeedKind, postId: string) => {
+    return apiRequest<{ likeCount: number; likedByMe: boolean }>(`/api/feed/${feed}/${postId}/like`, {
+      method: "POST",
+    });
+  },
+  uploadFile: async (file: File) => {
+    const token = tokenManager.get();
+    const fd = new FormData();
+    fd.append("file", file);
+    const headers: Record<string, string> = {};
+    if (token) headers.Authorization = `Bearer ${token}`;
+    const res = await fetch(`${API_BASE_URL}/api/upload/feed`, {
+      method: "POST",
+      headers,
+      body: fd,
+    });
+    const data = await res.json();
+    if (!res.ok) return { error: data.error || "업로드 실패" } as const;
+    return { data: { url: data.url as string } };
+  },
+};
+
+export const channelFeedApi = {
+  listPosts: async (channel: ChannelFeedKind, channelId: string) => {
+    const base =
+      channel === "community"
+        ? `/api/community/${channelId}/posts`
+        : `/api/freelancers/${channelId}/posts`;
+    return apiRequest<{ posts: any[] }>(base);
+  },
+  createPost: async (
+    channel: ChannelFeedKind,
+    channelId: string,
+    payload: { title: string; body: string }
+  ) => {
+    const base =
+      channel === "community"
+        ? `/api/community/${channelId}/posts`
+        : `/api/freelancers/${channelId}/posts`;
+    return apiRequest<{ post?: { id: string }; error?: string }>(base, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
+  listComments: async (
+    channel: ChannelFeedKind,
+    channelId: string,
+    postId: string
+  ) => {
+    const base =
+      channel === "community"
+        ? `/api/community/${channelId}/posts/${postId}/comments`
+        : `/api/freelancers/${channelId}/posts/${postId}/comments`;
+    return apiRequest<{ comments: any[] }>(base);
+  },
+  addComment: async (
+    channel: ChannelFeedKind,
+    channelId: string,
+    postId: string,
+    body: string
+  ) => {
+    const base =
+      channel === "community"
+        ? `/api/community/${channelId}/posts/${postId}/comments`
+        : `/api/freelancers/${channelId}/posts/${postId}/comments`;
+    return apiRequest<{ ok?: boolean; error?: string }>(base, {
+      method: "POST",
+      body: JSON.stringify({ body }),
+    });
+  },
+};
+
+export const myActivityApi = {
+  getContexts: async () => {
+    return apiRequest<{
+      community: { id: string; name: string }[];
+      freelancers: { id: string; name: string }[];
+    }>("/api/my-activity/contexts");
+  },
+};
+
+export type LifeBudgetKind = "expense" | "income";
+
+export const lifePlanApi = {
+  getBudgetLines: async () => {
+    return apiRequest<{
+      lines: { id: string; kind: LifeBudgetKind; label: string; amount: number }[];
+    }>("/api/me/life-budget");
+  },
+  addBudgetLine: async (payload: {
+    kind: LifeBudgetKind;
+    label: string;
+    amount: number;
+  }) => {
+    return apiRequest<{ line: { id: string; kind: LifeBudgetKind; label: string; amount: number } }>(
+      "/api/me/life-budget",
+      { method: "POST", body: JSON.stringify(payload) }
+    );
+  },
+  deleteBudgetLine: async (id: string) => {
+    return apiRequest<{ ok: boolean }>(`/api/me/life-budget/${id}`, { method: "DELETE" });
+  },
+  updateBudgetLine: async (
+    id: string,
+    payload: { kind: LifeBudgetKind; label: string; amount: number }
+  ) => {
+    return apiRequest<{ line: { id: string; kind: LifeBudgetKind; label: string; amount: number } }>(
+      `/api/me/life-budget/${id}`,
+      { method: "PATCH", body: JSON.stringify(payload) }
+    );
+  },
+  getLifeEvents: async (fromIso: string, toIso: string) => {
+    const q = `from=${encodeURIComponent(fromIso)}&to=${encodeURIComponent(toIso)}`;
+    return apiRequest<{
+      events: { id: string; title: string; notes: string; startsAt: string }[];
+    }>(`/api/me/life-events?${q}`);
+  },
+  addLifeEvent: async (payload: { title: string; startsAt: string; notes?: string }) => {
+    return apiRequest<{ event: { id: string; title: string; notes: string; startsAt: string } }>(
+      "/api/me/life-events",
+      { method: "POST", body: JSON.stringify(payload) }
+    );
+  },
+  deleteLifeEvent: async (id: string) => {
+    return apiRequest<{ ok: boolean }>(`/api/me/life-events/${id}`, { method: "DELETE" });
   },
 };
 

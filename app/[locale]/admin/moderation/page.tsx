@@ -11,7 +11,7 @@ import LoadingState from "@/components/ui/LoadingState";
 import PlatformCard from "@/components/ui/PlatformCard";
 import Toast from "@/components/ui/Toast";
 
-type Tab = "all" | "community" | "freelancer" | "mentor";
+type Tab = "all" | "community" | "freelancer" | "mentor" | "posts";
 
 interface QueueItem {
   id: string;
@@ -29,6 +29,17 @@ interface MentorQueueItem {
   specialties?: string[];
 }
 
+interface ChannelPostAdminRow {
+  id: string;
+  channelType: "community" | "freelancer";
+  channelId: string;
+  groupName: string;
+  title: string;
+  bodyPreview: string;
+  createdAt: string;
+  author: { id: string; name: string; email: string };
+}
+
 const PAGE_SIZE = 8;
 
 export default function AdminModerationPage() {
@@ -43,8 +54,12 @@ export default function AdminModerationPage() {
   const [communityPending, setCommunityPending] = useState<QueueItem[]>([]);
   const [freelancerPending, setFreelancerPending] = useState<QueueItem[]>([]);
   const [mentorPending, setMentorPending] = useState<MentorQueueItem[]>([]);
+  const [channelPosts, setChannelPosts] = useState<ChannelPostAdminRow[]>([]);
   const [search, setSearch] = useState("");
   const [tab, setTab] = useState<Tab>("mentor");
+  const [deleteTarget, setDeleteTarget] = useState<ChannelPostAdminRow | null>(null);
+  const [deleteReason, setDeleteReason] = useState("");
+  const [deleting, setDeleting] = useState(false);
   const [pageComm, setPageComm] = useState(1);
   const [pageFree, setPageFree] = useState(1);
   const [pageMent, setPageMent] = useState(1);
@@ -55,10 +70,14 @@ export default function AdminModerationPage() {
 
   const load = useCallback(async () => {
     setLoading(true);
-    const res = await adminApi.getModerationQueue();
-    setCommunityPending(res.data?.communityPending || []);
-    setFreelancerPending(res.data?.freelancerPending || []);
-    setMentorPending(res.data?.mentorPending || []);
+    const [qRes, pRes] = await Promise.all([
+      adminApi.getModerationQueue(),
+      adminApi.getChannelPosts(100),
+    ]);
+    setCommunityPending(qRes.data?.communityPending || []);
+    setFreelancerPending(qRes.data?.freelancerPending || []);
+    setMentorPending(qRes.data?.mentorPending || []);
+    setChannelPosts((pRes.data?.posts || []) as ChannelPostAdminRow[]);
     setLoading(false);
   }, []);
 
@@ -128,6 +147,22 @@ export default function AdminModerationPage() {
     [mentorPending, search]
   );
 
+  const filteredPosts = useMemo(
+    () =>
+      channelPosts.filter((p) => {
+        const q = search.trim().toLowerCase();
+        if (!q) return true;
+        return (
+          p.title.toLowerCase().includes(q) ||
+          p.bodyPreview.toLowerCase().includes(q) ||
+          p.groupName.toLowerCase().includes(q) ||
+          p.author.name.toLowerCase().includes(q) ||
+          p.author.email.toLowerCase().includes(q)
+        );
+      }),
+    [channelPosts, search]
+  );
+
   const totalRows =
     tab === "all"
       ? filteredCommunity.length + filteredFreelancer.length + filteredMentor.length
@@ -135,7 +170,9 @@ export default function AdminModerationPage() {
         ? filteredCommunity.length
         : tab === "freelancer"
           ? filteredFreelancer.length
-          : filteredMentor.length;
+          : tab === "posts"
+            ? filteredPosts.length
+            : filteredMentor.length;
 
   const totalPagesComm = Math.max(1, Math.ceil(filteredCommunity.length / PAGE_SIZE));
   const totalPagesFree = Math.max(1, Math.ceil(filteredFreelancer.length / PAGE_SIZE));
@@ -169,10 +206,31 @@ export default function AdminModerationPage() {
     { id: "mentor", label: t("tabMentor") },
     { id: "community", label: t("tabCommunity") },
     { id: "freelancer", label: t("tabFreelancer") },
+    { id: "posts", label: t("tabPosts") },
   ];
 
   const gridClass =
     tab === "all" ? "grid grid-cols-1 xl:grid-cols-3 gap-6" : "grid grid-cols-1 gap-6";
+
+  const submitDeletePost = async () => {
+    if (!deleteTarget) return;
+    const r = deleteReason.trim();
+    if (!r) {
+      setToast({ message: t("deleteReasonRequired"), variant: "error" });
+      return;
+    }
+    setDeleting(true);
+    const res = await adminApi.deleteChannelPost(deleteTarget.id, r);
+    setDeleting(false);
+    if (res.error) {
+      setToast({ message: res.error || t("toastError"), variant: "error" });
+      return;
+    }
+    setToast({ message: t("toastPostDeleted"), variant: "success" });
+    setDeleteTarget(null);
+    setDeleteReason("");
+    await load();
+  };
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -442,7 +500,91 @@ export default function AdminModerationPage() {
               )}
             </PlatformCard>
           )}
+
+          {tab === "posts" && (
+            <PlatformCard padding="lg">
+              <h2 className="text-base font-semibold text-slate-900 mb-4">{t("postsTitle")}</h2>
+              {filteredPosts.length === 0 ? (
+                <p className="text-sm text-slate-500">{t("emptyPosts")}</p>
+              ) : (
+                <div className="space-y-3">
+                  {filteredPosts.map((p) => (
+                    <div
+                      key={p.id}
+                      className="rounded-xl border border-slate-200 bg-slate-50/60 p-4 space-y-2"
+                    >
+                      <p className="font-semibold text-slate-900 text-sm">{p.title}</p>
+                      <p className="text-xs text-slate-600 whitespace-pre-wrap">{p.bodyPreview}</p>
+                      <p className="text-xs text-slate-500">
+                        {p.channelType === "community" ? t("postChannelCommunity") : t("postChannelFreelancer")}{" "}
+                        · {p.groupName || "—"} · {p.author.name} ({p.author.email})
+                      </p>
+                      <p className="text-xs text-slate-400">
+                        {fmt.dateTime(new Date(p.createdAt), {
+                          dateStyle: "medium",
+                          timeStyle: "short",
+                        })}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setDeleteTarget(p);
+                          setDeleteReason("");
+                        }}
+                        className="rounded-lg bg-white px-2.5 py-1 text-xs font-semibold text-red-700 ring-1 ring-red-200 hover:bg-red-50"
+                      >
+                        {t("deletePost")}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </PlatformCard>
+          )}
         </div>
+
+        {deleteTarget && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
+            <div className="bg-white rounded-2xl shadow-xl max-w-lg w-full p-6 space-y-4">
+              <h3 className="text-lg font-semibold text-slate-900">{t("deletePostModalTitle")}</h3>
+              <p className="text-sm text-slate-600">
+                「{deleteTarget.title}」 — {deleteTarget.author.name}
+              </p>
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  {t("deleteReasonLabel")}
+                </label>
+                <textarea
+                  value={deleteReason}
+                  onChange={(e) => setDeleteReason(e.target.value)}
+                  rows={4}
+                  className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                  placeholder={t("deleteReasonPlaceholder")}
+                />
+              </div>
+              <div className="flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDeleteTarget(null);
+                    setDeleteReason("");
+                  }}
+                  className="rounded-lg px-4 py-2 text-sm font-semibold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50"
+                >
+                  {tCommon("close")}
+                </button>
+                <button
+                  type="button"
+                  disabled={deleting}
+                  onClick={() => void submitDeletePost()}
+                  className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-60"
+                >
+                  {deleting ? "…" : t("confirmDeletePost")}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

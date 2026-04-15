@@ -313,7 +313,7 @@ function ProfilePageContent() {
                 <p className="text-sm text-slate-500">{tp("overview.enrollments")}</p>
                 <p className="text-3xl font-bold text-slate-900 mt-1">{enrollments.length}</p>
                 <Link
-                  href={`/${locale}/my/enrollments`}
+                  href={`/${locale}/my/courses?tab=status`}
                   className="inline-flex items-center gap-1 mt-3 text-sm font-semibold text-primary-600"
                 >
                   {tCommon("myEnrollments")}

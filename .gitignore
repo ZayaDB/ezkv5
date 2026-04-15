@@ -28,6 +28,10 @@ yarn-error.log*
 # local env files
 .env*.local
 
+# user uploads (keep folder via .gitkeep)
+/public/uploads/feed/*
+!/public/uploads/feed/.gitkeep
+
 # vercel
 .vercel
 
