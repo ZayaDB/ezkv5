@@ -15,12 +15,12 @@ export default function CommunityCard({ group }: CommunityCardProps) {
 
   return (
     <Link href={`/${locale}/community/${group.id}`}>
-      <div className="group bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-300 cursor-pointer hover:-translate-y-1 relative">
+      <div className="group bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-700 overflow-hidden hover:shadow-2xl transition-all duration-300 cursor-pointer hover:-translate-y-1 relative">
         {/* Gradient Image Header */}
         <div className="relative h-40 bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 overflow-hidden">
           <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors"></div>
           <div className="absolute top-4 left-4">
-            <span className="px-3 py-1.5 bg-white/90 backdrop-blur-sm text-gray-700 text-xs font-semibold rounded-lg">
+            <span className="px-3 py-1.5 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm text-gray-700 dark:text-slate-200 text-xs font-semibold rounded-lg">
               {group.category}
             </span>
           </div>
@@ -32,10 +32,10 @@ export default function CommunityCard({ group }: CommunityCardProps) {
         </div>
 
         <div className="p-6">
-          <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors">
+          <h3 className="text-xl font-bold text-gray-900 dark:text-slate-100 mb-2 group-hover:text-primary-600 transition-colors">
             {group.name}
           </h3>
-          <p className="text-sm text-gray-600 mb-5 line-clamp-2 leading-relaxed">
+          <p className="text-sm text-gray-600 dark:text-slate-400 mb-5 line-clamp-2 leading-relaxed">
             {group.description}
           </p>
 
@@ -43,15 +43,15 @@ export default function CommunityCard({ group }: CommunityCardProps) {
             {group.tags.slice(0, 3).map((tag) => (
               <span
                 key={tag}
-                className="px-3 py-1 bg-gray-50 text-gray-600 text-xs font-medium rounded-lg border border-gray-200"
+                className="px-3 py-1 bg-gray-50 dark:bg-slate-800 text-gray-600 dark:text-slate-300 text-xs font-medium rounded-lg border border-gray-200 dark:border-slate-700"
               >
                 #{tag}
               </span>
             ))}
           </div>
 
-          <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-            <div className="flex items-center gap-2 text-sm text-gray-600">
+          <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-slate-700">
+            <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-slate-400">
               <Users className="w-5 h-5 text-primary-500" />
               <span className="font-semibold">
                 {group.members.toLocaleString()}명

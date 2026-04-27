@@ -64,10 +64,36 @@ export async function POST(request: NextRequest) {
       availability,
       photo,
       bio,
+      sessionDuration,
+      sessionFormat,
+      yearsOfExperience,
+      education,
+      careerSummary,
+      responseTime,
+      timezone,
+      introVideoUrl,
+      portfolioLinks,
+      mentoringStyle,
+      recommendedFor,
+      notRecommendedFor,
     } = body;
 
-    if (!title || !location || !bio) {
+    if (!title || !location || !bio || !mentoringStyle) {
       return NextResponse.json({ error: "필수 필드를 입력해주세요." }, { status: 400 });
+    }
+    if (!Array.isArray(languages) || languages.length < 1) {
+      return NextResponse.json({ error: "사용 언어를 1개 이상 입력해 주세요." }, { status: 400 });
+    }
+    if (!Array.isArray(specialties) || specialties.length < 1) {
+      return NextResponse.json({ error: "전문 분야를 1개 이상 입력해 주세요." }, { status: 400 });
+    }
+    const sessionDurationNum = Number(sessionDuration || 60);
+    if (!Number.isFinite(sessionDurationNum) || sessionDurationNum < 15 || sessionDurationNum > 240) {
+      return NextResponse.json({ error: "세션 시간은 15~240분이어야 합니다." }, { status: 400 });
+    }
+    const yearsNum = Number(yearsOfExperience || 0);
+    if (!Number.isFinite(yearsNum) || yearsNum < 0 || yearsNum > 60) {
+      return NextResponse.json({ error: "경력은 0~60년이어야 합니다." }, { status: 400 });
     }
 
     const existing = await Mentor.findOne({ userId: auth.userId });
@@ -92,6 +118,18 @@ export async function POST(request: NextRequest) {
               availability: availability || "available",
               photo,
               bio,
+              sessionDuration: sessionDurationNum,
+              sessionFormat: sessionFormat || "online",
+              yearsOfExperience: yearsNum,
+              education: education || "",
+              careerSummary: careerSummary || "",
+              responseTime: responseTime || "",
+              timezone: timezone || "Asia/Seoul",
+              introVideoUrl: introVideoUrl || "",
+              portfolioLinks: Array.isArray(portfolioLinks) ? portfolioLinks : [],
+              mentoringStyle: mentoringStyle || "",
+              recommendedFor: recommendedFor || "",
+              notRecommendedFor: notRecommendedFor || "",
               approvalStatus: "pending",
               verified: false,
             },
@@ -122,6 +160,18 @@ export async function POST(request: NextRequest) {
       availability: availability || "available",
       photo,
       bio,
+      sessionDuration: sessionDurationNum,
+      sessionFormat: sessionFormat || "online",
+      yearsOfExperience: yearsNum,
+      education: education || "",
+      careerSummary: careerSummary || "",
+      responseTime: responseTime || "",
+      timezone: timezone || "Asia/Seoul",
+      introVideoUrl: introVideoUrl || "",
+      portfolioLinks: Array.isArray(portfolioLinks) ? portfolioLinks : [],
+      mentoringStyle: mentoringStyle || "",
+      recommendedFor: recommendedFor || "",
+      notRecommendedFor: notRecommendedFor || "",
       verified: approvalStatus === "approved",
       approvalStatus,
       rating: 0,
@@ -143,6 +193,18 @@ export async function POST(request: NextRequest) {
           verified: mentor.verified,
           approvalStatus: (mentor as any).approvalStatus,
           bio: mentor.bio,
+          sessionDuration: (mentor as any).sessionDuration,
+          sessionFormat: (mentor as any).sessionFormat,
+          yearsOfExperience: (mentor as any).yearsOfExperience,
+          education: (mentor as any).education,
+          careerSummary: (mentor as any).careerSummary,
+          responseTime: (mentor as any).responseTime,
+          timezone: (mentor as any).timezone,
+          introVideoUrl: (mentor as any).introVideoUrl,
+          portfolioLinks: (mentor as any).portfolioLinks,
+          mentoringStyle: (mentor as any).mentoringStyle,
+          recommendedFor: (mentor as any).recommendedFor,
+          notRecommendedFor: (mentor as any).notRecommendedFor,
           rating: mentor.rating,
           reviewCount: mentor.reviewCount,
         },

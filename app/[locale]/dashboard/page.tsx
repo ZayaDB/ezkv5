@@ -260,10 +260,10 @@ export default function DashboardPage() {
 
   if (authLoading || !user) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
         <div className="text-center">
           <div className="w-12 h-12 border-2 border-slate-300 border-t-primary-600 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-sm text-slate-600">{t("loading")}</p>
+          <p className="text-sm text-slate-600 dark:text-slate-400">{t("loading")}</p>
         </div>
       </div>
     );
@@ -272,7 +272,7 @@ export default function DashboardPage() {
   const canUseMentorMode = user.role === "mentor" || user.role === "admin" || mentorGateOk;
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
       {toast && (
         <Toast
           message={toast.message}
@@ -282,7 +282,7 @@ export default function DashboardPage() {
         />
       )}
 
-      <header className="border-b border-slate-200/80 bg-white">
+      <header className="border-b border-slate-200/80 dark:border-slate-700 bg-white dark:bg-slate-900">
         <div className="w-full px-4 sm:px-6 lg:px-8 py-10">
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
             <div className="max-w-2xl">
@@ -302,13 +302,13 @@ export default function DashboardPage() {
                     {user.name.charAt(0).toUpperCase()}
                   </div>
                 )}
-                <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900">
+                <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
                   {t("title", { name: user.name })}
                 </h1>
               </div>
-              <p className="mt-2 text-slate-600 leading-relaxed">{t("subtitle")}</p>
+              <p className="mt-2 text-slate-600 dark:text-slate-400 leading-relaxed">{t("subtitle")}</p>
             </div>
-            <div className="inline-flex rounded-xl bg-slate-100 p-1 ring-1 ring-slate-200/80 self-start">
+            <div className="inline-flex rounded-xl bg-slate-100 dark:bg-slate-800 p-1 ring-1 ring-slate-200/80 dark:ring-slate-700 self-start">
               <button
                 type="button"
                 disabled={switchingMode}
@@ -334,8 +334,8 @@ export default function DashboardPage() {
                 }}
                 className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${
                   mode === "mentee"
-                    ? "bg-white text-slate-900 shadow-sm ring-1 ring-slate-200"
-                    : "text-slate-600 hover:text-slate-900"
+                    ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 shadow-sm ring-1 ring-slate-200 dark:ring-slate-600"
+                    : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100"
                 } disabled:opacity-60`}
               >
                 {t("modeMentee")}
@@ -369,8 +369,8 @@ export default function DashboardPage() {
                 }}
                 className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${
                   mode === "mentor"
-                    ? "bg-white text-slate-900 shadow-sm ring-1 ring-slate-200"
-                    : "text-slate-600 hover:text-slate-900"
+                    ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 shadow-sm ring-1 ring-slate-200 dark:ring-slate-600"
+                    : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100"
                 } disabled:opacity-50 disabled:cursor-not-allowed`}
                 title={!canUseMentorMode ? t("mentorModeDisabledHint") : undefined}
               >
@@ -393,11 +393,11 @@ export default function DashboardPage() {
                   >
                     <Icon className="w-5 h-5" />
                   </div>
-                  <div className="text-2xl font-bold tabular-nums text-slate-900 text-right">
+                  <div className="text-2xl font-bold tabular-nums text-slate-900 dark:text-slate-100 text-right">
                     {loadingStats ? "—" : fmt.number(card.value)}
                   </div>
                 </div>
-                <p className="text-sm font-medium text-slate-600">{t(card.titleKey)}</p>
+                <p className="text-sm font-medium text-slate-600 dark:text-slate-400">{t(card.titleKey)}</p>
               </PlatformCard>
             );
           })}
@@ -405,7 +405,7 @@ export default function DashboardPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <PlatformCard padding="lg" className="lg:col-span-2">
-            <h2 className="text-lg font-semibold text-slate-900 mb-6 flex items-center gap-2">
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-6 flex items-center gap-2">
               <LayoutDashboard className="w-5 h-5 text-primary-600" />
               {mode === "mentee" ? t("panelMentee") : t("panelMentor")}
             </h2>
@@ -439,7 +439,7 @@ export default function DashboardPage() {
                   />
                 </div>
                 {user.role === "mentee" && (
-                  <p className="mt-5 text-sm text-slate-600 leading-relaxed">
+                  <p className="mt-5 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
                     {t("mentorApplyHint")}{" "}
                     <Link
                       href={`/${locale}/my/profile?tab=mentor`}
@@ -488,8 +488,8 @@ export default function DashboardPage() {
 
           <div className="space-y-6">
             <PlatformCard>
-              <h3 className="text-sm font-semibold text-slate-900 mb-3">{t("today")}</h3>
-              <ul className="space-y-2 text-sm text-slate-600 leading-relaxed">
+              <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3">{t("today")}</h3>
+              <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
                 <li className="flex gap-2">
                   <span className="text-slate-400 shrink-0">•</span>
                   <span>{t("todo1")}</span>
@@ -520,19 +520,19 @@ export default function DashboardPage() {
                 </Link>
                 <Link
                   href={`/${locale}/my/sessions`}
-                  className="inline-flex items-center rounded-lg bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50 transition-colors"
+                  className="inline-flex items-center rounded-lg bg-white dark:bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 ring-1 ring-slate-200 dark:ring-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
                 >
                   {t("mySessions")}
                 </Link>
                 <Link
                   href={`/${locale}/my/community`}
-                  className="inline-flex items-center rounded-lg bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50 transition-colors"
+                  className="inline-flex items-center rounded-lg bg-white dark:bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 ring-1 ring-slate-200 dark:ring-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
                 >
                   {t("myCommunity")}
                 </Link>
                 <Link
                   href={`/${locale}/my/freelancers`}
-                  className="inline-flex items-center rounded-lg bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50 transition-colors"
+                  className="inline-flex items-center rounded-lg bg-white dark:bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 ring-1 ring-slate-200 dark:ring-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
                 >
                   {t("myFreelancers")}
                 </Link>
@@ -540,8 +540,8 @@ export default function DashboardPage() {
             </PlatformCard>
 
             <PlatformCard>
-              <h3 className="text-sm font-semibold text-slate-900 mb-1">{t("studyHubTitle")}</h3>
-              <p className="text-sm text-slate-600 mb-4">
+              <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-1">{t("studyHubTitle")}</h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
                 {t("studyHubDesc", {
                   count: loadingStats ? "—" : String(stats.studyInfoCount),
                 })}
@@ -555,7 +555,7 @@ export default function DashboardPage() {
             </PlatformCard>
 
             <PlatformCard>
-              <h3 className="text-sm font-semibold text-slate-900 mb-3">{t("recentEnrollments")}</h3>
+              <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3">{t("recentEnrollments")}</h3>
               {recentEnrollments.length === 0 ? (
                 <p className="text-sm text-slate-500">{t("emptyEnrollments")}</p>
               ) : (
@@ -568,12 +568,12 @@ export default function DashboardPage() {
                           ? `/${locale}/lectures/${item.lecture.id}`
                           : `/${locale}/lectures`
                       }
-                      className="block rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-3 hover:border-primary-200 hover:bg-white transition-colors"
+                      className="block rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/70 px-3 py-3 hover:border-primary-200 hover:bg-white dark:hover:bg-slate-800 transition-colors"
                     >
-                      <p className="text-sm font-semibold text-slate-900">
+                      <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                         {item.lecture?.title || t("lecture")}
                       </p>
-                      <p className="text-xs text-slate-500 mt-0.5">
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                         {item.lecture?.category || t("category")} ·{" "}
                         {item.status ? labelEnrollment(item.status) : "—"}
                       </p>
@@ -584,7 +584,7 @@ export default function DashboardPage() {
             </PlatformCard>
 
             <PlatformCard>
-              <h3 className="text-sm font-semibold text-slate-900 mb-3">{t("recentSessions")}</h3>
+              <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3">{t("recentSessions")}</h3>
               {recentSessions.length === 0 ? (
                 <p className="text-sm text-slate-500">{t("emptySessions")}</p>
               ) : (
@@ -592,9 +592,9 @@ export default function DashboardPage() {
                   {recentSessions.map((item) => (
                     <div
                       key={item.id}
-                      className="rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-3"
+                      className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/70 px-3 py-3"
                     >
-                      <p className="text-sm font-semibold text-slate-900">
+                      <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                         {item.mentorId ? (
                           <Link
                             href={`/${locale}/mentors/${item.mentorId}`}
@@ -606,7 +606,7 @@ export default function DashboardPage() {
                           item.mentorName || t("mentorLabel")
                         )}
                       </p>
-                      <p className="text-xs text-slate-500 mt-0.5">
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                         {item.date
                           ? fmt.dateTime(new Date(item.date), {
                               dateStyle: "medium",
@@ -641,7 +641,7 @@ export default function DashboardPage() {
                           <button
                             type="button"
                             onClick={() => handleSessionStatus(item.id, "cancelled")}
-                            className="text-xs px-2.5 py-1 rounded-lg bg-white text-slate-700 font-semibold ring-1 ring-slate-200 hover:bg-slate-50"
+                            className="text-xs px-2.5 py-1 rounded-lg bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 font-semibold ring-1 ring-slate-200 dark:ring-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
                           >
                             {t("cancel")}
                           </button>
@@ -705,13 +705,13 @@ function QuickLink({
   return (
     <Link
       href={href}
-      className="group block rounded-xl border border-slate-200 bg-white p-4 hover:border-primary-200 hover:shadow-sm transition-all"
+      className="group block rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 hover:border-primary-200 hover:shadow-sm transition-all"
     >
-      <div className="w-10 h-10 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center mb-3 group-hover:bg-primary-50 group-hover:text-primary-700 transition-colors">
+      <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-3 group-hover:bg-primary-50 dark:group-hover:bg-primary-500/15 group-hover:text-primary-700 transition-colors">
         <Icon className="w-5 h-5" />
       </div>
-      <p className="font-semibold text-slate-900 text-sm mb-1">{title}</p>
-      <p className="text-sm text-slate-600 leading-snug">{desc}</p>
+      <p className="font-semibold text-slate-900 dark:text-slate-100 text-sm mb-1">{title}</p>
+      <p className="text-sm text-slate-600 dark:text-slate-400 leading-snug">{desc}</p>
     </Link>
   );
 }

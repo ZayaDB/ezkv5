@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import { Mail, Lock, User, ArrowRight, CheckCircle } from 'lucide-react';
 
@@ -79,19 +80,23 @@ export default function SignupPage() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-3 mb-4">
-            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-2xl">
-              <span className="text-white font-bold text-3xl bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent">
-                M
-              </span>
+          <div className="inline-flex items-center mb-4">
+            <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-2xl ring-1 ring-white/40 bg-white">
+              <Image
+                src="/logo/logo.png"
+                alt="logo"
+                width={64}
+                height={64}
+                className="w-full h-full object-cover"
+                priority
+              />
             </div>
-            <h1 className="text-4xl font-extrabold text-white">MentorLink</h1>
           </div>
           <p className="text-white/90 text-lg">{t('createAccount')}</p>
         </div>
 
         {/* Signup Form */}
-        <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl p-8">
+        <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl shadow-2xl p-8 border border-white/30 dark:border-slate-700">
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl">
@@ -100,34 +105,34 @@ export default function SignupPage() {
             )}
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-slate-200 mb-2">
                 {t('name')}
               </label>
               <div className="relative">
-                <User className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <User className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-slate-500" />
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
-                  className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                  className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
                   placeholder={t('namePlaceholder')}
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-slate-200 mb-2">
                 {t('email')}
               </label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-slate-500" />
                 <input
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   required
-                  className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                  className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
                   placeholder={t('emailPlaceholder')}
                 />
               </div>
@@ -144,7 +149,7 @@ export default function SignupPage() {
                   className={`p-4 rounded-xl border-2 transition-all ${
                     formData.role === 'mentee'
                       ? 'border-primary-500 bg-primary-50 text-primary-700'
-                      : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                      : 'border-gray-200 dark:border-slate-700 text-gray-600 dark:text-slate-300 hover:border-gray-300 dark:hover:border-slate-600'
                   }`}
                 >
                   <div className="font-semibold">{t('mentee')}</div>
@@ -156,7 +161,7 @@ export default function SignupPage() {
                   className={`p-4 rounded-xl border-2 transition-all ${
                     formData.role === 'mentor'
                       ? 'border-primary-500 bg-primary-50 text-primary-700'
-                      : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                      : 'border-gray-200 dark:border-slate-700 text-gray-600 dark:text-slate-300 hover:border-gray-300 dark:hover:border-slate-600'
                   }`}
                 >
                   <div className="font-semibold">{t('mentor')}</div>
@@ -166,34 +171,34 @@ export default function SignupPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-slate-200 mb-2">
                 {t('password')}
               </label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-slate-500" />
                 <input
                   type="password"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   required
-                  className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                  className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
                   placeholder={t('passwordPlaceholder')}
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-slate-200 mb-2">
                 {t('confirmPassword')}
               </label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-slate-500" />
                 <input
                   type="password"
                   value={formData.confirmPassword}
                   onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                   required
-                  className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                  className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
                   placeholder={t('confirmPasswordPlaceholder')}
                 />
               </div>
@@ -219,7 +224,7 @@ export default function SignupPage() {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-slate-300">
               {t('haveAccount')}{' '}
               <Link
                 href={`/${locale}/login`}

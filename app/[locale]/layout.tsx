@@ -29,11 +29,28 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale}>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var saved = localStorage.getItem('theme');
+                  var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  if (saved === 'dark' || (!saved && prefersDark)) {
+                    document.documentElement.classList.add('dark');
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
       <body className="min-h-screen flex flex-col font-sans">
         <NextIntlClientProvider messages={messages}>
           <AuthProvider>
             <Header />
-            <main className="flex-1">{children}</main>
+            <main className="flex-1 pt-20">{children}</main>
             <Footer />
             <Chatbot />
           </AuthProvider>

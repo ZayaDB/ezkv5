@@ -3,11 +3,12 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
-import { contentApi, enrollmentApi } from '@/lib/api/client';
+import { contentApi, enrollmentApi, lectureWishlistApi } from '@/lib/api/client';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import Link from 'next/link';
-import { Star, Users, Clock, PlayCircle, ArrowLeft, CheckCircle } from 'lucide-react';
+import { Star, Users, Clock, PlayCircle, ArrowLeft, CheckCircle, Heart } from 'lucide-react';
 import type { Lecture } from '@/types';
+import Button from '@/components/ui/Button';
 
 function syllabusFromDescription(description: string): string[] {
   const lines = description
@@ -35,6 +36,7 @@ export default function LectureDetailPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [enrollMessage, setEnrollMessage] = useState('');
+  const [isWishlisted, setIsWishlisted] = useState(false);
 
   const load = useCallback(async () => {
     const res = await contentApi.getLecture(id);
@@ -59,6 +61,21 @@ export default function LectureDetailPage() {
       setIsEnrolled(list.some((e: any) => e?.lecture?.id === id));
     };
     checkEnrollment();
+    return () => {
+      active = false;
+    };
+  }, [id, isAuthenticated]);
+
+  useEffect(() => {
+    let active = true;
+    const loadWishlist = async () => {
+      if (!isAuthenticated) return;
+      const res = await lectureWishlistApi.list();
+      if (!active) return;
+      const list = res.data?.wishlist || [];
+      setIsWishlisted(list.some((w) => w.lectureId === id));
+    };
+    loadWishlist();
     return () => {
       active = false;
     };
@@ -103,6 +120,20 @@ export default function LectureDetailPage() {
     }
     setIsEnrolled(true);
     setEnrollMessage('수강 신청이 완료되었습니다.');
+  };
+
+  const toggleWishlist = async () => {
+    if (!isAuthenticated) {
+      router.push(`/${locale}/login`);
+      return;
+    }
+    if (isWishlisted) {
+      const res = await lectureWishlistApi.remove(id);
+      if (!res.error) setIsWishlisted(false);
+      return;
+    }
+    const res = await lectureWishlistApi.add(id);
+    if (!res.error) setIsWishlisted(true);
   };
 
   return (
@@ -163,14 +194,26 @@ export default function LectureDetailPage() {
 
               <div className="flex items-center gap-4 flex-wrap">
                 <div className="text-4xl font-extrabold">₩{lecture.price.toLocaleString('ko-KR')}</div>
-                <button
+                <Button
+                  type="button"
+                  onClick={toggleWishlist}
+                  className={`${
+                    isWishlisted ? 'bg-red-50 text-red-600 border border-red-200' : 'bg-white/20 text-white border border-white/30'
+                  }`}
+                  variant="ghost"
+                >
+                  <Heart className={`w-4 h-4 inline mr-2 ${isWishlisted ? 'fill-red-500' : ''}`} />
+                  {isWishlisted ? '찜됨' : '찜하기'}
+                </Button>
+                <Button
                   type="button"
                   onClick={enroll}
                   disabled={isSubmitting || isEnrolled}
-                  className="px-8 py-4 bg-white text-primary-600 rounded-xl font-bold hover:bg-gray-50 transition-all shadow-lg hover:scale-105 disabled:opacity-70 disabled:cursor-not-allowed"
+                  variant="secondary"
+                  size="lg"
                 >
                   {isSubmitting ? '신청 중...' : isEnrolled ? '수강 신청 완료' : '지금 등록하기'}
-                </button>
+                </Button>
               </div>
               {enrollMessage && (
                 <p className="text-sm font-semibold text-white/90 mt-3">{enrollMessage}</p>
@@ -183,12 +226,26 @@ export default function LectureDetailPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+            <div className="ds-panel p-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">강의 소개</h2>
               <p className="text-gray-600 leading-relaxed whitespace-pre-line">{lecture.description}</p>
             </div>
+            <div className="ds-panel p-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">학습 안내</h2>
+              <div className="space-y-4 text-sm text-gray-700">
+                <div><p className="text-gray-500">짧은 소개</p><p className="font-medium">{lecture.shortDescription || '정보 없음'}</p></div>
+                <div><p className="text-gray-500">대상 학습자</p><p className="whitespace-pre-line">{lecture.targetAudience || '정보 없음'}</p></div>
+                <div><p className="text-gray-500">사전 요구사항</p><p className="whitespace-pre-line">{lecture.prerequisites || '없음'}</p></div>
+                {lecture.whatYouWillLearn && lecture.whatYouWillLearn.length > 0 && (
+                  <div>
+                    <p className="text-gray-500 mb-1">배우게 될 내용</p>
+                    <ul className="list-disc pl-5 space-y-1">{lecture.whatYouWillLearn.map((x, i) => <li key={i}>{x}</li>)}</ul>
+                  </div>
+                )}
+              </div>
+            </div>
 
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+            <div className="ds-panel p-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">커리큘럼 하이라이트</h2>
               <ul className="space-y-3">
                 {syllabus.map((line, i) => (
@@ -202,7 +259,7 @@ export default function LectureDetailPage() {
           </div>
 
           <div className="space-y-6">
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 sticky top-24">
+            <div className="ds-panel p-6 sticky top-24">
               <h3 className="text-xl font-bold text-gray-900 mb-4">강의 정보</h3>
               <div className="space-y-4 text-sm">
                 <div>
@@ -212,6 +269,18 @@ export default function LectureDetailPage() {
                 <div>
                   <div className="text-gray-600 mb-1">기간</div>
                   <div className="font-semibold text-gray-900">{lecture.duration}</div>
+                </div>
+                <div>
+                  <div className="text-gray-600 mb-1">난이도</div>
+                  <div className="font-semibold text-gray-900">{lecture.difficulty || 'beginner'}</div>
+                </div>
+                <div>
+                  <div className="text-gray-600 mb-1">총 레슨 / 시간</div>
+                  <div className="font-semibold text-gray-900">{lecture.totalLessons || 0}개 / {lecture.totalHours || 0}h</div>
+                </div>
+                <div>
+                  <div className="text-gray-600 mb-1">최대 수강생</div>
+                  <div className="font-semibold text-gray-900">{lecture.maxStudents || 30}명</div>
                 </div>
                 <div>
                   <div className="text-gray-600 mb-1">수강생</div>
@@ -224,14 +293,15 @@ export default function LectureDetailPage() {
                     <span className="font-semibold text-gray-900">{lecture.rating}</span>
                   </div>
                 </div>
-                <button
+                <Button
                   type="button"
                   onClick={enroll}
                   disabled={isSubmitting || isEnrolled}
-                  className="w-full bg-gradient-to-r from-primary-500 to-accent-500 text-white py-4 rounded-xl font-bold hover:shadow-lg transition-all hover:scale-[1.02] disabled:opacity-70 disabled:cursor-not-allowed"
+                  fullWidth
+                  size="lg"
                 >
                   {isSubmitting ? '신청 중...' : isEnrolled ? '수강 신청 완료' : '지금 등록하기'}
-                </button>
+                </Button>
                 {enrollMessage && (
                   <p className="text-xs text-primary-700 font-semibold">{enrollMessage}</p>
                 )}

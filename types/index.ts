@@ -14,6 +14,18 @@ export interface Mentor {
   photo?: string;
   verified: boolean;
   bio: string;
+  yearsOfExperience?: number;
+  education?: string;
+  careerSummary?: string;
+  sessionDuration?: number;
+  sessionFormat?: 'online' | 'offline' | 'both';
+  timezone?: string;
+  responseTime?: string;
+  introVideoUrl?: string;
+  portfolioLinks?: string[];
+  mentoringStyle?: string;
+  recommendedFor?: string;
+  notRecommendedFor?: string;
 }
 
 export interface Lecture {
@@ -28,6 +40,19 @@ export interface Lecture {
   students: number;
   image: string;
   description: string;
+  shortDescription?: string;
+  targetAudience?: string;
+  prerequisites?: string;
+  whatYouWillLearn?: string[];
+  curriculum?: string[];
+  totalLessons?: number;
+  totalHours?: number;
+  difficulty?: 'beginner' | 'intermediate' | 'advanced';
+  maxStudents?: number;
+  language?: string;
+  previewVideoUrl?: string;
+  materialsIncluded?: string[];
+  faq?: string[];
 }
 
 export interface CommunityGroup {

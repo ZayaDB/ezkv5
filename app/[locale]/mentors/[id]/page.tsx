@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { formatMentorHourlyPrice } from '@/lib/format/price';
 import type { Mentor } from '@/types';
+import Button from '@/components/ui/Button';
 
 type MentorDetail = Mentor & { email?: string };
 
@@ -173,12 +174,26 @@ export default function MentorDetailPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+            <div className="ds-panel p-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">소개</h2>
               <p className="text-gray-600 leading-relaxed whitespace-pre-line">{mentor.bio}</p>
             </div>
+            <div className="ds-panel p-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">멘토링 정보</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div><span className="text-gray-500">경력</span><p className="font-semibold text-gray-900">{mentor.yearsOfExperience || 0}년</p></div>
+                <div><span className="text-gray-500">세션 시간</span><p className="font-semibold text-gray-900">{mentor.sessionDuration || 60}분</p></div>
+                <div><span className="text-gray-500">세션 형식</span><p className="font-semibold text-gray-900">{mentor.sessionFormat || 'online'}</p></div>
+                <div><span className="text-gray-500">시간대</span><p className="font-semibold text-gray-900">{mentor.timezone || 'Asia/Seoul'}</p></div>
+                <div className="md:col-span-2"><span className="text-gray-500">학력/자격</span><p className="font-semibold text-gray-900">{mentor.education || '정보 없음'}</p></div>
+                <div className="md:col-span-2"><span className="text-gray-500">경력 요약</span><p className="text-gray-700 whitespace-pre-line">{mentor.careerSummary || '정보 없음'}</p></div>
+                <div className="md:col-span-2"><span className="text-gray-500">멘토링 스타일</span><p className="text-gray-700 whitespace-pre-line">{mentor.mentoringStyle || '정보 없음'}</p></div>
+                <div className="md:col-span-2"><span className="text-gray-500">추천 대상</span><p className="text-gray-700 whitespace-pre-line">{mentor.recommendedFor || '정보 없음'}</p></div>
+                <div className="md:col-span-2"><span className="text-gray-500">비추천 대상</span><p className="text-gray-700 whitespace-pre-line">{mentor.notRecommendedFor || '정보 없음'}</p></div>
+              </div>
+            </div>
 
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+            <div className="ds-panel p-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">전문 분야</h2>
               <div className="flex flex-wrap gap-3">
                 {mentor.specialties.map((specialty) => (
@@ -192,7 +207,7 @@ export default function MentorDetailPage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+            <div className="ds-panel p-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">언어</h2>
               <div className="flex flex-wrap gap-3">
                 {mentor.languages.map((lang) => (
@@ -205,7 +220,7 @@ export default function MentorDetailPage() {
           </div>
 
           <div className="space-y-6">
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 sticky top-24">
+            <div className="ds-panel p-6 sticky top-24">
               <h3 className="text-xl font-bold text-gray-900 mb-4">세션 예약</h3>
               <div className="space-y-4">
                 <div>
@@ -214,36 +229,38 @@ export default function MentorDetailPage() {
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-600">
                   <Clock className="w-4 h-4" />
-                  <span>평균 응답: 영업일 기준 당일~48시간</span>
+                  <span>평균 응답: {mentor.responseTime || '영업일 기준 당일~48시간'}</span>
                 </div>
                 {mentor.availability === 'available' && (
                   <div className="px-4 py-2 bg-accent-50 text-accent-700 rounded-xl text-sm font-semibold text-center">
                     예약 문의 가능
                   </div>
                 )}
-                <button
+                <Button
                   type="button"
                   onClick={handleBookSession}
                   disabled={isBooking}
-                  className="w-full bg-gradient-to-r from-primary-500 to-accent-500 text-white py-4 rounded-xl font-bold hover:shadow-lg transition-all hover:scale-[1.02] disabled:opacity-70 disabled:cursor-not-allowed"
+                  fullWidth
+                  size="lg"
                 >
                   {isBooking ? '예약 중...' : '세션 예약하기'}
-                </button>
-                <button
+                </Button>
+                <Button
                   type="button"
                   onClick={handleBookSession}
-                  className="w-full border-2 border-gray-200 text-gray-700 py-3 rounded-xl font-semibold hover:border-primary-300 hover:text-primary-600 transition-all"
+                  variant="secondary"
+                  fullWidth
                 >
                   <MessageCircle className="w-5 h-5 inline mr-2" />
                   메시지 보내기
-                </button>
+                </Button>
                 {bookingMessage && (
                   <p className="text-xs text-primary-700 font-semibold">{bookingMessage}</p>
                 )}
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+            <div className="ds-panel p-6">
               <h3 className="text-lg font-bold text-gray-900 mb-4">통계</h3>
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">

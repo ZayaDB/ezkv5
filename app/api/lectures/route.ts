@@ -73,13 +73,46 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { title, type, category, price, duration, description, image } = body;
+    const {
+      title,
+      type,
+      category,
+      price,
+      duration,
+      description,
+      image,
+      shortDescription,
+      targetAudience,
+      prerequisites,
+      whatYouWillLearn,
+      curriculum,
+      totalLessons,
+      totalHours,
+      difficulty,
+      maxStudents,
+      language,
+      previewVideoUrl,
+      materialsIncluded,
+      faq,
+    } = body;
 
     if (!title || !type || !category || !duration || description === undefined || description === null) {
       return NextResponse.json(
         { error: "title, type, category, duration, description은 필수입니다." },
         { status: 400 }
       );
+    }
+    if (!shortDescription || String(shortDescription).trim().length < 20) {
+      return NextResponse.json({ error: "짧은 소개는 20자 이상 입력해 주세요." }, { status: 400 });
+    }
+    if (!targetAudience || String(targetAudience).trim().length < 10) {
+      return NextResponse.json({ error: "대상 학습자를 10자 이상 입력해 주세요." }, { status: 400 });
+    }
+    if (!Array.isArray(whatYouWillLearn) || whatYouWillLearn.filter(Boolean).length < 3) {
+      return NextResponse.json({ error: "학습 포인트를 3개 이상 입력해 주세요." }, { status: 400 });
+    }
+    if (!Array.isArray(curriculum) || curriculum.filter(Boolean).length < 1) {
+      return NextResponse.json({ error: "커리큘럼을 1개 이상 입력해 주세요." }, { status: 400 });
     }
     if (type !== "online" && type !== "offline") {
       return NextResponse.json({ error: "type은 online 또는 offline이어야 합니다." }, { status: 400 });
@@ -94,6 +127,19 @@ export async function POST(request: NextRequest) {
       duration: String(duration).trim(),
       description: String(description),
       image: typeof image === "string" ? image : "",
+      shortDescription: String(shortDescription || ''),
+      targetAudience: String(targetAudience || ''),
+      prerequisites: String(prerequisites || ''),
+      whatYouWillLearn: Array.isArray(whatYouWillLearn) ? whatYouWillLearn : [],
+      curriculum: Array.isArray(curriculum) ? curriculum : [],
+      totalLessons: Number(totalLessons) || 0,
+      totalHours: Number(totalHours) || 0,
+      difficulty: difficulty === 'advanced' || difficulty === 'intermediate' ? difficulty : 'beginner',
+      maxStudents: Math.max(1, Number(maxStudents) || 30),
+      language: typeof language === 'string' ? language : 'ko',
+      previewVideoUrl: typeof previewVideoUrl === 'string' ? previewVideoUrl : '',
+      materialsIncluded: Array.isArray(materialsIncluded) ? materialsIncluded : [],
+      faq: Array.isArray(faq) ? faq : [],
       rating: 0,
       students: 0,
     });

@@ -16,7 +16,7 @@ export default function MentorCard({ mentor }: MentorCardProps) {
 
   return (
     <Link href={`/${locale}/mentors/${mentor.id}`}>
-      <div className="group bg-white rounded-2xl border border-gray-100 p-6 hover:shadow-2xl transition-all duration-300 cursor-pointer hover:-translate-y-1 overflow-hidden relative">
+      <div className="group bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-700 p-6 hover:shadow-2xl transition-all duration-300 cursor-pointer hover:-translate-y-1 overflow-hidden relative">
         {/* Gradient overlay on hover */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 to-accent-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl"></div>
         
@@ -29,19 +29,19 @@ export default function MentorCard({ mentor }: MentorCardProps) {
                 </span>
               </div>
               {mentor.verified && (
-                <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-md">
+                <div className="absolute -bottom-1 -right-1 bg-white dark:bg-slate-900 rounded-full p-1 shadow-md">
                   <CheckCircle className="w-5 h-5 text-primary-500 fill-primary-500" />
                 </div>
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="text-xl font-bold text-gray-900 truncate mb-1 group-hover:text-primary-600 transition-colors">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-slate-100 truncate mb-1 group-hover:text-primary-600 transition-colors">
                 {mentor.name}
               </h3>
-              <p className="text-sm text-gray-600 truncate mb-2">{mentor.title}</p>
+              <p className="text-sm text-gray-600 dark:text-slate-400 truncate mb-2">{mentor.title}</p>
               <div className="flex items-center gap-1.5">
-                <MapPin className="w-4 h-4 text-gray-400" />
-                <span className="text-sm text-gray-500">{mentor.location}</span>
+                <MapPin className="w-4 h-4 text-gray-400 dark:text-slate-500" />
+                <span className="text-sm text-gray-500 dark:text-slate-400">{mentor.location}</span>
               </div>
             </div>
           </div>
@@ -49,27 +49,27 @@ export default function MentorCard({ mentor }: MentorCardProps) {
           <div className="flex items-center gap-2 mb-4">
             <div className="flex items-center gap-1">
               <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-              <span className="text-base font-bold text-gray-900">{mentor.rating}</span>
+              <span className="text-base font-bold text-gray-900 dark:text-slate-100">{mentor.rating}</span>
             </div>
-            <span className="text-sm text-gray-500">({mentor.reviewCount.toLocaleString()} reviews)</span>
+            <span className="text-sm text-gray-500 dark:text-slate-400">({mentor.reviewCount.toLocaleString()} reviews)</span>
           </div>
 
           <div className="flex flex-wrap gap-2 mb-5">
             {mentor.specialties.slice(0, 3).map((specialty) => (
               <span
                 key={specialty}
-                className="px-3 py-1.5 bg-gradient-to-r from-gray-50 to-gray-100 text-gray-700 text-xs font-medium rounded-lg border border-gray-200 group-hover:border-primary-200 group-hover:bg-primary-50 transition-all"
+                className="px-3 py-1.5 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-slate-800 dark:to-slate-700 text-gray-700 dark:text-slate-300 text-xs font-medium rounded-lg border border-gray-200 dark:border-slate-600 group-hover:border-primary-200 group-hover:bg-primary-50 dark:group-hover:bg-primary-500/10 transition-all"
               >
                 {specialty}
               </span>
             ))}
           </div>
 
-          <div className="flex items-center justify-between pt-5 border-t border-gray-100">
+          <div className="flex items-center justify-between pt-5 border-t border-gray-100 dark:border-slate-700">
             <div>
-              <span className="text-3xl font-extrabold text-gray-900">{priceDisplay.label}</span>
+              <span className="text-3xl font-extrabold text-gray-900 dark:text-slate-100">{priceDisplay.label}</span>
               {priceDisplay.suffix && (
-                <span className="text-sm text-gray-500 ml-1">{priceDisplay.suffix}</span>
+                <span className="text-sm text-gray-500 dark:text-slate-400 ml-1">{priceDisplay.suffix}</span>
               )}
             </div>
             <div className="flex items-center gap-2">

@@ -17,6 +17,18 @@ export interface IMentor extends Document {
   bio: string;
   rating: number;
   reviewCount: number;
+  yearsOfExperience?: number;
+  education?: string;
+  careerSummary?: string;
+  sessionDuration?: number;
+  sessionFormat?: 'online' | 'offline' | 'both';
+  timezone?: string;
+  responseTime?: string;
+  introVideoUrl?: string;
+  portfolioLinks?: string[];
+  mentoringStyle?: string;
+  recommendedFor?: string;
+  notRecommendedFor?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -79,6 +91,59 @@ const MentorSchema = new Schema<IMentor>(
     reviewCount: {
       type: Number,
       default: 0,
+    },
+    yearsOfExperience: {
+      type: Number,
+      min: 0,
+      max: 60,
+      default: 0,
+    },
+    education: {
+      type: String,
+      default: '',
+    },
+    careerSummary: {
+      type: String,
+      default: '',
+    },
+    sessionDuration: {
+      type: Number,
+      min: 15,
+      max: 240,
+      default: 60,
+    },
+    sessionFormat: {
+      type: String,
+      enum: ['online', 'offline', 'both'],
+      default: 'online',
+    },
+    timezone: {
+      type: String,
+      default: 'Asia/Seoul',
+    },
+    responseTime: {
+      type: String,
+      default: '',
+    },
+    introVideoUrl: {
+      type: String,
+      default: '',
+    },
+    portfolioLinks: {
+      type: [String],
+      default: [],
+    },
+    mentoringStyle: {
+      type: String,
+      default: '',
+    },
+    recommendedFor: {
+      type: String,
+      default: '',
+    },
+    notRecommendedFor: {
+      type: String,
+      default: '',
     },
   },
   {

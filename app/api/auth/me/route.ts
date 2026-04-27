@@ -21,6 +21,10 @@ function publicUser(userData: Record<string, unknown>) {
   };
 }
 
+function isValidPhone(v: string): boolean {
+  return /^[0-9+\-\s()]{8,20}$/.test(v);
+}
+
 // GET: 현재 로그인한 사용자 정보 조회
 export async function GET(request: NextRequest) {
   try {
@@ -61,11 +65,38 @@ export async function PATCH(request: NextRequest) {
     const { name, avatar, bio, location, phone, address, languages, locale, currentPassword, newPassword } = body;
 
     const update: Record<string, unknown> = {};
-    if (typeof name === 'string' && name.trim()) update.name = name.trim();
+    if (typeof name === 'string') {
+      const vv = name.trim();
+      if (!vv) {
+        return NextResponse.json({ error: '이름은 필수입니다.' }, { status: 400 });
+      }
+      if (vv.length < 2 || vv.length > 40) {
+        return NextResponse.json({ error: '이름은 2~40자로 입력해 주세요.' }, { status: 400 });
+      }
+      update.name = vv;
+    }
     if (typeof avatar === 'string') update.avatar = avatar;
     if (typeof bio === 'string') update.bio = bio;
-    if (typeof location === 'string') update.location = location;
-    if (typeof phone === 'string') update.phone = phone;
+    if (typeof location === 'string') {
+      const vv = location.trim();
+      if (!vv) {
+        return NextResponse.json({ error: '활동 지역은 필수입니다.' }, { status: 400 });
+      }
+      if (vv.length < 2 || vv.length > 80) {
+        return NextResponse.json({ error: '활동 지역은 2~80자로 입력해 주세요.' }, { status: 400 });
+      }
+      update.location = vv;
+    }
+    if (typeof phone === 'string') {
+      const vv = phone.trim();
+      if (!vv) {
+        return NextResponse.json({ error: '전화번호는 필수입니다.' }, { status: 400 });
+      }
+      if (!isValidPhone(vv)) {
+        return NextResponse.json({ error: '전화번호 형식이 올바르지 않습니다.' }, { status: 400 });
+      }
+      update.phone = vv;
+    }
     if (typeof address === 'string') update.address = address;
     if (Array.isArray(languages)) update.languages = languages.filter((x: unknown) => typeof x === 'string');
     if (locale === 'kr' || locale === 'en' || locale === 'mn') update.locale = locale;

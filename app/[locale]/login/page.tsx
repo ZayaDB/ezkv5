@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import { Mail, Lock, ArrowRight, Sparkles } from 'lucide-react';
 
@@ -67,19 +68,23 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-3 mb-4">
-            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-2xl">
-              <span className="text-white font-bold text-3xl bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent">
-                M
-              </span>
+          <div className="inline-flex items-center mb-4">
+            <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-2xl ring-1 ring-white/40 bg-white">
+              <Image
+                src="/logo/logo.png"
+                alt="logo"
+                width={64}
+                height={64}
+                className="w-full h-full object-cover"
+                priority
+              />
             </div>
-            <h1 className="text-4xl font-extrabold text-white">MentorLink</h1>
           </div>
           <p className="text-white/90 text-lg">{t('welcomeBack')}</p>
         </div>
 
         {/* Login Form */}
-        <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl p-8">
+        <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl shadow-2xl p-8 border border-white/30 dark:border-slate-700">
           <form onSubmit={handleSubmit} className="space-y-6">
             {signupSuccess && (
               <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl flex items-center gap-2">
@@ -96,34 +101,34 @@ export default function LoginPage() {
             )}
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-slate-200 mb-2">
                 {t('email')}
               </label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-slate-500" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                  className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
                   placeholder={t('emailPlaceholder')}
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-slate-200 mb-2">
                 {t('password')}
               </label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-slate-500" />
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                  className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
                   placeholder={t('passwordPlaceholder')}
                 />
               </div>
@@ -132,7 +137,7 @@ export default function LoginPage() {
             <div className="flex items-center justify-between">
               <label className="flex items-center">
                 <input type="checkbox" className="w-4 h-4 text-primary-500 rounded" />
-                <span className="ml-2 text-sm text-gray-600">{t('rememberMe')}</span>
+                <span className="ml-2 text-sm text-gray-600 dark:text-slate-300">{t('rememberMe')}</span>
               </label>
               <Link
                 href={`/${locale}/forgot-password`}
@@ -162,7 +167,7 @@ export default function LoginPage() {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-slate-300">
               {t('noAccount')}{' '}
               <Link
                 href={`/${locale}/signup`}

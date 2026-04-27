@@ -9,6 +9,13 @@ import { useAuth } from "@/lib/contexts/AuthContext";
 import { lecturesApi } from "@/lib/api/client";
 import PlatformCard from "@/components/ui/PlatformCard";
 import Toast from "@/components/ui/Toast";
+import Button from "@/components/ui/Button";
+import Field from "@/components/ui/Field";
+import FormError from "@/components/ui/FormError";
+import Input from "@/components/ui/Input";
+import SectionTitle from "@/components/ui/SectionTitle";
+import Select from "@/components/ui/Select";
+import Textarea from "@/components/ui/Textarea";
 
 export default function MentorLectureNewPage() {
   const t = useTranslations("profilePage.lectureNew");
@@ -28,6 +35,19 @@ export default function MentorLectureNewPage() {
   const [duration, setDuration] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState("");
+  const [shortDescription, setShortDescription] = useState("");
+  const [targetAudience, setTargetAudience] = useState("");
+  const [prerequisites, setPrerequisites] = useState("");
+  const [whatYouWillLearn, setWhatYouWillLearn] = useState("");
+  const [curriculum, setCurriculum] = useState("");
+  const [totalLessons, setTotalLessons] = useState("0");
+  const [totalHours, setTotalHours] = useState("0");
+  const [difficulty, setDifficulty] = useState<"beginner" | "intermediate" | "advanced">("beginner");
+  const [maxStudents, setMaxStudents] = useState("30");
+  const [language, setLanguage] = useState("ko");
+  const [previewVideoUrl, setPreviewVideoUrl] = useState("");
+  const [materialsIncluded, setMaterialsIncluded] = useState("");
+  const [faq, setFaq] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [toast, setToast] = useState<{ message: string; variant: "success" | "error" } | null>(
     null
@@ -57,6 +77,19 @@ export default function MentorLectureNewPage() {
       duration: duration.trim() || "-",
       description: description.trim(),
       image: image.trim() || undefined,
+      shortDescription: shortDescription.trim(),
+      targetAudience: targetAudience.trim(),
+      prerequisites: prerequisites.trim(),
+      whatYouWillLearn: whatYouWillLearn.split("\n").map((x) => x.trim()).filter(Boolean),
+      curriculum: curriculum.split("\n").map((x) => x.trim()).filter(Boolean),
+      totalLessons: parseInt(totalLessons, 10) || 0,
+      totalHours: parseFloat(totalHours) || 0,
+      difficulty,
+      maxStudents: parseInt(maxStudents, 10) || 30,
+      language,
+      previewVideoUrl: previewVideoUrl.trim(),
+      materialsIncluded: materialsIncluded.split("\n").map((x) => x.trim()).filter(Boolean),
+      faq: faq.split("\n").map((x) => x.trim()).filter(Boolean),
     });
     setSubmitting(false);
     if (res.error) {
@@ -86,22 +119,18 @@ export default function MentorLectureNewPage() {
           {t("back")}
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">{t("title")}</h1>
-          <p className="text-sm text-slate-600 mt-1">{t("subtitle")}</p>
+          <SectionTitle title={t("title")} description={t("subtitle")} />
         </div>
         <PlatformCard>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">{t("courseTitle")}</label>
-              <input
+            <Field label={t("courseTitle")} required>
+              <Input
                 required
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
               />
-            </div>
-            <div>
-              <span className="block text-sm font-medium text-slate-700 mb-1">{t("type")}</span>
+            </Field>
+            <Field label={t("type")} required>
               <div className="flex gap-3">
                 <label className="flex items-center gap-2 text-sm">
                   <input
@@ -120,60 +149,137 @@ export default function MentorLectureNewPage() {
                   {t("offline")}
                 </label>
               </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">{t("category")}</label>
-              <input
+            </Field>
+            <Field label={t("category")} required>
+              <Input
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
               />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">{t("price")}</label>
-              <input
+            </Field>
+            <Field label={t("price")} required>
+              <Input
                 type="number"
                 min={0}
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
               />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">{t("duration")}</label>
-              <input
+            </Field>
+            <Field label={t("duration")} required>
+              <Input
                 required
                 value={duration}
                 onChange={(e) => setDuration(e.target.value)}
                 placeholder="예: 8주 / 1일 워크숍"
-                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
               />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">{t("description")}</label>
-              <textarea
+            </Field>
+            <Field label="짧은 소개" required>
+              <Textarea
+                required
+                rows={2}
+                value={shortDescription}
+                onChange={(e) => setShortDescription(e.target.value)}
+              />
+            </Field>
+            <Field label={t("description")} required>
+              <Textarea
                 required
                 rows={5}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
               />
+            </Field>
+            <div>
+              <Field label="대상 학습자" required>
+              <Textarea
+                required
+                rows={2}
+                value={targetAudience}
+                onChange={(e) => setTargetAudience(e.target.value)}
+              />
+              </Field></div>
+            <div>
+              <Field label="사전 요구사항">
+              <Textarea
+                rows={2}
+                value={prerequisites}
+                onChange={(e) => setPrerequisites(e.target.value)}
+              />
+              </Field></div>
+            <div>
+              <Field label="학습 포인트(줄바꿈 3개 이상)" required>
+              <Textarea
+                required
+                rows={4}
+                value={whatYouWillLearn}
+                onChange={(e) => setWhatYouWillLearn(e.target.value)}
+              />
+              </Field></div>
+            <div>
+              <Field label="커리큘럼(줄바꿈)" required>
+              <Textarea
+                required
+                rows={4}
+                value={curriculum}
+                onChange={(e) => setCurriculum(e.target.value)}
+              />
+              </Field></div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">총 레슨 수</label>
+                <Input type="number" min={0} value={totalLessons} onChange={(e) => setTotalLessons(e.target.value)} />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">총 시간(시간)</label>
+                <Input type="number" min={0} step="0.5" value={totalHours} onChange={(e) => setTotalHours(e.target.value)} />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">난이도</label>
+                <Select value={difficulty} onChange={(e) => setDifficulty(e.target.value as typeof difficulty)}>
+                  <option value="beginner">초급</option>
+                  <option value="intermediate">중급</option>
+                  <option value="advanced">고급</option>
+                </Select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">최대 수강생</label>
+                <Input type="number" min={1} value={maxStudents} onChange={(e) => setMaxStudents(e.target.value)} />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">강의 언어</label>
+                <Input value={language} onChange={(e) => setLanguage(e.target.value)} />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">미리보기 영상 URL</label>
+                <Input value={previewVideoUrl} onChange={(e) => setPreviewVideoUrl(e.target.value)} />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">제공 자료(줄바꿈)</label>
+              <Textarea rows={3} value={materialsIncluded} onChange={(e) => setMaterialsIncluded(e.target.value)} />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">FAQ(줄바꿈)</label>
+              <Textarea rows={3} value={faq} onChange={(e) => setFaq(e.target.value)} />
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">{t("imageUrl")}</label>
-              <input
+              <Input
                 value={image}
                 onChange={(e) => setImage(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
               />
             </div>
-            <button
+            <FormError message={toast?.variant === "error" ? toast.message : ""} />
+            <Button
               type="submit"
               disabled={submitting}
-              className="w-full rounded-xl bg-primary-600 py-3 text-sm font-semibold text-white hover:bg-primary-700 disabled:opacity-60"
+              fullWidth
             >
               {submitting ? "…" : t("submit")}
-            </button>
+            </Button>
           </form>
         </PlatformCard>
       </div>

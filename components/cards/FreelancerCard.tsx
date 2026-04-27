@@ -15,12 +15,12 @@ export default function FreelancerCard({ group }: FreelancerCardProps) {
 
   return (
     <Link href={`/${locale}/freelancers/${group.id}`}>
-      <div className="group bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-300 cursor-pointer hover:-translate-y-1 relative">
+      <div className="group bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-700 overflow-hidden hover:shadow-2xl transition-all duration-300 cursor-pointer hover:-translate-y-1 relative">
         {/* Gradient Image Header */}
         <div className="relative h-40 bg-gradient-to-br from-orange-500 via-red-500 to-pink-500 overflow-hidden">
           <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors"></div>
           <div className="absolute top-4 left-4">
-            <span className="px-3 py-1.5 bg-white/90 backdrop-blur-sm text-gray-700 text-xs font-semibold rounded-lg">
+            <span className="px-3 py-1.5 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm text-gray-700 dark:text-slate-200 text-xs font-semibold rounded-lg">
               {group.category}
             </span>
           </div>
@@ -32,30 +32,30 @@ export default function FreelancerCard({ group }: FreelancerCardProps) {
         </div>
         
         <div className="p-6">
-          <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors">
+          <h3 className="text-xl font-bold text-gray-900 dark:text-slate-100 mb-2 group-hover:text-primary-600 transition-colors">
             {group.name}
           </h3>
-          <p className="text-sm text-gray-600 mb-5 line-clamp-2 leading-relaxed">
+          <p className="text-sm text-gray-600 dark:text-slate-400 mb-5 line-clamp-2 leading-relaxed">
             {group.description}
           </p>
           
-          <div className="flex items-center gap-6 mb-5 pb-5 border-b border-gray-100">
+          <div className="flex items-center gap-6 mb-5 pb-5 border-b border-gray-100 dark:border-slate-700">
             <div className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-primary-50 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-primary-50 dark:bg-primary-500/15 rounded-xl flex items-center justify-center">
                 <Users className="w-5 h-5 text-primary-600" />
               </div>
               <div>
-                <div className="text-xs text-gray-500">멤버</div>
-                <div className="text-sm font-bold text-gray-900">{group.members.toLocaleString()}</div>
+                <div className="text-xs text-gray-500 dark:text-slate-400">멤버</div>
+                <div className="text-sm font-bold text-gray-900 dark:text-slate-100">{group.members.toLocaleString()}</div>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-accent-50 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-accent-50 dark:bg-accent-500/15 rounded-xl flex items-center justify-center">
                 <Briefcase className="w-5 h-5 text-accent-600" />
               </div>
               <div>
-                <div className="text-xs text-gray-500">채용 공고</div>
-                <div className="text-sm font-bold text-gray-900">{group.jobsPosted}개</div>
+                <div className="text-xs text-gray-500 dark:text-slate-400">채용 공고</div>
+                <div className="text-sm font-bold text-gray-900 dark:text-slate-100">{group.jobsPosted}개</div>
               </div>
             </div>
           </div>

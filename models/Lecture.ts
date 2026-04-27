@@ -11,6 +11,19 @@ export interface ILecture extends Document {
   students: number;
   image?: string;
   description: string;
+  shortDescription?: string;
+  targetAudience?: string;
+  prerequisites?: string;
+  whatYouWillLearn?: string[];
+  curriculum?: string[];
+  totalLessons?: number;
+  totalHours?: number;
+  difficulty?: 'beginner' | 'intermediate' | 'advanced';
+  maxStudents?: number;
+  language?: string;
+  previewVideoUrl?: string;
+  materialsIncluded?: string[];
+  faq?: string[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -60,6 +73,62 @@ const LectureSchema = new Schema<ILecture>(
     description: {
       type: String,
       required: true,
+    },
+    shortDescription: {
+      type: String,
+      default: '',
+    },
+    targetAudience: {
+      type: String,
+      default: '',
+    },
+    prerequisites: {
+      type: String,
+      default: '',
+    },
+    whatYouWillLearn: {
+      type: [String],
+      default: [],
+    },
+    curriculum: {
+      type: [String],
+      default: [],
+    },
+    totalLessons: {
+      type: Number,
+      min: 0,
+      default: 0,
+    },
+    totalHours: {
+      type: Number,
+      min: 0,
+      default: 0,
+    },
+    difficulty: {
+      type: String,
+      enum: ['beginner', 'intermediate', 'advanced'],
+      default: 'beginner',
+    },
+    maxStudents: {
+      type: Number,
+      min: 1,
+      default: 30,
+    },
+    language: {
+      type: String,
+      default: 'ko',
+    },
+    previewVideoUrl: {
+      type: String,
+      default: '',
+    },
+    materialsIncluded: {
+      type: [String],
+      default: [],
+    },
+    faq: {
+      type: [String],
+      default: [],
     },
   },
   {

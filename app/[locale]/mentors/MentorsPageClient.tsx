@@ -30,7 +30,7 @@ export default function MentorsPageClient({ initialMentors, locale }: Props) {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
       <div className="relative overflow-hidden bg-gradient-to-br from-primary-600 via-primary-500 to-accent-500 py-16">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.06\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-40" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -40,8 +40,8 @@ export default function MentorsPageClient({ initialMentors, locale }: Props) {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="mb-10 bg-white rounded-2xl p-6 shadow-lg border border-gray-100/80 backdrop-blur-sm">
-          <p className="text-sm font-medium text-gray-500 mb-3">분야로 찾기</p>
+        <div className="mb-10 bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-lg border border-gray-100/80 dark:border-slate-700 backdrop-blur-sm">
+          <p className="text-sm font-medium text-gray-500 dark:text-slate-400 mb-3">분야로 찾기</p>
           <div className="flex flex-wrap gap-3">
             <button
               type="button"
@@ -49,7 +49,7 @@ export default function MentorsPageClient({ initialMentors, locale }: Props) {
               className={`px-6 py-3 rounded-xl font-semibold transition-all ${
                 selectedCategory === null
                   ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-md'
-                  : 'bg-white border-2 border-gray-200 text-gray-700 hover:border-primary-300 hover:text-primary-600 hover:bg-primary-50'
+                  : 'bg-white dark:bg-slate-900 border-2 border-gray-200 dark:border-slate-700 text-gray-700 dark:text-slate-300 hover:border-primary-300 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-500/10'
               }`}
             >
               전체
@@ -62,7 +62,7 @@ export default function MentorsPageClient({ initialMentors, locale }: Props) {
                 className={`px-6 py-3 rounded-xl font-semibold transition-all ${
                   selectedCategory === category.key
                     ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-md'
-                    : 'bg-white border-2 border-gray-200 text-gray-700 hover:border-primary-300 hover:text-primary-600 hover:bg-primary-50'
+                    : 'bg-white dark:bg-slate-900 border-2 border-gray-200 dark:border-slate-700 text-gray-700 dark:text-slate-300 hover:border-primary-300 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-500/10'
                 }`}
               >
                 {category.label}
@@ -72,8 +72,8 @@ export default function MentorsPageClient({ initialMentors, locale }: Props) {
         </div>
 
         <div className="mb-6 flex items-center justify-between flex-wrap gap-4">
-          <p className="text-gray-600">
-            <span className="font-semibold text-gray-900">{filteredMentors.length}</span>명의 멘토
+          <p className="text-gray-600 dark:text-slate-400">
+            <span className="font-semibold text-gray-900 dark:text-slate-100">{filteredMentors.length}</span>명의 멘토
           </p>
         </div>
 
@@ -91,8 +91,8 @@ export default function MentorsPageClient({ initialMentors, locale }: Props) {
             ))}
           </div>
         ) : (
-          <div className="text-center py-16 rounded-2xl bg-white border border-gray-100 shadow-sm">
-            <p className="text-gray-600 text-lg">선택한 카테고리에 해당하는 멘토가 없습니다.</p>
+          <div className="text-center py-16 rounded-2xl bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-700 shadow-sm">
+            <p className="text-gray-600 dark:text-slate-400 text-lg">선택한 카테고리에 해당하는 멘토가 없습니다.</p>
             <button
               type="button"
               onClick={() => setSelectedCategory(null)}

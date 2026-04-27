@@ -211,6 +211,18 @@ export const mentorsApi = {
     price?: number | string;
     availability?: string;
     photo?: string;
+    sessionDuration?: number;
+    sessionFormat?: "online" | "offline" | "both";
+    yearsOfExperience?: number;
+    education?: string;
+    careerSummary?: string;
+    responseTime?: string;
+    timezone?: string;
+    introVideoUrl?: string;
+    portfolioLinks?: string[];
+    mentoringStyle?: string;
+    recommendedFor?: string;
+    notRecommendedFor?: string;
   }) => {
     return apiRequest<any>("/api/mentors", {
       method: "POST",
@@ -231,6 +243,19 @@ export const lecturesApi = {
     duration: string;
     description: string;
     image?: string;
+    shortDescription?: string;
+    targetAudience?: string;
+    prerequisites?: string;
+    whatYouWillLearn?: string[];
+    curriculum?: string[];
+    totalLessons?: number;
+    totalHours?: number;
+    difficulty?: "beginner" | "intermediate" | "advanced";
+    maxStudents?: number;
+    language?: string;
+    previewVideoUrl?: string;
+    materialsIncluded?: string[];
+    faq?: string[];
   }) => {
     return apiRequest<any>("/api/lectures", {
       method: "POST",
@@ -568,6 +593,23 @@ export const lifePlanApi = {
   },
   deleteLifeEvent: async (id: string) => {
     return apiRequest<{ ok: boolean }>(`/api/me/life-events/${id}`, { method: "DELETE" });
+  },
+};
+
+export const lectureWishlistApi = {
+  list: async () => {
+    return apiRequest<{ wishlist: { id: string; lectureId: string; lecture: any }[] }>("/api/me/wishlist");
+  },
+  add: async (lectureId: string) => {
+    return apiRequest<{ ok: boolean }>("/api/me/wishlist", {
+      method: "POST",
+      body: JSON.stringify({ lectureId }),
+    });
+  },
+  remove: async (lectureId: string) => {
+    return apiRequest<{ ok: boolean }>(`/api/me/wishlist/${lectureId}`, {
+      method: "DELETE",
+    });
   },
 };
 

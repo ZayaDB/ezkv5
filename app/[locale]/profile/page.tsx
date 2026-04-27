@@ -20,6 +20,12 @@ import PlatformCard from "@/components/ui/PlatformCard";
 import LoadingState from "@/components/ui/LoadingState";
 import Toast from "@/components/ui/Toast";
 import StatusBadge from "@/components/ui/StatusBadge";
+import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
+import Textarea from "@/components/ui/Textarea";
+import Select from "@/components/ui/Select";
+import Field from "@/components/ui/Field";
+import FormError from "@/components/ui/FormError";
 
 type TabId = "overview" | "learning" | "sessions" | "mentor" | "info";
 
@@ -83,6 +89,19 @@ function ProfilePageContent() {
   const [mentorAvail, setMentorAvail] = useState<"available" | "limited" | "unavailable">("available");
   const [mentorSubmitting, setMentorSubmitting] = useState(false);
   const [toast, setToast] = useState<{ message: string; variant: "success" | "error" } | null>(null);
+  const [mentorErrors, setMentorErrors] = useState<Record<string, string>>({});
+  const [sessionDuration, setSessionDuration] = useState("60");
+  const [sessionFormat, setSessionFormat] = useState<"online" | "offline" | "both">("online");
+  const [yearsOfExperience, setYearsOfExperience] = useState("0");
+  const [education, setEducation] = useState("");
+  const [careerSummary, setCareerSummary] = useState("");
+  const [responseTime, setResponseTime] = useState("");
+  const [timezone, setTimezone] = useState("Asia/Seoul");
+  const [introVideoUrl, setIntroVideoUrl] = useState("");
+  const [portfolioLinks, setPortfolioLinks] = useState("");
+  const [mentoringStyle, setMentoringStyle] = useState("");
+  const [recommendedFor, setRecommendedFor] = useState("");
+  const [notRecommendedFor, setNotRecommendedFor] = useState("");
 
   useEffect(() => {
     setTab(tabFromParam(searchParams.get("tab")));
@@ -171,6 +190,31 @@ function ProfilePageContent() {
   }, [tStatus]);
 
   const handleSave = async () => {
+    const nextErr = "";
+    if (!formData.name.trim()) {
+      setSaveError("이름은 필수입니다.");
+      return;
+    }
+    if (formData.name.trim().length < 2 || formData.name.trim().length > 40) {
+      setSaveError("이름은 2~40자로 입력해 주세요.");
+      return;
+    }
+    if (!formData.location.trim()) {
+      setSaveError("활동 지역은 필수입니다.");
+      return;
+    }
+    if (formData.location.trim().length < 2 || formData.location.trim().length > 80) {
+      setSaveError("활동 지역은 2~80자로 입력해 주세요.");
+      return;
+    }
+    if (!formData.phone.trim()) {
+      setSaveError("전화번호는 필수입니다.");
+      return;
+    }
+    if (!/^[0-9+\-\s()]{8,20}$/.test(formData.phone.trim())) {
+      setSaveError("전화번호 형식이 올바르지 않습니다.");
+      return;
+    }
     if (newPassword && newPassword !== confirmNewPassword) {
       setSaveError(tp("info.passwordMismatch"));
       return;
@@ -180,7 +224,7 @@ function ProfilePageContent() {
       return;
     }
     setSaving(true);
-    setSaveError("");
+    setSaveError(nextErr);
     const res = await authApi.updateProfile({
       name: formData.name,
       avatar: formData.avatar,
@@ -223,7 +267,7 @@ function ProfilePageContent() {
 
   const submitMentorApplication = async () => {
     if (!user) return;
-    setMentorSubmitting(true);
+    const errors: Record<string, string> = {};
     const languages = mentorLangs
       .split(",")
       .map((s) => s.trim())
@@ -232,14 +276,50 @@ function ProfilePageContent() {
       .split(",")
       .map((s) => s.trim())
       .filter(Boolean);
+    const parsedPrice = parseInt(mentorPrice, 10) || 0;
+    const parsedDuration = parseInt(sessionDuration, 10) || 0;
+    const parsedYears = parseInt(yearsOfExperience, 10) || 0;
+    const links = portfolioLinks
+      .split("\n")
+      .map((s) => s.trim())
+      .filter(Boolean);
+
+    if (!mentorTitle.trim()) errors.title = "멘토 직함은 필수입니다.";
+    if (!mentorLocation.trim()) errors.location = "활동 지역은 필수입니다.";
+    if (!mentorBio.trim() || mentorBio.trim().length < 40) errors.bio = "소개는 40자 이상 입력해 주세요.";
+    if (languages.length === 0) errors.languages = "언어를 1개 이상 입력해 주세요.";
+    if (specialties.length === 0) errors.specialties = "전문 분야를 1개 이상 입력해 주세요.";
+    if (parsedPrice < 0) errors.price = "상담 가격은 0원 이상이어야 합니다.";
+    if (parsedDuration < 15 || parsedDuration > 240) errors.sessionDuration = "세션 시간은 15~240분 사이여야 합니다.";
+    if (parsedYears < 0 || parsedYears > 60) errors.years = "경력은 0~60년 사이로 입력해 주세요.";
+    if (!mentoringStyle.trim()) errors.mentoringStyle = "멘토링 스타일은 필수입니다.";
+    if (introVideoUrl.trim() && !/^https?:\/\/\S+$/i.test(introVideoUrl.trim())) errors.introVideoUrl = "소개 영상 URL 형식이 올바르지 않습니다.";
+    if (links.some((x) => !/^https?:\/\/\S+$/i.test(x))) errors.portfolioLinks = "포트폴리오 링크는 http(s) URL만 입력 가능합니다.";
+
+    setMentorErrors(errors);
+    if (Object.keys(errors).length > 0) return;
+
+    setMentorSubmitting(true);
     const res = await mentorsApi.apply({
       title: mentorTitle.trim(),
       location: mentorLocation.trim(),
       bio: mentorBio.trim(),
       languages,
       specialties,
-      price: parseInt(mentorPrice, 10) || 0,
+      price: parsedPrice,
       availability: mentorAvail,
+      sessionDuration: parsedDuration,
+      sessionFormat,
+      yearsOfExperience: parsedYears,
+      education: education.trim(),
+      careerSummary: careerSummary.trim(),
+      responseTime: responseTime.trim(),
+      timezone: timezone.trim(),
+      introVideoUrl: introVideoUrl.trim(),
+      portfolioLinks: links,
+      mentoringStyle: mentoringStyle.trim(),
+      recommendedFor: recommendedFor.trim(),
+      notRecommendedFor: notRecommendedFor.trim(),
     });
     setMentorSubmitting(false);
     if (res.error) {
@@ -270,7 +350,7 @@ function ProfilePageContent() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="ds-page">
       {toast && (
         <Toast
           message={toast.message}
@@ -279,7 +359,7 @@ function ProfilePageContent() {
           closeLabel={tCommon("close")}
         />
       )}
-      <header className="border-b border-slate-200 bg-white">
+      <header className="border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
         <div className="w-full px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-4">
             {formData.avatar ? (
@@ -294,8 +374,8 @@ function ProfilePageContent() {
               </div>
             )}
             <div>
-              <h1 className="text-2xl font-bold text-slate-900">{tp("title")}</h1>
-              <p className="text-sm text-slate-500 mt-0.5">
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{tp("title")}</h1>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
                 {user.name} · {user.email} ·{" "}
                 <span className="font-semibold text-primary-600">{tProf(`roles.${user.role}`)}</span>
               </p>
@@ -304,14 +384,34 @@ function ProfilePageContent() {
         </div>
       </header>
 
-      <div className="w-full px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      <div className="ds-container py-8 space-y-6">
+        <div className="flex flex-wrap gap-2 rounded-xl bg-zinc-100 dark:bg-slate-800 p-1 ring-1 ring-zinc-200/80 dark:ring-slate-700">
+          {tabs.map(({ id, label, icon: Icon }) => (
+            <button
+              key={id}
+              type="button"
+              onClick={() => {
+                setTab(id);
+                router.replace(`/${locale}/my/profile?tab=${id}`, { scroll: false });
+              }}
+              className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
+                tab === id
+                  ? "bg-white dark:bg-slate-700 text-zinc-900 dark:text-slate-100 shadow-sm ring-1 ring-zinc-200 dark:ring-slate-600"
+                  : "text-zinc-600 dark:text-slate-300 hover:text-zinc-900 dark:hover:text-slate-100"
+              }`}
+            >
+              <Icon className="w-4 h-4" />
+              {label}
+            </button>
+          ))}
+        </div>
         {tab === "overview" && (
           <>
-            <p className="text-sm text-slate-600">{tp("overview.subtitle")}</p>
+            <p className="text-sm text-slate-600 dark:text-slate-400">{tp("overview.subtitle")}</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <PlatformCard>
-                <p className="text-sm text-slate-500">{tp("overview.enrollments")}</p>
-                <p className="text-3xl font-bold text-slate-900 mt-1">{enrollments.length}</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">{tp("overview.enrollments")}</p>
+                <p className="text-3xl font-bold text-slate-900 dark:text-slate-100 mt-1">{enrollments.length}</p>
                 <Link
                   href={`/${locale}/my/courses?tab=status`}
                   className="inline-flex items-center gap-1 mt-3 text-sm font-semibold text-primary-600"
@@ -321,8 +421,8 @@ function ProfilePageContent() {
                 </Link>
               </PlatformCard>
               <PlatformCard>
-                <p className="text-sm text-slate-500">{tp("overview.sessions")}</p>
-                <p className="text-3xl font-bold text-slate-900 mt-1">{sessions.length}</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">{tp("overview.sessions")}</p>
+                <p className="text-3xl font-bold text-slate-900 dark:text-slate-100 mt-1">{sessions.length}</p>
                 <Link
                   href={`/${locale}/my/sessions`}
                   className="inline-flex items-center gap-1 mt-3 text-sm font-semibold text-primary-600"
@@ -341,13 +441,13 @@ function ProfilePageContent() {
               </Link>
               <Link
                 href={`/${locale}/mentors`}
-                className="rounded-xl bg-white px-4 py-2 text-sm font-semibold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50"
+                className="rounded-xl bg-white dark:bg-slate-800 px-4 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 ring-1 ring-slate-200 dark:ring-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700"
               >
                 {tp("overview.goMentors")}
               </Link>
               <Link
                 href={`/${locale}/my/dashboard`}
-                className="rounded-xl bg-white px-4 py-2 text-sm font-semibold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50"
+                className="rounded-xl bg-white dark:bg-slate-800 px-4 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 ring-1 ring-slate-200 dark:ring-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700"
               >
                 {tp("overview.goDashboard")}
               </Link>
@@ -356,16 +456,15 @@ function ProfilePageContent() {
               <PlatformCard className="bg-primary-50/80 ring-primary-100">
                 <p className="font-semibold text-slate-900">{tp("overview.mentorCta")}</p>
                 <p className="text-sm text-slate-600 mt-1">{tp("overview.mentorCtaDesc")}</p>
-                <button
+                <Button
                   type="button"
                   onClick={() => {
                     setTab("mentor");
                     router.replace(`/${locale}/my/profile?tab=mentor`, { scroll: false });
                   }}
-                  className="mt-3 inline-flex rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700"
                 >
                   {tp("tabs.mentor")}
-                </button>
+                </Button>
               </PlatformCard>
             )}
           </>
@@ -373,7 +472,7 @@ function ProfilePageContent() {
 
         {tab === "learning" && (
           <>
-            <p className="text-sm text-slate-600">{tp("learning.subtitle")}</p>
+            <p className="text-sm text-slate-600 dark:text-slate-400">{tp("learning.subtitle")}</p>
             {enrollments.length === 0 ? (
               <PlatformCard>
                 <p className="text-slate-600">{tp("learning.empty")}</p>
@@ -417,7 +516,7 @@ function ProfilePageContent() {
 
         {tab === "sessions" && (
           <>
-            <p className="text-sm text-slate-600">{tp("sessions.subtitle")}</p>
+            <p className="text-sm text-slate-600 dark:text-slate-400">{tp("sessions.subtitle")}</p>
             {sessions.length === 0 ? (
               <PlatformCard>
                 <p className="text-slate-600">{tp("sessions.empty")}</p>
@@ -464,8 +563,8 @@ function ProfilePageContent() {
 
         {tab === "mentor" && (
           <>
-            <h2 className="text-lg font-semibold text-slate-900">{tp("mentor.title")}</h2>
-            <p className="text-sm text-slate-600">{tp("mentor.applyLead")}</p>
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{tp("mentor.title")}</h2>
+            <p className="text-sm text-slate-600 dark:text-slate-400">{tp("mentor.applyLead")}</p>
 
             {mentorApproved && mentorDoc ? (
                 <div className="space-y-4">
@@ -522,52 +621,171 @@ function ProfilePageContent() {
                 <div className="space-y-3">
                   <div>
                     <label className="text-sm font-medium text-slate-700">{tp("mentor.mentorTitleLabel")}</label>
-                    <input
-                      className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                    <Input
+                      className="mt-1"
                       value={mentorTitle}
                       onChange={(e) => setMentorTitle(e.target.value)}
                     />
+                    {mentorErrors.title && <p className="text-xs text-red-600 mt-1">{mentorErrors.title}</p>}
                   </div>
                   <div>
                     <label className="text-sm font-medium text-slate-700">{tp("mentor.locationLabel")}</label>
-                    <input
-                      className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                    <Input
+                      className="mt-1"
                       value={mentorLocation}
                       onChange={(e) => setMentorLocation(e.target.value)}
                     />
+                    {mentorErrors.location && <p className="text-xs text-red-600 mt-1">{mentorErrors.location}</p>}
                   </div>
                   <div>
                     <label className="text-sm font-medium text-slate-700">{tp("mentor.bioLabel")}</label>
-                    <textarea
+                    <Textarea
                       rows={4}
-                      className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                      className="mt-1"
                       value={mentorBio}
                       onChange={(e) => setMentorBio(e.target.value)}
                     />
+                    {mentorErrors.bio && <p className="text-xs text-red-600 mt-1">{mentorErrors.bio}</p>}
                   </div>
                   <div>
                     <label className="text-sm font-medium text-slate-700">{tp("mentor.languagesLabel")}</label>
-                    <input
-                      className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                    <Input
+                      className="mt-1"
                       value={mentorLangs}
                       onChange={(e) => setMentorLangs(e.target.value)}
                     />
+                    {mentorErrors.languages && <p className="text-xs text-red-600 mt-1">{mentorErrors.languages}</p>}
                   </div>
                   <div>
                     <label className="text-sm font-medium text-slate-700">{tp("mentor.specialtiesLabel")}</label>
-                    <input
-                      className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                    <Input
+                      className="mt-1"
                       value={mentorSpecs}
                       onChange={(e) => setMentorSpecs(e.target.value)}
                     />
+                    {mentorErrors.specialties && <p className="text-xs text-red-600 mt-1">{mentorErrors.specialties}</p>}
                   </div>
                   <div>
                     <label className="text-sm font-medium text-slate-700">{tp("mentor.priceLabel")}</label>
+                    <Input
+                      type="number"
+                      className="mt-1"
+                      value={mentorPrice}
+                      onChange={(e) => setMentorPrice(e.target.value)}
+                    />
+                    {mentorErrors.price && <p className="text-xs text-red-600 mt-1">{mentorErrors.price}</p>}
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-slate-700">세션 시간(분)</label>
                     <input
                       type="number"
                       className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
-                      value={mentorPrice}
-                      onChange={(e) => setMentorPrice(e.target.value)}
+                      value={sessionDuration}
+                      onChange={(e) => setSessionDuration(e.target.value)}
+                    />
+                    {mentorErrors.sessionDuration && <p className="text-xs text-red-600 mt-1">{mentorErrors.sessionDuration}</p>}
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-slate-700">세션 형식</label>
+                    <Select
+                      className="mt-1"
+                      value={sessionFormat}
+                      onChange={(e) => setSessionFormat(e.target.value as typeof sessionFormat)}
+                    >
+                      <option value="online">온라인</option>
+                      <option value="offline">오프라인</option>
+                      <option value="both">모두 가능</option>
+                    </Select>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-slate-700">경력(년)</label>
+                    <input
+                      type="number"
+                      className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                      value={yearsOfExperience}
+                      onChange={(e) => setYearsOfExperience(e.target.value)}
+                    />
+                    {mentorErrors.years && <p className="text-xs text-red-600 mt-1">{mentorErrors.years}</p>}
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-slate-700">학력/자격</label>
+                    <input
+                      className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                      value={education}
+                      onChange={(e) => setEducation(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-slate-700">경력 요약</label>
+                    <textarea
+                      rows={3}
+                      className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                      value={careerSummary}
+                      onChange={(e) => setCareerSummary(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-slate-700">평균 응답 시간</label>
+                    <input
+                      className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                      placeholder="예: 24시간 이내"
+                      value={responseTime}
+                      onChange={(e) => setResponseTime(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-slate-700">시간대</label>
+                    <input
+                      className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                      value={timezone}
+                      onChange={(e) => setTimezone(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-slate-700">소개 영상 URL (선택)</label>
+                    <input
+                      className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                      value={introVideoUrl}
+                      onChange={(e) => setIntroVideoUrl(e.target.value)}
+                    />
+                    {mentorErrors.introVideoUrl && <p className="text-xs text-red-600 mt-1">{mentorErrors.introVideoUrl}</p>}
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-slate-700">포트폴리오 링크(줄바꿈 구분, 선택)</label>
+                    <textarea
+                      rows={3}
+                      className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                      value={portfolioLinks}
+                      onChange={(e) => setPortfolioLinks(e.target.value)}
+                    />
+                    {mentorErrors.portfolioLinks && <p className="text-xs text-red-600 mt-1">{mentorErrors.portfolioLinks}</p>}
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-slate-700">멘토링 스타일</label>
+                    <textarea
+                      rows={3}
+                      className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                      value={mentoringStyle}
+                      onChange={(e) => setMentoringStyle(e.target.value)}
+                    />
+                    {mentorErrors.mentoringStyle && <p className="text-xs text-red-600 mt-1">{mentorErrors.mentoringStyle}</p>}
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-slate-700">추천 대상</label>
+                    <textarea
+                      rows={2}
+                      className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                      value={recommendedFor}
+                      onChange={(e) => setRecommendedFor(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-slate-700">비추천 대상</label>
+                    <textarea
+                      rows={2}
+                      className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                      value={notRecommendedFor}
+                      onChange={(e) => setNotRecommendedFor(e.target.value)}
                     />
                   </div>
                   <div>
@@ -582,14 +800,14 @@ function ProfilePageContent() {
                       <option value="unavailable">{tp("mentor.availUnavailable")}</option>
                     </select>
                   </div>
-                  <button
+                  <Button
                     type="button"
                     disabled={mentorSubmitting}
                     onClick={submitMentorApplication}
-                    className="w-full rounded-xl bg-primary-600 py-3 text-sm font-semibold text-white hover:bg-primary-700 disabled:opacity-60"
+                    fullWidth
                   >
                     {tp("mentor.submit")}
-                  </button>
+                  </Button>
                 </div>
               </PlatformCard>
             ) : mentorStatus === "pending" ? (
@@ -679,20 +897,19 @@ function ProfilePageContent() {
 
         {tab === "info" && (
           <PlatformCard>
-            <h2 className="text-lg font-semibold text-slate-900 mb-4">{tp("info.title")}</h2>
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">{tp("info.title")}</h2>
             <div className="space-y-4">
-              <div>
-                <label className="text-sm font-medium text-slate-700">{tProf("name")}</label>
+              <Field label={tProf("name")} required>
                 {isEditing ? (
-                  <input
-                    className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                  <Input
+                    className="mt-1"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   />
                 ) : (
                   <p className="mt-1 text-sm text-slate-900">{user.name}</p>
                 )}
-              </div>
+              </Field>
               <div>
                 <label className="text-sm font-medium text-slate-700">{tp("info.avatarLabel")}</label>
                 {isEditing ? (
@@ -747,36 +964,33 @@ function ProfilePageContent() {
                 <p className="mt-1 text-sm text-slate-600">{user.email}</p>
                 <p className="text-xs text-slate-400 mt-1">{tp("info.emailHelp")}</p>
               </div>
-              <div>
-                <label className="text-sm font-medium text-slate-700">{tProf("bio")}</label>
+              <Field label={tProf("bio")}>
                 {isEditing ? (
-                  <textarea
+                  <Textarea
                     rows={4}
-                    className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                    className="mt-1"
                     value={formData.bio}
                     onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                   />
                 ) : (
                   <p className="mt-1 text-sm text-slate-700 whitespace-pre-wrap">{formData.bio || "—"}</p>
                 )}
-              </div>
-              <div>
-                <label className="text-sm font-medium text-slate-700">{tProf("location")}</label>
+              </Field>
+              <Field label={tProf("location")} required>
                 {isEditing ? (
-                  <input
-                    className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                  <Input
+                    className="mt-1"
                     value={formData.location}
                     onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                   />
                 ) : (
                   <p className="mt-1 text-sm text-slate-700">{formData.location || "—"}</p>
                 )}
-              </div>
-              <div>
-                <label className="text-sm font-medium text-slate-700">{tp("info.phoneLabel")}</label>
+              </Field>
+              <Field label={tp("info.phoneLabel")} required>
                 {isEditing ? (
-                  <input
-                    className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                  <Input
+                    className="mt-1"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     placeholder={tp("info.phonePlaceholder")}
@@ -784,7 +998,7 @@ function ProfilePageContent() {
                 ) : (
                   <p className="mt-1 text-sm text-slate-700">{formData.phone || "—"}</p>
                 )}
-              </div>
+              </Field>
               <div>
                 <label className="text-sm font-medium text-slate-700">{tp("info.addressLabel")}</label>
                 {isEditing ? (
@@ -836,34 +1050,34 @@ function ProfilePageContent() {
                   </div>
                 </>
               )}
-              {saveError && <p className="text-sm text-red-600">{saveError}</p>}
+              <FormError message={saveError} />
               <div className="flex gap-2">
                 {!isEditing ? (
-                  <button
+                  <Button
                     type="button"
                     onClick={() => setIsEditing(true)}
-                    className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white"
+                    variant="secondary"
                   >
                     {tProf("edit")}
-                  </button>
+                  </Button>
                 ) : (
                   <>
-                    <button
+                    <Button
                       type="button"
                       disabled={saving}
                       onClick={handleSave}
-                      className="inline-flex items-center gap-2 rounded-xl bg-primary-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
+                      className="inline-flex items-center gap-2"
                     >
                       <Save className="w-4 h-4" />
                       {saving ? tProf("saving") : tp("info.save")}
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       type="button"
                       onClick={() => setIsEditing(false)}
-                      className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700"
+                      variant="secondary"
                     >
                       {tProf("cancel")}
-                    </button>
+                    </Button>
                   </>
                 )}
               </div>
@@ -879,7 +1093,7 @@ export default function ProfilePage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
           <div className="w-10 h-10 border-2 border-slate-300 border-t-primary-600 rounded-full animate-spin" />
         </div>
       }

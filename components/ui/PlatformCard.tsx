@@ -19,7 +19,7 @@ export default function PlatformCard({
 }: PlatformCardProps) {
   return (
     <div
-      className={`rounded-2xl bg-white shadow-sm ring-1 ring-slate-200/80 ${pad[padding]} ${className}`.trim()}
+      className={`rounded-2xl bg-white dark:bg-slate-900 shadow-sm ring-1 ring-slate-200/80 dark:ring-slate-700/80 ${pad[padding]} ${className}`.trim()}
     >
       {children}
     </div>

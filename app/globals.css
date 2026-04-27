@@ -33,6 +33,7 @@ body {
 body {
   color: rgb(var(--foreground-rgb));
   background: #fafafa;
+  @apply text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-slate-950;
 }
 
 a {
@@ -93,5 +94,31 @@ button {
   transition-property: color, background-color, border-color, opacity, box-shadow;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
+}
+
+@layer components {
+  .ds-page {
+    @apply min-h-screen bg-slate-50 dark:bg-slate-950;
+  }
+
+  .ds-container {
+    @apply w-full px-4 sm:px-6 lg:px-8;
+  }
+
+  .ds-section-title {
+    @apply text-xl sm:text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight;
+  }
+
+  .ds-section-desc {
+    @apply text-sm text-slate-600 dark:text-slate-400 mt-1;
+  }
+
+  .ds-panel {
+    @apply rounded-2xl bg-white dark:bg-slate-900 ring-1 ring-slate-200/80 dark:ring-slate-700/80 shadow-soft;
+  }
+
+  .ds-kicker {
+    @apply text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400;
+  }
 }
 

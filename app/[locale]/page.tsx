@@ -1,6 +1,14 @@
 import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import { ArrowRight, Users, BookOpen, MessageSquare, Briefcase, GraduationCap, Sparkles, Globe } from 'lucide-react';
+import { queryLectures, queryMentors } from '@/lib/data/queries';
+import type { Lecture, Mentor } from '@/types';
+import HomeMonthlySpotlights from '@/components/home/HomeMonthlySpotlights';
+import HomeNoticesAndTips from '@/components/home/HomeNoticesAndTips';
+import HomeInquiryCta from '@/components/home/HomeInquiryCta';
+
+/** 인기 강의·멘토 블록 주기 갱신 (월간 API 연동 전까지 평점 기준 상위 1건) */
+export const revalidate = 3600;
 
 export default async function HomePage({
   params,
@@ -10,8 +18,22 @@ export default async function HomePage({
   const { locale } = await params;
   const t = await getTranslations('home');
 
+  let topLecture: Lecture | null = null;
+  let topMentor: Mentor | null = null;
+  try {
+    const [lr, mr] = await Promise.all([
+      queryLectures({ page: 1, limit: 1 }),
+      queryMentors({ page: 1, limit: 1 }),
+    ]);
+    topLecture = lr.lectures[0] ?? null;
+    topMentor = mr.mentors[0] ?? null;
+  } catch {
+    topLecture = null;
+    topMentor = null;
+  }
+
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-slate-950">
       {/* Hero Section - Modern Gradient Design */}
       <section className="relative overflow-hidden bg-gradient-to-br from-primary-600 via-primary-500 to-accent-500 py-24 lg:py-32">
         {/* Animated background elements */}
@@ -66,14 +88,20 @@ export default async function HomePage({
         </div>
       </section>
 
+      <HomeMonthlySpotlights
+        locale={locale}
+        topLecture={topLecture}
+        topMentor={topMentor}
+      />
+
       {/* Features Grid - Modern Card Design */}
-      <section className="py-24 bg-gradient-to-b from-gray-50 to-white">
+      <section className="py-16 sm:py-24 bg-white dark:bg-slate-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-slate-100 mb-4">
               모든 것이 한 곳에
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-600 dark:text-slate-400 max-w-2xl mx-auto">
               한국 유학에 필요한 모든 서비스를 제공합니다
             </p>
           </div>
@@ -81,15 +109,15 @@ export default async function HomePage({
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <Link
               href={`/${locale}/mentors`}
-              className="group relative bg-white rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-primary-200 hover:-translate-y-2"
+              className="group relative bg-white dark:bg-slate-900 rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-slate-700 hover:border-primary-200 hover:-translate-y-2 shadow-sm"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 to-accent-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
               <div className="relative">
                 <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                   <Users className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">멘토 찾기</h3>
-                <p className="text-gray-600 leading-relaxed mb-4">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-3">멘토 찾기</h3>
+                <p className="text-gray-600 dark:text-slate-400 leading-relaxed mb-4">
                   경험 많은 멘토들과 연결하여 비자, 주거, 학업 등 모든 것을 도와드립니다.
                 </p>
                 <div className="flex items-center text-primary-600 font-semibold group-hover:gap-2 transition-all">
@@ -101,15 +129,15 @@ export default async function HomePage({
 
             <Link
               href={`/${locale}/lectures`}
-              className="group relative bg-white rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-primary-200 hover:-translate-y-2"
+              className="group relative bg-white dark:bg-slate-900 rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-slate-700 hover:border-primary-200 hover:-translate-y-2 shadow-sm"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 to-accent-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
               <div className="relative">
                 <div className="w-16 h-16 bg-gradient-to-br from-accent-500 to-accent-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                   <BookOpen className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">강의</h3>
-                <p className="text-gray-600 leading-relaxed mb-4">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-3">강의</h3>
+                <p className="text-gray-600 dark:text-slate-400 leading-relaxed mb-4">
                   온라인 및 오프라인 강의를 통해 한국어와 전문 지식을 배우세요.
                 </p>
                 <div className="flex items-center text-primary-600 font-semibold group-hover:gap-2 transition-all">
@@ -121,15 +149,15 @@ export default async function HomePage({
 
             <Link
               href={`/${locale}/community`}
-              className="group relative bg-white rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-primary-200 hover:-translate-y-2"
+              className="group relative bg-white dark:bg-slate-900 rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-slate-700 hover:border-primary-200 hover:-translate-y-2 shadow-sm"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 to-accent-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
               <div className="relative">
                 <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                   <MessageSquare className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">커뮤니티</h3>
-                <p className="text-gray-600 leading-relaxed mb-4">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-3">커뮤니티</h3>
+                <p className="text-gray-600 dark:text-slate-400 leading-relaxed mb-4">
                   다른 유학생들과 경험을 공유하고 네트워크를 구축하세요.
                 </p>
                 <div className="flex items-center text-primary-600 font-semibold group-hover:gap-2 transition-all">
@@ -138,18 +166,20 @@ export default async function HomePage({
                 </div>
               </div>
             </Link>
+          </div>
 
+          <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
             <Link
               href={`/${locale}/freelancers`}
-              className="group relative bg-white rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-primary-200 hover:-translate-y-2"
+              className="group relative bg-white dark:bg-slate-900 rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-slate-700 hover:border-primary-200 hover:-translate-y-2 shadow-sm"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 to-accent-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
               <div className="relative">
                 <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                   <Briefcase className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">프리랜서</h3>
-                <p className="text-gray-600 leading-relaxed mb-4">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-3">프리랜서</h3>
+                <p className="text-gray-600 dark:text-slate-400 leading-relaxed mb-4">
                   프리랜서 일자리와 기회를 찾아 수입을 올리세요.
                 </p>
                 <div className="flex items-center text-primary-600 font-semibold group-hover:gap-2 transition-all">
@@ -161,15 +191,15 @@ export default async function HomePage({
 
             <Link
               href={`/${locale}/study-in-korea`}
-              className="group relative bg-white rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-primary-200 hover:-translate-y-2"
+              className="group relative bg-white dark:bg-slate-900 rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-slate-700 hover:border-primary-200 hover:-translate-y-2 shadow-sm"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 to-accent-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
               <div className="relative">
                 <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                   <GraduationCap className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">한국 유학 정보</h3>
-                <p className="text-gray-600 leading-relaxed mb-4">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-3">한국 유학 정보</h3>
+                <p className="text-gray-600 dark:text-slate-400 leading-relaxed mb-4">
                   비자, 주거, 병원, 생활 팁 등 한국 유학에 필요한 모든 정보.
                 </p>
                 <div className="flex items-center text-primary-600 font-semibold group-hover:gap-2 transition-all">
@@ -181,6 +211,9 @@ export default async function HomePage({
           </div>
         </div>
       </section>
+
+      <HomeNoticesAndTips />
+      <HomeInquiryCta locale={locale} />
     </div>
   );
 }

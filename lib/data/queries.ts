@@ -49,6 +49,18 @@ export function docToMentor(mentor: Record<string, unknown>): MentorDTO {
     photo: photo || undefined,
     verified: Boolean(mentor.verified),
     bio: String(mentor.bio || ''),
+    yearsOfExperience: Number(mentor.yearsOfExperience) || 0,
+    education: String(mentor.education || ''),
+    careerSummary: String(mentor.careerSummary || ''),
+    sessionDuration: Number(mentor.sessionDuration) || 60,
+    sessionFormat: (mentor.sessionFormat as MentorDTO['sessionFormat']) || 'online',
+    timezone: String(mentor.timezone || 'Asia/Seoul'),
+    responseTime: String(mentor.responseTime || ''),
+    introVideoUrl: String(mentor.introVideoUrl || ''),
+    portfolioLinks: Array.isArray(mentor.portfolioLinks) ? (mentor.portfolioLinks as string[]) : [],
+    mentoringStyle: String(mentor.mentoringStyle || ''),
+    recommendedFor: String(mentor.recommendedFor || ''),
+    notRecommendedFor: String(mentor.notRecommendedFor || ''),
   };
 }
 
@@ -68,6 +80,19 @@ export function docToLecture(
     students: Number(doc.students) || 0,
     image: String(doc.image || ''),
     description: String(doc.description || ''),
+    shortDescription: String(doc.shortDescription || ''),
+    targetAudience: String(doc.targetAudience || ''),
+    prerequisites: String(doc.prerequisites || ''),
+    whatYouWillLearn: Array.isArray(doc.whatYouWillLearn) ? (doc.whatYouWillLearn as string[]) : [],
+    curriculum: Array.isArray(doc.curriculum) ? (doc.curriculum as string[]) : [],
+    totalLessons: Number(doc.totalLessons) || 0,
+    totalHours: Number(doc.totalHours) || 0,
+    difficulty: (doc.difficulty as Lecture['difficulty']) || 'beginner',
+    maxStudents: Number(doc.maxStudents) || 30,
+    language: String(doc.language || 'ko'),
+    previewVideoUrl: String(doc.previewVideoUrl || ''),
+    materialsIncluded: Array.isArray(doc.materialsIncluded) ? (doc.materialsIncluded as string[]) : [],
+    faq: Array.isArray(doc.faq) ? (doc.faq as string[]) : [],
   };
 }
 

@@ -14,6 +14,7 @@ import {
   Sparkles,
   UserRound,
   BookMarked,
+  Heart,
 } from "lucide-react";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { notificationsApi } from "@/lib/api/client";
@@ -96,6 +97,12 @@ export default function MySpaceLayout({ children }: { children: React.ReactNode 
       icon: BookMarked,
       active: (p) => p.includes("/my/courses"),
     },
+    {
+      href: `${base}/wishlist`,
+      label: "찜한 강의",
+      icon: Heart,
+      active: (p) => p.includes("/my/wishlist"),
+    },
     ...((user?.role === "mentor" || user?.role === "admin") && dashboardMode === "mentor"
       ? [
           {
@@ -138,7 +145,7 @@ export default function MySpaceLayout({ children }: { children: React.ReactNode 
 
   if (loading || !user) {
     return (
-      <div className="min-h-[50vh] flex items-center justify-center bg-zinc-50">
+      <div className="min-h-[50vh] flex items-center justify-center bg-zinc-50 dark:bg-slate-950">
         <div className="w-10 h-10 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -153,8 +160,8 @@ export default function MySpaceLayout({ children }: { children: React.ReactNode 
         href={item.href}
         className={`flex items-center gap-2 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
           on
-            ? "bg-primary-50 text-primary-700 ring-1 ring-primary-100"
-            : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900"
+            ? "bg-primary-50 dark:bg-primary-500/15 text-primary-700 dark:text-primary-300 ring-1 ring-primary-100 dark:ring-primary-500/30"
+            : "text-zinc-600 dark:text-slate-300 hover:bg-zinc-50 dark:hover:bg-slate-800 hover:text-zinc-900 dark:hover:text-slate-100"
         }`}
       >
         <Icon className="w-4 h-4 shrink-0 opacity-80" />
@@ -169,17 +176,17 @@ export default function MySpaceLayout({ children }: { children: React.ReactNode 
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50 flex flex-col md:flex-row">
-      <aside className="md:w-60 shrink-0 border-b md:border-b-0 md:border-r border-zinc-200 bg-white md:min-h-screen">
+    <div className="min-h-screen bg-zinc-50 dark:bg-slate-950 flex flex-col md:flex-row">
+      <aside className="md:w-60 shrink-0 border-b md:border-b-0 md:border-r border-zinc-200 dark:border-slate-700 bg-white dark:bg-slate-900 md:min-h-screen">
         <div className="p-4 md:p-5">
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 mb-3">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-slate-400 mb-3">
             {t("title")}
           </p>
           <nav className="flex md:flex-col gap-1 overflow-x-auto pb-1 md:pb-0 md:space-y-0.5">
             {mainNav.map(renderLink)}
-            <div className="hidden md:block my-3 border-t border-zinc-200" />
+            <div className="hidden md:block my-3 border-t border-zinc-200 dark:border-slate-700" />
             <div className="flex md:flex-col gap-1 md:pt-1">
-              <p className="hidden md:block text-[10px] font-semibold uppercase tracking-wider text-zinc-400 px-1 mb-1">
+              <p className="hidden md:block text-[10px] font-semibold uppercase tracking-wider text-zinc-400 dark:text-slate-500 px-1 mb-1">
                 {t("navSupport")}
               </p>
               {supportNav.map(renderLink)}

@@ -21,7 +21,7 @@ export default function LecturesPageClient({ initialLectures, locale }: Props) {
   }, [initialLectures, selectedType]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
       <div className="relative overflow-hidden bg-gradient-to-br from-accent-600 via-accent-500 to-primary-500 py-16">
         <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_30%_20%,white,transparent_50%)]" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -31,7 +31,7 @@ export default function LecturesPageClient({ initialLectures, locale }: Props) {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="mb-10 bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+        <div className="mb-10 bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-slate-700">
           <div className="flex flex-wrap gap-3">
             <button
               type="button"
@@ -39,7 +39,7 @@ export default function LecturesPageClient({ initialLectures, locale }: Props) {
               className={`px-6 py-3 rounded-xl font-semibold transition-all ${
                 selectedType === null
                   ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-md'
-                  : 'bg-white border-2 border-gray-200 text-gray-700 hover:border-primary-300'
+                  : 'bg-white dark:bg-slate-900 border-2 border-gray-200 dark:border-slate-700 text-gray-700 dark:text-slate-300 hover:border-primary-300'
               }`}
             >
               {t('all')}
@@ -50,7 +50,7 @@ export default function LecturesPageClient({ initialLectures, locale }: Props) {
               className={`px-6 py-3 rounded-xl font-semibold transition-all ${
                 selectedType === 'online'
                   ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-md'
-                  : 'bg-white border-2 border-gray-200 text-gray-700 hover:border-primary-300'
+                  : 'bg-white dark:bg-slate-900 border-2 border-gray-200 dark:border-slate-700 text-gray-700 dark:text-slate-300 hover:border-primary-300'
               }`}
             >
               {t('online')}
@@ -61,7 +61,7 @@ export default function LecturesPageClient({ initialLectures, locale }: Props) {
               className={`px-6 py-3 rounded-xl font-semibold transition-all ${
                 selectedType === 'offline'
                   ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-md'
-                  : 'bg-white border-2 border-gray-200 text-gray-700 hover:border-primary-300'
+                  : 'bg-white dark:bg-slate-900 border-2 border-gray-200 dark:border-slate-700 text-gray-700 dark:text-slate-300 hover:border-primary-300'
               }`}
             >
               {t('offline')}
@@ -69,8 +69,8 @@ export default function LecturesPageClient({ initialLectures, locale }: Props) {
           </div>
         </div>
 
-        <div className="mb-6 text-gray-600">
-          <span className="font-semibold text-gray-900">{filtered.length}</span>개의 강의
+        <div className="mb-6 text-gray-600 dark:text-slate-400">
+          <span className="font-semibold text-gray-900 dark:text-slate-100">{filtered.length}</span>개의 강의
         </div>
 
         {initialLectures.length === 0 ? (
@@ -87,8 +87,8 @@ export default function LecturesPageClient({ initialLectures, locale }: Props) {
             ))}
           </div>
         ) : (
-          <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
-            <p className="text-gray-600">선택한 타입에 해당하는 강의가 없습니다.</p>
+          <div className="text-center py-16 bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-700">
+            <p className="text-gray-600 dark:text-slate-400">선택한 타입에 해당하는 강의가 없습니다.</p>
           </div>
         )}
       </div>
