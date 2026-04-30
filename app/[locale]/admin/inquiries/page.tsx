@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { useFormatter } from "next-intl";
 import { useAuth } from "@/lib/contexts/AuthContext";
-import { adminApi } from "@/lib/api/client";
+import { adminApi } from "@/lib/api";
 
 type InquiryRow = {
   id: string;
@@ -65,26 +65,17 @@ export default function AdminInquiriesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      <div className="bg-gradient-to-r from-slate-700 to-primary-700 py-10">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+    <div className="bg-gradient-to-b from-gray-50 to-white rounded-2xl border border-gray-100">
+      <div className="bg-gradient-to-r from-slate-700 to-primary-700 py-8 rounded-t-2xl">
+        <div className="px-6 sm:px-8">
           <h1 className="text-3xl font-extrabold text-white">회원 문의</h1>
           <p className="text-white/85 mt-2 text-sm">
             접수된 문의를 확인하고 답변하면 해당 회원에게 알림이 전송됩니다.
           </p>
-          <div className="mt-4 flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={() => router.push(`/${locale}/admin/dashboard`)}
-              className="rounded-xl bg-white/15 px-4 py-2 text-sm font-semibold text-white hover:bg-white/25"
-            >
-              ← 대시보드
-            </button>
-          </div>
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-6">
+      <div className="px-6 sm:px-8 py-10 space-y-6">
         {items.length === 0 ? (
           <p className="text-gray-600 text-sm">등록된 문의가 없습니다.</p>
         ) : (

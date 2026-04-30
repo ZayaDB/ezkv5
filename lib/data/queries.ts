@@ -1,4 +1,5 @@
 import connectDB from '@/lib/db/mongodb';
+import '@/models/User';
 import MentorModel from '@/models/Mentor';
 import LectureModel from '@/models/Lecture';
 import CommunityGroupModel from '@/models/CommunityGroup';

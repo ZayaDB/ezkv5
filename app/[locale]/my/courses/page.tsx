@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState, Suspense } from "react";
 import Link from "next/link";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
-import { enrollmentApi } from "@/lib/api/client";
+import { enrollmentApi } from "@/lib/api";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { BookOpen } from "lucide-react";
 import StatusBadge from "@/components/ui/StatusBadge";
@@ -12,6 +12,7 @@ import LoadingState from "@/components/ui/LoadingState";
 import EmptyState from "@/components/ui/EmptyState";
 import PlatformCard from "@/components/ui/PlatformCard";
 import Toast from "@/components/ui/Toast";
+import { getCachedEnrollments, invalidateMyDataCache } from "@/lib/hooks/useMyDataCache";
 
 type Tab = "learn" | "status";
 
@@ -74,8 +75,8 @@ function CoursesInner() {
 
   const load = useCallback(async () => {
     setLoading(true);
-    const res = await enrollmentApi.getMine();
-    setItems((res.data?.enrollments || []) as EnrollmentItem[]);
+    const rows = await getCachedEnrollments();
+    setItems(rows as EnrollmentItem[]);
     setLoading(false);
   }, []);
 
@@ -131,6 +132,7 @@ function CoursesInner() {
       setToast({ message: res.error || tEnr("toastErr"), variant: "error" });
       return;
     }
+    invalidateMyDataCache(["enrollments"]);
     setToast({ message: tEnr("toastOk"), variant: "success" });
     await load();
   };

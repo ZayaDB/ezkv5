@@ -49,32 +49,43 @@ export default function LectureCard({ lecture }: LectureCardProps) {
 
   return (
     <Link href={`/${locale}/lectures/${lecture.id}`}>
-      <div className="group bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-700 overflow-hidden hover:shadow-2xl transition-all duration-300 cursor-pointer hover:-translate-y-1 relative">
-        {/* Image with gradient overlay */}
-        <div className="relative h-48 bg-gradient-to-br from-primary-400 via-primary-500 to-accent-500 overflow-hidden">
-          <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors"></div>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <PlayCircle className="w-16 h-16 text-white/80 group-hover:scale-110 transition-transform" />
-          </div>
+      <div className="group bg-white dark:bg-slate-900 rounded-2xl border border-gray-200/80 dark:border-slate-700 overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer hover:-translate-y-1 relative">
+        <div className="relative aspect-[16/9] bg-gradient-to-br from-primary-100 to-blue-100 dark:from-primary-900/30 dark:to-blue-900/20 overflow-hidden">
+          {lecture.image ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={lecture.image}
+              alt={lecture.title}
+              className="absolute inset-0 h-full w-full object-cover group-hover:scale-[1.03] transition-transform duration-300"
+            />
+          ) : null}
+          <div className="absolute inset-0 bg-slate-900/5 group-hover:bg-slate-900/10 transition-colors" />
+          {!lecture.image && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <PlayCircle className="w-14 h-14 text-primary-400/70 group-hover:scale-110 transition-transform" />
+            </div>
+          )}
           <div className="absolute top-4 left-4 flex gap-2">
             <span
               className={`px-3 py-1.5 text-xs font-semibold rounded-lg backdrop-blur-sm ${
                 lecture.type === 'online'
-                  ? 'bg-blue-500/90 text-white'
-                  : 'bg-green-500/90 text-white'
+                  ? 'bg-primary-600/90 text-white'
+                  : 'bg-emerald-600/90 text-white'
               }`}
             >
               {lecture.type === 'online' ? '온라인' : '오프라인'}
             </span>
-            <span className="px-3 py-1.5 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm text-gray-700 dark:text-slate-200 text-xs font-semibold rounded-lg">
+            <span className="px-3 py-1.5 bg-white/90 dark:bg-slate-900/85 backdrop-blur-sm text-gray-700 dark:text-slate-200 text-xs font-semibold rounded-lg">
               {lecture.category}
             </span>
           </div>
           <button
             type="button"
             onClick={toggleWishlist}
-            className={`absolute top-4 right-4 p-2 rounded-lg ${
-              wishlisted ? 'bg-red-50 text-red-600' : 'bg-white/90 dark:bg-slate-800/90 text-gray-600 dark:text-slate-300'
+            className={`absolute top-4 right-4 p-2 rounded-lg transition-colors ${
+              wishlisted
+                ? 'bg-red-50/95 text-red-600'
+                : 'bg-white/90 dark:bg-slate-900/85 text-gray-600 dark:text-slate-300 hover:bg-white'
             }`}
           >
             <Heart className={`w-4 h-4 ${wishlisted ? 'fill-red-500' : ''}`} />
@@ -82,7 +93,7 @@ export default function LectureCard({ lecture }: LectureCardProps) {
         </div>
         
         <div className="p-6">
-          <h3 className="text-xl font-bold text-gray-900 dark:text-slate-100 mb-2 group-hover:text-primary-600 transition-colors line-clamp-2">
+          <h3 className="text-lg font-bold text-gray-900 dark:text-slate-100 mb-2 group-hover:text-primary-700 transition-colors line-clamp-2">
             {lecture.title}
           </h3>
           <p className="text-sm text-gray-600 dark:text-slate-400 mb-3 font-medium">{lecture.instructor}</p>
@@ -105,11 +116,11 @@ export default function LectureCard({ lecture }: LectureCardProps) {
           
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-3xl font-extrabold text-gray-900 dark:text-slate-100">₩{lecture.price.toLocaleString()}</span>
+              <span className="text-base sm:text-lg font-bold text-primary-600">₩{lecture.price.toLocaleString()}</span>
             </div>
-            <div className="flex items-center gap-2 text-primary-600 font-semibold group-hover:gap-3 transition-all">
+            <div className="inline-flex items-center text-xs font-semibold text-primary-700 dark:text-primary-300">
               <span>자세히 보기</span>
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
             </div>
           </div>
         </div>

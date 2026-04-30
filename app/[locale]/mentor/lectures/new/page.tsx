@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -22,12 +22,7 @@ export default function MentorLectureNewPage() {
   const tCommon = useTranslations("common");
   const locale = useLocale();
   const router = useRouter();
-  const { user, loading: authLoading, refreshUser } = useAuth();
-
-  useEffect(() => {
-    void refreshUser();
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- mount only to sync DB role after admin approval
-  }, []);
+  const { user, loading: authLoading } = useAuth();
   const [title, setTitle] = useState("");
   const [type, setType] = useState<"online" | "offline">("online");
   const [category, setCategory] = useState("");
@@ -48,6 +43,7 @@ export default function MentorLectureNewPage() {
   const [previewVideoUrl, setPreviewVideoUrl] = useState("");
   const [materialsIncluded, setMaterialsIncluded] = useState("");
   const [faq, setFaq] = useState("");
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [toast, setToast] = useState<{ message: string; variant: "success" | "error" } | null>(
     null
@@ -98,6 +94,19 @@ export default function MentorLectureNewPage() {
     }
     setToast({ message: t("success"), variant: "success" });
     setTimeout(() => router.push(`/${locale}/my/profile?tab=mentor`), 800);
+  };
+
+  const handleImageUpload = async (file?: File | null) => {
+    if (!file) return;
+    setUploadingImage(true);
+    const res = await lecturesApi.uploadImage(file);
+    setUploadingImage(false);
+    if ("error" in res) {
+      setToast({ message: res.error || "이미지 업로드에 실패했습니다.", variant: "error" });
+      return;
+    }
+    setImage(res.data.url);
+    setToast({ message: "이미지가 업로드되었습니다.", variant: "success" });
   };
 
   return (
@@ -271,6 +280,25 @@ export default function MentorLectureNewPage() {
                 value={image}
                 onChange={(e) => setImage(e.target.value)}
               />
+              <div className="mt-2 flex items-center gap-3">
+                <label className="inline-flex cursor-pointer items-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">
+                  {uploadingImage ? "업로드 중..." : "이미지 파일 업로드"}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    disabled={uploadingImage}
+                    onChange={(e) => void handleImageUpload(e.target.files?.[0])}
+                  />
+                </label>
+                <span className="text-xs text-slate-500">JPG/PNG, 최대 3MB</span>
+              </div>
+              {image && (
+                <div className="mt-3 overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={image} alt="강의 이미지 미리보기" className="h-36 w-full object-cover" />
+                </div>
+              )}
             </div>
             <FormError message={toast?.variant === "error" ? toast.message : ""} />
             <Button

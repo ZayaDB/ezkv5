@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { enrollmentApi } from "@/lib/api/client";
+import { getCachedEnrollments } from "@/lib/hooks/useMyDataCache";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import PlatformCard from "@/components/ui/PlatformCard";
 import LoadingState from "@/components/ui/LoadingState";
@@ -20,8 +20,8 @@ export default function MyReceiptsPage() {
 
   const load = useCallback(async () => {
     setLoading(true);
-    const res = await enrollmentApi.getMine();
-    setRows(res.data?.enrollments || []);
+    const rows = await getCachedEnrollments();
+    setRows(rows);
     setLoading(false);
   }, []);
 

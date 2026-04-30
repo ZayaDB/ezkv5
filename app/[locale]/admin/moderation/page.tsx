@@ -5,13 +5,12 @@ import Link from "next/link";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/contexts/AuthContext";
-import { adminApi } from "@/lib/api/client";
+import { adminApi } from "@/lib/api";
 import StatusBadge from "@/components/ui/StatusBadge";
 import LoadingState from "@/components/ui/LoadingState";
 import PlatformCard from "@/components/ui/PlatformCard";
 import Toast from "@/components/ui/Toast";
-
-type Tab = "all" | "community" | "freelancer" | "mentor" | "posts";
+import ModerationTabs, { type ModerationTab } from "@/components/admin/moderation/ModerationTabs";
 
 interface QueueItem {
   id: string;
@@ -56,7 +55,7 @@ export default function AdminModerationPage() {
   const [mentorPending, setMentorPending] = useState<MentorQueueItem[]>([]);
   const [channelPosts, setChannelPosts] = useState<ChannelPostAdminRow[]>([]);
   const [search, setSearch] = useState("");
-  const [tab, setTab] = useState<Tab>("mentor");
+  const [tab, setTab] = useState<ModerationTab>("mentor");
   const [deleteTarget, setDeleteTarget] = useState<ChannelPostAdminRow | null>(null);
   const [deleteReason, setDeleteReason] = useState("");
   const [deleting, setDeleting] = useState(false);
@@ -201,7 +200,7 @@ export default function AdminModerationPage() {
     return <LoadingState message={t("loading")} />;
   }
 
-  const tabs: { id: Tab; label: string }[] = [
+  const tabs: { id: ModerationTab; label: string }[] = [
     { id: "all", label: t("tabAll") },
     { id: "mentor", label: t("tabMentor") },
     { id: "community", label: t("tabCommunity") },
@@ -233,7 +232,7 @@ export default function AdminModerationPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="bg-slate-50 rounded-2xl border border-slate-200">
       {toast && (
         <Toast
           message={toast.message}
@@ -242,7 +241,7 @@ export default function AdminModerationPage() {
           closeLabel={tCommon("close")}
         />
       )}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6">
+      <div className="px-6 sm:px-8 py-10 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold tracking-tight text-slate-900">{t("title")}</h1>
@@ -256,22 +255,7 @@ export default function AdminModerationPage() {
           </Link>
         </div>
 
-        <div className="flex flex-wrap gap-2">
-          {tabs.map((x) => (
-            <button
-              key={x.id}
-              type="button"
-              onClick={() => setTab(x.id)}
-              className={`rounded-lg px-3 py-1.5 text-sm font-semibold transition-colors ${
-                tab === x.id
-                  ? "bg-slate-900 text-white"
-                  : "bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50"
-              }`}
-            >
-              {x.label}
-            </button>
-          ))}
-        </div>
+        <ModerationTabs tabs={tabs} tab={tab} onChange={setTab} />
 
         <PlatformCard className="flex flex-col sm:flex-row gap-3 sm:items-center">
           <input

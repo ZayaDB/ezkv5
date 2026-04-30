@@ -26,6 +26,8 @@ import Textarea from "@/components/ui/Textarea";
 import Select from "@/components/ui/Select";
 import Field from "@/components/ui/Field";
 import FormError from "@/components/ui/FormError";
+import MentorApprovedPanel from "@/components/profile/MentorApprovedPanel";
+import MentorStatusPanel from "@/components/profile/MentorStatusPanel";
 
 type TabId = "overview" | "learning" | "sessions" | "mentor" | "info";
 
@@ -567,54 +569,13 @@ function ProfilePageContent() {
             <p className="text-sm text-slate-600 dark:text-slate-400">{tp("mentor.applyLead")}</p>
 
             {mentorApproved && mentorDoc ? (
-                <div className="space-y-4">
-                  <PlatformCard>
-                    <h3 className="font-semibold text-slate-900">{tp("mentor.mentorRoleTitle")}</h3>
-                    <p className="text-sm text-slate-600 mt-1">{mentorDoc.title}</p>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      <Link
-                        href={`/${locale}/mentors/${mentorDoc.id}`}
-                        className="rounded-lg bg-slate-900 px-3 py-2 text-xs font-semibold text-white"
-                      >
-                        {tp("mentor.publicProfile")}
-                      </Link>
-                      {(user.role === "mentor" || user.role === "admin") && (
-                        <Link
-                          href={`/${locale}/mentor/lectures/new`}
-                          className="rounded-lg bg-primary-600 px-3 py-2 text-xs font-semibold text-white"
-                        >
-                          {tp("mentor.createCourse")}
-                        </Link>
-                      )}
-                    </div>
-                    {user.role === "mentee" && (
-                      <p className="text-xs text-amber-800 bg-amber-50 rounded-lg px-3 py-2 mt-3">
-                        {tp("mentor.approvedMentee")}
-                      </p>
-                    )}
-                  </PlatformCard>
-                  {(user.role === "mentor" || user.role === "admin") && (
-                    <PlatformCard>
-                      <h3 className="font-semibold text-slate-900 mb-3">{tp("mentor.myCourses")}</h3>
-                      {myLectures.length === 0 ? (
-                        <p className="text-sm text-slate-500">{tp("mentor.noCourses")}</p>
-                      ) : (
-                        <ul className="space-y-2">
-                          {myLectures.map((lec: any) => (
-                            <li key={lec.id}>
-                              <Link
-                                href={`/${locale}/lectures/${lec.id}`}
-                                className="text-sm font-medium text-primary-600 hover:underline"
-                              >
-                                {lec.title}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </PlatformCard>
-                  )}
-                </div>
+                <MentorApprovedPanel
+                  tp={tp}
+                  locale={locale}
+                  mentorDoc={mentorDoc}
+                  userRole={user.role}
+                  myLectures={myLectures}
+                />
             ) : !mentorDoc ? (
               <PlatformCard>
                 <h3 className="font-semibold text-slate-900 mb-4">{tp("mentor.formTitle")}</h3>
@@ -810,88 +771,28 @@ function ProfilePageContent() {
                   </Button>
                 </div>
               </PlatformCard>
-            ) : mentorStatus === "pending" ? (
-              <PlatformCard>
-                <p className="text-sm text-slate-700">{tp("mentor.pending")}</p>
-              </PlatformCard>
-            ) : mentorStatus === "rejected" ? (
-              <PlatformCard>
-                <p className="text-sm text-red-700 mb-4">{tp("mentor.rejected")}</p>
-                <h3 className="font-semibold text-slate-900 mb-4">{tp("mentor.formTitle")}</h3>
-                <div className="space-y-3">
-                  <div>
-                    <label className="text-sm font-medium text-slate-700">{tp("mentor.mentorTitleLabel")}</label>
-                    <input
-                      className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
-                      value={mentorTitle}
-                      onChange={(e) => setMentorTitle(e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-slate-700">{tp("mentor.locationLabel")}</label>
-                    <input
-                      className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
-                      value={mentorLocation}
-                      onChange={(e) => setMentorLocation(e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-slate-700">{tp("mentor.bioLabel")}</label>
-                    <textarea
-                      rows={4}
-                      className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
-                      value={mentorBio}
-                      onChange={(e) => setMentorBio(e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-slate-700">{tp("mentor.languagesLabel")}</label>
-                    <input
-                      className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
-                      value={mentorLangs}
-                      onChange={(e) => setMentorLangs(e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-slate-700">{tp("mentor.specialtiesLabel")}</label>
-                    <input
-                      className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
-                      value={mentorSpecs}
-                      onChange={(e) => setMentorSpecs(e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-slate-700">{tp("mentor.priceLabel")}</label>
-                    <input
-                      type="number"
-                      className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
-                      value={mentorPrice}
-                      onChange={(e) => setMentorPrice(e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-slate-700">{tp("mentor.avail")}</label>
-                    <select
-                      className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
-                      value={mentorAvail}
-                      onChange={(e) => setMentorAvail(e.target.value as typeof mentorAvail)}
-                    >
-                      <option value="available">{tp("mentor.availAvailable")}</option>
-                      <option value="limited">{tp("mentor.availLimited")}</option>
-                      <option value="unavailable">{tp("mentor.availUnavailable")}</option>
-                    </select>
-                  </div>
-                  <button
-                    type="button"
-                    disabled={mentorSubmitting}
-                    onClick={submitMentorApplication}
-                    className="w-full rounded-xl bg-primary-600 py-3 text-sm font-semibold text-white disabled:opacity-60"
-                  >
-                    {tp("mentor.submit")}
-                  </button>
-                </div>
-              </PlatformCard>
-            ) : null}
+            ) : (
+              <MentorStatusPanel
+                tp={tp}
+                mentorStatus={mentorStatus}
+                mentorSubmitting={mentorSubmitting}
+                submitMentorApplication={submitMentorApplication}
+                mentorTitle={mentorTitle}
+                setMentorTitle={setMentorTitle}
+                mentorLocation={mentorLocation}
+                setMentorLocation={setMentorLocation}
+                mentorBio={mentorBio}
+                setMentorBio={setMentorBio}
+                mentorLangs={mentorLangs}
+                setMentorLangs={setMentorLangs}
+                mentorSpecs={mentorSpecs}
+                setMentorSpecs={setMentorSpecs}
+                mentorPrice={mentorPrice}
+                setMentorPrice={setMentorPrice}
+                mentorAvail={mentorAvail}
+                setMentorAvail={setMentorAvail}
+              />
+            )}
           </>
         )}
 

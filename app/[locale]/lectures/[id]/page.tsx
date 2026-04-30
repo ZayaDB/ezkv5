@@ -155,8 +155,19 @@ export default function LectureDetailPage() {
           </Link>
 
           <div className="flex flex-col md:flex-row items-start gap-8">
-            <div className="w-full md:w-96 h-64 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/20">
-              <PlayCircle className="w-24 h-24 text-white/90" />
+            <div className="w-full md:w-96 h-64 bg-white/20 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden relative">
+              {lecture.image ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={lecture.image}
+                  alt={lecture.title}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <PlayCircle className="w-24 h-24 text-white/90" />
+                </div>
+              )}
             </div>
 
             <div className="flex-1 text-white">

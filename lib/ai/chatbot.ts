@@ -15,8 +15,9 @@ export async function getChatbotResponse(
   message: string,
   context: ChatContext
 ): Promise<{ response: string; links?: SearchResult[] }> {
+  let searchResults: SearchResult[] = [];
   try {
-    const searchResults = await searchContent(message, context.locale);
+    searchResults = await searchContent(message, context.locale);
 
     // Build system prompt with site context
     const localeNames: Record<string, string> = {
@@ -70,15 +71,22 @@ Example responses:
     };
   } catch (error) {
     console.error('Chatbot error:', error);
-    // Fallback response
-    const fallbackMessages = {
-      kr: '죄송합니다. 오류가 발생했습니다. 다시 시도해주세요.',
-      en: 'Sorry, an error occurred. Please try again.',
-      mn: 'Уучлаарай, алдаа гарлаа. Дахин оролдоно уу.',
+    const guidePrefix = {
+      kr: 'AI 연결이 불안정해 가이드 모드로 안내드릴게요.',
+      en: 'AI connection is unstable, switching to guide mode.',
+      mn: 'AI холболт тогтворгүй байна, guide mode руу шилжлээ.',
+    };
+    const guideSuffix = {
+      kr: '멘토는 `/mentors`, 강의는 `/lectures`, 생활/비자는 `/study-in-korea`에서 확인할 수 있어요.',
+      en: 'You can check mentors at `/mentors`, lectures at `/lectures`, and visa/life info at `/study-in-korea`.',
+      mn: 'Ментор `/mentors`, лекц `/lectures`, виз/амьдралын мэдээлэл `/study-in-korea` хэсгээс үзээрэй.',
     };
 
     return {
-      response: fallbackMessages[context.locale as keyof typeof fallbackMessages] || fallbackMessages.en,
+      response: `${guidePrefix[context.locale as keyof typeof guidePrefix] || guidePrefix.en}\n\n${
+        guideSuffix[context.locale as keyof typeof guideSuffix] || guideSuffix.en
+      }`,
+      links: searchResults.length > 0 ? searchResults.slice(0, 4) : undefined,
     };
   }
 }

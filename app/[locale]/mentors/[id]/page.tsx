@@ -122,8 +122,17 @@ export default function MentorDetailPage() {
 
           <div className="flex flex-col md:flex-row items-start md:items-center gap-8">
             <div className="relative">
-              <div className="w-32 h-32 bg-white rounded-2xl flex items-center justify-center shadow-2xl">
-                <span className="text-5xl font-bold text-primary-600">{mentor.name.charAt(0)}</span>
+              <div className="w-32 h-32 bg-white rounded-2xl flex items-center justify-center shadow-2xl overflow-hidden">
+                {mentor.photo ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={mentor.photo}
+                    alt={mentor.name}
+                    className="w-full h-full object-cover object-top"
+                  />
+                ) : (
+                  <span className="text-5xl font-bold text-primary-600">{mentor.name.charAt(0)}</span>
+                )}
               </div>
               {mentor.verified && (
                 <div className="absolute -bottom-2 -right-2 bg-white rounded-full p-2 shadow-lg">

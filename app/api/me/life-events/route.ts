@@ -3,6 +3,11 @@ import mongoose from "mongoose";
 import connectDB from "@/lib/db/mongodb";
 import { authenticateRequest } from "@/lib/middleware/auth";
 import PersonalCalendarEvent from "@/models/PersonalCalendarEvent";
+import {
+  expandRecurringDates,
+  normalizeRecurrence,
+  parseDate,
+} from "@/lib/lifePlan/recurrence";
 
 export async function GET(request: NextRequest) {
   try {
@@ -26,18 +31,35 @@ export async function GET(request: NextRequest) {
     }
     await connectDB();
     const uid = new mongoose.Types.ObjectId(auth.userId);
-    const rows = await PersonalCalendarEvent.find({
-      userId: uid,
-      startsAt: { $gte: from, $lte: to },
-    })
+    const rows = await PersonalCalendarEvent.find({ userId: uid })
       .sort({ startsAt: 1 })
       .lean();
-    const events = rows.map((r: any) => ({
-      id: String(r._id),
-      title: r.title,
-      notes: r.notes || "",
-      startsAt: r.startsAt,
-    }));
+    const events = rows.flatMap((r: any) => {
+      const recurrence = normalizeRecurrence(r.recurrence || { type: "none" });
+      const startsAt = new Date(r.startsAt);
+      const endsAt = r.endsAt ? new Date(r.endsAt) : null;
+      const instances = expandRecurringDates({
+        startsAt,
+        from,
+        to,
+        recurrence,
+      });
+      return instances.map((instanceDate) => {
+        const durationMs = endsAt ? Math.max(0, endsAt.getTime() - startsAt.getTime()) : 0;
+        const instanceEndAt = durationMs > 0 ? new Date(instanceDate.getTime() + durationMs) : null;
+        return {
+          id: `${String(r._id)}:${instanceDate.toISOString()}`,
+          sourceId: String(r._id),
+          title: r.title,
+          notes: r.notes || "",
+          startsAt: instanceDate,
+          endsAt: instanceEndAt,
+          category: r.category || "other",
+          status: r.status || "planned",
+          recurrence,
+        };
+      });
+    });
     return NextResponse.json({ events });
   } catch (e: any) {
     console.error(e);
@@ -56,14 +78,32 @@ export async function POST(request: NextRequest) {
     }
     const body = await request.json();
     const title = String(body?.title || "").trim();
-    const startsAtRaw = body?.startsAt;
+    const startsAt = parseDate(body?.startsAt);
+    const endsAt = body?.endsAt ? parseDate(body?.endsAt) : null;
+    const categoryRaw = String(body?.category || "other");
+    const category =
+      categoryRaw === "personal" ||
+      categoryRaw === "work" ||
+      categoryRaw === "health" ||
+      categoryRaw === "parttime"
+        ? categoryRaw
+        : "other";
+    const statusRaw = String(body?.status || "planned");
+    const status =
+      statusRaw === "completed" || statusRaw === "cancelled" ? statusRaw : "planned";
+    const recurrence = normalizeRecurrence(body?.recurrence || { type: "none" });
     const notes = body?.notes != null ? String(body.notes).slice(0, 5000) : "";
     if (!title) {
       return NextResponse.json({ error: "제목을 입력해 주세요." }, { status: 400 });
     }
-    const startsAt = new Date(startsAtRaw);
-    if (Number.isNaN(startsAt.getTime())) {
+    if (!startsAt) {
       return NextResponse.json({ error: "일시를 올바르게 입력해 주세요." }, { status: 400 });
+    }
+    if (endsAt && endsAt < startsAt) {
+      return NextResponse.json({ error: "종료 일시는 시작 일시 이후여야 합니다." }, { status: 400 });
+    }
+    if (recurrence.until && recurrence.until < startsAt) {
+      return NextResponse.json({ error: "반복 종료일은 시작일 이후여야 합니다." }, { status: 400 });
     }
     await connectDB();
     const uid = new mongoose.Types.ObjectId(auth.userId);
@@ -72,6 +112,10 @@ export async function POST(request: NextRequest) {
       title,
       notes: notes || undefined,
       startsAt,
+      endsAt: endsAt || undefined,
+      category,
+      status,
+      recurrence,
     });
     return NextResponse.json({
       event: {
@@ -79,6 +123,10 @@ export async function POST(request: NextRequest) {
         title: doc.title,
         notes: doc.notes || "",
         startsAt: doc.startsAt,
+        endsAt: doc.endsAt || null,
+        category: doc.category,
+        status: doc.status,
+        recurrence: doc.recurrence,
       },
     });
   } catch (e: any) {

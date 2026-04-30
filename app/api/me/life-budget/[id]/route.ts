@@ -4,6 +4,7 @@ import connectDB from "@/lib/db/mongodb";
 import { authenticateRequest } from "@/lib/middleware/auth";
 import PersonalBudgetLine from "@/models/PersonalBudgetLine";
 import type { PersonalBudgetKind } from "@/models/PersonalBudgetLine";
+import { normalizeRecurrence, parseDate } from "@/lib/lifePlan/recurrence";
 
 export async function PATCH(
   request: NextRequest,
@@ -21,15 +22,20 @@ export async function PATCH(
     const kind: PersonalBudgetKind = body?.kind === "income" ? "income" : "expense";
     const label = String(body?.label || "").trim();
     const amount = Number(body?.amount);
+    const date = parseDate(body?.date) || new Date();
+    const recurrence = normalizeRecurrence(body?.recurrence || { type: "none" });
     if (!label) {
       return NextResponse.json({ error: "항목 이름을 입력해 주세요." }, { status: 400 });
     }
     if (!Number.isFinite(amount) || amount < 0) {
       return NextResponse.json({ error: "금액을 올바르게 입력해 주세요." }, { status: 400 });
     }
+    if (recurrence.until && recurrence.until < date) {
+      return NextResponse.json({ error: "반복 종료일은 시작일 이후여야 합니다." }, { status: 400 });
+    }
     const updated = await PersonalBudgetLine.findOneAndUpdate(
       { _id: oidLine, userId: uid },
-      { $set: { kind, label, amount } },
+      { $set: { kind, label, amount, date, recurrence } },
       { new: true }
     ).lean();
     if (!updated) {
@@ -41,6 +47,8 @@ export async function PATCH(
         kind: (updated as any).kind,
         label: (updated as any).label,
         amount: (updated as any).amount,
+        date: (updated as any).date,
+        recurrence: (updated as any).recurrence || { type: "none", interval: 1, until: null },
       },
     });
   } catch (e: any) {

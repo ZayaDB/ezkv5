@@ -1,38 +1,38 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useTranslations, useLocale } from 'next-intl';
-import Link from 'next/link';
-import Image from 'next/image';
-import { useAuth } from '@/lib/contexts/AuthContext';
-import { Mail, Lock, ArrowRight, Sparkles } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useTranslations, useLocale } from "next-intl";
+import Link from "next/link";
+import Image from "next/image";
+import { useAuth } from "@/lib/contexts/AuthContext";
+import { Mail, Lock, ArrowRight } from "lucide-react";
 
 export default function LoginPage() {
-  const t = useTranslations('auth');
+  const t = useTranslations("auth");
   const locale = useLocale();
   const router = useRouter();
   const { user, login } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [signupSuccess, setSignupSuccess] = useState(false);
 
   // URL 파라미터에서 signup 성공 여부 확인
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get('signup') === 'success') {
+    if (params.get("signup") === "success") {
       setSignupSuccess(true);
       // URL에서 파라미터 제거
-      window.history.replaceState({}, '', window.location.pathname);
+      window.history.replaceState({}, "", window.location.pathname);
     }
   }, []);
 
   // 이미 로그인되어 있으면 프로필로 리다이렉트
   useEffect(() => {
     if (user) {
-      if (user.role === 'admin') {
+      if (user.role === "admin") {
         router.push(`/${locale}/admin/dashboard`);
       } else {
         router.push(`/${locale}/my/dashboard`);
@@ -42,54 +42,58 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
 
     try {
       const result = await login(email, password);
-      
+
       if (!result.success) {
-        setError(result.error || t('loginError'));
+        setError(result.error || t("loginError"));
         setLoading(false);
         return;
       }
 
-      // 로그인 성공 - Context가 업데이트되면 useEffect에서 자동으로 리다이렉트됨
+      // 로그인 성공 즉시 이동하여 체감 지연을 줄인다.
+      if (result.user?.role === "admin") {
+        router.replace(`/${locale}/admin/dashboard`);
+      } else {
+        router.replace(`/${locale}/my/dashboard`);
+      }
       setLoading(false);
     } catch (err: any) {
-      console.error('Login error:', err);
-      setError(err.message || t('loginError'));
+      console.error("Login error:", err);
+      setError(err.message || t("loginError"));
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-600 via-primary-500 to-accent-500 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center mb-4">
-            <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-2xl ring-1 ring-white/40 bg-white">
-              <Image
-                src="/logo/logo.png"
-                alt="logo"
-                width={64}
-                height={64}
-                className="w-full h-full object-cover"
-                priority
-              />
-            </div>
-          </div>
-          <p className="text-white/90 text-lg">{t('welcomeBack')}</p>
-        </div>
+    <div className="relative min-h-screen overflow-hidden bg-[url('/repul_dppaMAIN_bkimg.png')] bg-cover bg-top bg-no-repeat flex items-center justify-center p-4">
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute inset-0 bg-white/25 dark:bg-slate-950/55" />
+      </div>
 
+      <div className="relative z-10 w-full max-w-md left-[-20%] top-[-40px]">
+        {/* Logo */}
+        <h1 className=" absolute top-0 left-[180%] w-full text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[#7375a0] dark:text-white text-left mb-6 leading-tight">
+          {t("login")}
+        </h1>
         {/* Login Form */}
         <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl shadow-2xl p-8 border border-white/30 dark:border-slate-700">
           <form onSubmit={handleSubmit} className="space-y-6">
             {signupSuccess && (
               <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl flex items-center gap-2">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                <svg
+                  className="w-5 h-5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clipRule="evenodd"
+                  />
                 </svg>
                 <span>회원가입이 완료되었습니다! 로그인해주세요.</span>
               </div>
@@ -102,7 +106,7 @@ export default function LoginPage() {
 
             <div>
               <label className="block text-sm font-semibold text-gray-700 dark:text-slate-200 mb-2">
-                {t('email')}
+                {t("email")}
               </label>
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-slate-500" />
@@ -112,14 +116,14 @@ export default function LoginPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
-                  placeholder={t('emailPlaceholder')}
+                  placeholder={t("emailPlaceholder")}
                 />
               </div>
             </div>
 
             <div>
               <label className="block text-sm font-semibold text-gray-700 dark:text-slate-200 mb-2">
-                {t('password')}
+                {t("password")}
               </label>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-slate-500" />
@@ -129,21 +133,26 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
-                  placeholder={t('passwordPlaceholder')}
+                  placeholder={t("passwordPlaceholder")}
                 />
               </div>
             </div>
 
             <div className="flex items-center justify-between">
               <label className="flex items-center">
-                <input type="checkbox" className="w-4 h-4 text-primary-500 rounded" />
-                <span className="ml-2 text-sm text-gray-600 dark:text-slate-300">{t('rememberMe')}</span>
+                <input
+                  type="checkbox"
+                  className="w-4 h-4 text-primary-500 rounded"
+                />
+                <span className="ml-2 text-sm text-gray-600 dark:text-slate-300">
+                  {t("rememberMe")}
+                </span>
               </label>
               <Link
                 href={`/${locale}/forgot-password`}
                 className="text-sm text-primary-600 font-semibold hover:text-primary-700"
               >
-                {t('forgotPassword')}
+                {t("forgotPassword")}
               </Link>
             </div>
 
@@ -155,11 +164,11 @@ export default function LoginPage() {
               {loading ? (
                 <>
                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  {t('loggingIn')}
+                  {t("loggingIn")}
                 </>
               ) : (
                 <>
-                  {t('login')}
+                  {t("login")}
                   <ArrowRight className="w-5 h-5" />
                 </>
               )}
@@ -168,12 +177,12 @@ export default function LoginPage() {
 
           <div className="mt-6 text-center">
             <p className="text-gray-600 dark:text-slate-300">
-              {t('noAccount')}{' '}
+              {t("noAccount")}{" "}
               <Link
                 href={`/${locale}/signup`}
                 className="text-primary-600 font-semibold hover:text-primary-700"
               >
-                {t('signUp')}
+                {t("signUp")}
               </Link>
             </p>
           </div>
@@ -182,4 +191,3 @@ export default function LoginPage() {
     </div>
   );
 }
-

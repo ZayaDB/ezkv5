@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { authApi } from '@/lib/api/client';
+import { authApi } from '@/lib/api';
 
 interface User {
   id: string;
@@ -21,7 +21,7 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   loading: boolean;
-  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  login: (email: string, password: string) => Promise<{ success: boolean; error?: string; user?: User }>;
   signup: (userData: {
     email: string;
     password: string;
@@ -35,25 +35,62 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AUTH_USER_CACHE_KEY = 'auth_user_cache';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [bootstrapped, setBootstrapped] = useState(false);
 
-  const refreshUser = async () => {
+  const refreshUser = async (options?: { background?: boolean }) => {
+    if (!options?.background) {
+      setLoading(true);
+    }
     try {
       const currentUser = await authApi.getCurrentUser();
       setUser(currentUser);
+      if (typeof window !== 'undefined') {
+        if (currentUser) {
+          localStorage.setItem(AUTH_USER_CACHE_KEY, JSON.stringify(currentUser));
+        } else {
+          localStorage.removeItem(AUTH_USER_CACHE_KEY);
+        }
+      }
     } catch (error) {
       setUser(null);
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem(AUTH_USER_CACHE_KEY);
+      }
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    refreshUser();
-  }, []);
+    if (bootstrapped) return;
+    setBootstrapped(true);
+    if (typeof window === 'undefined') return;
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
+    const cached = localStorage.getItem(AUTH_USER_CACHE_KEY);
+    if (cached) {
+      try {
+        setUser(JSON.parse(cached) as User);
+        setLoading(false);
+        void refreshUser({ background: true });
+        return;
+      } catch {
+        localStorage.removeItem(AUTH_USER_CACHE_KEY);
+      }
+    }
+
+    void refreshUser();
+  }, [bootstrapped]);
 
   const login = async (email: string, password: string) => {
     try {
@@ -63,7 +100,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       if (response.data?.user) {
         setUser(response.data.user);
-        return { success: true };
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(AUTH_USER_CACHE_KEY, JSON.stringify(response.data.user));
+        }
+        return { success: true, user: response.data.user };
       }
       return { success: false, error: '로그인에 실패했습니다.' };
     } catch (error: any) {
@@ -97,6 +137,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = () => {
     authApi.logout();
     setUser(null);
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(AUTH_USER_CACHE_KEY);
+    }
   };
 
   const switchRole = async (targetRole: 'mentee' | 'mentor') => {
@@ -107,6 +150,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       if (response.data?.user) {
         setUser(response.data.user);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(AUTH_USER_CACHE_KEY, JSON.stringify(response.data.user));
+        }
         return { success: true };
       }
       return { success: false, error: '역할 전환에 실패했습니다.' };

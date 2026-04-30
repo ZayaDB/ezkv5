@@ -33,6 +33,7 @@ export default function Header() {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [searchQuery, setSearchQuery] = useState("");
+  const [hasScrolled, setHasScrolled] = useState(false);
 
   useEffect(() => {
     const hasDark =
@@ -76,6 +77,17 @@ export default function Header() {
     setSearchQuery(q);
   }, [pathname]);
 
+  useEffect(() => {
+    const onScroll = () => setHasScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const isHomePath = pathname === `/${locale}` || pathname === `/${locale}/`;
+  const solidHeader = hasScrolled || !isHomePath || mobileMenuOpen;
+  const homeBlendHeader = isHomePath && !mobileMenuOpen;
+
   const onSubmitSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const q = searchQuery.trim();
@@ -84,11 +96,24 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white/54 dark:bg-slate-900/85 backdrop-blur-md border-b border-gray-200/50 dark:border-slate-700/70 fixed top-0 inset-x-0 z-50 shadow-sm">
-      <nav className="max-w-7xl mx-auto  lg:px-8">
-        <div className="flex items-center justify-between h-20">
+    <header
+      className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
+        homeBlendHeader
+          ? hasScrolled
+            ? "bg-gradient-to-r from-blue-700/92 via-indigo-700/92 to-cyan-600/92 dark:from-slate-950/90 dark:via-blue-950/90 dark:to-indigo-950/90 backdrop-blur-md border-b border-transparent"
+            : "bg-gradient-to-r from-blue-700/96 via-indigo-700/96 to-cyan-600/96 dark:from-slate-950/92 dark:via-blue-950/92 dark:to-indigo-950/92 backdrop-blur-sm border-b border-transparent"
+          : solidHeader
+          ? "bg-white/78 dark:bg-slate-900/85 backdrop-blur-md border-b border-gray-200/60 dark:border-slate-700/70 shadow-sm"
+          : "bg-white/10 dark:bg-slate-900/20 backdrop-blur-sm border-b border-transparent"
+      }`}
+    >
+      <nav className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="h-20 grid grid-cols-[auto_1fr_auto] items-center gap-4">
           {/* Logo */}
-          <Link href={getLocalizedPath("")} className="flex items-center group">
+          <Link
+            href={getLocalizedPath("")}
+            className="flex items-center group justify-self-start"
+          >
             <div className="">
               <Image
                 src="/logo/logo.png"
@@ -101,57 +126,58 @@ export default function Header() {
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            <Link
-              href={getLocalizedPath("/mentors")}
-              className="text-gray-600 dark:text-slate-200 hover:text-primary-500 transition-colors"
-            >
-              {t("mentors")}
-            </Link>
-            <Link
-              href={getLocalizedPath("/lectures")}
-              className="text-gray-600 dark:text-slate-200 hover:text-primary-500 transition-colors"
-            >
-              {t("lectures")}
-            </Link>
-            <Link
-              href={getLocalizedPath("/community")}
-              className="text-gray-600 dark:text-slate-200 hover:text-primary-500 transition-colors"
-            >
-              {t("community")}
-            </Link>
-            <Link
-              href={getLocalizedPath("/freelancers")}
-              className="text-gray-600 dark:text-slate-200 hover:text-primary-500 transition-colors"
-            >
-              {t("freelancers")}
-            </Link>
-            <Link
-              href={getLocalizedPath("/study-in-korea")}
-              className="text-gray-600 dark:text-slate-200 hover:text-primary-500 transition-colors"
-            >
-              {t("studyInKorea")}
-            </Link>
+          {/* Desktop center area */}
+          <div className="hidden md:flex items-center justify-start min-w-0">
+            <div className="flex items-center gap-5 lg:gap-6 whitespace-nowrap ml-3 lg:ml-5">
+              <Link
+                href={getLocalizedPath("/mentors")}
+                className="text-[16px] font-bold text-gray-600 dark:text-slate-200 hover:text-primary-500 transition-colors"
+              >
+                {t("mentors")}
+              </Link>
+              <Link
+                href={getLocalizedPath("/lectures")}
+                className="text-[16px] font-bold text-gray-600 dark:text-slate-200 hover:text-primary-500 transition-colors"
+              >
+                {t("lectures")}
+              </Link>
+              <Link
+                href={getLocalizedPath("/community")}
+                className="text-[16px] font-bold text-gray-600 dark:text-slate-200 hover:text-primary-500 transition-colors"
+              >
+                {t("community")}
+              </Link>
+              <Link
+                href={getLocalizedPath("/freelancers")}
+                className="text-[16px] font-bold text-gray-600 dark:text-slate-200 hover:text-primary-500 transition-colors"
+              >
+                {t("freelancers")}
+              </Link>
+              <Link
+                href={getLocalizedPath("/study-in-korea")}
+                className="text-[16px] font-bold text-gray-600 dark:text-slate-200 hover:text-primary-500 transition-colors"
+              >
+                {t("studyInKorea")}
+              </Link>
+            </div>
           </div>
 
-          <form
-            onSubmit={onSubmitSearch}
-            className="hidden lg:flex items-center w-72 xl:w-80"
-          >
-            <label className="relative w-full">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <input
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={t("search")}
-                className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-200 dark:focus:ring-primary-500/30"
-              />
-            </label>
-          </form>
-
           {/* Right side actions */}
-          <div className="hidden md:flex items-center space-x-3">
+          <div className="hidden md:flex items-center space-x-3 justify-self-end">
+            <form
+              onSubmit={onSubmitSearch}
+              className="hidden xl:flex items-center w-56 2xl:w-64 shrink-0 mr-1"
+            >
+              <label className="relative w-full">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <input
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={t("search")}
+                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-200 dark:focus:ring-primary-500/30"
+                />
+              </label>
+            </form>
             <button
               type="button"
               onClick={toggleTheme}

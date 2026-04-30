@@ -1,20 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
+import RouteRedirect from "@/components/ui/RouteRedirect";
 
 export default function MyIndexPage() {
-  const router = useRouter();
   const locale = useLocale();
-
-  useEffect(() => {
-    router.replace(`/${locale}/my/dashboard`);
-  }, [router, locale]);
-
-  return (
-    <div className="flex min-h-[30vh] items-center justify-center text-sm text-zinc-500">
-      이동 중…
-    </div>
-  );
+  return <RouteRedirect to={`/${locale}/my/dashboard`} message="이동 중…" />;
 }

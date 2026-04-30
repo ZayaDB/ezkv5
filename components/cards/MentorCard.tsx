@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { Mentor } from '@/types';
-import { Star, MapPin, CheckCircle, ArrowRight } from 'lucide-react';
+import { Star, MapPin, CheckCircle, ArrowRight, Users } from 'lucide-react';
 import { useLocale } from 'next-intl';
 import { formatMentorHourlyPrice } from '@/lib/format/price';
 
@@ -16,72 +16,80 @@ export default function MentorCard({ mentor }: MentorCardProps) {
 
   return (
     <Link href={`/${locale}/mentors/${mentor.id}`}>
-      <div className="group bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-700 p-6 hover:shadow-2xl transition-all duration-300 cursor-pointer hover:-translate-y-1 overflow-hidden relative">
-        {/* Gradient overlay on hover */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 to-accent-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl"></div>
-        
-        <div className="relative">
-          <div className="flex items-start gap-4 mb-5">
-            <div className="relative flex-shrink-0">
-              <div className="w-20 h-20 bg-gradient-to-br from-primary-400 to-primary-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                <span className="text-3xl font-bold text-white">
-                  {mentor.name.charAt(0)}
-                </span>
-              </div>
-              {mentor.verified && (
-                <div className="absolute -bottom-1 -right-1 bg-white dark:bg-slate-900 rounded-full p-1 shadow-md">
-                  <CheckCircle className="w-5 h-5 text-primary-500 fill-primary-500" />
-                </div>
-              )}
+      <div className="group bg-white dark:bg-slate-900 rounded-2xl border border-gray-200/80 dark:border-slate-700 hover:shadow-xl transition-all duration-300 cursor-pointer hover:-translate-y-1 overflow-hidden relative">
+        <div className="relative aspect-[16/9] bg-gradient-to-br from-accent-100 to-primary-100 dark:from-accent-900/30 dark:to-primary-900/20 overflow-hidden">
+          {mentor.photo ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={mentor.photo}
+              alt={mentor.name}
+              className="w-full h-full object-cover object-top group-hover:scale-[1.03] transition-transform duration-300"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <Users className="w-14 h-14 text-accent-400/70" />
             </div>
-            <div className="flex-1 min-w-0">
-              <h3 className="text-xl font-bold text-gray-900 dark:text-slate-100 truncate mb-1 group-hover:text-primary-600 transition-colors">
-                {mentor.name}
-              </h3>
-              <p className="text-sm text-gray-600 dark:text-slate-400 truncate mb-2">{mentor.title}</p>
-              <div className="flex items-center gap-1.5">
-                <MapPin className="w-4 h-4 text-gray-400 dark:text-slate-500" />
-                <span className="text-sm text-gray-500 dark:text-slate-400">{mentor.location}</span>
-              </div>
-            </div>
+          )}
+          <div className="absolute top-3 left-3 inline-flex items-center rounded-lg px-2.5 py-1 text-xs font-semibold bg-white/90 dark:bg-slate-900/85 text-accent-700 dark:text-accent-300">
+            {mentor.specialties[0] || '멘토'}
+          </div>
+          <div className="absolute top-3 right-3 inline-flex items-center rounded-lg px-2 py-1 text-xs font-semibold bg-white/90 dark:bg-slate-900/85 text-amber-700">
+            <Star className="w-3.5 h-3.5 mr-1 fill-amber-500 text-amber-500" />
+            {mentor.rating.toFixed(1)}
+          </div>
+        </div>
+
+        <div className="p-6">
+          <div className="flex items-center gap-2 mb-1">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-slate-100 truncate group-hover:text-primary-700 transition-colors">
+              {mentor.name}
+            </h3>
+            {mentor.verified && (
+              <span className="inline-flex items-center text-xs font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">
+                <CheckCircle className="w-3.5 h-3.5 mr-1 fill-emerald-500 text-emerald-500" />
+                인증
+              </span>
+            )}
+          </div>
+          <p className="text-sm font-medium text-gray-700 dark:text-slate-300 truncate">{mentor.title}</p>
+          <div className="flex items-center gap-1.5 mt-1">
+            <MapPin className="w-4 h-4 text-gray-400 dark:text-slate-500" />
+            <span className="text-sm text-gray-500 dark:text-slate-400">{mentor.location}</span>
           </div>
 
-          <div className="flex items-center gap-2 mb-4">
-            <div className="flex items-center gap-1">
-              <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-              <span className="text-base font-bold text-gray-900 dark:text-slate-100">{mentor.rating}</span>
-            </div>
-            <span className="text-sm text-gray-500 dark:text-slate-400">({mentor.reviewCount.toLocaleString()} reviews)</span>
-          </div>
-
-          <div className="flex flex-wrap gap-2 mb-5">
+          <div className="mt-4 flex flex-wrap gap-2">
             {mentor.specialties.slice(0, 3).map((specialty) => (
               <span
                 key={specialty}
-                className="px-3 py-1.5 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-slate-800 dark:to-slate-700 text-gray-700 dark:text-slate-300 text-xs font-medium rounded-lg border border-gray-200 dark:border-slate-600 group-hover:border-primary-200 group-hover:bg-primary-50 dark:group-hover:bg-primary-500/10 transition-all"
+                className="px-2.5 py-1 rounded-full bg-primary-50 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300 text-xs font-medium"
               >
                 {specialty}
               </span>
             ))}
           </div>
 
-          <div className="flex items-center justify-between pt-5 border-t border-gray-100 dark:border-slate-700">
-            <div>
-              <span className="text-3xl font-extrabold text-gray-900 dark:text-slate-100">{priceDisplay.label}</span>
-              {priceDisplay.suffix && (
-                <span className="text-sm text-gray-500 dark:text-slate-400 ml-1">{priceDisplay.suffix}</span>
-              )}
-            </div>
-            <div className="flex items-center gap-2">
+          <div className="mt-5 pt-4 border-t border-gray-100 dark:border-slate-700 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="text-xs text-gray-500 dark:text-slate-400">
+                리뷰 {mentor.reviewCount.toLocaleString()}개
+              </span>
               {mentor.availability === 'available' && (
-                <span className="px-3 py-1.5 bg-gradient-to-r from-accent-500 to-accent-600 text-white text-xs font-semibold rounded-full shadow-sm">
+                <span className="px-2.5 py-1 bg-emerald-500 text-white text-[11px] font-semibold rounded-full">
                   예약 가능
                 </span>
               )}
-              <div className="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                <ArrowRight className="w-4 h-4 text-white" />
-              </div>
             </div>
+            <div className="inline-flex items-center text-xs font-semibold text-primary-700 dark:text-primary-300">
+              자세히 보기
+              <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+
+          <div className="mt-3">
+            <span className="text-base sm:text-lg font-bold text-primary-600">{priceDisplay.label}</span>
+            {priceDisplay.suffix && (
+              <span className="text-xs text-gray-500 dark:text-slate-400 ml-1">{priceDisplay.suffix}</span>
+            )}
           </div>
         </div>
       </div>

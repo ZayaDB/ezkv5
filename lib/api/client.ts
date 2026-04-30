@@ -1,67 +1,5 @@
 // API 클라이언트 유틸리티
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
-
-export interface ApiResponse<T> {
-  data?: T;
-  error?: string;
-  message?: string;
-}
-
-// 토큰 관리
-export const tokenManager = {
-  get: (): string | null => {
-    if (typeof window === 'undefined') return null;
-    return localStorage.getItem('token');
-  },
-  set: (token: string): void => {
-    if (typeof window === 'undefined') return;
-    localStorage.setItem('token', token);
-  },
-  remove: (): void => {
-    if (typeof window === 'undefined') return;
-    localStorage.removeItem('token');
-  },
-};
-
-// API 요청 헬퍼
-async function apiRequest<T>(
-  endpoint: string,
-  options: RequestInit = {}
-): Promise<ApiResponse<T>> {
-  const token = tokenManager.get();
-  
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-    ...(options.headers as Record<string, string>),
-  };
-
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-  }
-
-  try {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-      ...options,
-      headers,
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      return {
-        error: data.error || '요청 처리 중 오류가 발생했습니다.',
-      };
-    }
-
-    return { data };
-  } catch (error: any) {
-    console.error('API request error:', error);
-    return {
-      error: error.message || '네트워크 오류가 발생했습니다.',
-    };
-  }
-}
+import { API_BASE_URL, apiRequest, authToken } from "./core";
 
 // Auth API
 export const authApi = {
@@ -82,7 +20,7 @@ export const authApi = {
     
     // 회원가입 시 토큰 저장하지 않음 (자동 로그인 방지)
     // if (response.data?.token) {
-    //   tokenManager.set(response.data.token);
+    //   authToken.set(response.data.token);
     // }
     
     return response;
@@ -98,18 +36,18 @@ export const authApi = {
     );
     
     if (response.data?.token) {
-      tokenManager.set(response.data.token);
+      authToken.set(response.data.token);
     }
     
     return response;
   },
 
   logout: () => {
-    tokenManager.remove();
+    authToken.remove();
   },
 
   getCurrentUser: async () => {
-    const token = tokenManager.get();
+    const token = authToken.get();
     if (!token) return null;
     
     try {
@@ -119,10 +57,10 @@ export const authApi = {
         return response.data.user;
       }
       // 토큰이 유효하지 않으면 제거
-      tokenManager.remove();
+      authToken.remove();
       return null;
     } catch {
-      tokenManager.remove();
+      authToken.remove();
       return null;
     }
   },
@@ -152,7 +90,7 @@ export const authApi = {
     });
 
     if (response.data?.token) {
-      tokenManager.set(response.data.token);
+      authToken.set(response.data.token);
     }
 
     return response;
@@ -235,6 +173,9 @@ export const lecturesApi = {
   getMine: async () => {
     return apiRequest<{ lectures: any[] }>("/api/lectures?mine=1");
   },
+  getById: async (id: string) => {
+    return apiRequest<any>(`/api/lectures/${id}`);
+  },
   create: async (payload: {
     title: string;
     type: "online" | "offline";
@@ -261,6 +202,51 @@ export const lecturesApi = {
       method: "POST",
       body: JSON.stringify(payload),
     });
+  },
+  update: async (
+    id: string,
+    payload: {
+      title: string;
+      type: "online" | "offline";
+      category: string;
+      price: number;
+      duration: string;
+      description: string;
+      image?: string;
+      shortDescription?: string;
+      targetAudience?: string;
+      prerequisites?: string;
+      whatYouWillLearn?: string[];
+      curriculum?: string[];
+      totalLessons?: number;
+      totalHours?: number;
+      difficulty?: "beginner" | "intermediate" | "advanced";
+      maxStudents?: number;
+      language?: string;
+      previewVideoUrl?: string;
+      materialsIncluded?: string[];
+      faq?: string[];
+    }
+  ) => {
+    return apiRequest<any>(`/api/lectures/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    });
+  },
+  uploadImage: async (file: File) => {
+    const token = authToken.get();
+    const fd = new FormData();
+    fd.append("file", file);
+    const headers: Record<string, string> = {};
+    if (token) headers.Authorization = `Bearer ${token}`;
+    const res = await fetch(`${API_BASE_URL}/api/upload/feed`, {
+      method: "POST",
+      headers,
+      body: fd,
+    });
+    const data = await res.json();
+    if (!res.ok) return { error: data.error || "업로드 실패" } as const;
+    return { data: { url: data.url as string } };
   },
 };
 
@@ -474,7 +460,7 @@ export const publicFeedApi = {
     });
   },
   uploadFile: async (file: File) => {
-    const token = tokenManager.get();
+    const token = authToken.get();
     const fd = new FormData();
     fd.append("file", file);
     const headers: Record<string, string> = {};
@@ -550,19 +536,68 @@ export const myActivityApi = {
 };
 
 export type LifeBudgetKind = "expense" | "income";
+export type LifeRecurrenceType = "none" | "weekly" | "biweekly" | "monthly";
+export type LifeEventCategory = "personal" | "work" | "health" | "parttime" | "other";
+export type LifeEventStatus = "planned" | "completed" | "cancelled";
+
+export type LifeRecurrence = {
+  type: LifeRecurrenceType;
+  interval?: number;
+  until?: string | null;
+  dayOfWeek?: number | null;
+  dayOfMonth?: number | null;
+};
+
+export type LifeBudgetLine = {
+  id: string;
+  kind: LifeBudgetKind;
+  label: string;
+  amount: number;
+  date: string;
+  recurrence: LifeRecurrence;
+};
+
+export type LifeBudgetOccurrence = {
+  id: string;
+  sourceId: string;
+  kind: LifeBudgetKind;
+  label: string;
+  amount: number;
+  date: string;
+  recurrence: LifeRecurrence;
+};
+
+export type LifeEvent = {
+  id: string;
+  sourceId?: string;
+  title: string;
+  notes: string;
+  startsAt: string;
+  endsAt?: string | null;
+  category: LifeEventCategory;
+  status: LifeEventStatus;
+  recurrence: LifeRecurrence;
+};
 
 export const lifePlanApi = {
-  getBudgetLines: async () => {
+  getBudgetLines: async (params?: { fromIso?: string; toIso?: string }) => {
+    const q = new URLSearchParams();
+    if (params?.fromIso) q.set("from", params.fromIso);
+    if (params?.toIso) q.set("to", params.toIso);
+    const suffix = q.toString() ? `?${q.toString()}` : "";
     return apiRequest<{
-      lines: { id: string; kind: LifeBudgetKind; label: string; amount: number }[];
-    }>("/api/me/life-budget");
+      lines: LifeBudgetLine[];
+      occurrences: LifeBudgetOccurrence[];
+    }>(`/api/me/life-budget${suffix}`);
   },
   addBudgetLine: async (payload: {
     kind: LifeBudgetKind;
     label: string;
     amount: number;
+    date: string;
+    recurrence?: LifeRecurrence;
   }) => {
-    return apiRequest<{ line: { id: string; kind: LifeBudgetKind; label: string; amount: number } }>(
+    return apiRequest<{ line: LifeBudgetLine }>(
       "/api/me/life-budget",
       { method: "POST", body: JSON.stringify(payload) }
     );
@@ -572,24 +607,47 @@ export const lifePlanApi = {
   },
   updateBudgetLine: async (
     id: string,
-    payload: { kind: LifeBudgetKind; label: string; amount: number }
+    payload: { kind: LifeBudgetKind; label: string; amount: number; date: string; recurrence?: LifeRecurrence }
   ) => {
-    return apiRequest<{ line: { id: string; kind: LifeBudgetKind; label: string; amount: number } }>(
+    return apiRequest<{ line: LifeBudgetLine }>(
       `/api/me/life-budget/${id}`,
       { method: "PATCH", body: JSON.stringify(payload) }
     );
   },
   getLifeEvents: async (fromIso: string, toIso: string) => {
     const q = `from=${encodeURIComponent(fromIso)}&to=${encodeURIComponent(toIso)}`;
-    return apiRequest<{
-      events: { id: string; title: string; notes: string; startsAt: string }[];
-    }>(`/api/me/life-events?${q}`);
+    return apiRequest<{ events: LifeEvent[] }>(`/api/me/life-events?${q}`);
   },
-  addLifeEvent: async (payload: { title: string; startsAt: string; notes?: string }) => {
-    return apiRequest<{ event: { id: string; title: string; notes: string; startsAt: string } }>(
+  addLifeEvent: async (payload: {
+    title: string;
+    startsAt: string;
+    endsAt?: string | null;
+    notes?: string;
+    category?: LifeEventCategory;
+    status?: LifeEventStatus;
+    recurrence?: LifeRecurrence;
+  }) => {
+    return apiRequest<{ event: LifeEvent }>(
       "/api/me/life-events",
       { method: "POST", body: JSON.stringify(payload) }
     );
+  },
+  updateLifeEvent: async (
+    id: string,
+    payload: {
+      title: string;
+      startsAt: string;
+      endsAt?: string | null;
+      notes?: string;
+      category?: LifeEventCategory;
+      status?: LifeEventStatus;
+      recurrence?: LifeRecurrence;
+    }
+  ) => {
+    return apiRequest<{ event: LifeEvent }>(`/api/me/life-events/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    });
   },
   deleteLifeEvent: async (id: string) => {
     return apiRequest<{ ok: boolean }>(`/api/me/life-events/${id}`, { method: "DELETE" });

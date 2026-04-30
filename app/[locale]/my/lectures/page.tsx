@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { enrollmentApi, lecturesApi } from "@/lib/api/client";
+import { lecturesApi } from "@/lib/api/client";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import PlatformCard from "@/components/ui/PlatformCard";
 import LoadingState from "@/components/ui/LoadingState";
@@ -16,13 +16,11 @@ export default function MyLecturesHubPage() {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(true);
-  const [enrolled, setEnrolled] = useState<any[]>([]);
   const [teaching, setTeaching] = useState<any[]>([]);
 
   const load = useCallback(async () => {
     setLoading(true);
-    const [enr, lec] = await Promise.all([enrollmentApi.getMine(), lecturesApi.getMine()]);
-    setEnrolled(enr.data?.enrollments || []);
+    const lec = await lecturesApi.getMine();
     if (!lec.error && lec.data?.lectures) {
       setTeaching(lec.data.lectures);
     } else {
@@ -62,33 +60,7 @@ export default function MyLecturesHubPage() {
       {loading ? (
         <LoadingState />
       ) : (
-        <div className="grid gap-8 md:grid-cols-2">
-          <PlatformCard padding="lg">
-            <h2 className="text-lg font-semibold text-zinc-900 mb-4">{t("enrolled")}</h2>
-            {enrolled.length === 0 ? (
-              <p className="text-sm text-zinc-500">{t("emptyEnrolled")}</p>
-            ) : (
-              <ul className="space-y-3">
-                {enrolled.map((e) => (
-                  <li
-                    key={e.id}
-                    className="rounded-xl border border-zinc-100 bg-zinc-50/60 px-3 py-3 text-sm"
-                  >
-                    <p className="font-medium text-zinc-900">{e.lecture?.title || "—"}</p>
-                    {e.lecture?.id && (
-                      <Link
-                        href={`/${locale}/lectures/${e.lecture.id}`}
-                        className="mt-2 inline-block text-xs font-semibold text-primary-600 hover:underline"
-                      >
-                        {t("view")}
-                      </Link>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </PlatformCard>
-
+        <div className="grid gap-8">
           <PlatformCard padding="lg">
             <h2 className="text-lg font-semibold text-zinc-900 mb-4">{t("teaching")}</h2>
             {teaching.length === 0 ? (
@@ -101,12 +73,20 @@ export default function MyLecturesHubPage() {
                     className="rounded-xl border border-zinc-100 bg-zinc-50/60 px-3 py-3 text-sm"
                   >
                     <p className="font-medium text-zinc-900">{lec.title || "—"}</p>
-                    <Link
-                      href={`/${locale}/lectures/${lec.id}`}
-                      className="mt-2 inline-block text-xs font-semibold text-primary-600 hover:underline"
-                    >
-                      {t("view")}
-                    </Link>
+                    <div className="mt-2 flex items-center gap-3">
+                      <Link
+                        href={`/${locale}/lectures/${lec.id}`}
+                        className="inline-block text-xs font-semibold text-primary-600 hover:underline"
+                      >
+                        {t("view")}
+                      </Link>
+                      <Link
+                        href={`/${locale}/mentor/lectures/${lec.id}/edit`}
+                        className="inline-block text-xs font-semibold text-slate-700 hover:text-slate-900 underline underline-offset-2"
+                      >
+                        수정
+                      </Link>
+                    </div>
                   </li>
                 ))}
               </ul>

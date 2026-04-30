@@ -1,0 +1,2 @@
+export { adminApi } from "./client";
+

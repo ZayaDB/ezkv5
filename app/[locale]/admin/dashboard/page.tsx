@@ -97,43 +97,19 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-primary-600 to-accent-500 py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="bg-gradient-to-b from-gray-50 to-white rounded-2xl border border-gray-100">
+      <div className="bg-gradient-to-r from-primary-600 to-accent-500 py-10 rounded-t-2xl">
+        <div className="px-6 sm:px-8">
           <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-2">
             관리자 대시보드
           </h1>
           <p className="text-xl text-white/90">
             {currentUser?.name}님, 환영합니다
           </p>
-          <div className="mt-4 flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={() => router.push(`/${locale}/admin/users`)}
-              className="px-4 py-2 rounded-xl bg-white text-primary-700 font-semibold hover:bg-white/90"
-            >
-              사용자 관리
-            </button>
-            <button
-              type="button"
-              onClick={() => router.push(`/${locale}/admin/moderation`)}
-              className="px-4 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white font-semibold"
-            >
-              운영 검수 큐
-            </button>
-            <button
-              type="button"
-              onClick={() => router.push(`/${locale}/admin/inquiries`)}
-              className="px-4 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white font-semibold"
-            >
-              회원 문의
-            </button>
-          </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="px-6 sm:px-8 py-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
             <p className="text-sm text-gray-600 mb-1">멘토 대기 신청</p>
