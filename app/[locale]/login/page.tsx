@@ -35,7 +35,7 @@ export default function LoginPage() {
       if (user.role === "admin") {
         router.push(`/${locale}/admin/dashboard`);
       } else {
-        router.push(`/${locale}/my/dashboard`);
+        router.push(`/${locale}/home`);
       }
     }
   }, [user, router, locale]);
@@ -58,7 +58,7 @@ export default function LoginPage() {
       if (result.user?.role === "admin") {
         router.replace(`/${locale}/admin/dashboard`);
       } else {
-        router.replace(`/${locale}/my/dashboard`);
+        router.replace(`/${locale}/home`);
       }
       setLoading(false);
     } catch (err: any) {

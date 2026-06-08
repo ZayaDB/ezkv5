@@ -7,8 +7,13 @@ export const authApi = {
     email: string;
     password: string;
     name: string;
-    role: 'mentee' | 'mentor' | 'admin';
     locale: string;
+    nationality?: string;
+    university?: string;
+    region?: string;
+    residingInKorea?: boolean;
+    visaType?: string;
+    visaExpireDate?: string;
   }) => {
     const response = await apiRequest<{ user: any; token: string }>(
       '/api/auth/signup',
@@ -17,12 +22,11 @@ export const authApi = {
         body: JSON.stringify(userData),
       }
     );
-    
-    // 회원가입 시 토큰 저장하지 않음 (자동 로그인 방지)
-    // if (response.data?.token) {
-    //   authToken.set(response.data.token);
-    // }
-    
+
+    if (response.data?.token) {
+      authToken.set(response.data.token);
+    }
+
     return response;
   },
 
@@ -76,6 +80,14 @@ export const authApi = {
     newPassword?: string;
     languages?: string[];
     locale?: string;
+    nationality?: string;
+    university?: string;
+    region?: string;
+    visaType?: string;
+    visaExpireDate?: string;
+    countryStatus?: string;
+    onboardingStatus?: string;
+    residingInKorea?: boolean;
   }) => {
     return apiRequest<{ user: any }>('/api/auth/me', {
       method: 'PATCH',
@@ -83,7 +95,7 @@ export const authApi = {
     });
   },
 
-  switchRole: async (targetRole: "mentee" | "mentor") => {
+  switchRole: async (targetRole: "user" | "mentee" | "mentor") => {
     const response = await apiRequest<{ user: any; token: string }>("/api/auth/switch-role", {
       method: "POST",
       body: JSON.stringify({ targetRole }),
@@ -537,7 +549,18 @@ export const myActivityApi = {
 
 export type LifeBudgetKind = "expense" | "income";
 export type LifeRecurrenceType = "none" | "weekly" | "biweekly" | "monthly";
-export type LifeEventCategory = "personal" | "work" | "health" | "parttime" | "other";
+export type LifeEventCategory =
+  | "class"
+  | "parttime"
+  | "rent"
+  | "insurance"
+  | "visa"
+  | "roadmap"
+  | "general"
+  | "personal"
+  | "work"
+  | "health"
+  | "other";
 export type LifeEventStatus = "planned" | "completed" | "cancelled";
 
 export type LifeRecurrence = {
@@ -651,6 +674,79 @@ export const lifePlanApi = {
   },
   deleteLifeEvent: async (id: string) => {
     return apiRequest<{ ok: boolean }>(`/api/me/life-events/${id}`, { method: "DELETE" });
+  },
+};
+
+export const homeApi = {
+  getControlCenter: async () => {
+    return apiRequest<{
+      statusCard: Record<string, unknown>;
+      alerts: Array<Record<string, unknown>>;
+      activeRoadmaps: Array<Record<string, unknown>>;
+      todaySchedule: Array<Record<string, unknown>>;
+      recommendedActions: Array<Record<string, unknown>>;
+      onboardingStatus: string;
+    }>("/api/me/home");
+  },
+};
+
+export const roadmapsApi = {
+  list: async (status = "active") => {
+    return apiRequest<{ roadmaps: any[]; templates: any[] }>(`/api/roadmaps?status=${status}`);
+  },
+  get: async (id: string) => apiRequest<any>(`/api/roadmaps/${id}`),
+  create: async (payload: {
+    templateKey?: string;
+    title?: string;
+    description?: string;
+    priority?: string;
+    dueDate?: string;
+    steps?: Array<{ title: string; description?: string; dueDate?: string }>;
+  }) => {
+    return apiRequest<any>("/api/roadmaps", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
+  update: async (id: string, payload: Record<string, unknown>) => {
+    return apiRequest<any>(`/api/roadmaps/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    });
+  },
+  completeStep: async (roadmapId: string, stepId: string, completed: boolean) => {
+    return apiRequest<any>(`/api/roadmaps/${roadmapId}/steps/${stepId}`, {
+      method: "PATCH",
+      body: JSON.stringify({ completed }),
+    });
+  },
+  delete: async (id: string) => {
+    return apiRequest<{ ok: boolean }>(`/api/roadmaps/${id}`, { method: "DELETE" });
+  },
+};
+
+export const assistantApi = {
+  suggest: async (message: string, locale: string) => {
+    return apiRequest<{ response: string; actions: any[]; links: any[]; mode: string }>(
+      "/api/assistant/actions",
+      { method: "POST", body: JSON.stringify({ message, locale }) }
+    );
+  },
+  execute: async (executeAction: Record<string, unknown>) => {
+    return apiRequest<{ ok: boolean; roadmapId?: string; redirectUrl?: string }>(
+      "/api/assistant/actions",
+      { method: "POST", body: JSON.stringify({ executeAction }) }
+    );
+  },
+};
+
+export const alertsApi = {
+  list: async () => apiRequest<{ alerts: any[] }>("/api/me/alerts"),
+  dismiss: async (alertId: string) => {
+    return apiRequest<{ ok: boolean }>("/api/me/alerts", {
+      method: "PATCH",
+      body: JSON.stringify({ alertId, dismiss: true }),
+    });
   },
 };
 

@@ -2,12 +2,13 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { authApi } from '@/lib/api';
+import type { AppUserRole } from '@/lib/auth/userRole';
 
-interface User {
+export interface User {
   id: string;
   email: string;
   name: string;
-  role: 'mentee' | 'mentor' | 'admin';
+  role: AppUserRole;
   locale?: string;
   avatar?: string;
   bio?: string;
@@ -15,6 +16,13 @@ interface User {
   phone?: string;
   address?: string;
   languages?: string[];
+  nationality?: string | null;
+  university?: string | null;
+  region?: string | null;
+  visaType?: string | null;
+  visaExpireDate?: string | null;
+  countryStatus?: string;
+  onboardingStatus?: string;
 }
 
 interface AuthContextType {
@@ -26,12 +34,17 @@ interface AuthContextType {
     email: string;
     password: string;
     name: string;
-    role: 'mentee' | 'mentor' | 'admin';
     locale: string;
-  }) => Promise<{ success: boolean; error?: string }>;
+    nationality?: string;
+    university?: string;
+    region?: string;
+    residingInKorea?: boolean;
+    visaType?: string;
+    visaExpireDate?: string;
+  }) => Promise<{ success: boolean; error?: string; user?: User }>;
   logout: () => void;
   refreshUser: () => Promise<void>;
-  switchRole: (targetRole: 'mentee' | 'mentor') => Promise<{ success: boolean; error?: string }>;
+  switchRole: (targetRole: 'user' | 'mentor') => Promise<{ success: boolean; error?: string }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -56,7 +69,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           localStorage.removeItem(AUTH_USER_CACHE_KEY);
         }
       }
-    } catch (error) {
+    } catch {
       setUser(null);
       if (typeof window !== 'undefined') {
         localStorage.removeItem(AUTH_USER_CACHE_KEY);
@@ -115,8 +128,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     email: string;
     password: string;
     name: string;
-    role: 'mentee' | 'mentor' | 'admin';
     locale: string;
+    nationality?: string;
+    university?: string;
+    region?: string;
+    residingInKorea?: boolean;
+    visaType?: string;
+    visaExpireDate?: string;
   }) => {
     try {
       const response = await authApi.signup(userData);
@@ -124,9 +142,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { success: false, error: response.error };
       }
       if (response.data?.user) {
-        // 회원가입 성공 - 자동 로그인하지 않음 (로그인 페이지로 이동)
-        // setUser(response.data.user); // 제거 - 자동 로그인 방지
-        return { success: true };
+        setUser(response.data.user);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(AUTH_USER_CACHE_KEY, JSON.stringify(response.data.user));
+        }
+        return { success: true, user: response.data.user };
       }
       return { success: false, error: '회원가입에 실패했습니다.' };
     } catch (error: any) {
@@ -142,7 +162,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const switchRole = async (targetRole: 'mentee' | 'mentor') => {
+  const switchRole = async (targetRole: 'user' | 'mentor') => {
     try {
       const response = await authApi.switchRole(targetRole);
       if (response.error) {
@@ -186,4 +206,3 @@ export function useAuth() {
   }
   return context;
 }
-

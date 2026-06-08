@@ -37,7 +37,7 @@ export default function MentorApprovedPanel({
             </Link>
           )}
         </div>
-        {userRole === "mentee" && (
+        {(userRole === "user" || userRole === "mentee") && (
           <p className="text-xs text-amber-800 bg-amber-50 rounded-lg px-3 py-2 mt-3">
             {tp("mentor.approvedMentee")}
           </p>

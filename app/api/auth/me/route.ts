@@ -3,29 +3,13 @@ import connectDB from '@/lib/db/mongodb';
 import User from '@/models/User';
 import { authenticateRequest } from '@/lib/middleware/auth';
 import { comparePassword, hashPassword } from '@/lib/auth/password';
-
-function publicUser(userData: Record<string, unknown>) {
-  return {
-    id: userData._id?.toString(),
-    email: userData.email,
-    name: userData.name,
-    role: userData.role,
-    locale: userData.locale,
-    avatar: userData.avatar,
-    bio: userData.bio,
-    location: userData.location,
-    phone: userData.phone,
-    address: userData.address,
-    languages: userData.languages || [],
-    createdAt: userData.createdAt,
-  };
-}
+import { serializePublicUser } from '@/lib/auth/publicUser';
+import { syncUserAlerts } from '@/lib/alerts/generateAlerts';
 
 function isValidPhone(v: string): boolean {
   return /^[0-9+\-\s()]{8,20}$/.test(v);
 }
 
-// GET: 현재 로그인한 사용자 정보 조회
 export async function GET(request: NextRequest) {
   try {
     await connectDB();
@@ -41,7 +25,7 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json({
-      user: publicUser(user as Record<string, unknown>),
+      user: serializePublicUser(user as Record<string, unknown>),
     });
   } catch (error: any) {
     console.error('Get current user error:', error);
@@ -52,7 +36,6 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// PATCH: 프로필 수정 (본인)
 export async function PATCH(request: NextRequest) {
   try {
     await connectDB();
@@ -62,40 +45,68 @@ export async function PATCH(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { name, avatar, bio, location, phone, address, languages, locale, currentPassword, newPassword } = body;
+    const {
+      name,
+      avatar,
+      bio,
+      location,
+      phone,
+      address,
+      languages,
+      locale,
+      currentPassword,
+      newPassword,
+      nationality,
+      university,
+      region,
+      visaType,
+      visaExpireDate,
+      countryStatus,
+      onboardingStatus,
+      residingInKorea,
+    } = body;
 
     const update: Record<string, unknown> = {};
+
     if (typeof name === 'string') {
       const vv = name.trim();
-      if (!vv) {
-        return NextResponse.json({ error: '이름은 필수입니다.' }, { status: 400 });
-      }
-      if (vv.length < 2 || vv.length > 40) {
+      if (!vv || vv.length < 2 || vv.length > 40) {
         return NextResponse.json({ error: '이름은 2~40자로 입력해 주세요.' }, { status: 400 });
       }
       update.name = vv;
     }
     if (typeof avatar === 'string') update.avatar = avatar;
     if (typeof bio === 'string') update.bio = bio;
+    if (typeof nationality === 'string') update.nationality = nationality.trim();
+    if (typeof university === 'string') update.university = university.trim();
+    if (typeof region === 'string') {
+      update.region = region.trim();
+      update.location = region.trim();
+    }
+    if (typeof visaType === 'string') update.visaType = visaType.trim();
+    if (visaExpireDate) {
+      const d = new Date(visaExpireDate);
+      if (Number.isNaN(d.getTime())) {
+        return NextResponse.json({ error: '비자 만료일 형식이 올바르지 않습니다.' }, { status: 400 });
+      }
+      update.visaExpireDate = d;
+    }
+    if (typeof countryStatus === 'string') update.countryStatus = countryStatus;
+    if (residingInKorea === true) update.countryStatus = 'residing_korea';
+    if (residingInKorea === false) update.countryStatus = 'abroad';
+    if (onboardingStatus === 'pending' || onboardingStatus === 'profile_complete' || onboardingStatus === 'completed') {
+      update.onboardingStatus = onboardingStatus;
+    }
     if (typeof location === 'string') {
       const vv = location.trim();
-      if (!vv) {
-        return NextResponse.json({ error: '활동 지역은 필수입니다.' }, { status: 400 });
-      }
-      if (vv.length < 2 || vv.length > 80) {
-        return NextResponse.json({ error: '활동 지역은 2~80자로 입력해 주세요.' }, { status: 400 });
-      }
-      update.location = vv;
+      if (vv.length >= 2) update.location = vv;
     }
     if (typeof phone === 'string') {
       const vv = phone.trim();
-      if (!vv) {
-        return NextResponse.json({ error: '전화번호는 필수입니다.' }, { status: 400 });
-      }
-      if (!isValidPhone(vv)) {
+      if (vv && !isValidPhone(vv)) {
         return NextResponse.json({ error: '전화번호 형식이 올바르지 않습니다.' }, { status: 400 });
       }
-      update.phone = vv;
+      if (vv) update.phone = vv;
     }
     if (typeof address === 'string') update.address = address;
     if (Array.isArray(languages)) update.languages = languages.filter((x: unknown) => typeof x === 'string');
@@ -134,7 +145,9 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: '사용자를 찾을 수 없습니다.' }, { status: 404 });
     }
 
-    return NextResponse.json({ user: publicUser(user as Record<string, unknown>) });
+    await syncUserAlerts(user as { _id: import('mongoose').Types.ObjectId; visaExpireDate?: Date; visaType?: string; countryStatus?: string });
+
+    return NextResponse.json({ user: serializePublicUser(user as Record<string, unknown>) });
   } catch (error: any) {
     console.error('Patch user error:', error);
     return NextResponse.json(

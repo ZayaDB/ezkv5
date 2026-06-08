@@ -69,7 +69,7 @@ export default function ModeQuickLinksPanel({
             <QuickLink href={`/${locale}/community`} icon={MessageSquare} title={t("mentee.quick3Title")} desc={t("mentee.quick3Desc")} />
             <QuickLink href={`/${locale}/freelancers`} icon={CircleDollarSign} title={t("mentee.quick4Title")} desc={t("mentee.quick4Desc")} />
           </div>
-          {userRole === "mentee" && (
+          {(userRole === "user" || userRole === "mentee") && (
             <p className="mt-5 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
               {t("mentorApplyHint")}{" "}
               <Link href={`/${locale}/my/profile?tab=mentor`} className="font-semibold text-primary-600 hover:underline">

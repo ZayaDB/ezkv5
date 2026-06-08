@@ -4,6 +4,8 @@ import User from "@/models/User";
 import Mentor from "@/models/Mentor";
 import { authenticateRequest } from "@/lib/middleware/auth";
 import { generateToken } from "@/lib/auth/jwt";
+import { serializePublicUser } from "@/lib/auth/publicUser";
+import { toDbRoleForSwitch } from "@/lib/auth/userRole";
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,11 +20,12 @@ export async function POST(request: NextRequest) {
     }
 
     const { targetRole } = await request.json();
-    if (targetRole !== "mentee" && targetRole !== "mentor") {
+    const dbRole = toDbRoleForSwitch(targetRole);
+    if (!dbRole) {
       return NextResponse.json({ error: "유효하지 않은 역할입니다." }, { status: 400 });
     }
 
-    if (targetRole === "mentor") {
+    if (dbRole === "mentor") {
       const profile = await Mentor.findOne({ userId: auth.userId }).lean();
       const st = profile ? (profile as { approvalStatus?: string }).approvalStatus || "approved" : null;
       if (!profile || st !== "approved") {
@@ -38,7 +41,7 @@ export async function POST(request: NextRequest) {
 
     const updated = await User.findByIdAndUpdate(
       auth.userId,
-      { $set: { role: targetRole } },
+      { $set: { role: dbRole } },
       { new: true }
     )
       .select("-password")
@@ -55,17 +58,7 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json({
-      user: {
-        id: String((updated as any)._id),
-        email: (updated as any).email,
-        name: (updated as any).name,
-        role: (updated as any).role,
-        locale: (updated as any).locale,
-        avatar: (updated as any).avatar,
-        bio: (updated as any).bio,
-        location: (updated as any).location,
-        languages: (updated as any).languages || [],
-      },
+      user: serializePublicUser(updated as Record<string, unknown>),
       token,
     });
   } catch (error: any) {

@@ -1,10 +1,20 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
+export type CountryStatus =
+  | 'unknown'
+  | 'planning_arrival'
+  | 'residing_korea'
+  | 'leaving_korea'
+  | 'graduated_staying'
+  | 'abroad';
+
+export type OnboardingStatus = 'pending' | 'profile_complete' | 'completed';
+
 export interface IUser extends Document {
   email: string;
   name: string;
-  password: string; // 해시된 비밀번호
-  role: 'mentee' | 'mentor' | 'admin';
+  password: string;
+  role: 'user' | 'mentee' | 'mentor' | 'admin';
   avatar?: string;
   locale: string;
   bio?: string;
@@ -12,6 +22,13 @@ export interface IUser extends Document {
   phone?: string;
   address?: string;
   languages?: string[];
+  nationality?: string;
+  university?: string;
+  region?: string;
+  visaType?: string;
+  visaExpireDate?: Date;
+  countryStatus: CountryStatus;
+  onboardingStatus: OnboardingStatus;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -36,9 +53,9 @@ const UserSchema = new Schema<IUser>(
     },
     role: {
       type: String,
-      enum: ['mentee', 'mentor', 'admin'],
+      enum: ['user', 'mentee', 'mentor', 'admin'],
       required: true,
-      default: 'mentee',
+      default: 'user',
     },
     avatar: {
       type: String,
@@ -64,6 +81,46 @@ const UserSchema = new Schema<IUser>(
       type: [String],
       default: [],
     },
+    nationality: {
+      type: String,
+      trim: true,
+      maxlength: 80,
+    },
+    university: {
+      type: String,
+      trim: true,
+      maxlength: 120,
+    },
+    region: {
+      type: String,
+      trim: true,
+      maxlength: 80,
+    },
+    visaType: {
+      type: String,
+      trim: true,
+      maxlength: 40,
+    },
+    visaExpireDate: {
+      type: Date,
+    },
+    countryStatus: {
+      type: String,
+      enum: [
+        'unknown',
+        'planning_arrival',
+        'residing_korea',
+        'leaving_korea',
+        'graduated_staying',
+        'abroad',
+      ],
+      default: 'unknown',
+    },
+    onboardingStatus: {
+      type: String,
+      enum: ['pending', 'profile_complete', 'completed'],
+      default: 'pending',
+    },
   },
   {
     timestamps: true,
@@ -71,4 +128,3 @@ const UserSchema = new Schema<IUser>(
 );
 
 export default mongoose.models?.User || mongoose.model<IUser>('User', UserSchema);
-

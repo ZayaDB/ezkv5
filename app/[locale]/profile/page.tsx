@@ -454,7 +454,7 @@ function ProfilePageContent() {
                 {tp("overview.goDashboard")}
               </Link>
             </div>
-            {user.role === "mentee" && (
+            {user.role === "user" && (
               <PlatformCard className="bg-primary-50/80 ring-primary-100">
                 <p className="font-semibold text-slate-900">{tp("overview.mentorCta")}</p>
                 <p className="text-sm text-slate-600 mt-1">{tp("overview.mentorCtaDesc")}</p>

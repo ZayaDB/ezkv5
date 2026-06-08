@@ -130,34 +130,34 @@ export default function Header() {
           <div className="hidden md:flex items-center justify-start min-w-0">
             <div className="flex items-center gap-5 lg:gap-6 whitespace-nowrap ml-3 lg:ml-5">
               <Link
+                href={getLocalizedPath(isAuthenticated ? "/home" : "")}
+                className="text-[16px] font-bold text-gray-600 dark:text-slate-200 hover:text-primary-500 transition-colors"
+              >
+                {t("home")}
+              </Link>
+              <Link
+                href={getLocalizedPath("/roadmap")}
+                className="text-[16px] font-bold text-gray-600 dark:text-slate-200 hover:text-primary-500 transition-colors"
+              >
+                {t("navRoadmap")}
+              </Link>
+              <Link
+                href={getLocalizedPath("/assistant")}
+                className="text-[16px] font-bold text-gray-600 dark:text-slate-200 hover:text-primary-500 transition-colors"
+              >
+                {t("navAssistant")}
+              </Link>
+              <Link
                 href={getLocalizedPath("/mentors")}
                 className="text-[16px] font-bold text-gray-600 dark:text-slate-200 hover:text-primary-500 transition-colors"
               >
                 {t("mentors")}
               </Link>
               <Link
-                href={getLocalizedPath("/lectures")}
-                className="text-[16px] font-bold text-gray-600 dark:text-slate-200 hover:text-primary-500 transition-colors"
-              >
-                {t("lectures")}
-              </Link>
-              <Link
-                href={getLocalizedPath("/community")}
-                className="text-[16px] font-bold text-gray-600 dark:text-slate-200 hover:text-primary-500 transition-colors"
-              >
-                {t("community")}
-              </Link>
-              <Link
-                href={getLocalizedPath("/freelancers")}
-                className="text-[16px] font-bold text-gray-600 dark:text-slate-200 hover:text-primary-500 transition-colors"
-              >
-                {t("freelancers")}
-              </Link>
-              <Link
                 href={getLocalizedPath("/study-in-korea")}
                 className="text-[16px] font-bold text-gray-600 dark:text-slate-200 hover:text-primary-500 transition-colors"
               >
-                {t("studyInKorea")}
+                {t("koreaLife")}
               </Link>
             </div>
           </div>
@@ -482,6 +482,27 @@ export default function Header() {
                 </span>
               </button>
               <Link
+                href={getLocalizedPath(isAuthenticated ? "/home" : "")}
+                className="text-gray-600 hover:text-primary-500 transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {t("home")}
+              </Link>
+              <Link
+                href={getLocalizedPath("/roadmap")}
+                className="text-gray-600 hover:text-primary-500 transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {t("navRoadmap")}
+              </Link>
+              <Link
+                href={getLocalizedPath("/assistant")}
+                className="text-gray-600 hover:text-primary-500 transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {t("navAssistant")}
+              </Link>
+              <Link
                 href={getLocalizedPath("/mentors")}
                 className="text-gray-600 hover:text-primary-500 transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
@@ -489,32 +510,11 @@ export default function Header() {
                 {t("mentors")}
               </Link>
               <Link
-                href={getLocalizedPath("/lectures")}
-                className="text-gray-600 hover:text-primary-500 transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {t("lectures")}
-              </Link>
-              <Link
-                href={getLocalizedPath("/community")}
-                className="text-gray-600 hover:text-primary-500 transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {t("community")}
-              </Link>
-              <Link
-                href={getLocalizedPath("/freelancers")}
-                className="text-gray-600 hover:text-primary-500 transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {t("freelancers")}
-              </Link>
-              <Link
                 href={getLocalizedPath("/study-in-korea")}
                 className="text-gray-600 hover:text-primary-500 transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                {t("studyInKorea")}
+                {t("koreaLife")}
               </Link>
 
               {isAuthenticated ? (

@@ -148,7 +148,8 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const approvalStatus = auth.role === "mentor" ? "approved" : "pending";
+    const approvalStatus =
+      auth.role === "mentor" ? "approved" : "pending";
 
     const mentor = await Mentor.create({
       userId: auth.userId,

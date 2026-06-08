@@ -1,10 +1,16 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export type PersonalCalendarEventCategory =
+  | "class"
+  | "parttime"
+  | "rent"
+  | "insurance"
+  | "visa"
+  | "roadmap"
+  | "general"
   | "personal"
   | "work"
   | "health"
-  | "parttime"
   | "other";
 export type PersonalCalendarEventStatus = "planned" | "completed" | "cancelled";
 export type PersonalRecurrenceType = "none" | "weekly" | "biweekly" | "monthly";
@@ -24,6 +30,8 @@ export interface IPersonalCalendarEvent extends Document {
   category: PersonalCalendarEventCategory;
   status: PersonalCalendarEventStatus;
   recurrence: IPersonalRecurrence;
+  roadmapId?: mongoose.Types.ObjectId;
+  roadmapStepId?: mongoose.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -56,8 +64,20 @@ const PersonalCalendarEventSchema = new Schema<IPersonalCalendarEvent>(
     },
     category: {
       type: String,
-      enum: ["personal", "work", "health", "parttime", "other"],
-      default: "other",
+      enum: [
+        "class",
+        "parttime",
+        "rent",
+        "insurance",
+        "visa",
+        "roadmap",
+        "general",
+        "personal",
+        "work",
+        "health",
+        "other",
+      ],
+      default: "general",
       required: true,
     },
     status: {
@@ -80,6 +100,14 @@ const PersonalCalendarEventSchema = new Schema<IPersonalCalendarEvent>(
         type: Date,
         default: null,
       },
+    },
+    roadmapId: {
+      type: Schema.Types.ObjectId,
+      ref: "Roadmap",
+    },
+    roadmapStepId: {
+      type: Schema.Types.ObjectId,
+      ref: "RoadmapStep",
     },
   },
   { timestamps: true }

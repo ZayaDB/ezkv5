@@ -1,387 +1,219 @@
-# MentorLink Master Plan (KR/EN/MN)
+# MentorLink Master Plan v2 — 유학생 생활 비서 플랫폼
 
-## 1) 프로젝트 목적
+> **v2 전환 (2026-06)**  
+> 포지셔닝: 멘토+강의 플랫폼 → **유학생 생활 비서 플랫폼**  
+> 기존 기능(강의·멘토·커뮤니티·관리자)은 **삭제하지 않고** UX·IA·사용자 흐름만 개편
 
-MentorLink의 핵심 목적은 **한국에 온 유학생이 정착-학습-수익-관계 형성까지 한 플랫폼에서 해결**하도록 돕는 것이다.
+---
 
-- 사용자 핵심: 한국 생활 정보가 부족한 유학생
-- 비즈니스 핵심: 유학생 대상 서비스에서 매출 발생
-- 제품 핵심: 정보 제공 + 멘토링 + 수강 + 커뮤니티 + 프리랜서 연결
+## 1) 핵심 철학
+
+**"정보를 보여주는 플랫폼이 아니라, 사용자가 다음 행동을 할 수 있도록 도와주는 플랫폼"**
+
+- 사용자는 강의를 보러 오는 것이 아니라 **한국 생활 문제를 해결**하러 온다
+- AI 비서는 답변이 아니라 **행동 생성** (Roadmap · 일정 · 멘토 연결)
+- Home은 SNS 피드가 아닌 **상태 기반 Control Center**
 
 한 문장 정의:
-**"유학생의 한국 정착과 성장 문제를 해결하고, 멘토-강의-커뮤니티-일거리 생태계로 수익을 만드는 플랫폼"**
+**"유학생의 비자·일정·생활을 비서처럼 관리하고, 필요할 때 멘토·강의로 연결하는 플랫폼"**
 
 ---
 
-## 2) 타겟 사용자와 문제
+## 2) 로그인 후 IA (5탭)
 
-### 2.1 주요 페르소나
+| 탭 | 경로 | 역할 |
+|----|------|------|
+| Home | `/home` | Control Center — 상태·알림·로드맵·오늘 일정·추천 액션 |
+| Assistant | `/assistant` | Action 기반 AI 비서 |
+| Calendar | `/calendar` → `/my/schedule` | 생활 운영 캘린더 (수업·알바·월세·비자·로드맵) |
+| Roadmap | `/roadmap` | 목표 기반 행동 관리 |
+| My | `/my/*` | 프로필·수강·결제·멘토 신청·문의 |
 
-- 학생(mentee): 비자, 병원, 집, 일자리, 친구/모임 정보가 필요함
-- 멘토(mentor): 자신의 지식과 경험으로 수익화하고 싶음
-- 관리자(admin): 유저/콘텐츠/정산/신고/운영 품질 관리
-
-### 2.2 학생의 핵심 문제
-
-- 비자 연장/체류 절차를 모름
-- 병원 이용, 보험, 응급 대응이 어려움
-- 집 구하기(사기 방지 포함) 정보 부족
-- 알바/프리랜서 일거리 정보 부족
-- 커뮤니티 연결 부족(외로움, 고립)
+**멘토 스튜디오**: 승인된 멘토는 `/my/lectures`, `/my/dashboard`(멘토 모드) 기존 유지
 
 ---
 
-## 3) 제품 비전과 완료 상태(Definition of Done)
+## 3) 회원가입 (v2)
 
-## 완료된 제품의 상태
+- 가입 시 역할 선택 **제거** → 모든 사용자 `user`
+- 멘토는 가입 후 **신청 → 관리자 승인**
+- 3단계: 계정 → 프로필(국적·학교·지역·한국 거주 여부) → (거주 시) 비자 정보
 
-- KR/EN/MN 3개 언어에서 주요 플로우가 모두 동작
-- 학생/멘토/관리자 계정 체계와 권한이 명확
-- 학생과 멘토 역할 전환(토글) 가능
-- 강의 개설-수강신청-결제-정산-영수증까지 운영 가능
-- 라이브 webinar 세션 생성/참여/기록 가능
-- 마이페이지/대시보드에서 학습, 수익, 일정, 결제 내역 확인 가능
-- 커뮤니티/모임/프리랜서 게시판 운영 가능
-- 관리자 페이지에서 신고/검수/정산/지표 관리 가능
+### User Profile 필드
 
----
+| 필드 | 설명 |
+|------|------|
+| nationality | 국적 |
+| university | 학교 |
+| region | 거주 지역 |
+| visaType | 비자 종류 (한국 거주 시) |
+| visaExpireDate | 비자 만료일 |
+| countryStatus | `unknown` \| `planning_arrival` \| `residing_korea` \| `leaving_korea` \| `graduated_staying` \| `abroad` |
+| onboardingStatus | `pending` \| `profile_complete` \| `completed` |
 
-## 4) 역할 및 권한 정책
+### 역할
 
-### 4.1 계정 타입
-
-- student
-- mentor
-- admin
-
-### 4.2 중요한 정책
-
-- 한 유저가 student/mentor를 모두 가질 수 있음 (멀티 롤)
-- 대시보드 상단에서 `학생 모드` <-> `멘토 모드` 전환
-- mentor 신청 승인 플로우(심사 상태: pending/approved/rejected)
-- admin은 전체 관리 권한
+| role | 설명 |
+|------|------|
+| user | 기본 (레거시 `mentee`는 API에서 `user`로 정규화) |
+| mentor | 관리자 승인 후 |
+| admin | 운영 |
 
 ---
 
-## 5) 핵심 기능 구조
+## 4) Home Control Center 섹션
 
-## 5.1 정보 허브 (정착 가이드)
-
-- 비자, 병원, 주거, 생활, 취업/알바 정보 카테고리
-- 국가/언어별 콘텐츠 필터
-- 북마크, 최근 본 정보, FAQ
-
-## 5.2 멘토 매칭
-
-- 멘토 검색(언어, 지역, 분야, 가격, 평점)
-- 멘토 프로필, 리뷰, 응답률, 전문 분야
-- 상담 예약/세션 요청
-
-## 5.3 강의/수강신청
-
-- 강의 목록/상세/커리큘럼/후기
-- 장바구니(선택), 즉시 결제
-- 수강 상태(진행중/완료), 진도 추적
-- 환불/취소 정책 반영
-
-## 5.4 라이브 Webinar
-
-- 멘토가 라이브 세션 생성
-- 일정/정원/참가 링크/리마인드
-- 참가자 체크인, 다시보기 링크(선택)
-
-## 5.5 커뮤니티/모임
-
-- 게시글, 댓글, 좋아요, 신고
-- 오프라인 모임 공고/참여 신청
-- 학교/지역/관심사 기반 그룹
-
-## 5.6 프리랜서/일거리
-
-- 학생/멘토가 작업 공고 등록
-- 지원/채팅/마감 처리
-- 완료 후 리뷰 및 정산 기록
-
-## 5.7 챗봇
-
-- KR/EN/MN 질의응답
-- 내부 콘텐츠 추천(가이드/강의/멘토/커뮤니티 링크)
-- 위험/법률성 질문은 안내문 + 전문기관 연결
+1. **사용자 상태 카드** — 이름·학교·국적·비자·D-Day
+2. **긴급 알림** — 비자 D-30 등 (`UserAlert` + 자동 생성)
+3. **진행 중 Roadmap** — 진행률·다음 단계·계속하기
+4. **오늘 일정** — 캘린더·세션·로드맵 일정 통합
+5. **추천 액션** — 외국인등록·비자 연장·보험 확인 등
 
 ---
 
-## 6) 대시보드/마이페이지 요구사항 (중요)
+## 5) Roadmap 시스템
 
-## 6.1 공통 마이페이지
+### 모델
 
-- 프로필(언어, 위치, 소개, 관심사)
-- 계정/보안 설정
-- 알림 설정
-- 결제수단 관리(추후)
+- **Roadmap**: id, userId, title, description, progress, priority, dueDate, status, templateKey
+- **RoadmapStep**: id, roadmapId, title, description, completed, dueDate, sortOrder, active
 
-## 6.2 학생 대시보드
+### 템플릿 (P0)
 
-- 오늘의 일정(강의/멘토링/webinar)
-- 수강 중 과정, 진도율
-- 결제 내역, 영수증 다운로드
-- 추천 멘토/추천 강의
-- 커뮤니티 새 글/내 활동
-- 지원한 일자리/진행 상태
+- `visa_extension` — 비자 연장 준비
+- `settling_korea` — 한국 정착
+- `moving` — 이사 준비
+- `job_prep` — 취업 준비
+- `d10_prep` — D-10 준비
 
-## 6.3 멘토 대시보드
+### 기능
 
-- 월 매출/정산 예정 금액
-- 예정된 수업/상담 일정
-- 신청자 관리(승인/거절/메시지)
-- 개설 강의 관리(수정/공개/비공개)
-- 리뷰/평점 추이
-- 영수증/정산 내역
-
-## 6.4 모드 전환 UX
-
-- 상단 고정 토글: `학생 모드` / `멘토 모드`
-- 전환 시 네비게이션과 KPI 카드가 즉시 변경
-- 마지막 사용 모드 저장(local storage + server preference)
+- 진행률 자동 계산
+- 단계 완료 시 다음 단계 활성화
+- 로드맵 일정 → Calendar 연동 (`category: roadmap`)
 
 ---
 
-## 6.5) 결제 연동 전 상태 정책 (고정)
+## 6) Assistant (Action 기반)
 
-결제(PG) 연동 전에도 **수강(Enrollment)**, **멘토 세션(Session)**, **관리자 검수(Community/Freelancer)** 상태는 아래 전이만 허용한다. 구현·UI·API는 이 표를 기준으로 맞춘다.
-
-### Enrollment (수강)
-
-| 현재 상태 | 허용되는 다음 상태 | 액터 |
-| --- | --- | --- |
-| active | completed, cancelled | 본인(학생) 또는 운영 정책에 따른 관리자(추후) |
-| completed | (종료) | — |
-| cancelled | (종료) | — |
-
-`paymentStatus`(pending / paid / refunded)는 결제 연동 후 PG 웹훅·환불 플로우와 동기화한다. 결제 전에는 주로 `pending`으로 두고 UI에만 표시할 수 있다.
-
-### Session (멘토링 예약)
-
-| 현재 상태 | 허용되는 다음 상태 | 액터 |
-| --- | --- | --- |
-| upcoming | completed, cancelled | 세션 소유(신청) 사용자 |
-| completed | (종료) | — |
-| cancelled | (종료) | — |
-
-### 관리자 검수 — 커뮤니티 멤버십
-
-| 현재 상태 | 허용되는 다음 상태 | 비고 |
-| --- | --- | --- |
-| pending | approved, rejected | 관리자만 PATCH |
-| approved | (가입 확정) | — |
-| rejected | pending | 동일 그룹에 대해 사용자가 **재신청** 시 문서를 pending으로 되돌림(중복 문서 없음) |
-
-### 관리자 검수 — 프리랜서 지원
-
-| 현재 상태 | 허용되는 다음 상태 | 액터 |
-| --- | --- | --- |
-| pending | accepted, rejected | 관리자 |
+- 단순 챗봇 금지 → **create_roadmap**, **open_calendar**, **open_mentors** 액션
+- API: `POST /api/assistant/actions` (suggest / execute)
+- Chat API: 의도 감지 시 assistant 모드 응답
 
 ---
 
-## 7) 수익 모델 (초기안)
+## 7) Calendar 카테고리 (확장)
 
-- 강의 결제 수수료 (예: 10~20%)
-- 멘토링 세션 중개 수수료
-- 프리랜서 매칭 수수료(선택)
-- 프리미엄 멘토 노출 상품(추후)
-- 기업/학교 제휴 상품(추후)
+`class` | `parttime` | `rent` | `insurance` | `visa` | `roadmap` | `general` (+ 레거시 personal/work/health/other)
 
-초기 MVP는:
-**강의 결제 + 멘토링 세션 중개 수수료**에 집중한다.
+`roadmapId`, `roadmapStepId` 선택 연동
 
 ---
 
-## 8) 결제/정산/영수증 기준
+## 8) API (v2 추가·변경)
 
-## 8.1 결제
+### Auth
 
-- 주문 생성 -> 결제 승인 -> 수강/참여 권한 부여
-- 실패/취소/환불 상태 관리
+| Method | Path | 변경 |
+|--------|------|------|
+| POST | `/api/auth/signup` | role 제거, 프로필 필드 추가, 자동 로그인 토큰 |
+| GET/PATCH | `/api/auth/me` | 프로필·비자 필드 확장 |
+| POST | `/api/auth/switch-role` | `user` \| `mentor` |
 
-## 8.2 정산
+### Home & Alerts
 
-- 강사 정산 예정금 / 완료금 구분
-- 정산 주기(주간/월간) 설정
-- 수수료/세금/실수령액 표시
+| Method | Path | 설명 |
+|--------|------|------|
+| GET | `/api/me/home` | Control Center 데이터 |
+| GET/PATCH | `/api/me/alerts` | 긴급 알림 목록·해제 |
 
-## 8.3 문서
+### Roadmap
 
-- 사용자 영수증 다운로드
-- 멘토 정산서 다운로드
+| Method | Path | 설명 |
+|--------|------|------|
+| GET/POST | `/api/roadmaps` | 목록·생성(템플릿/커스텀) |
+| GET/PATCH/DELETE | `/api/roadmaps/[id]` | 상세·수정·삭제 |
+| PATCH | `/api/roadmaps/[id]/steps/[stepId]` | 단계 완료·수정 |
 
----
+### Assistant
 
-## 9) API 우선 개발 범위
+| Method | Path | 설명 |
+|--------|------|------|
+| POST | `/api/assistant/actions` | 액션 제안·실행 |
 
-## 9.1 Auth/User
+### 기존 유지
 
-- POST `/api/auth/signup`
-- POST `/api/auth/login`
-- GET/PATCH `/api/auth/me`
-- POST `/api/auth/switch-role` (신규)
-
-## 9.2 Mentor/Lecture/Enrollment
-
-- GET `/api/mentors`, GET `/api/mentors/[id]`
-- POST `/api/mentor/apply` (신규)
-- POST `/api/lectures` (멘토 생성, 신규)
-- PATCH `/api/lectures/[id]` (멘토 수정, 신규)
-- POST `/api/enrollments` (신규)
-- GET `/api/enrollments/me` (신규)
-
-## 9.3 Webinar/Schedule
-
-- POST `/api/webinars` (신규)
-- GET `/api/webinars`
-- POST `/api/webinars/[id]/join` (신규)
-- GET `/api/schedule/me` (신규)
-
-## 9.4 Payment
-
-- POST `/api/payments/checkout` (신규)
-- POST `/api/payments/webhook` (신규)
-- GET `/api/payments/me` (신규)
-- GET `/api/receipts/[id]` (신규)
-
-## 9.5 Community/Freelancer
-
-- CRUD `/api/community` (확장)
-- CRUD `/api/freelancer-jobs` (신규)
-- POST `/api/freelancer-jobs/[id]/apply` (신규)
-
-## 9.6 Admin
-
-- GET `/api/admin/stats`
-- GET `/api/admin/users`
-- GET `/api/admin/reports` (신규)
-- POST `/api/admin/moderation` (신규)
+강의·멘토·수강·커뮤니티·프리랜서·관리자·결제 Mock 등 **전부 유지**
 
 ---
 
-## 10) 디자인 리빌드 방향 (통일성 문제 해결)
+## 9) 비로그인 헤더
 
-현재 가장 중요한 개선 포인트는 **디자인 시스템 통일**이다.
-
-- 공통 디자인 토큰 고정(색, 여백, 폰트, radius, shadow)
-- 컴포넌트 표준화(Button, Card, Input, Badge, Tab, Modal)
-- 페이지 템플릿 통일(헤더/컨테이너/카드/간격)
-- 상태 UI 통일(loading/empty/error/success)
-- 모바일 우선 + 데스크톱 확장
-
-벤치마크 방향:
-- "신뢰감 + 깔끔함 + 데이터 가독성" 중심
-- 마이페이지/대시보드 우선 개선
+홈 · 로드맵 · 비서 · 멘토 · 한국생활 | 로그인 · 시작하기
 
 ---
 
-## 11) 단계별 개발 로드맵
+## 10) 이번 단계 개발 금지
 
-## Phase 1 (핵심 MVP)
-
-- 다국어 정리(KR/EN/MN 누락 제거)
-- Auth 안정화 + 역할 전환
-- 학생/멘토 대시보드 기본
-- 강의 생성/조회/수강신청 기본
-- 결제 Mock 또는 실제 PG 최소 연동
-
-## Phase 2 (수익화 강화)
-
-- 정산/영수증/결제 내역 완성
-- webinar 일정 및 참여 플로우
-- 멘토 승인/리뷰/신뢰 지표
-
-## Phase 3 (커뮤니티 확장)
-
-- 모임/커뮤니티 운영 기능 강화
-- 프리랜서 공고/지원/매칭
-- 추천 시스템(멘토/강의/모임)
+실시간 멘토 채팅 · 부동산 · 중고거래 · 자체 구인구직 · SNS 피드 · 고급 가계부
 
 ---
 
-## 12) 즉시 실행해야 할 우선순위 Top 10
+## 11) 우선순위
 
-1. 역할 전환 API + UI 토글 구현  
-2. 학생/멘토 대시보드 정보 구조 확정  
-3. 수강신청 엔티티 및 API 구현  
-4. 결제 상태 모델링(주문, 결제, 환불)  
-5. 영수증/정산 데이터 모델 정의  
-6. 멘토의 강의 생성/수정 UI  
-7. 라이브 webinar 최소 기능(생성/참여)  
-8. 다국어 키 정리 및 미번역 제거  
-9. 디자인 시스템 1차 통일  
-10. 관리자 운영 화면(신고/검수/통계) 보강  
+### P0 (진행 중)
 
----
+1. ✅ 회원가입 구조 수정 (`user` 단일)
+2. ✅ 사용자 상태 저장 (User 필드 확장)
+3. ✅ Home Control Center (`/home`, `/api/me/home`)
+4. ✅ Roadmap 시스템 (모델·API·UI)
+5. ✅ Calendar 연동 (카테고리 확장·로드맵 링크)
+6. ✅ Assistant UX (액션 기반)
+7. ⏳ Mentor 전환 구조 (기존 신청 플로우 유지, UI 정리)
 
-## 13) 다음 작업 제안
+### P1
 
-다음 단계로 아래 3개 문서를 분리해서 바로 개발 가능한 수준으로 만들 수 있다.
+- 문서함 (Document Vault)
+- 가이드 콘텐츠 → Roadmap Step 내 연동
+- Roadmap AI 자동 생성 고도화
 
-- `docs/PRD.md`: 제품 요구사항 상세
-- `docs/API_SPEC.md`: 요청/응답 스키마, 권한, 에러코드
-- `docs/DASHBOARD_SPEC.md`: 학생/멘토 대시보드 화면 및 데이터 명세
+### P2
 
-이 Master Plan을 기준으로 기능 구현을 시작하면,
-"아이디어 중심 상태"에서 "실행 가능한 제품 개발 상태"로 전환할 수 있다.
+- 커뮤니티 확장 · 추천 시스템 · 제휴
 
 ---
 
-## 14) 최근 작업 로그 (2026-04-30)
+## 12) 구현 로그 (2026-06-08)
 
-### 반영 완료 (이번 라운드 누적)
+### 데이터 모델
 
-- 메인/헤더 UX 고도화
-  - 메인 히어로 섹션 리디자인(Top3 강의/멘토, 공지/팁 섹션 개선)
-  - 스크롤 기반 노출 애니메이션(`RevealOnScroll`) 도입 및 반복 동작 보정
-  - 헤더 정렬/여백/폭 재조정, 스크롤 시 배경 처리 개선
-  - 메뉴 폰트 스타일 조정(가독성 강화)
-- AI 어시스턴트(가이드형) 실사용 개선
-  - KR/EN/MN 언어 선택, 빠른 질문(Quick Prompt), 링크 클릭 이동 지원
-  - OpenAI 키 미설정/오류 시 로컬 가이드 응답 fallback 안정화
-- 멘토 강의 운영 플로우 보강
-  - 강의 수정 API(`PATCH /api/lectures/[id]`) 추가(권한/소유권 검증 포함)
-  - 멘토 강의 수정 페이지 추가(`app/[locale]/mentor/lectures/[id]/edit/page.tsx`)
-  - 강의 이미지 업로드 및 카드 반영 연결
-- 학생/멘토 모드 분리 및 대시보드 안정화
-  - 대시보드 모드 토글 상태 고정(localStorage + 이벤트 동기화)
-  - 학생/멘토 메뉴 분리(`my/layout.tsx`) 및 모드별 접근 가드 정리
-  - 멘토 모드에서 "내 강의 관리" 중심 동선으로 수정
-  - 대시보드 불필요 토글 제거(단순/상세 보기 제거)
-- 관리자 영역 구조 정리
-  - `admin/layout.tsx` 공통 LNB 셸 도입
-  - `admin/page.tsx` -> `admin/dashboard` 리다이렉트 정리
-  - 사용자/검수 페이지 일부를 섹션 컴포넌트로 분리
-- 성능/구조 개선
-  - 중복 호출 완화를 위한 캐시 훅(`useMyDataCache`) 적용
-  - 인증/역할 체크 공통 훅(`useRouteGuard`) 도입
-  - API 클라이언트 도메인 분리(`lib/api/*`) 및 코어 분리(`lib/api/core.ts`)
-  - 대형 페이지 분해: `profile`, `my/schedule`, `dashboard`의 주요 블록 컴포넌트 추출
+- `User`: nationality, university, region, visaType, visaExpireDate, countryStatus, onboardingStatus, role `user` 추가
+- `Roadmap`, `RoadmapStep`, `UserAlert` 신규
+- `PersonalCalendarEvent`: 카테고리 확장, roadmapId/roadmapStepId
 
-### 현재 상태 요약
+### API
 
-- 핵심 동선(로그인 -> 대시보드 -> 모드 전환 -> 마이/관리자 이동)은 구조적으로 안정화됨
-- 강의 생성/수정/이미지 반영, 모드별 메뉴/콘텐츠 분리가 사용자 요구사항 기준으로 동작 가능한 상태
-- 대형 파일 분해가 진행되어 유지보수 난이도와 변경 리스크가 감소함
+- signup/me/home/alerts/roadmaps/assistant/actions 구현
+- chat API assistant 모드 연동
 
-### 다음 작업 (우선순위)
+### UI
 
-1. 문서 스펙 고정
-   - `docs/PRD.md`, `docs/API_SPEC.md`, `docs/DASHBOARD_SPEC.md` 생성
-   - 현재 구현 상태와 Master Plan 차이(갭) 명시
-2. 대시보드 데이터 품질 고도화
-   - 멘토 KPI(매출/정산 예정/완료, 신청자 처리량) 실데이터 연결 강화
-   - 학생 KPI와 추천 영역의 정렬/필터 규칙 명문화
-3. 검색/추천 개선(Phase 2 시작점)
-   - 통합 검색 가중치 정렬, 자동완성, 최근 검색
-   - 홈/대시보드 추천 카드 기준(클릭/등록일/평점) 정리
-4. 운영 안정화
-   - 관리자 검수/신고/문의 플로우 회귀 테스트 체크리스트 문서화
-   - 주요 페이지 성능 점검(초기 로드/이동 체감) 및 병목 추적 항목화
-5. i18n/문구 통합 정리
-   - 중복 번역키 정리 및 `common` 키로 통합
-   - KR/EN/MN 미번역/직역 문구 교정
+- 회원가입 3단계
+- `/home`, `/roadmap`, `/assistant`, `/calendar`
+- 하단 네비 (모바일)
+- 헤더 메뉴 비서 플랫폼 IA로 변경
+
+### 마이그레이션
+
+- DB `mentee` 역할 문서는 API 응답 시 `user`로 정규화
+- 신규 가입은 `role: user` 고정
+
+---
+
+## 13) 다음 작업
+
+1. My Page IA 개편 (내 정보 / 내 활동 / 커뮤니티 활동 / 문의 / 멘토)
+2. 온보딩 90초 — 가입 직후 첫 Roadmap 자동 제안
+3. `docs/API_SPEC.md` v2 스키마 문서화
+4. 대시보드 → Home 데이터 소스 통합
+5. i18n 미번역·문구 교정

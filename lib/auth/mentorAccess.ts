@@ -12,5 +12,8 @@ export async function userHasApprovedMentorProfile(userId: string): Promise<bool
 
 export async function canManageOwnLectures(userId: string, dbRole: string): Promise<boolean> {
   if (dbRole === "admin" || dbRole === "mentor") return true;
-  return userHasApprovedMentorProfile(userId);
+  if (dbRole === "user" || dbRole === "mentee") {
+    return userHasApprovedMentorProfile(userId);
+  }
+  return false;
 }

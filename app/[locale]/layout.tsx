@@ -5,6 +5,7 @@ import { locales } from '@/lib/i18n/config';
 import { AuthProvider } from '@/lib/contexts/AuthContext';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import AppBottomNav from '@/components/layout/AppBottomNav';
 import Chatbot from '@/components/chatbot/Chatbot';
 import '../globals.css';
 
@@ -50,8 +51,9 @@ export default async function LocaleLayout({
         <NextIntlClientProvider messages={messages}>
           <AuthProvider>
             <Header />
-            <main className="flex-1 pt-20">{children}</main>
+            <main className="flex-1 pt-20 pb-16 md:pb-0">{children}</main>
             <Footer />
+            <AppBottomNav />
             <Chatbot />
           </AuthProvider>
         </NextIntlClientProvider>

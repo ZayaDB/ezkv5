@@ -3,6 +3,7 @@ import connectDB from '@/lib/db/mongodb';
 import User from '@/models/User';
 import { comparePassword } from '@/lib/auth/password';
 import { generateToken } from '@/lib/auth/jwt';
+import { serializePublicUser } from '@/lib/auth/publicUser';
 
 export async function POST(request: NextRequest) {
   try {
@@ -52,17 +53,7 @@ export async function POST(request: NextRequest) {
 
     // Return user data (without password)
     return NextResponse.json({
-      user: {
-        id: user._id.toString(),
-        email: user.email,
-        name: user.name,
-        role: user.role,
-        locale: user.locale,
-        avatar: user.avatar,
-        bio: user.bio,
-        location: user.location,
-        languages: user.languages || [],
-      },
+      user: serializePublicUser(user.toObject() as Record<string, unknown>),
       token,
     });
   } catch (error: any) {

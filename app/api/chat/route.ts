@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getChatbotResponse } from "@/lib/ai/chatbot";
+import { buildActionAssistantResponse } from "@/lib/ai/assistantActions";
+import { resolveTemplateKey } from "@/lib/roadmap/templates";
 import { searchContent, type SearchResult } from "@/lib/search";
 
 const errorMessages: Record<string, string> = {
@@ -87,16 +89,38 @@ export async function POST(request: NextRequest) {
     // OpenAI API 키 형식이 아닐 경우 즉시 로컬 가이드 모드로 처리
     const looksInvalidKey = !/^sk-[A-Za-z0-9._-]{20,}$/.test(apiKey);
 
+    const actionIntent = resolveTemplateKey(messageText) ||
+      /이사|일정|캘린더|멘토|비자|연장|calendar|moving|visa|mentor/i.test(messageText);
+
     if (looksInvalidKey) {
+      if (actionIntent) {
+        const actionResult = buildActionAssistantResponse(messageText, locale);
+        const links = await searchContent(messageText, locale);
+        return NextResponse.json({
+          ...actionResult,
+          links: links.slice(0, 4),
+          mode: "assistant",
+        });
+      }
       const links = await searchContent(messageText, locale);
-      return NextResponse.json(buildLocalGuideResponse(messageText, locale, links));
+      return NextResponse.json({ ...buildLocalGuideResponse(messageText, locale, links), mode: "guide" });
+    }
+
+    if (actionIntent) {
+      const actionResult = buildActionAssistantResponse(messageText, locale);
+      const links = await searchContent(messageText, locale);
+      return NextResponse.json({
+        ...actionResult,
+        links: links.slice(0, 4),
+        mode: "assistant",
+      });
     }
 
     const result = await getChatbotResponse(messageText, {
       locale,
     });
 
-    return NextResponse.json(result);
+    return NextResponse.json({ ...result, mode: "chat" });
   } catch (error) {
     console.error("Chat API error:", error);
     const links = messageText ? await searchContent(messageText, locale) : [];
