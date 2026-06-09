@@ -15,7 +15,7 @@ export const authApi = {
     visaType?: string;
     visaExpireDate?: string;
   }) => {
-    const response = await apiRequest<{ user: any; token: string }>(
+    const response = await apiRequest<{ message?: string; email?: string }>(
       '/api/auth/signup',
       {
         method: 'POST',
@@ -23,9 +23,7 @@ export const authApi = {
       }
     );
 
-    if (response.data?.token) {
-      authToken.set(response.data.token);
-    }
+    // 회원가입만 — 자동 로그인하지 않음 (로그인 페이지에서 직접 로그인)
 
     return response;
   },

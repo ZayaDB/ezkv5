@@ -141,12 +141,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (response.error) {
         return { success: false, error: response.error };
       }
-      if (response.data?.user) {
-        setUser(response.data.user);
-        if (typeof window !== 'undefined') {
-          localStorage.setItem(AUTH_USER_CACHE_KEY, JSON.stringify(response.data.user));
-        }
-        return { success: true, user: response.data.user };
+      if (response.data?.email || response.data?.message) {
+        return { success: true };
       }
       return { success: false, error: '회원가입에 실패했습니다.' };
     } catch (error: any) {

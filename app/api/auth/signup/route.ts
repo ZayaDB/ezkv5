@@ -2,9 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db/mongodb';
 import User from '@/models/User';
 import { hashPassword } from '@/lib/auth/password';
-import { generateToken } from '@/lib/auth/jwt';
 import { DEFAULT_SIGNUP_ROLE } from '@/lib/auth/userRole';
-import { serializePublicUser } from '@/lib/auth/publicUser';
 import { syncUserAlerts } from '@/lib/alerts/generateAlerts';
 
 export async function POST(request: NextRequest) {
@@ -76,16 +74,11 @@ export async function POST(request: NextRequest) {
 
     await syncUserAlerts(user);
 
-    const token = generateToken({
-      userId: user._id.toString(),
-      email: user.email,
-      role: user.role,
-    });
-
-    const publicUser = serializePublicUser(user.toObject() as Record<string, unknown>);
-
     return NextResponse.json(
-      { user: publicUser, token },
+      {
+        message: '회원가입이 완료되었습니다. 로그인해 주세요.',
+        email: user.email,
+      },
       { status: 201 }
     );
   } catch (error: any) {
