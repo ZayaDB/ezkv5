@@ -8,13 +8,11 @@ export default function MentorApprovedPanel({
   locale,
   mentorDoc,
   userRole,
-  myLectures,
 }: {
   tp: (key: string) => string;
   locale: string;
   mentorDoc: { id: string; title?: string };
   userRole: string;
-  myLectures: { id: string; title?: string }[];
 }) {
   return (
     <div className="space-y-4">
@@ -45,31 +43,13 @@ export default function MentorApprovedPanel({
       </PlatformCard>
       {(userRole === "mentor" || userRole === "admin") && (
         <PlatformCard>
-          <h3 className="font-semibold text-slate-900 mb-3">{tp("mentor.myCourses")}</h3>
-          {myLectures.length === 0 ? (
-            <p className="text-sm text-slate-500">{tp("mentor.noCourses")}</p>
-          ) : (
-            <ul className="space-y-2">
-              {myLectures.map((lec) => (
-                <li key={lec.id}>
-                  <div className="flex items-center gap-3">
-                    <Link
-                      href={`/${locale}/lectures/${lec.id}`}
-                      className="text-sm font-medium text-primary-600 hover:underline"
-                    >
-                      {lec.title}
-                    </Link>
-                    <Link
-                      href={`/${locale}/mentor/lectures/${lec.id}/edit`}
-                      className="text-xs font-semibold text-slate-700 hover:text-slate-900 underline underline-offset-2"
-                    >
-                      수정
-                    </Link>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
+          <p className="text-sm text-slate-600">{tp("mentor.manageCoursesHint")}</p>
+          <Link
+            href={`/${locale}/my/lectures`}
+            className="inline-flex mt-3 rounded-lg bg-primary-600 px-3 py-2 text-xs font-semibold text-white"
+          >
+            {tp("mentor.goMyLectures")}
+          </Link>
         </PlatformCard>
       )}
     </div>

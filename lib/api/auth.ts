@@ -1,2 +1,1 @@
-export { authApi } from "./client";
-
+export { supabaseAuth } from "@/lib/auth/supabaseAuth";

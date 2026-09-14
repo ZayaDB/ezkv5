@@ -4,25 +4,10 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { notificationsApi } from "@/lib/api/client";
+import { dismissAlert, listAlerts, type UserAlert } from "@/lib/supabase/alerts";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import LoadingState from "@/components/ui/LoadingState";
 import PlatformCard from "@/components/ui/PlatformCard";
-
-type Row = {
-  id: string;
-  kind: string;
-  body: string;
-  readAt: string | null;
-  createdAt: string;
-  meta: {
-    postTitle?: string;
-    channelType?: string;
-    channelId?: string;
-    inquiryId?: string;
-    inquirySubject?: string;
-  };
-};
 
 export default function MyNotificationsPage() {
   const t = useTranslations("myPages.notifications");
@@ -31,16 +16,20 @@ export default function MyNotificationsPage() {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(true);
-  const [items, setItems] = useState<Row[]>([]);
-  const [unread, setUnread] = useState(0);
+  const [items, setItems] = useState<UserAlert[]>([]);
 
   const load = useCallback(async () => {
+    if (!user) return;
     setLoading(true);
-    const res = await notificationsApi.list();
-    setItems((res.data?.notifications || []) as Row[]);
-    setUnread(res.data?.unreadCount ?? 0);
-    setLoading(false);
-  }, []);
+    try {
+      const alerts = await listAlerts(user.id);
+      setItems(alerts);
+    } catch {
+      setItems([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [user]);
 
   useEffect(() => {
     if (!authLoading && !user) router.push(`/${locale}/login`);
@@ -50,12 +39,19 @@ export default function MyNotificationsPage() {
     if (user) void load();
   }, [user, load]);
 
-  const markAll = async () => {
-    await notificationsApi.markRead({ all: true });
+  const dismissAll = async () => {
+    if (!user || items.length === 0) return;
+    await Promise.all(items.map((item) => dismissAlert(user.id, item.id)));
     await load();
   };
 
-  if (authLoading || !user || loading) {
+  const dismissOne = async (id: string) => {
+    if (!user) return;
+    await dismissAlert(user.id, id);
+    setItems((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  if ((authLoading && !user) || !user || loading) {
     return <LoadingState message={t("loading")} />;
   }
 
@@ -67,13 +63,13 @@ export default function MyNotificationsPage() {
           <p className="text-sm text-zinc-600 mt-1">{t("subtitle")}</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          {unread > 0 && (
+          {items.length > 0 && (
             <button
               type="button"
-              onClick={() => void markAll()}
+              onClick={() => void dismissAll()}
               className="rounded-lg bg-zinc-900 px-3 py-2 text-xs font-semibold text-white hover:bg-zinc-800"
             >
-              {t("markAllRead")}
+              {t("dismissAll")}
             </button>
           )}
           <Link
@@ -90,55 +86,43 @@ export default function MyNotificationsPage() {
           <p className="text-sm text-zinc-600">{t("empty")}</p>
         ) : (
           <ul className="space-y-4">
-            {items.map((n) => {
-              const title =
-                n.kind === "channel_post_removed"
-                  ? t("postRemovedTitle")
-                  : n.kind === "inquiry_replied"
-                    ? t("inquiryReplyTitle")
-                    : n.kind;
-              return (
-                <li
-                  key={n.id}
-                  className={`rounded-xl border px-4 py-3 ${
-                    n.readAt ? "border-zinc-100 bg-zinc-50/60" : "border-primary-100 bg-primary-50/40"
-                  }`}
-                >
-                  <p className="text-sm font-semibold text-zinc-900">{title}</p>
-                  {n.kind === "channel_post_removed" && n.meta?.postTitle && (
-                    <p className="text-xs text-zinc-600 mt-1">
-                      {t("postRemovedMeta", { title: n.meta.postTitle })}
-                    </p>
-                  )}
-                  {n.kind === "channel_post_removed" &&
-                    (n.meta?.channelType === "community" || n.meta?.channelType === "freelancer") && (
-                      <p className="text-xs text-zinc-500 mt-0.5">
-                        {n.meta.channelType === "community" ? t("channelCommunity") : t("channelFreelancer")}
-                      </p>
-                    )}
-                  {n.kind === "inquiry_replied" && n.meta?.inquirySubject && (
-                    <p className="text-xs text-zinc-600 mt-1">
-                      {t("inquiryReplySubject", { title: n.meta.inquirySubject })}
-                    </p>
-                  )}
-                  {n.kind === "channel_post_removed" && (
-                    <p className="text-xs font-semibold text-zinc-700 mt-2">{t("postRemovedReason")}</p>
-                  )}
-                  <p className="text-sm text-zinc-800 whitespace-pre-wrap mt-1">{n.body}</p>
-                  {n.kind === "inquiry_replied" && (
+            {items.map((n) => (
+              <li
+                key={n.id}
+                className={`rounded-xl border px-4 py-3 ${
+                  n.severity === "urgent"
+                    ? "border-red-200 bg-red-50/50"
+                    : n.severity === "warning"
+                      ? "border-amber-200 bg-amber-50/50"
+                      : "border-primary-100 bg-primary-50/40"
+                }`}
+              >
+                <p className="text-sm font-semibold text-zinc-900">{n.title}</p>
+                {n.body && <p className="text-sm text-zinc-800 whitespace-pre-wrap mt-1">{n.body}</p>}
+                {n.dueDate && (
+                  <p className="text-xs text-zinc-500 mt-1">
+                    {t("dueDate", { date: fmt.dateTime(new Date(n.dueDate), { dateStyle: "medium" }) })}
+                  </p>
+                )}
+                <div className="mt-2 flex flex-wrap gap-3">
+                  {n.actionUrl && (
                     <Link
-                      href={`/${locale}/my/inquiries`}
-                      className="inline-block mt-2 text-xs font-semibold text-primary-600 hover:underline"
+                      href={`/${locale}${n.actionUrl.startsWith("/") ? n.actionUrl : `/${n.actionUrl}`}`}
+                      className="text-xs font-semibold text-primary-600 hover:underline"
                     >
-                      {t("viewInquiries")}
+                      {t("viewAction")}
                     </Link>
                   )}
-                  <p className="text-[11px] text-zinc-400 mt-2">
-                    {fmt.dateTime(new Date(n.createdAt), { dateStyle: "medium", timeStyle: "short" })}
-                  </p>
-                </li>
-              );
-            })}
+                  <button
+                    type="button"
+                    onClick={() => void dismissOne(n.id)}
+                    className="text-xs font-semibold text-zinc-500 hover:text-zinc-800"
+                  >
+                    {t("dismiss")}
+                  </button>
+                </div>
+              </li>
+            ))}
           </ul>
         )}
       </PlatformCard>

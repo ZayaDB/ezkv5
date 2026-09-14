@@ -35,7 +35,16 @@
     "footerResources": "Resources",
     "footerSupport": "Support",
     "footerTagline": "Your trusted guide to studying in Korea",
-    "copyright": "© 2026. All rights reserved."
+    "copyright": "© 2026. All rights reserved.",
+    "notificationsBell": {
+      "title": "Notifications",
+      "empty": "No new notifications.",
+      "viewAll": "View all",
+      "loading": "Loading…",
+      "aria": "Notifications",
+      "ariaWithCount": "{count} notifications",
+      "unreadCount": "{count} new"
+    }
   },
   "home": {
     "heroBadge": "This month's community highlights",
@@ -410,6 +419,7 @@
     "loading": "Loading...",
     "saving": "Saving...",
     "roles": {
+      "user": "Student",
       "mentee": "Mentee",
       "mentor": "Mentor",
       "admin": "Admin"
@@ -417,6 +427,7 @@
   },
   "profilePage": {
     "title": "My page",
+    "infoTitle": "My profile",
     "loading": "Loading...",
     "tabs": {
       "overview": "Overview",
@@ -693,12 +704,30 @@
       "emptyCta": "Browse freelancers",
       "viewGroup": "View group"
     },
+    "dashboard": {
+      "greeting": "Hello, {name}",
+      "subtitle": "Overview of each section at a glance",
+      "cardRoadmaps": "Roadmaps",
+      "avgProgress": "Avg. {pct}% complete",
+      "startRoadmap": "Start a roadmap",
+      "cardSchedule": "Today",
+      "cardScheduleSub": "Manage in Schedule",
+      "cardCourses": "My courses",
+      "comingSoon": "Coming soon",
+      "cardProfile": "Profile",
+      "cardProfileSub": "Edit profile",
+      "roadmapChart": "Roadmap progress",
+      "openSchedule": "View all schedule",
+      "notificationsLink": "Notifications"
+    },
     "shell": {
       "title": "My space",
       "navDashboard": "Dashboard",
       "navProfile": "My profile",
       "navSchedule": "Calendar",
+      "navRoadmap": "Roadmap",
       "navCourses": "My courses & study",
+      "navWishlist": "Saved courses",
       "navLectures": "Teach courses",
       "navReceipts": "Receipts & billing",
       "navActivity": "Activity & posts",
@@ -828,11 +857,24 @@
       "quickFreelancersBrowse": "Open freelancer feed",
       "quickCourses": "My courses & study"
     },
+    "wishlist": {
+      "title": "Saved courses",
+      "subtitle": "Review courses you saved and open details quickly.",
+      "loading": "Loading saved courses…",
+      "empty": "No saved courses yet.",
+      "browse": "Browse courses",
+      "deleted": "Removed course",
+      "viewDetail": "View details"
+    },
     "notifications": {
       "title": "Notifications",
-      "subtitle": "Important notices such as moderation actions appear here.",
+      "subtitle": "Important alerts about visa, roadmap, and more.",
       "loading": "Loading...",
       "empty": "No notifications.",
+      "dismissAll": "Dismiss all",
+      "dismiss": "Dismiss",
+      "dueDate": "Due: {date}",
+      "viewAction": "Open",
       "markAllRead": "Mark all read",
       "postRemovedTitle": "Your post was removed",
       "postRemovedMeta": "Post title: {title}",

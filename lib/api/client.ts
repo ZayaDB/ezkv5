@@ -1,112 +1,6 @@
 // API 클라이언트 유틸리티
 import { API_BASE_URL, apiRequest, authToken } from "./core";
 
-// Auth API
-export const authApi = {
-  signup: async (userData: {
-    email: string;
-    password: string;
-    name: string;
-    locale: string;
-    nationality?: string;
-    university?: string;
-    region?: string;
-    residingInKorea?: boolean;
-    visaType?: string;
-    visaExpireDate?: string;
-  }) => {
-    const response = await apiRequest<{ message?: string; email?: string }>(
-      '/api/auth/signup',
-      {
-        method: 'POST',
-        body: JSON.stringify(userData),
-      }
-    );
-
-    // 회원가입만 — 자동 로그인하지 않음 (로그인 페이지에서 직접 로그인)
-
-    return response;
-  },
-
-  login: async (email: string, password: string) => {
-    const response = await apiRequest<{ user: any; token: string }>(
-      '/api/auth/login',
-      {
-        method: 'POST',
-        body: JSON.stringify({ email, password }),
-      }
-    );
-    
-    if (response.data?.token) {
-      authToken.set(response.data.token);
-    }
-    
-    return response;
-  },
-
-  logout: () => {
-    authToken.remove();
-  },
-
-  getCurrentUser: async () => {
-    const token = authToken.get();
-    if (!token) return null;
-    
-    try {
-      // 서버에서 실제 사용자 정보 가져오기
-      const response = await apiRequest<{ user: any }>('/api/auth/me');
-      if (response.data?.user) {
-        return response.data.user;
-      }
-      // 토큰이 유효하지 않으면 제거
-      authToken.remove();
-      return null;
-    } catch {
-      authToken.remove();
-      return null;
-    }
-  },
-
-  updateProfile: async (data: {
-    name?: string;
-    avatar?: string;
-    bio?: string;
-    location?: string;
-    phone?: string;
-    address?: string;
-    currentPassword?: string;
-    newPassword?: string;
-    languages?: string[];
-    locale?: string;
-    nationality?: string;
-    university?: string;
-    region?: string;
-    visaType?: string;
-    visaExpireDate?: string;
-    countryStatus?: string;
-    onboardingStatus?: string;
-    residingInKorea?: boolean;
-  }) => {
-    return apiRequest<{ user: any }>('/api/auth/me', {
-      method: 'PATCH',
-      body: JSON.stringify(data),
-    });
-  },
-
-  switchRole: async (targetRole: "user" | "mentee" | "mentor") => {
-    const response = await apiRequest<{ user: any; token: string }>("/api/auth/switch-role", {
-      method: "POST",
-      body: JSON.stringify({ targetRole }),
-    });
-
-    if (response.data?.token) {
-      authToken.set(response.data.token);
-    }
-
-    return response;
-  },
-};
-
 export const contentApi = {
   getLecture: (id: string) => apiRequest<any>(`/api/lectures/${id}`),
   getCommunity: (id: string) => apiRequest<any>(`/api/community/${id}`),
@@ -536,15 +430,6 @@ export const channelFeedApi = {
   },
 };
 
-export const myActivityApi = {
-  getContexts: async () => {
-    return apiRequest<{
-      community: { id: string; name: string }[];
-      freelancers: { id: string; name: string }[];
-    }>("/api/my-activity/contexts");
-  },
-};
-
 export type LifeBudgetKind = "expense" | "income";
 export type LifeRecurrenceType = "none" | "weekly" | "biweekly" | "monthly";
 export type LifeEventCategory =
@@ -636,8 +521,13 @@ export const lifePlanApi = {
     );
   },
   getLifeEvents: async (fromIso: string, toIso: string) => {
-    const q = `from=${encodeURIComponent(fromIso)}&to=${encodeURIComponent(toIso)}`;
-    return apiRequest<{ events: LifeEvent[] }>(`/api/me/life-events?${q}`);
+    try {
+      const { getLifeEvents } = await import("@/lib/supabase/calendar");
+      const data = await getLifeEvents(fromIso, toIso);
+      return { data };
+    } catch (e: unknown) {
+      return { error: e instanceof Error ? e.message : "일정을 불러오지 못했습니다." };
+    }
   },
   addLifeEvent: async (payload: {
     title: string;
@@ -648,10 +538,13 @@ export const lifePlanApi = {
     status?: LifeEventStatus;
     recurrence?: LifeRecurrence;
   }) => {
-    return apiRequest<{ event: LifeEvent }>(
-      "/api/me/life-events",
-      { method: "POST", body: JSON.stringify(payload) }
-    );
+    try {
+      const { addLifeEvent } = await import("@/lib/supabase/calendar");
+      const data = await addLifeEvent(payload);
+      return { data };
+    } catch (e: unknown) {
+      return { error: e instanceof Error ? e.message : "일정 추가 실패" };
+    }
   },
   updateLifeEvent: async (
     id: string,
@@ -665,62 +558,57 @@ export const lifePlanApi = {
       recurrence?: LifeRecurrence;
     }
   ) => {
-    return apiRequest<{ event: LifeEvent }>(`/api/me/life-events/${id}`, {
-      method: "PATCH",
-      body: JSON.stringify(payload),
-    });
+    try {
+      const { updateLifeEvent } = await import("@/lib/supabase/calendar");
+      const data = await updateLifeEvent(id, payload);
+      return { data };
+    } catch (e: unknown) {
+      return { error: e instanceof Error ? e.message : "일정 수정 실패" };
+    }
   },
   deleteLifeEvent: async (id: string) => {
-    return apiRequest<{ ok: boolean }>(`/api/me/life-events/${id}`, { method: "DELETE" });
-  },
-};
-
-export const homeApi = {
-  getControlCenter: async () => {
-    return apiRequest<{
-      statusCard: Record<string, unknown>;
-      alerts: Array<Record<string, unknown>>;
-      activeRoadmaps: Array<Record<string, unknown>>;
-      todaySchedule: Array<Record<string, unknown>>;
-      recommendedActions: Array<Record<string, unknown>>;
-      onboardingStatus: string;
-    }>("/api/me/home");
+    try {
+      const { deleteLifeEvent } = await import("@/lib/supabase/calendar");
+      const data = await deleteLifeEvent(id);
+      return { data };
+    } catch (e: unknown) {
+      return { error: e instanceof Error ? e.message : "일정 삭제 실패" };
+    }
   },
 };
 
 export const roadmapsApi = {
   list: async (status = "active") => {
-    return apiRequest<{ roadmaps: any[]; templates: any[] }>(`/api/roadmaps?status=${status}`);
+    try {
+      const { listRoadmaps } = await import("@/lib/supabase/roadmaps");
+      const data = await listRoadmaps(status);
+      return { data };
+    } catch (e: unknown) {
+      return { error: e instanceof Error ? e.message : "로드맵을 불러오지 못했습니다." };
+    }
   },
-  get: async (id: string) => apiRequest<any>(`/api/roadmaps/${id}`),
-  create: async (payload: {
-    templateKey?: string;
-    title?: string;
-    description?: string;
-    priority?: string;
-    dueDate?: string;
-    steps?: Array<{ title: string; description?: string; dueDate?: string }>;
-  }) => {
-    return apiRequest<any>("/api/roadmaps", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
+  get: async (_id: string) => ({ error: "Not implemented" }),
+  create: async (payload: { templateKey?: string }) => {
+    try {
+      if (!payload.templateKey) return { error: "templateKey가 필요합니다." };
+      const { createFromTemplate } = await import("@/lib/supabase/roadmaps");
+      const data = await createFromTemplate(payload.templateKey);
+      return { data };
+    } catch (e: unknown) {
+      return { error: e instanceof Error ? e.message : "로드맵 생성 실패" };
+    }
   },
-  update: async (id: string, payload: Record<string, unknown>) => {
-    return apiRequest<any>(`/api/roadmaps/${id}`, {
-      method: "PATCH",
-      body: JSON.stringify(payload),
-    });
-  },
+  update: async (_id: string, _payload: Record<string, unknown>) => ({ error: "Not implemented" }),
   completeStep: async (roadmapId: string, stepId: string, completed: boolean) => {
-    return apiRequest<any>(`/api/roadmaps/${roadmapId}/steps/${stepId}`, {
-      method: "PATCH",
-      body: JSON.stringify({ completed }),
-    });
+    try {
+      const { completeStep } = await import("@/lib/supabase/roadmaps");
+      await completeStep(roadmapId, stepId, completed);
+      return { data: { ok: true } };
+    } catch (e: unknown) {
+      return { error: e instanceof Error ? e.message : "단계 업데이트 실패" };
+    }
   },
-  delete: async (id: string) => {
-    return apiRequest<{ ok: boolean }>(`/api/roadmaps/${id}`, { method: "DELETE" });
-  },
+  delete: async (_id: string) => ({ error: "Not implemented" }),
 };
 
 export const assistantApi = {
@@ -738,15 +626,6 @@ export const assistantApi = {
   },
 };
 
-export const alertsApi = {
-  list: async () => apiRequest<{ alerts: any[] }>("/api/me/alerts"),
-  dismiss: async (alertId: string) => {
-    return apiRequest<{ ok: boolean }>("/api/me/alerts", {
-      method: "PATCH",
-      body: JSON.stringify({ alertId, dismiss: true }),
-    });
-  },
-};
 
 export const lectureWishlistApi = {
   list: async () => {

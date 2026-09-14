@@ -35,7 +35,16 @@
     "footerResources": "자료",
     "footerSupport": "고객 지원",
     "footerTagline": "한국 유학을 위한 신뢰할 수 있는 가이드",
-    "copyright": "© 2026. All rights reserved."
+    "copyright": "© 2026. All rights reserved.",
+    "notificationsBell": {
+      "title": "알림",
+      "empty": "새 알림이 없습니다.",
+      "viewAll": "전체 알림 보기",
+      "loading": "불러오는 중…",
+      "aria": "알림",
+      "ariaWithCount": "알림 {count}건",
+      "unreadCount": "{count}건"
+    }
   },
   "home": {
     "heroBadge": "이번 달 커뮤니티 하이라이트",
@@ -409,6 +418,7 @@
     "loading": "로딩 중...",
     "saving": "저장 중...",
     "roles": {
+      "user": "학생",
       "mentee": "멘티",
       "mentor": "멘토",
       "admin": "관리자"
@@ -416,6 +426,7 @@
   },
   "profilePage": {
     "title": "마이페이지",
+    "infoTitle": "나의 정보",
     "loading": "불러오는 중...",
     "tabs": {
       "overview": "현황",
@@ -467,7 +478,9 @@
       "editProfile": "프로필 수정",
       "createCourse": "새 강의 등록",
       "myCourses": "내 강의",
-      "noCourses": "등록한 강의가 없습니다."
+      "noCourses": "등록한 강의가 없습니다.",
+      "manageCoursesHint": "강의 목록·수정은 「강의 관리」 메뉴에서 하세요.",
+      "goMyLectures": "강의 관리로 이동"
     },
     "info": {
       "title": "기본 정보",
@@ -692,12 +705,30 @@
       "emptyCta": "프리랜서 둘러보기",
       "viewGroup": "그룹 보기"
     },
+    "dashboard": {
+      "greeting": "{name}님, 안녕하세요",
+      "subtitle": "메뉴별 요약을 한눈에 확인하세요",
+      "cardRoadmaps": "로드맵",
+      "avgProgress": "평균 {pct}% 진행",
+      "startRoadmap": "로드맵 시작하기",
+      "cardSchedule": "오늘 일정",
+      "cardScheduleSub": "일정·달력에서 관리",
+      "cardCourses": "내 강의",
+      "comingSoon": "준비 중",
+      "cardProfile": "나의 정보",
+      "cardProfileSub": "프로필 수정",
+      "roadmapChart": "로드맵 진행률",
+      "openSchedule": "일정 전체 보기",
+      "notificationsLink": "알림 센터"
+    },
     "shell": {
       "title": "마이 스페이스",
       "navDashboard": "대시보드",
       "navProfile": "나의 정보",
       "navSchedule": "일정·달력",
+      "navRoadmap": "로드맵",
       "navCourses": "내 강의·학습",
+      "navWishlist": "찜한 강의",
       "navLectures": "강의 관리",
       "navReceipts": "영수증·결제",
       "navActivity": "활동·게시",
@@ -827,11 +858,24 @@
       "quickFreelancersBrowse": "프리랜서 피드 보기",
       "quickCourses": "내 강의·학습"
     },
+    "wishlist": {
+      "title": "찜한 강의",
+      "subtitle": "관심 강의를 모아보고 바로 상세로 이동할 수 있어요.",
+      "loading": "찜한 강의를 불러오는 중…",
+      "empty": "찜한 강의가 없습니다.",
+      "browse": "강의 둘러보기",
+      "deleted": "삭제된 강의",
+      "viewDetail": "상세 보기"
+    },
     "notifications": {
       "title": "알림",
-      "subtitle": "운영 정책에 따른 조치 등 중요한 안내가 여기에 표시됩니다.",
+      "subtitle": "비자·로드맵 등 중요한 안내가 여기에 표시됩니다.",
       "loading": "불러오는 중...",
       "empty": "알림이 없습니다.",
+      "dismissAll": "모두 확인",
+      "dismiss": "확인",
+      "dueDate": "마감: {date}",
+      "viewAction": "바로가기",
       "markAllRead": "모두 읽음",
       "postRemovedTitle": "게시글이 삭제되었습니다",
       "postRemovedMeta": "글 제목: {title}",

@@ -24,7 +24,10 @@ export default function LoginPage() {
     const params = new URLSearchParams(window.location.search);
     if (params.get("signup") === "success") {
       setSignupSuccess(true);
-      // URL에서 파라미터 제거
+      const signedUpEmail = params.get("email");
+      if (signedUpEmail) {
+        setEmail(signedUpEmail);
+      }
       window.history.replaceState({}, "", window.location.pathname);
     }
   }, []);
@@ -35,7 +38,7 @@ export default function LoginPage() {
       if (user.role === "admin") {
         router.push(`/${locale}/admin/dashboard`);
       } else {
-        router.push(`/${locale}/home`);
+        router.push(`/${locale}`);
       }
     }
   }, [user, router, locale]);
@@ -58,7 +61,7 @@ export default function LoginPage() {
       if (result.user?.role === "admin") {
         router.replace(`/${locale}/admin/dashboard`);
       } else {
-        router.replace(`/${locale}/home`);
+        router.replace(`/${locale}/my/dashboard`);
       }
       setLoading(false);
     } catch (err: any) {

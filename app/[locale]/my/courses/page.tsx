@@ -137,7 +137,7 @@ function CoursesInner() {
     await load();
   };
 
-  if (authLoading || !user || loading) {
+  if ((authLoading && !user) || !user || loading) {
     return <LoadingState message={tEnr("loading")} />;
   }
 

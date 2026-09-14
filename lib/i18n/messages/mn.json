@@ -35,7 +35,16 @@
     "footerResources": "Нөөц",
     "footerSupport": "Дэмжлэг",
     "footerTagline": "Солонгост суралцах найдвартай хөтөч",
-    "copyright": "© 2026. Бүх эрх хуулиар хамгаалагдсан."
+    "copyright": "© 2026. Бүх эрх хуулиар хамгаалагдсан.",
+    "notificationsBell": {
+      "title": "Мэдэгдэл",
+      "empty": "Шинэ мэдэгдэл алга.",
+      "viewAll": "Бүгдийг харах",
+      "loading": "Ачааллаж байна…",
+      "aria": "Мэдэгдэл",
+      "ariaWithCount": "Мэдэгдэл {count}",
+      "unreadCount": "{count} шинэ"
+    }
   },
   "home": {
     "heroBadge": "Энэ сарын community highlights",
@@ -410,6 +419,7 @@
     "loading": "Ачааллаж байна...",
     "saving": "Хадгалж байна...",
     "roles": {
+      "user": "Оюутан",
       "mentee": "Оюутан",
       "mentor": "Ментор",
       "admin": "Админ"
@@ -417,6 +427,7 @@
   },
   "profilePage": {
     "title": "Миний хуудас",
+    "infoTitle": "Миний мэдээлэл",
     "loading": "Ачааллаж байна...",
     "tabs": {
       "overview": "Тойм",
@@ -693,12 +704,30 @@
       "emptyCta": "Freelance үзэх",
       "viewGroup": "Бүлэг нээх"
     },
+    "dashboard": {
+      "greeting": "Сайн байна уу, {name}",
+      "subtitle": "Цэс бүрийн тоймыг нэг дор хараарай",
+      "cardRoadmaps": "Roadmap",
+      "avgProgress": "Дундаж {pct}%",
+      "startRoadmap": "Roadmap эхлүүлэх",
+      "cardSchedule": "Өнөөдөр",
+      "cardScheduleSub": "Хуваарь цэсээр",
+      "cardCourses": "Миний хичээл",
+      "comingSoon": "Удахгүй",
+      "cardProfile": "Профайл",
+      "cardProfileSub": "Засах",
+      "roadmapChart": "Roadmap явц",
+      "openSchedule": "Бүх хуваарь",
+      "notificationsLink": "Мэдэгдэл"
+    },
     "shell": {
       "title": "Миний орон зай",
       "navDashboard": "Самбар",
       "navProfile": "Профайл",
       "navSchedule": "Календарь",
+      "navRoadmap": "Roadmap",
       "navCourses": "Миний сургалт",
+      "navWishlist": "Хадгалсан лекц",
       "navLectures": "Лекц удирдах",
       "navReceipts": "Төлбөр",
       "navActivity": "Идэвх",
@@ -828,11 +857,24 @@
       "quickFreelancersBrowse": "Freelance feed",
       "quickCourses": "Миний сургалт"
     },
+    "wishlist": {
+      "title": "Хадгалсан лекц",
+      "subtitle": "Хадгалсан лекцээ хараад шууд дэлгэрэнгүй рүү очно.",
+      "loading": "Хадгалсан лекц ачааллаж байна…",
+      "empty": "Хадгалсан лекц алга.",
+      "browse": "Лекц үзэх",
+      "deleted": "Устгагдсан лекц",
+      "viewDetail": "Дэлгэрэнгүй"
+    },
     "notifications": {
       "title": "Мэдэгдэл",
-      "subtitle": "Зохицуулалтын мэдээлэл энд.",
+      "subtitle": "Виза, roadmap зэрэг чухал мэдээлэл.",
       "loading": "Ачааллаж байна...",
       "empty": "Мэдэгдэл алга.",
+      "dismissAll": "Бүгдийг хаах",
+      "dismiss": "Хаах",
+      "dueDate": "Хугацаа: {date}",
+      "viewAction": "Нээх",
       "markAllRead": "Бүгдийг уншсан",
       "postRemovedTitle": "Нийтлэл устгагдсан",
       "postRemovedMeta": "Гарчиг: {title}",

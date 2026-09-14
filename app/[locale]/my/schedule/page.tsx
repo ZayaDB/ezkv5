@@ -153,10 +153,15 @@ export default function MySchedulePage() {
 
   const loadAll = useCallback(async () => {
     setLoading(true);
+    const timeout = <T,>(fallback: T) =>
+      new Promise<T>((resolve) => setTimeout(() => resolve(fallback), 5000));
     const [sessionsRows, enrollmentRows, budgetRes, eventsRes] = await Promise.all([
       getCachedSessions(),
       getCachedEnrollments(),
-      lifePlanApi.getBudgetLines({ fromIso: range.from, toIso: range.to }),
+      Promise.race([
+        lifePlanApi.getBudgetLines({ fromIso: range.from, toIso: range.to }),
+        timeout({ data: { lines: [], occurrences: [] } }),
+      ]),
       lifePlanApi.getLifeEvents(range.from, range.to),
     ]);
     setSessions((sessionsRows as SessionRow[]) || []);
@@ -358,7 +363,7 @@ export default function MySchedulePage() {
     setBudgetMonthday(String(line.recurrence?.dayOfMonth ?? d.getDate()));
   };
 
-  if (authLoading || !user || loading) return <LoadingState />;
+  if ((authLoading && !user) || !user || loading) return <LoadingState />;
 
   const grid = monthGrid(anchor);
   const week = weekDays(anchor);

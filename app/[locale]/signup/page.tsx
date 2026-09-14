@@ -31,14 +31,14 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (user) {
+    if (user && !loading) {
       if (user.role === "admin") {
         router.push(`/${locale}/admin/dashboard`);
       } else {
-        router.push(`/${locale}/home`);
+        router.push(`/${locale}`);
       }
     }
-  }, [user, router, locale]);
+  }, [user, loading, router, locale]);
 
   const isVisaStep = step === 2 && residingInKorea === true;
   const isBasicStep =
@@ -101,7 +101,8 @@ export default function SignupPage() {
         return;
       }
 
-      router.push(`/${locale}/login?signup=success`);
+      setLoading(false);
+      router.replace(`/${locale}/login?signup=success&email=${encodeURIComponent(formData.email.trim())}`);
     } catch (err: any) {
       setError(err.message || t("signupError"));
       setLoading(false);

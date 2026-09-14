@@ -21,6 +21,7 @@ import { useState, useEffect } from "react";
 import { locales } from "@/lib/i18n/config";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { usePathname, useRouter } from "next/navigation";
+import HeaderNotificationBell from "@/components/layout/HeaderNotificationBell";
 
 export default function Header() {
   const t = useTranslations("common");
@@ -130,22 +131,10 @@ export default function Header() {
           <div className="hidden md:flex items-center justify-start min-w-0">
             <div className="flex items-center gap-5 lg:gap-6 whitespace-nowrap ml-3 lg:ml-5">
               <Link
-                href={getLocalizedPath(isAuthenticated ? "/home" : "")}
+                href={getLocalizedPath("/lectures")}
                 className="text-[16px] font-bold text-gray-600 dark:text-slate-200 hover:text-primary-500 transition-colors"
               >
-                {t("home")}
-              </Link>
-              <Link
-                href={getLocalizedPath("/roadmap")}
-                className="text-[16px] font-bold text-gray-600 dark:text-slate-200 hover:text-primary-500 transition-colors"
-              >
-                {t("navRoadmap")}
-              </Link>
-              <Link
-                href={getLocalizedPath("/assistant")}
-                className="text-[16px] font-bold text-gray-600 dark:text-slate-200 hover:text-primary-500 transition-colors"
-              >
-                {t("navAssistant")}
+                {t("lectures")}
               </Link>
               <Link
                 href={getLocalizedPath("/mentors")}
@@ -266,6 +255,8 @@ export default function Header() {
             </div>
 
             {isAuthenticated ? (
+              <>
+                <HeaderNotificationBell enabled={user?.role !== "admin"} />
               <div className="relative">
                 <button
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
@@ -351,46 +342,8 @@ export default function Header() {
                         <User className="w-4 h-4" />
                         <span>{t("profile")}</span>
                       </Link>
-                      <div className="px-4 pt-2 pb-1 text-xs font-semibold text-gray-500">
-                        {t("myActivity")}
-                      </div>
-                      <Link
-                        href={getLocalizedPath("/my/courses")}
-                        className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
-                        onClick={() => setUserMenuOpen(false)}
-                      >
-                        <span>{t("myEnrollments")}</span>
-                      </Link>
-                      <Link
-                        href={getLocalizedPath("/my/wishlist")}
-                        className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
-                        onClick={() => setUserMenuOpen(false)}
-                      >
-                        <span>찜한 강의</span>
-                      </Link>
-                      <Link
-                        href={getLocalizedPath("/my/sessions")}
-                        className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
-                        onClick={() => setUserMenuOpen(false)}
-                      >
-                        <span>{t("mySessions")}</span>
-                      </Link>
-                      <Link
-                        href={getLocalizedPath("/my/community")}
-                        className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
-                        onClick={() => setUserMenuOpen(false)}
-                      >
-                        <span>{t("myCommunity")}</span>
-                      </Link>
-                      <Link
-                        href={getLocalizedPath("/my/freelancers")}
-                        className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
-                        onClick={() => setUserMenuOpen(false)}
-                      >
-                        <span>{t("myFreelancers")}</span>
-                      </Link>
 
-                      <div className="border-t border-gray-100 my-1"></div>
+                      <div className="border-t border-gray-100 dark:border-slate-700 my-1"></div>
 
                       <button
                         onClick={() => {
@@ -407,6 +360,7 @@ export default function Header() {
                   </>
                 )}
               </div>
+              </>
             ) : (
               <>
                 <Link
@@ -482,25 +436,11 @@ export default function Header() {
                 </span>
               </button>
               <Link
-                href={getLocalizedPath(isAuthenticated ? "/home" : "")}
+                href={getLocalizedPath("/lectures")}
                 className="text-gray-600 hover:text-primary-500 transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                {t("home")}
-              </Link>
-              <Link
-                href={getLocalizedPath("/roadmap")}
-                className="text-gray-600 hover:text-primary-500 transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {t("navRoadmap")}
-              </Link>
-              <Link
-                href={getLocalizedPath("/assistant")}
-                className="text-gray-600 hover:text-primary-500 transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {t("navAssistant")}
+                {t("lectures")}
               </Link>
               <Link
                 href={getLocalizedPath("/mentors")}
@@ -519,6 +459,9 @@ export default function Header() {
 
               {isAuthenticated ? (
                 <div className="pt-4 border-t border-gray-200">
+                  <div className="flex items-center justify-between mb-4 px-2">
+                    <HeaderNotificationBell enabled={user?.role !== "admin"} />
+                  </div>
                   <div className="flex items-center gap-3 mb-4 px-2">
                     {user?.avatar ? (
                       <img
@@ -578,44 +521,6 @@ export default function Header() {
                   >
                     <User className="w-5 h-5" />
                     <span>{t("profile")}</span>
-                  </Link>
-                  <div className="px-4 pt-2 pb-1 text-xs font-semibold text-gray-500">
-                    {t("myActivity")}
-                  </div>
-                  <Link
-                    href={getLocalizedPath("/my/courses")}
-                    className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors mb-2"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <span>{t("myEnrollments")}</span>
-                  </Link>
-                  <Link
-                    href={getLocalizedPath("/my/wishlist")}
-                    className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors mb-2"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <span>찜한 강의</span>
-                  </Link>
-                  <Link
-                    href={getLocalizedPath("/my/sessions")}
-                    className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors mb-2"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <span>{t("mySessions")}</span>
-                  </Link>
-                  <Link
-                    href={getLocalizedPath("/my/community")}
-                    className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors mb-2"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <span>{t("myCommunity")}</span>
-                  </Link>
-                  <Link
-                    href={getLocalizedPath("/my/freelancers")}
-                    className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors mb-2"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <span>{t("myFreelancers")}</span>
                   </Link>
 
                   <button

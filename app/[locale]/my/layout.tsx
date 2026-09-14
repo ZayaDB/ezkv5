@@ -1,15 +1,15 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import {
-  Bell,
   CalendarDays,
   GraduationCap,
   LayoutDashboard,
   LifeBuoy,
+  Map,
   Receipt,
   Sparkles,
   UserRound,
@@ -17,7 +17,6 @@ import {
   Heart,
 } from "lucide-react";
 import { useAuth } from "@/lib/contexts/AuthContext";
-import { notificationsApi } from "@/lib/api";
 import SideLnbShell, { type SideLnbItem } from "@/components/layout/SideLnbShell";
 import { useRouteGuard } from "@/lib/hooks/useRouteGuard";
 
@@ -27,28 +26,9 @@ export default function MySpaceLayout({ children }: { children: React.ReactNode 
   const pathname = usePathname();
   const locale = useLocale();
   const t = useTranslations("myPages.shell");
-  const [unreadNotif, setUnreadNotif] = useState(0);
   const [dashboardMode, setDashboardMode] = useState<"mentee" | "mentor">("mentee");
 
   useRouteGuard({ loading, userRole: user?.role, locale, requireAuth: true });
-
-  const refreshUnread = useCallback(async () => {
-    if (!user) return;
-    const res = await notificationsApi.list();
-    setUnreadNotif(res.data?.unreadCount ?? 0);
-  }, [user]);
-
-  useEffect(() => {
-    if (!pathname.includes("/my/notifications")) {
-      void refreshUnread();
-    }
-    const timer = window.setInterval(() => {
-      if (!document.hidden && !pathname.includes("/my/notifications")) {
-        void refreshUnread();
-      }
-    }, 60000);
-    return () => window.clearInterval(timer);
-  }, [refreshUnread, pathname]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -120,6 +100,12 @@ export default function MySpaceLayout({ children }: { children: React.ReactNode 
       icon: CalendarDays,
       active: (p) => p.includes("/my/schedule"),
     },
+    {
+      href: `/${locale}/roadmap`,
+      label: t("navRoadmap"),
+      icon: Map,
+      active: (p) => p.includes("/roadmap"),
+    },
     ...(!isMentorMode
       ? [
           {
@@ -130,7 +116,7 @@ export default function MySpaceLayout({ children }: { children: React.ReactNode 
           },
           {
             href: `${base}/wishlist`,
-            label: "찜한 강의",
+            label: t("navWishlist"),
             icon: Heart,
             active: (p: string) => p.includes("/my/wishlist"),
           },
@@ -158,13 +144,6 @@ export default function MySpaceLayout({ children }: { children: React.ReactNode 
       icon: Sparkles,
       active: (p) => p.includes("/my/activity"),
     },
-    {
-      href: `${base}/notifications`,
-      label: t("navNotifications"),
-      icon: Bell,
-      active: (p) => p.includes("/my/notifications"),
-      badge: unreadNotif,
-    },
   ];
 
   const supportNav: SideLnbItem[] = [
@@ -176,12 +155,16 @@ export default function MySpaceLayout({ children }: { children: React.ReactNode 
     },
   ];
 
-  if (loading || !user) {
+  if (loading && !user) {
     return (
       <div className="min-h-[50vh] flex items-center justify-center bg-zinc-50 dark:bg-slate-950">
         <div className="w-10 h-10 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
+  }
+
+  if (!user) {
+    return null;
   }
 
   return (

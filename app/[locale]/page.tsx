@@ -11,7 +11,6 @@ import {
   Globe,
   Trophy,
 } from "lucide-react";
-import { queryLectures, queryMentors } from "@/lib/data/queries";
 import type { Lecture, Mentor } from "@/types";
 import HomeMonthlySpotlights from "@/components/home/HomeMonthlySpotlights";
 import HomeNoticesAndTips from "@/components/home/HomeNoticesAndTips";
@@ -29,19 +28,8 @@ export default async function HomePage({
   const { locale } = await params;
   const t = await getTranslations("home");
 
-  let topLectures: Lecture[] = [];
-  let topMentors: Mentor[] = [];
-  try {
-    const [lr, mr] = await Promise.all([
-      queryLectures({ page: 1, limit: 3 }),
-      queryMentors({ page: 1, limit: 3 }),
-    ]);
-    topLectures = lr.lectures;
-    topMentors = mr.mentors;
-  } catch {
-    topLectures = [];
-    topMentors = [];
-  }
+  const topLectures: Lecture[] = [];
+  const topMentors: Mentor[] = [];
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-950">

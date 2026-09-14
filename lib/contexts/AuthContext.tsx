@@ -1,7 +1,8 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { authApi } from '@/lib/api';
+import { createClient } from '@/lib/supabase/client';
+import { supabaseAuth } from '@/lib/auth/supabaseAuth';
 import type { AppUserRole } from '@/lib/auth/userRole';
 
 export interface User {
@@ -45,22 +46,40 @@ interface AuthContextType {
   logout: () => void;
   refreshUser: () => Promise<void>;
   switchRole: (targetRole: 'user' | 'mentor') => Promise<{ success: boolean; error?: string }>;
+  updateProfile: (data: {
+    name?: string;
+    avatar?: string;
+    bio?: string;
+    location?: string;
+    phone?: string;
+    newPassword?: string;
+  }) => Promise<{ success: boolean; error?: string }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const AUTH_USER_CACHE_KEY = 'auth_user_cache';
 
+function readCachedUser(): User | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = localStorage.getItem(AUTH_USER_CACHE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw) as User;
+  } catch {
+    return null;
+  }
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [bootstrapped, setBootstrapped] = useState(false);
 
   const refreshUser = async (options?: { background?: boolean }) => {
     if (!options?.background) {
       setLoading(true);
     }
     try {
-      const currentUser = await authApi.getCurrentUser();
+      const currentUser = await supabaseAuth.getCurrentUser();
       setUser(currentUser);
       if (typeof window !== 'undefined') {
         if (currentUser) {
@@ -80,47 +99,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    if (bootstrapped) return;
-    setBootstrapped(true);
-    if (typeof window === 'undefined') return;
-
-    const token = localStorage.getItem('token');
-    if (!token) {
-      setLoading(false);
-      return;
-    }
-
-    const cached = localStorage.getItem(AUTH_USER_CACHE_KEY);
+    const supabase = createClient();
+    const cached = readCachedUser();
     if (cached) {
-      try {
-        setUser(JSON.parse(cached) as User);
-        setLoading(false);
-        void refreshUser({ background: true });
-        return;
-      } catch {
-        localStorage.removeItem(AUTH_USER_CACHE_KEY);
-      }
+      setUser(cached);
+      setLoading(false);
     }
 
-    void refreshUser();
-  }, [bootstrapped]);
+    void refreshUser({ background: cached !== null });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(() => {
+      void refreshUser({ background: true });
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await authApi.login(email, password);
-      if (response.error) {
-        return { success: false, error: response.error };
+      const result = await supabaseAuth.login(email, password);
+      if (!result.success) {
+        return { success: false, error: result.error };
       }
-      if (response.data?.user) {
-        setUser(response.data.user);
-        if (typeof window !== 'undefined') {
-          localStorage.setItem(AUTH_USER_CACHE_KEY, JSON.stringify(response.data.user));
-        }
-        return { success: true, user: response.data.user };
+      setUser(result.user);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(AUTH_USER_CACHE_KEY, JSON.stringify(result.user));
       }
-      return { success: false, error: '로그인에 실패했습니다.' };
-    } catch (error: any) {
-      return { success: false, error: error.message || '로그인 중 오류가 발생했습니다.' };
+      return { success: true, user: result.user };
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : '로그인 중 오류가 발생했습니다.';
+      return { success: false, error: message };
     }
   };
 
@@ -137,43 +147,69 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     visaExpireDate?: string;
   }) => {
     try {
-      const response = await authApi.signup(userData);
-      if (response.error) {
-        return { success: false, error: response.error };
+      const result = await supabaseAuth.signup(userData);
+      if (!result.success) {
+        return { success: false, error: result.error };
       }
-      if (response.data?.email || response.data?.message) {
-        return { success: true };
+      setUser(null);
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem(AUTH_USER_CACHE_KEY);
+        localStorage.removeItem('token');
       }
-      return { success: false, error: '회원가입에 실패했습니다.' };
-    } catch (error: any) {
-      return { success: false, error: error.message || '회원가입 중 오류가 발생했습니다.' };
+      return { success: true };
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : '회원가입 중 오류가 발생했습니다.';
+      return { success: false, error: message };
     }
   };
 
   const logout = () => {
-    authApi.logout();
+    void supabaseAuth.logout();
     setUser(null);
     if (typeof window !== 'undefined') {
       localStorage.removeItem(AUTH_USER_CACHE_KEY);
+      localStorage.removeItem('token');
+    }
+  };
+
+  const updateProfile = async (data: {
+    name?: string;
+    avatar?: string;
+    bio?: string;
+    location?: string;
+    phone?: string;
+    newPassword?: string;
+  }) => {
+    try {
+      const result = await supabaseAuth.updateProfile(data);
+      if (!result.success) {
+        return { success: false, error: result.error };
+      }
+      setUser(result.user);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(AUTH_USER_CACHE_KEY, JSON.stringify(result.user));
+      }
+      return { success: true };
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : '프로필 저장 중 오류가 발생했습니다.';
+      return { success: false, error: message };
     }
   };
 
   const switchRole = async (targetRole: 'user' | 'mentor') => {
     try {
-      const response = await authApi.switchRole(targetRole);
-      if (response.error) {
-        return { success: false, error: response.error };
+      const result = await supabaseAuth.switchRole(targetRole);
+      if (!result.success) {
+        return { success: false, error: result.error };
       }
-      if (response.data?.user) {
-        setUser(response.data.user);
-        if (typeof window !== 'undefined') {
-          localStorage.setItem(AUTH_USER_CACHE_KEY, JSON.stringify(response.data.user));
-        }
-        return { success: true };
+      setUser(result.user);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(AUTH_USER_CACHE_KEY, JSON.stringify(result.user));
       }
-      return { success: false, error: '역할 전환에 실패했습니다.' };
-    } catch (error: any) {
-      return { success: false, error: error.message || '역할 전환 중 오류가 발생했습니다.' };
+      return { success: true };
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : '역할 전환 중 오류가 발생했습니다.';
+      return { success: false, error: message };
     }
   };
 
@@ -188,6 +224,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         logout,
         refreshUser,
         switchRole,
+        updateProfile,
       }}
     >
       {children}
