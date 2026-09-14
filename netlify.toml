@@ -1,0 +1,29 @@
+# MentorLink — Netlify deploy (Next.js 14 App Router)
+# Git 연결 후 Build command / Publish directory는 Netlify가 이 파일을 읽어 자동 설정됩니다.
+
+[build]
+  command = "npm run build"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# ── Netlify 대시보드 → Site configuration → Environment variables ──
+# 필수:
+#   NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
+#   NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ... (anon / publishable key)
+#
+# 선택:
+#   OPENAI_API_KEY=...                    # AI 챗봇
+#   MONGODB_URI=...                       # 레거시 마켓플레이스 API (없으면 비워둠)
+#   JWT_SECRET=...                        # Mongo API JWT (없으면 비워둠)
+#
+# ── Supabase Dashboard → Authentication → URL Configuration ──
+#   Site URL:        https://ezkv5.netlify.app
+#   Redirect URLs:   https://ezkv5.netlify.app/**
+#                    http://localhost:3000/**
+#
+# ── Supabase SQL (아직 안 했다면 Dashboard → SQL → New query) ──
+#   supabase/schema.sql 전체 실행
