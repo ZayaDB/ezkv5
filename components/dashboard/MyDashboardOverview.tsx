@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { getControlCenter } from "@/lib/supabase/home";
+import DashboardModeToggle from "@/components/dashboard/DashboardModeToggle";
 
 type HomeData = Awaited<ReturnType<typeof getControlCenter>>;
 
@@ -52,12 +53,13 @@ export default function MyDashboardOverview() {
   const tControl = useTranslations("controlCenter");
   const tProf = useTranslations("profile");
   const locale = useLocale();
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const [data, setData] = useState<HomeData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!user) return;
+    void refreshUser();
     getControlCenter()
       .then(setData)
       .catch(() => setData(null))
@@ -94,15 +96,20 @@ export default function MyDashboardOverview() {
     );
   }
 
+  const canUseMentorMode = user?.role === "mentor" || user?.role === "admin";
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-          {t("greeting", { name: user?.name ?? "" })}
-        </h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-          {roleLabel} · {t("subtitle")}
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+            {t("greeting", { name: user?.name ?? "" })}
+          </h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            {roleLabel} · {t("subtitle")}
+          </p>
+        </div>
+        <DashboardModeToggle canUseMentorMode={canUseMentorMode} />
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">

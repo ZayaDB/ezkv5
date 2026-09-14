@@ -517,6 +517,7 @@
       "imageUrl": "Thumbnail URL (optional)",
       "submit": "Publish",
       "success": "Course created.",
+      "successPending": "Submitted. It will appear publicly after admin approval.",
       "error": "Could not create course."
     }
   },
@@ -629,7 +630,10 @@
     "tabFreelancer": "Freelancer",
     "tabPosts": "Group posts",
     "tabMentor": "Mentor",
+    "tabLecture": "Courses",
     "mentorTitle": "Mentor applications",
+    "lectureTitle": "Course approvals",
+    "emptyLecture": "No pending course submissions.",
     "emptyMentor": "No pending mentor applications.",
     "mentorSpec": "Focus",
     "communityTitle": "Community join requests",
@@ -806,7 +810,9 @@
       "emptyEnrolled": "No enrollments yet.",
       "emptyTeaching": "No courses created or no mentor access.",
       "newLecture": "Create course",
-      "view": "View"
+      "view": "View",
+      "pendingBadge": "Pending",
+      "rejectedBadge": "Rejected"
     },
     "inquiries": {
       "formTitle": "New inquiry",

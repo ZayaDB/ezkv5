@@ -3,10 +3,9 @@ import { getTranslations } from "next-intl/server";
 import {
   queryCommunityGroups,
   queryFreelancerGroups,
-  queryLectures,
-  queryMentors,
   queryStudyInfos,
 } from "@/lib/data/queries";
+import { queryLecturesSupabase, queryMentorsSupabase } from "@/lib/supabase/public-queries";
 
 function containsText(haystack: string, query: string): boolean {
   return haystack.toLowerCase().includes(query.toLowerCase());
@@ -37,8 +36,8 @@ export default async function SearchPage({
 
   const [mentorsR, lecturesR, communitiesR, freelancersR, studyInfosR] =
     await Promise.all([
-      queryMentors({ limit: 120 }),
-      queryLectures({ limit: 120 }),
+      queryMentorsSupabase({ limit: 120 }),
+      queryLecturesSupabase({ limit: 120 }),
       queryCommunityGroups({ limit: 120 }),
       queryFreelancerGroups({ limit: 120 }),
       queryStudyInfos(),

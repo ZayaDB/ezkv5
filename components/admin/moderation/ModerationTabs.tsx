@@ -1,6 +1,6 @@
 "use client";
 
-export type ModerationTab = "all" | "community" | "freelancer" | "mentor" | "posts";
+export type ModerationTab = "all" | "community" | "freelancer" | "mentor" | "lecture" | "posts";
 
 export default function ModerationTabs({
   tabs,

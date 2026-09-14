@@ -1,4 +1,4 @@
-import { queryLectures } from '@/lib/data/queries';
+import { queryLecturesSupabase } from '@/lib/supabase/public-queries';
 import LecturesPageClient from './LecturesPageClient';
 import type { Lecture } from '@/types';
 
@@ -10,7 +10,7 @@ export default async function LecturesPage({
   const { locale } = await params;
   let lectures: Lecture[] = [];
   try {
-    const r = await queryLectures({ limit: 120 });
+    const r = await queryLecturesSupabase({ limit: 120 });
     lectures = r.lectures;
   } catch {
     lectures = [];

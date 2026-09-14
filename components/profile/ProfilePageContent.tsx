@@ -739,15 +739,28 @@ function ProfilePageContent() {
                 </>
               )}
               <FormError message={saveError} />
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 {!isEditing ? (
-                  <Button
-                    type="button"
-                    onClick={() => setIsEditing(true)}
-                    variant="secondary"
-                  >
-                    {tProf("edit")}
-                  </Button>
+                  <>
+                    <Button
+                      type="button"
+                      onClick={() => setIsEditing(true)}
+                      variant="secondary"
+                    >
+                      {tProf("edit")}
+                    </Button>
+                    {user.role === "user" && !mentorApproved && (
+                      <Button
+                        type="button"
+                        onClick={() => {
+                          setTab("mentor");
+                          router.replace(`/${locale}/my/profile?tab=mentor`, { scroll: false });
+                        }}
+                      >
+                        {tp("info.mentorCta")}
+                      </Button>
+                    )}
+                  </>
                 ) : (
                   <>
                     <Button

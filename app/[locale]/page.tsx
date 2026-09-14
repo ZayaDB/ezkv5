@@ -12,6 +12,7 @@ import {
   Trophy,
 } from "lucide-react";
 import type { Lecture, Mentor } from "@/types";
+import { queryLecturesSupabase, queryMentorsSupabase } from "@/lib/supabase/public-queries";
 import HomeMonthlySpotlights from "@/components/home/HomeMonthlySpotlights";
 import HomeNoticesAndTips from "@/components/home/HomeNoticesAndTips";
 import HomeInquiryCta from "@/components/home/HomeInquiryCta";
@@ -28,8 +29,19 @@ export default async function HomePage({
   const { locale } = await params;
   const t = await getTranslations("home");
 
-  const topLectures: Lecture[] = [];
-  const topMentors: Mentor[] = [];
+  let topLectures: Lecture[] = [];
+  let topMentors: Mentor[] = [];
+  try {
+    const [lecR, menR] = await Promise.all([
+      queryLecturesSupabase({ limit: 3 }),
+      queryMentorsSupabase({ limit: 3 }),
+    ]);
+    topLectures = lecR.lectures;
+    topMentors = menR.mentors;
+  } catch {
+    topLectures = [];
+    topMentors = [];
+  }
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-950">

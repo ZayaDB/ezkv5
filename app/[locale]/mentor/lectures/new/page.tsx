@@ -92,8 +92,8 @@ export default function MentorLectureNewPage() {
       setToast({ message: res.error || t("error"), variant: "error" });
       return;
     }
-    setToast({ message: t("success"), variant: "success" });
-    setTimeout(() => router.push(`/${locale}/my/profile?tab=mentor`), 800);
+    setToast({ message: t("successPending"), variant: "success" });
+    setTimeout(() => router.push(`/${locale}/my/lectures`), 800);
   };
 
   const handleImageUpload = async (file?: File | null) => {

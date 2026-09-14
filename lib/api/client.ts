@@ -15,7 +15,7 @@ export const contentApi = {
     }),
 };
 
-// Mentors API
+// Mentors API (Supabase)
 export const mentorsApi = {
   getAll: async (params?: {
     category?: string;
@@ -24,24 +24,57 @@ export const mentorsApi = {
     page?: number;
     limit?: number;
   }) => {
-    const queryParams = new URLSearchParams();
-    if (params?.category) queryParams.append('category', params.category);
-    if (params?.location) queryParams.append('location', params.location);
-    if (params?.specialty) queryParams.append('specialty', params.specialty);
-    if (params?.page) queryParams.append('page', params.page.toString());
-    if (params?.limit) queryParams.append('limit', params.limit.toString());
-
-    return apiRequest<{ mentors: any[]; pagination: any }>(
-      `/api/mentors?${queryParams.toString()}`
-    );
+    try {
+      const { createClient } = await import("@/lib/supabase/client");
+      const { listApprovedMentors } = await import("@/lib/supabase/mentors");
+      const supabase = createClient();
+      const { mentors, total, page, limit } = await listApprovedMentors(supabase, {
+        page: params?.page,
+        limit: params?.limit,
+      });
+      let filtered = mentors;
+      if (params?.location) {
+        const q = params.location.toLowerCase();
+        filtered = filtered.filter((m) => m.location.toLowerCase().includes(q));
+      }
+      if (params?.specialty || params?.category) {
+        const q = (params.specialty || params.category || "").toLowerCase();
+        filtered = filtered.filter((m) =>
+          m.specialties.some((s) => s.toLowerCase().includes(q))
+        );
+      }
+      return {
+        data: {
+          mentors: filtered,
+          pagination: { page, limit, total, pages: Math.ceil(total / limit) || 1 },
+        },
+      };
+    } catch (e: unknown) {
+      return { error: e instanceof Error ? e.message : "멘토 목록을 불러오지 못했습니다." };
+    }
   },
 
   getById: async (id: string) => {
-    return apiRequest<any>(`/api/mentors/${id}`);
+    try {
+      const { createClient } = await import("@/lib/supabase/client");
+      const { getApprovedMentorById } = await import("@/lib/supabase/mentors");
+      const supabase = createClient();
+      const mentor = await getApprovedMentorById(supabase, id);
+      if (!mentor) return { error: "멘토를 찾을 수 없습니다." };
+      return { data: mentor };
+    } catch (e: unknown) {
+      return { error: e instanceof Error ? e.message : "멘토 정보를 불러오지 못했습니다." };
+    }
   },
 
   getMine: async () => {
-    return apiRequest<{ mentor: any | null }>("/api/mentors/me");
+    try {
+      const { getMyMentorProfile } = await import("@/lib/supabase/mentors");
+      const mentor = await getMyMentorProfile();
+      return { data: { mentor } };
+    } catch (e: unknown) {
+      return { error: e instanceof Error ? e.message : "멘토 정보를 불러오지 못했습니다." };
+    }
   },
 
   apply: async (payload: {
@@ -66,19 +99,39 @@ export const mentorsApi = {
     recommendedFor?: string;
     notRecommendedFor?: string;
   }) => {
-    return apiRequest<any>("/api/mentors", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
+    try {
+      const { applyMentorProfile } = await import("@/lib/supabase/mentors");
+      const data = await applyMentorProfile(payload);
+      return { data };
+    } catch (e: unknown) {
+      return { error: e instanceof Error ? e.message : "멘토 신청에 실패했습니다." };
+    }
   },
 };
 
 export const lecturesApi = {
   getMine: async () => {
-    return apiRequest<{ lectures: any[] }>("/api/lectures?mine=1");
+    try {
+      const { getMyLectures } = await import("@/lib/supabase/lectures");
+      const data = await getMyLectures();
+      return { data };
+    } catch (e: unknown) {
+      return { error: e instanceof Error ? e.message : "강의 목록을 불러오지 못했습니다." };
+    }
   },
   getById: async (id: string) => {
-    return apiRequest<any>(`/api/lectures/${id}`);
+    try {
+      const { createClient } = await import("@/lib/supabase/client");
+      const { getApprovedLectureById, getLectureByIdForOwner } = await import("@/lib/supabase/lectures");
+      const supabase = createClient();
+      const approved = await getApprovedLectureById(supabase, id);
+      if (approved) return { data: approved };
+      const own = await getLectureByIdForOwner(id);
+      if (own) return { data: own };
+      return { error: "강의를 찾을 수 없습니다." };
+    } catch (e: unknown) {
+      return { error: e instanceof Error ? e.message : "강의를 불러오지 못했습니다." };
+    }
   },
   create: async (payload: {
     title: string;
@@ -102,10 +155,13 @@ export const lecturesApi = {
     materialsIncluded?: string[];
     faq?: string[];
   }) => {
-    return apiRequest<any>("/api/lectures", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
+    try {
+      const { createLecture } = await import("@/lib/supabase/lectures");
+      const data = await createLecture(payload);
+      return { data };
+    } catch (e: unknown) {
+      return { error: e instanceof Error ? e.message : "강의 등록에 실패했습니다." };
+    }
   },
   update: async (
     id: string,
@@ -132,10 +188,13 @@ export const lecturesApi = {
       faq?: string[];
     }
   ) => {
-    return apiRequest<any>(`/api/lectures/${id}`, {
-      method: "PATCH",
-      body: JSON.stringify(payload),
-    });
+    try {
+      const { updateLecture } = await import("@/lib/supabase/lectures");
+      const data = await updateLecture(id, payload);
+      return { data };
+    } catch (e: unknown) {
+      return { error: e instanceof Error ? e.message : "강의 수정에 실패했습니다." };
+    }
   },
   uploadImage: async (file: File) => {
     const token = authToken.get();

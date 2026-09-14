@@ -517,6 +517,7 @@
       "imageUrl": "Зураг URL (сонголттой)",
       "submit": "Нийтлэх",
       "success": "Бүртгэгдлээ.",
+      "successPending": "Илгээгдлээ. Админ баталсны дараа нийтэд харагдана.",
       "error": "Алдаа гарлаа."
     }
   },
@@ -629,7 +630,10 @@
     "tabFreelancer": "Freelance",
     "tabPosts": "Нийтлэл",
     "tabMentor": "Ментор",
+    "tabLecture": "Лекц",
     "mentorTitle": "Менторын хүсэлт",
+    "lectureTitle": "Лекц батлах",
+    "emptyLecture": "Хүлээгдэж буй лекц алга.",
     "emptyMentor": "Хүлээгдэж буй хүсэлт алга.",
     "mentorSpec": "Чиглэл",
     "communityTitle": "Нийгэмлэгийн элсэлт",
@@ -806,7 +810,9 @@
       "emptyEnrolled": "Бүртгэл алга.",
       "emptyTeaching": "Лекц үүсээгүй эсвэл эрх алга.",
       "newLecture": "Шинэ лекц",
-      "view": "Нээх"
+      "view": "Нээх",
+      "pendingBadge": "Хүлээгдэж буй",
+      "rejectedBadge": "Татгалзсан"
     },
     "inquiries": {
       "formTitle": "Шинэ асуулга",

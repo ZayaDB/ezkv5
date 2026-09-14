@@ -6,6 +6,12 @@ import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { adminApi } from "@/lib/api";
+import {
+  listPendingLectures,
+  listPendingMentors,
+  setLectureApproval,
+  setMentorApproval,
+} from "@/lib/supabase/moderation";
 import StatusBadge from "@/components/ui/StatusBadge";
 import LoadingState from "@/components/ui/LoadingState";
 import PlatformCard from "@/components/ui/PlatformCard";
@@ -26,6 +32,15 @@ interface MentorQueueItem {
   title?: string;
   location?: string;
   specialties?: string[];
+}
+
+interface LectureQueueItem {
+  id: string;
+  createdAt: string;
+  title?: string;
+  category?: string;
+  type?: string;
+  user: { id: string; name: string; email: string } | null;
 }
 
 interface ChannelPostAdminRow {
@@ -53,6 +68,7 @@ export default function AdminModerationPage() {
   const [communityPending, setCommunityPending] = useState<QueueItem[]>([]);
   const [freelancerPending, setFreelancerPending] = useState<QueueItem[]>([]);
   const [mentorPending, setMentorPending] = useState<MentorQueueItem[]>([]);
+  const [lecturePending, setLecturePending] = useState<LectureQueueItem[]>([]);
   const [channelPosts, setChannelPosts] = useState<ChannelPostAdminRow[]>([]);
   const [search, setSearch] = useState("");
   const [tab, setTab] = useState<ModerationTab>("mentor");
@@ -62,6 +78,7 @@ export default function AdminModerationPage() {
   const [pageComm, setPageComm] = useState(1);
   const [pageFree, setPageFree] = useState(1);
   const [pageMent, setPageMent] = useState(1);
+  const [pageLec, setPageLec] = useState(1);
   const [toast, setToast] = useState<{
     message: string;
     variant: "success" | "error" | "info";
@@ -69,13 +86,16 @@ export default function AdminModerationPage() {
 
   const load = useCallback(async () => {
     setLoading(true);
-    const [qRes, pRes] = await Promise.all([
+    const [mentors, lectures, qRes, pRes] = await Promise.all([
+      listPendingMentors().catch(() => []),
+      listPendingLectures().catch(() => []),
       adminApi.getModerationQueue(),
       adminApi.getChannelPosts(100),
     ]);
+    setMentorPending(mentors);
+    setLecturePending(lectures);
     setCommunityPending(qRes.data?.communityPending || []);
     setFreelancerPending(qRes.data?.freelancerPending || []);
-    setMentorPending(qRes.data?.mentorPending || []);
     setChannelPosts((pRes.data?.posts || []) as ChannelPostAdminRow[]);
     setLoading(false);
   }, []);
@@ -89,18 +109,31 @@ export default function AdminModerationPage() {
   }, [authLoading, user, router, locale, load]);
 
   const updateStatus = async (
-    type: "community" | "freelancer" | "mentor",
+    type: "community" | "freelancer" | "mentor" | "lecture",
     id: string,
     status: string,
     successKey: "toastApproved" | "toastRejected"
   ) => {
-    const res = await adminApi.updateModerationStatus({ type, id, status });
-    if (res.error) {
-      setToast({ message: res.error || t("toastError"), variant: "error" });
-      return;
+    try {
+      if (type === "mentor") {
+        await setMentorApproval(id, status as "approved" | "rejected");
+      } else if (type === "lecture") {
+        await setLectureApproval(id, status as "approved" | "rejected");
+      } else {
+        const res = await adminApi.updateModerationStatus({ type, id, status });
+        if (res.error) {
+          setToast({ message: res.error || t("toastError"), variant: "error" });
+          return;
+        }
+      }
+      setToast({ message: t(successKey), variant: "success" });
+      await load();
+    } catch (e: unknown) {
+      setToast({
+        message: e instanceof Error ? e.message : t("toastError"),
+        variant: "error",
+      });
     }
-    setToast({ message: t(successKey), variant: "success" });
-    await load();
   };
 
   const filteredCommunity = useMemo(
@@ -146,6 +179,21 @@ export default function AdminModerationPage() {
     [mentorPending, search]
   );
 
+  const filteredLecture = useMemo(
+    () =>
+      lecturePending.filter((item) => {
+        const q = search.trim().toLowerCase();
+        if (!q) return true;
+        return (
+          item.user?.name?.toLowerCase().includes(q) ||
+          item.user?.email?.toLowerCase().includes(q) ||
+          (item.title || "").toLowerCase().includes(q) ||
+          (item.category || "").toLowerCase().includes(q)
+        );
+      }),
+    [lecturePending, search]
+  );
+
   const filteredPosts = useMemo(
     () =>
       channelPosts.filter((p) => {
@@ -164,11 +212,13 @@ export default function AdminModerationPage() {
 
   const totalRows =
     tab === "all"
-      ? filteredCommunity.length + filteredFreelancer.length + filteredMentor.length
+      ? filteredCommunity.length + filteredFreelancer.length + filteredMentor.length + filteredLecture.length
       : tab === "community"
         ? filteredCommunity.length
         : tab === "freelancer"
           ? filteredFreelancer.length
+          : tab === "lecture"
+            ? filteredLecture.length
           : tab === "posts"
             ? filteredPosts.length
             : filteredMentor.length;
@@ -176,6 +226,7 @@ export default function AdminModerationPage() {
   const totalPagesComm = Math.max(1, Math.ceil(filteredCommunity.length / PAGE_SIZE));
   const totalPagesFree = Math.max(1, Math.ceil(filteredFreelancer.length / PAGE_SIZE));
   const totalPagesMent = Math.max(1, Math.ceil(filteredMentor.length / PAGE_SIZE));
+  const totalPagesLec = Math.max(1, Math.ceil(filteredLecture.length / PAGE_SIZE));
 
   const pagedCommunity = filteredCommunity.slice(
     (pageComm - 1) * PAGE_SIZE,
@@ -189,11 +240,16 @@ export default function AdminModerationPage() {
     (pageMent - 1) * PAGE_SIZE,
     pageMent * PAGE_SIZE
   );
+  const pagedLecture = filteredLecture.slice(
+    (pageLec - 1) * PAGE_SIZE,
+    pageLec * PAGE_SIZE
+  );
 
   useEffect(() => {
     setPageComm(1);
     setPageFree(1);
     setPageMent(1);
+    setPageLec(1);
   }, [search, tab]);
 
   if (authLoading || !user || loading) {
@@ -203,13 +259,14 @@ export default function AdminModerationPage() {
   const tabs: { id: ModerationTab; label: string }[] = [
     { id: "all", label: t("tabAll") },
     { id: "mentor", label: t("tabMentor") },
+    { id: "lecture", label: t("tabLecture") },
     { id: "community", label: t("tabCommunity") },
     { id: "freelancer", label: t("tabFreelancer") },
     { id: "posts", label: t("tabPosts") },
   ];
 
   const gridClass =
-    tab === "all" ? "grid grid-cols-1 xl:grid-cols-3 gap-6" : "grid grid-cols-1 gap-6";
+    tab === "all" ? "grid grid-cols-1 xl:grid-cols-2 gap-6" : "grid grid-cols-1 gap-6";
 
   const submitDeletePost = async () => {
     if (!deleteTarget) return;
@@ -334,6 +391,78 @@ export default function AdminModerationPage() {
                     type="button"
                     onClick={() => setPageMent((p) => Math.min(totalPagesMent, p + 1))}
                     disabled={pageMent === totalPagesMent}
+                    className="rounded-lg bg-white px-3 py-2 text-sm font-medium text-slate-700 ring-1 ring-slate-200 disabled:opacity-50"
+                  >
+                    {t("next")}
+                  </button>
+                </div>
+              )}
+            </PlatformCard>
+          )}
+
+          {(tab === "all" || tab === "lecture") && (
+            <PlatformCard padding="lg">
+              <h2 className="text-base font-semibold text-slate-900 mb-4">{t("lectureTitle")}</h2>
+              {pagedLecture.length === 0 ? (
+                <p className="text-sm text-slate-500">{t("emptyLecture")}</p>
+              ) : (
+                <div className="space-y-3">
+                  {pagedLecture.map((item) => (
+                    <div
+                      key={item.id}
+                      className="rounded-xl border border-slate-200 bg-slate-50/60 p-4"
+                    >
+                      <p className="font-semibold text-slate-900 text-sm">{item.title}</p>
+                      <p className="text-xs text-slate-500 mt-1">
+                        {item.user?.name} · {item.user?.email}
+                      </p>
+                      <p className="text-xs text-slate-500">
+                        {item.category} · {item.type}
+                      </p>
+                      <p className="text-xs text-slate-400 mt-1">
+                        {fmt.dateTime(new Date(item.createdAt), {
+                          dateStyle: "medium",
+                          timeStyle: "short",
+                        })}
+                      </p>
+                      <div className="mt-3 flex flex-wrap items-center gap-2">
+                        <StatusBadge label={tStatus("moderation.pending")} tone="purple" />
+                        <button
+                          type="button"
+                          onClick={() => updateStatus("lecture", item.id, "approved", "toastApproved")}
+                          className="rounded-lg bg-emerald-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-emerald-700"
+                        >
+                          {t("approve")}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => updateStatus("lecture", item.id, "rejected", "toastRejected")}
+                          className="rounded-lg bg-white px-2.5 py-1 text-xs font-semibold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50"
+                        >
+                          {t("reject")}
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {filteredLecture.length > PAGE_SIZE && tab === "lecture" && (
+                <div className="mt-4 flex items-center justify-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setPageLec((p) => Math.max(1, p - 1))}
+                    disabled={pageLec === 1}
+                    className="rounded-lg bg-white px-3 py-2 text-sm font-medium text-slate-700 ring-1 ring-slate-200 disabled:opacity-50"
+                  >
+                    {t("prev")}
+                  </button>
+                  <span className="text-sm text-slate-600">
+                    {t("page", { current: pageLec, total: totalPagesLec })}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setPageLec((p) => Math.min(totalPagesLec, p + 1))}
+                    disabled={pageLec === totalPagesLec}
                     className="rounded-lg bg-white px-3 py-2 text-sm font-medium text-slate-700 ring-1 ring-slate-200 disabled:opacity-50"
                   >
                     {t("next")}

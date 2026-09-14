@@ -518,6 +518,7 @@
       "imageUrl": "썸네일 URL (선택)",
       "submit": "등록하기",
       "success": "등록되었습니다.",
+      "successPending": "등록되었습니다. 관리자 승인 후 공개 목록에 표시됩니다.",
       "error": "등록에 실패했습니다."
     }
   },
@@ -630,7 +631,10 @@
     "tabFreelancer": "프리랜서",
     "tabPosts": "그룹 게시글",
     "tabMentor": "멘토",
+    "tabLecture": "강의",
     "mentorTitle": "멘토 신청",
+    "lectureTitle": "강의 승인",
+    "emptyLecture": "대기 중인 강의 등록이 없습니다.",
     "emptyMentor": "대기 중인 멘토 신청이 없습니다.",
     "mentorSpec": "분야",
     "communityTitle": "커뮤니티 가입",
@@ -807,7 +811,9 @@
       "emptyEnrolled": "수강 신청 내역이 없습니다.",
       "emptyTeaching": "개설한 강의가 없거나 멘토 권한이 없습니다.",
       "newLecture": "강의 만들기",
-      "view": "보기"
+      "view": "보기",
+      "pendingBadge": "승인 대기",
+      "rejectedBadge": "반려됨"
     },
     "inquiries": {
       "formTitle": "새 문의",

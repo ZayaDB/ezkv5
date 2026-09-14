@@ -67,12 +67,24 @@ export default function MyLecturesHubPage() {
               <p className="text-sm text-zinc-500">{t("emptyTeaching")}</p>
             ) : (
               <ul className="space-y-3">
-                {teaching.map((lec: { id: string; title?: string }) => (
+                {teaching.map((lec: { id: string; title?: string; approvalStatus?: string }) => (
                   <li
                     key={lec.id}
                     className="rounded-xl border border-zinc-100 bg-zinc-50/60 px-3 py-3 text-sm"
                   >
-                    <p className="font-medium text-zinc-900">{lec.title || "—"}</p>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="font-medium text-zinc-900">{lec.title || "—"}</p>
+                      {lec.approvalStatus === "pending" && (
+                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">
+                          {t("pendingBadge")}
+                        </span>
+                      )}
+                      {lec.approvalStatus === "rejected" && (
+                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-red-100 text-red-700">
+                          {t("rejectedBadge")}
+                        </span>
+                      )}
+                    </div>
                     <div className="mt-2 flex items-center gap-3">
                       <Link
                         href={`/${locale}/lectures/${lec.id}`}

@@ -1,11 +1,10 @@
 import { Mentor, Lecture, CommunityGroup, FreelancerGroup, StudyInfo } from '@/types';
 import {
-  queryMentors,
-  queryLectures,
   queryCommunityGroups,
   queryFreelancerGroups,
   queryStudyInfos,
 } from '@/lib/data/queries';
+import { queryLecturesSupabase, queryMentorsSupabase } from '@/lib/supabase/public-queries';
 
 export interface SearchResult {
   type: 'mentor' | 'lecture' | 'community' | 'freelancer' | 'studyInfo';
@@ -28,8 +27,8 @@ export async function searchContent(query: string, locale: string = 'kr'): Promi
   const results: SearchResult[] = [];
 
   const [{ mentors }, { lectures }, communities, freelancers, studyItems] = await Promise.all([
-    queryMentors({ limit: 80 }),
-    queryLectures({ limit: 80 }),
+    queryMentorsSupabase({ limit: 80 }),
+    queryLecturesSupabase({ limit: 80 }),
     queryCommunityGroups({ limit: 80 }),
     queryFreelancerGroups({ limit: 80 }),
     queryStudyInfos(),
