@@ -1,7 +1,4 @@
-import { NextRequest } from 'next/server';
-import { verifyToken } from '@/lib/auth/jwt';
-import connectDB from '@/lib/db/mongodb';
-import User from '@/models/User';
+import { NextRequest } from "next/server";
 
 export interface AuthRequest extends NextRequest {
   user?: {
@@ -11,51 +8,18 @@ export interface AuthRequest extends NextRequest {
   };
 }
 
-export function getAuthToken(request: NextRequest): string | null {
-  // Check Authorization header
-  const authHeader = request.headers.get('authorization');
-  if (authHeader && authHeader.startsWith('Bearer ')) {
-    return authHeader.substring(7);
-  }
-
-  // Check cookie
-  const token = request.cookies.get('token')?.value;
-  return token || null;
+/** @deprecated Supabase 세션 사용 — `getApiUser` */
+export function getAuthToken(_request: NextRequest): string | null {
+  return null;
 }
 
-export function authenticateRequest(request: NextRequest): { userId: string; email: string; role: string } | null {
-  const token = getAuthToken(request);
-  if (!token) {
-    return null;
-  }
-
-  const payload = verifyToken(token);
-  if (!payload) {
-    return null;
-  }
-
-  return {
-    userId: payload.userId,
-    email: payload.email,
-    role: payload.role,
-  };
+/** @deprecated */
+export function authenticateRequest(_request: NextRequest): null {
+  return null;
 }
 
-/** JWT와 무관하게 DB의 최신 role을 사용 (관리자 승인 후 토큰 갱신 전에도 동작) */
-export async function authenticateRequestDb(
-  request: NextRequest
-): Promise<{ userId: string; email: string; role: string } | null> {
-  const auth = authenticateRequest(request);
-  if (!auth) return null;
-  await connectDB();
-  const row = await User.findById(auth.userId)
-    .select('role email')
-    .lean<{ role: string; email?: string }>();
-  if (!row) return null;
-  return {
-    userId: auth.userId,
-    email: row.email || auth.email,
-    role: row.role,
-  };
+/** API Route — Supabase 쿠키 세션 */
+export async function authenticateRequestDb(_request: NextRequest) {
+  const { getApiUser } = await import("@/lib/middleware/supabaseApiAuth");
+  return getApiUser();
 }
-

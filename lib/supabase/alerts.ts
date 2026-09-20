@@ -24,53 +24,62 @@ function severityForVisaDays(days: number): "info" | "warning" | "urgent" {
   return "info";
 }
 
-export async function syncVisaAlerts(userId: string, profile: {
-  visa_expire_date?: string | null;
-  visa_type?: string | null;
-  country_status?: string | null;
-}) {
-  const supabase = createClient();
-
-  await supabase.from("user_alerts").delete().eq("user_id", userId).eq("kind", "visa_expiry");
-
-  if (profile.country_status !== "residing_korea" || !profile.visa_expire_date) return;
+/** DB 쓰기 없이 프로필 기준 비자 D-day 알림 (대시보드용) */
+export function buildVisaAlertsFromProfile(
+  userId: string,
+  profile: {
+    visa_expire_date?: string | null;
+    visa_type?: string | null;
+    country_status?: string | null;
+  }
+): UserAlert[] {
+  if (profile.country_status !== "residing_korea" || !profile.visa_expire_date) return [];
 
   const days = daysUntil(new Date(profile.visa_expire_date));
   const visaLabel = profile.visa_type ? `${profile.visa_type} ` : "";
 
   if (days < 0) {
-    await supabase.from("user_alerts").insert({
-      user_id: userId,
-      kind: "visa_expiry",
-      severity: "urgent",
-      title: "비자가 만료되었습니다",
-      message: "즉시 연장·체류 자격을 확인하세요.",
-      due_date: profile.visa_expire_date,
-      action_url: "/roadmap",
-    });
-    return;
+    return [
+      {
+        id: `client:visa_expiry:${userId}`,
+        kind: "visa_expiry",
+        severity: "urgent",
+        title: "비자가 만료되었습니다",
+        body: "즉시 연장·체류 자격을 확인하세요.",
+        dueDate: profile.visa_expire_date,
+        actionUrl: "/roadmap",
+      },
+    ];
   }
 
   if (days <= 90) {
-    await supabase.from("user_alerts").insert({
-      user_id: userId,
-      kind: "visa_expiry",
-      severity: severityForVisaDays(days),
-      title: `${visaLabel}비자 만료 D-${days}`,
-      message: days <= 30 ? "연장 준비를 시작하세요." : "만료일을 확인하고 일정을 잡으세요.",
-      due_date: profile.visa_expire_date,
-      action_url: "/roadmap",
-    });
+    return [
+      {
+        id: `client:visa_expiry:${userId}`,
+        kind: "visa_expiry",
+        severity: severityForVisaDays(days),
+        title: `${visaLabel}비자 만료 D-${days}`,
+        body: days <= 30 ? "연장 준비를 시작하세요." : "만료일을 확인하고 일정을 잡으세요.",
+        dueDate: profile.visa_expire_date,
+        actionUrl: "/roadmap",
+      },
+    ];
   }
+
+  return [];
 }
 
+const ALERT_SELECT = "id, kind, severity, title, message, due_date, action_url";
+
+/** 관리자·시스템이 user_alerts에 저장한 알림 (비자 D-day는 buildVisaAlertsFromProfile 사용) */
 export async function listAlerts(userId: string) {
   const supabase = createClient();
   const { data, error } = await supabase
     .from("user_alerts")
-    .select("*")
+    .select(ALERT_SELECT)
     .eq("user_id", userId)
     .eq("dismissed", false)
+    .or("kind.is.null,kind.neq.visa_expiry")
     .order("severity", { ascending: false })
     .order("due_date", { ascending: true });
 
@@ -90,6 +99,8 @@ export async function listAlerts(userId: string) {
 }
 
 export async function dismissAlert(userId: string, alertId: string) {
+  if (alertId.startsWith("client:")) return;
+
   const supabase = createClient();
   const { error } = await supabase
     .from("user_alerts")

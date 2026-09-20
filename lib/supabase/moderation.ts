@@ -1,18 +1,5 @@
-import { createClient } from "@/lib/supabase/client";
 import { createUserAlert } from "@/lib/supabase/notifications";
-
-async function requireAdmin() {
-  const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("인증이 필요합니다.");
-
-  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
-  if (profile?.role !== "admin") throw new Error("관리자 권한이 필요합니다.");
-
-  return { supabase, adminId: user.id };
-}
+import { requireAdmin } from "@/lib/supabase/requireUser";
 
 export async function listPendingMentors() {
   const { supabase } = await requireAdmin();
@@ -89,7 +76,11 @@ export async function setMentorApproval(id: string, status: "approved" | "reject
   if (error) throw new Error(error.message);
 
   if (status === "approved") {
-    await supabase.from("profiles").update({ role: "mentor" }).eq("id", mentor.user_id);
+    const { error: roleErr } = await supabase
+      .from("profiles")
+      .update({ role: "mentor", updated_at: new Date().toISOString() })
+      .eq("id", mentor.user_id);
+    if (roleErr) throw new Error(roleErr.message);
     await createUserAlert({
       userId: mentor.user_id,
       kind: "mentor_approved",
@@ -99,6 +90,18 @@ export async function setMentorApproval(id: string, status: "approved" | "reject
       actionUrl: "/my/dashboard",
     });
   } else {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", mentor.user_id)
+      .maybeSingle();
+    if (profile?.role === "mentor") {
+      const { error: roleErr } = await supabase
+        .from("profiles")
+        .update({ role: "user", updated_at: new Date().toISOString() })
+        .eq("id", mentor.user_id);
+      if (roleErr) throw new Error(roleErr.message);
+    }
     await createUserAlert({
       userId: mentor.user_id,
       kind: "mentor_rejected",

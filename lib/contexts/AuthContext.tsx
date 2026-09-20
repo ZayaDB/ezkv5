@@ -45,7 +45,6 @@ interface AuthContextType {
   }) => Promise<{ success: boolean; error?: string; user?: User }>;
   logout: () => void;
   refreshUser: () => Promise<void>;
-  switchRole: (targetRole: 'user' | 'mentor') => Promise<{ success: boolean; error?: string }>;
   updateProfile: (data: {
     name?: string;
     avatar?: string;
@@ -110,8 +109,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(() => {
-      void refreshUser({ background: true });
+    } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "SIGNED_IN" || event === "SIGNED_OUT" || event === "USER_UPDATED") {
+        void refreshUser({ background: true });
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -196,23 +197,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const switchRole = async (targetRole: 'user' | 'mentor') => {
-    try {
-      const result = await supabaseAuth.switchRole(targetRole);
-      if (!result.success) {
-        return { success: false, error: result.error };
-      }
-      setUser(result.user);
-      if (typeof window !== 'undefined') {
-        localStorage.setItem(AUTH_USER_CACHE_KEY, JSON.stringify(result.user));
-      }
-      return { success: true };
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : '역할 전환 중 오류가 발생했습니다.';
-      return { success: false, error: message };
-    }
-  };
-
   return (
     <AuthContext.Provider
       value={{
@@ -223,7 +207,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signup,
         logout,
         refreshUser,
-        switchRole,
         updateProfile,
       }}
     >

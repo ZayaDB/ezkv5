@@ -5,11 +5,10 @@ import { calcProgress, getNextStepTitle } from "@/lib/roadmap/progressUtils";
 async function requireUserId() {
   const supabase = createClient();
   const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
-  if (error || !user) throw new Error("인증이 필요합니다.");
-  return { supabase, userId: user.id };
+    data: { session },
+  } = await supabase.auth.getSession();
+  if (!session?.user) throw new Error("인증이 필요합니다.");
+  return { supabase, userId: session.user.id };
 }
 
 function serializeRoadmap(

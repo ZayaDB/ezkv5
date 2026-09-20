@@ -216,32 +216,4 @@ export const supabaseAuth = {
 
     return { success: true as const, user };
   },
-
-  async switchRole(targetRole: "user" | "mentor") {
-    const supabase = createClient();
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
-    if (!session?.user) {
-      return { success: false as const, error: "인증이 필요합니다." };
-    }
-
-    const dbRole = targetRole === "mentor" ? "mentor" : "user";
-    const { error } = await supabase
-      .from("profiles")
-      .update({ role: dbRole })
-      .eq("id", session.user.id);
-
-    if (error) {
-      return { success: false as const, error: error.message };
-    }
-
-    const user = await fetchProfile(session.user.id);
-    if (!user) {
-      return { success: false as const, error: "프로필을 불러오지 못했습니다." };
-    }
-
-    return { success: true as const, user };
-  },
 };

@@ -53,18 +53,21 @@ export default function MyDashboardOverview() {
   const tControl = useTranslations("controlCenter");
   const tProf = useTranslations("profile");
   const locale = useLocale();
-  const { user, refreshUser } = useAuth();
+  const { user } = useAuth();
   const [data, setData] = useState<HomeData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) return;
-    void refreshUser();
-    getControlCenter()
+    if (!user?.id) {
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    getControlCenter(user)
       .then(setData)
       .catch(() => setData(null))
       .finally(() => setLoading(false));
-  }, [user]);
+  }, [user?.id]);
 
   const base = `/${locale}/my`;
   const status = data?.statusCard as Record<string, unknown> | undefined;

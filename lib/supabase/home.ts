@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/client";
-import { syncVisaAlerts, listAlerts } from "@/lib/supabase/alerts";
+import { buildVisaAlertsFromProfile, listAlerts, type UserAlert } from "@/lib/supabase/alerts";
 import { getNextStepTitle } from "@/lib/roadmap/progressUtils";
+import type { User } from "@/lib/contexts/AuthContext";
 
 const RECOMMENDED_ACTIONS = [
   { id: "arc", title: "외국인등록증 갱신 확인", actionUrl: "/roadmap" },
@@ -16,65 +17,97 @@ function daysUntil(date: Date): number | null {
   return Math.ceil((target.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
 }
 
-export async function getControlCenter() {
+const SEVERITY_RANK: Record<string, number> = { urgent: 3, warning: 2, info: 1 };
+
+function mergeAlerts(visa: UserAlert[], fromDb: UserAlert[]): UserAlert[] {
+  const merged = [...visa, ...fromDb];
+  merged.sort((a, b) => {
+    const sd = (SEVERITY_RANK[b.severity] ?? 0) - (SEVERITY_RANK[a.severity] ?? 0);
+    if (sd !== 0) return sd;
+    const da = a.dueDate ? new Date(a.dueDate).getTime() : Number.MAX_SAFE_INTEGER;
+    const db = b.dueDate ? new Date(b.dueDate).getTime() : Number.MAX_SAFE_INTEGER;
+    return da - db;
+  });
+  return merged;
+}
+
+export async function getControlCenter(profileUser: User) {
   const supabase = createClient();
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("인증이 필요합니다.");
+    data: { session },
+  } = await supabase.auth.getSession();
+  if (!session?.user || session.user.id !== profileUser.id) {
+    throw new Error("인증이 필요합니다.");
+  }
 
-  const { data: profile, error: profileErr } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", user.id)
-    .single();
-
-  if (profileErr || !profile) throw new Error("프로필을 불러오지 못했습니다.");
-
-  await syncVisaAlerts(user.id, profile);
+  const userId = profileUser.id;
+  const profileFields = {
+    name: profileUser.name,
+    university: profileUser.university ?? null,
+    nationality: profileUser.nationality ?? null,
+    visa_type: profileUser.visaType ?? null,
+    visa_expire_date: profileUser.visaExpireDate ?? null,
+    country_status: profileUser.countryStatus ?? "unknown",
+    onboarding_status: profileUser.onboardingStatus ?? "pending",
+  };
 
   const visaDday =
-    profile.visa_expire_date && profile.country_status === "residing_korea"
-      ? daysUntil(new Date(profile.visa_expire_date))
+    profileFields.visa_expire_date && profileFields.country_status === "residing_korea"
+      ? daysUntil(new Date(profileFields.visa_expire_date))
       : null;
 
   const statusCard = {
-    name: profile.name,
-    university: profile.university || null,
-    nationality: profile.nationality || null,
-    visaType: profile.visa_type || null,
+    name: profileFields.name,
+    university: profileFields.university,
+    nationality: profileFields.nationality,
+    visaType: profileFields.visa_type,
     visaDday,
-    countryStatus: profile.country_status,
+    countryStatus: profileFields.country_status,
   };
 
-  const alerts = await listAlerts(user.id);
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+  const todayEnd = new Date();
+  todayEnd.setHours(23, 59, 59, 999);
 
-  const { data: roadmaps } = await supabase
-    .from("roadmaps")
-    .select("*")
-    .eq("user_id", user.id)
-    .eq("status", "active")
-    .order("updated_at", { ascending: false })
-    .limit(5);
+  const [dbAlerts, roadmapsResult, eventsResult] = await Promise.all([
+    listAlerts(userId),
+    supabase
+      .from("roadmaps")
+      .select(
+        "id, title, progress, due_date, roadmap_steps(title, completed, active, sort_order)"
+      )
+      .eq("user_id", userId)
+      .eq("status", "active")
+      .order("updated_at", { ascending: false })
+      .limit(5),
+    supabase
+      .from("calendar_events")
+      .select("id, title, starts_at, category, status")
+      .eq("user_id", userId)
+      .gte("starts_at", todayStart.toISOString())
+      .lte("starts_at", todayEnd.toISOString())
+      .neq("status", "cancelled")
+      .order("starts_at", { ascending: true }),
+  ]);
 
-  const roadmapIds = (roadmaps || []).map((r) => r.id);
-  let steps: Array<Record<string, unknown>> = [];
-  if (roadmapIds.length) {
-    const { data: stepRows } = await supabase
-      .from("roadmap_steps")
-      .select("*")
-      .in("roadmap_id", roadmapIds)
-      .order("sort_order", { ascending: true });
-    steps = (stepRows || []) as Array<Record<string, unknown>>;
-  }
+  if (roadmapsResult.error) throw new Error(roadmapsResult.error.message);
+  if (eventsResult.error) throw new Error(eventsResult.error.message);
 
-  const activeRoadmaps = (roadmaps || []).map((r) => {
-    const rSteps = steps
-      .filter((s) => s.roadmap_id === r.id)
+  const visaAlerts = buildVisaAlertsFromProfile(userId, profileFields);
+  const alerts = mergeAlerts(visaAlerts, dbAlerts);
+
+  const activeRoadmaps = (roadmapsResult.data || []).map((r) => {
+    const nested = r.roadmap_steps as
+      | Array<{ title: string; completed: boolean; active: boolean; sort_order: number }>
+      | null;
+    const rSteps = (nested || [])
+      .slice()
+      .sort((a, b) => a.sort_order - b.sort_order)
       .map((s) => ({
-        title: String(s.title),
-        completed: Boolean(s.completed),
-        active: Boolean(s.active),
+        title: s.title,
+        completed: s.completed,
+        active: s.active,
       }));
     return {
       id: r.id,
@@ -85,21 +118,7 @@ export async function getControlCenter() {
     };
   });
 
-  const todayStart = new Date();
-  todayStart.setHours(0, 0, 0, 0);
-  const todayEnd = new Date();
-  todayEnd.setHours(23, 59, 59, 999);
-
-  const { data: events } = await supabase
-    .from("calendar_events")
-    .select("*")
-    .eq("user_id", user.id)
-    .gte("starts_at", todayStart.toISOString())
-    .lte("starts_at", todayEnd.toISOString())
-    .neq("status", "cancelled")
-    .order("starts_at", { ascending: true });
-
-  const todaySchedule = (events || []).map((e) => ({
+  const todaySchedule = (eventsResult.data || []).map((e) => ({
     id: e.id,
     type: "calendar" as const,
     title: e.title,
@@ -109,8 +128,8 @@ export async function getControlCenter() {
 
   const recommendedActions = RECOMMENDED_ACTIONS.filter((a) => {
     if (a.id === "visa" && visaDday !== null && visaDday <= 60) return true;
-    if (a.id === "insurance" && profile.country_status === "residing_korea") return true;
-    if (a.id === "arc" && profile.country_status === "residing_korea") return true;
+    if (a.id === "insurance" && profileFields.country_status === "residing_korea") return true;
+    if (a.id === "arc" && profileFields.country_status === "residing_korea") return true;
     return false;
   });
 
@@ -124,6 +143,6 @@ export async function getControlCenter() {
     activeRoadmaps,
     todaySchedule,
     recommendedActions,
-    onboardingStatus: profile.onboarding_status,
+    onboardingStatus: profileFields.onboarding_status,
   };
 }

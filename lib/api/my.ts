@@ -1,10 +1,4 @@
-export {
-  enrollmentApi,
-  sessionApi,
-  communityApi,
-  freelancerApi,
-  notificationsApi,
-  inquiryApi,
-  lifePlanApi,
-} from "./client";
-
+export { enrollmentApi } from "./enrollment";
+export { sessionApi } from "./sessions";
+export { communityApi, freelancerApi, lifePlanApi } from "./mongo-routes";
+export { inquiryApi } from "./inquiries";

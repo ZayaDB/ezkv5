@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import type { Mentor } from '@/types';
-import { mentorMatchesCategoryKey } from '@/lib/data/queries';
+import { mentorMatchesCategoryKey } from '@/lib/mentors/categoryFilter';
 import MentorCard from '@/components/cards/MentorCard';
 import EmptyState from '@/components/ui/EmptyState';
 

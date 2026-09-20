@@ -1,2 +1,2 @@
-export { lecturesApi, lectureWishlistApi, contentApi } from "./client";
-
+export { lecturesApi, lectureWishlistApi } from "./lectures";
+export { contentApi } from "./content";

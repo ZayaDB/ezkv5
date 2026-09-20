@@ -2,13 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { randomUUID } from "crypto";
-import { authenticateRequestDb } from "@/lib/middleware/auth";
+import { getApiUser } from "@/lib/middleware/supabaseApiAuth";
 
 const MAX_BYTES = 3 * 1024 * 1024; // 3MB
 
 export async function POST(request: NextRequest) {
   try {
-    const auth = await authenticateRequestDb(request);
+    const auth = await getApiUser();
     if (!auth) {
       return NextResponse.json({ error: "로그인이 필요합니다." }, { status: 401 });
     }

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import { adminApi } from '@/lib/api';
+import { listPendingMentors, setMentorApproval } from '@/lib/supabase/moderation';
 import { Search, UserPlus, Users } from 'lucide-react';
 import Toast from '@/components/ui/Toast';
 import LoadingState from '@/components/ui/LoadingState';
@@ -89,9 +90,10 @@ export default function AdminUsersPage() {
   };
 
   const loadMentorPending = async () => {
-    const response = await adminApi.getModerationQueue();
-    if (response.data) {
-      setMentorPending(response.data.mentorPending || []);
+    try {
+      setMentorPending(await listPendingMentors());
+    } catch {
+      setMentorPending([]);
     }
   };
 
@@ -135,20 +137,19 @@ export default function AdminUsersPage() {
   };
 
   const handleMentorModeration = async (id: string, status: 'approved' | 'rejected') => {
-    const response = await adminApi.updateModerationStatus({
-      type: 'mentor',
-      id,
-      status,
-    });
-    if (response.error) {
-      setToast({ message: response.error, variant: 'error' });
-      return;
+    try {
+      await setMentorApproval(id, status);
+      setToast({
+        message: status === 'approved' ? '멘토 승인 처리되었습니다.' : '멘토 반려 처리되었습니다.',
+        variant: 'success',
+      });
+      await Promise.all([loadMentorPending(), loadUsers()]);
+    } catch (e: unknown) {
+      setToast({
+        message: e instanceof Error ? e.message : '처리에 실패했습니다.',
+        variant: 'error',
+      });
     }
-    setToast({
-      message: status === 'approved' ? '멘토 승인 처리되었습니다.' : '멘토 반려 처리되었습니다.',
-      variant: 'success',
-    });
-    await Promise.all([loadMentorPending(), loadUsers()]);
   };
 
   const roleStats = useMemo(() => {

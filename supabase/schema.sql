@@ -241,3 +241,383 @@ create policy "lectures: update own" on public.lectures for update using (auth.u
 
 drop policy if exists "lectures: admin" on public.lectures;
 create policy "lectures: admin" on public.lectures for all using (public.is_admin());
+
+-- ── Enrollments, wishlist, mentor sessions, life budget, inquiries ──
+
+drop policy if exists "profiles: admin select" on public.profiles;
+create policy "profiles: admin select" on public.profiles for select using (public.is_admin());
+
+create table if not exists public.lecture_enrollments (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references public.profiles(id) on delete cascade,
+  lecture_id uuid not null references public.lectures(id) on delete cascade,
+  status text not null default 'active' check (status in ('active', 'completed', 'cancelled')),
+  payment_status text not null default 'paid',
+  enrolled_at timestamptz not null default now(),
+  unique (user_id, lecture_id)
+);
+
+create table if not exists public.lecture_wishlist (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references public.profiles(id) on delete cascade,
+  lecture_id uuid not null references public.lectures(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  unique (user_id, lecture_id)
+);
+
+create table if not exists public.mentor_sessions (
+  id uuid primary key default gen_random_uuid(),
+  mentor_profile_id uuid not null references public.mentor_profiles(id) on delete cascade,
+  mentee_id uuid not null references public.profiles(id) on delete cascade,
+  scheduled_at timestamptz not null,
+  duration int not null default 60,
+  type text not null default 'online' check (type in ('online', 'offline')),
+  status text not null default 'upcoming' check (status in ('upcoming', 'completed', 'cancelled')),
+  notes text,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.life_budget_lines (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references public.profiles(id) on delete cascade,
+  kind text not null check (kind in ('expense', 'income')),
+  label text not null,
+  amount numeric not null default 0,
+  line_date date not null,
+  recurrence jsonb not null default '{"type":"none"}'::jsonb,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.user_inquiries (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references public.profiles(id) on delete cascade,
+  subject text not null,
+  body text not null,
+  admin_reply text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists lecture_enrollments_user_idx on public.lecture_enrollments (user_id);
+create index if not exists lecture_wishlist_user_idx on public.lecture_wishlist (user_id);
+create index if not exists mentor_sessions_mentee_idx on public.mentor_sessions (mentee_id);
+create index if not exists mentor_sessions_mentor_idx on public.mentor_sessions (mentor_profile_id);
+
+alter table public.lecture_enrollments enable row level security;
+alter table public.lecture_wishlist enable row level security;
+alter table public.mentor_sessions enable row level security;
+alter table public.life_budget_lines enable row level security;
+alter table public.user_inquiries enable row level security;
+
+drop policy if exists "enrollments: own" on public.lecture_enrollments;
+create policy "enrollments: own" on public.lecture_enrollments for all using (auth.uid() = user_id);
+
+drop policy if exists "wishlist: own" on public.lecture_wishlist;
+create policy "wishlist: own" on public.lecture_wishlist for all using (auth.uid() = user_id);
+
+drop policy if exists "sessions: mentee" on public.mentor_sessions;
+create policy "sessions: mentee" on public.mentor_sessions for select using (auth.uid() = mentee_id);
+
+drop policy if exists "sessions: mentor" on public.mentor_sessions;
+create policy "sessions: mentor" on public.mentor_sessions for select using (
+  exists (
+    select 1 from public.mentor_profiles mp
+    where mp.id = mentor_profile_id and mp.user_id = auth.uid()
+  )
+);
+
+drop policy if exists "sessions: mentee insert" on public.mentor_sessions;
+create policy "sessions: mentee insert" on public.mentor_sessions for insert with check (auth.uid() = mentee_id);
+
+drop policy if exists "sessions: participant update" on public.mentor_sessions;
+create policy "sessions: participant update" on public.mentor_sessions for update using (
+  auth.uid() = mentee_id
+  or exists (
+    select 1 from public.mentor_profiles mp
+    where mp.id = mentor_profile_id and mp.user_id = auth.uid()
+  )
+);
+
+drop policy if exists "life_budget: own" on public.life_budget_lines;
+create policy "life_budget: own" on public.life_budget_lines for all using (auth.uid() = user_id);
+
+drop policy if exists "inquiries: own" on public.user_inquiries;
+create policy "inquiries: own" on public.user_inquiries for all using (auth.uid() = user_id);
+
+drop policy if exists "inquiries: admin" on public.user_inquiries;
+create policy "inquiries: admin" on public.user_inquiries for all using (public.is_admin());
+
+drop policy if exists "enrollments: admin" on public.lecture_enrollments;
+create policy "enrollments: admin" on public.lecture_enrollments for select using (public.is_admin());
+
+drop policy if exists "sessions: admin" on public.mentor_sessions;
+create policy "sessions: admin" on public.mentor_sessions for select using (public.is_admin());
+
+-- ── Security: role·승인·통계 필드 클라이언트 조작 방지 ──
+
+create or replace function public.enforce_profiles_role_change()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if auth.uid() is null then
+    return new;
+  end if;
+  if new.role is distinct from old.role then
+    if not public.is_admin() then
+      raise exception 'profiles.role cannot be changed directly';
+    end if;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists enforce_profiles_role_change on public.profiles;
+create trigger enforce_profiles_role_change
+  before update on public.profiles
+  for each row execute function public.enforce_profiles_role_change();
+
+create or replace function public.enforce_mentor_profiles_moderation()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if auth.uid() is null then
+    return new;
+  end if;
+  if public.is_admin() then
+    return new;
+  end if;
+  if tg_op = 'INSERT' then
+    new.approval_status := 'pending';
+    new.verified := false;
+    new.rating := 0;
+    new.review_count := 0;
+  else
+    new.approval_status := old.approval_status;
+    new.verified := old.verified;
+    new.rating := old.rating;
+    new.review_count := old.review_count;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists enforce_mentor_profiles_moderation on public.mentor_profiles;
+create trigger enforce_mentor_profiles_moderation
+  before insert or update on public.mentor_profiles
+  for each row execute function public.enforce_mentor_profiles_moderation();
+
+create or replace function public.enforce_lectures_moderation()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if auth.uid() is null then
+    return new;
+  end if;
+  if public.is_admin() then
+    return new;
+  end if;
+  if tg_op = 'INSERT' then
+    new.approval_status := 'pending';
+    new.rating := 0;
+    new.students := 0;
+  else
+    new.approval_status := old.approval_status;
+    new.rating := old.rating;
+    new.students := old.students;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists enforce_lectures_moderation on public.lectures;
+create trigger enforce_lectures_moderation
+  before insert or update on public.lectures
+  for each row execute function public.enforce_lectures_moderation();
+-- Community, freelancer, feeds, study info (Mongo replacement)
+
+create table if not exists public.community_groups (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  description text not null,
+  members int not null default 0,
+  category text not null,
+  image text not null default '',
+  tags text[] not null default '{}',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.community_memberships (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references public.profiles(id) on delete cascade,
+  group_id uuid not null references public.community_groups(id) on delete cascade,
+  status text not null default 'pending' check (status in ('pending', 'approved', 'rejected')),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique (user_id, group_id)
+);
+
+create table if not exists public.freelancer_groups (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  description text not null,
+  members int not null default 0,
+  category text not null,
+  image text not null default '',
+  jobs_posted int not null default 0,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.freelancer_applications (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references public.profiles(id) on delete cascade,
+  group_id uuid not null references public.freelancer_groups(id) on delete cascade,
+  status text not null default 'pending' check (status in ('pending', 'accepted', 'rejected')),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique (user_id, group_id)
+);
+
+create table if not exists public.public_feed_posts (
+  id uuid primary key default gen_random_uuid(),
+  feed_type text not null check (feed_type in ('community', 'freelancer')),
+  author_id uuid not null references public.profiles(id) on delete cascade,
+  body text not null,
+  attachment_urls text[] not null default '{}',
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.public_feed_comments (
+  id uuid primary key default gen_random_uuid(),
+  post_id uuid not null references public.public_feed_posts(id) on delete cascade,
+  author_id uuid not null references public.profiles(id) on delete cascade,
+  body text not null,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.public_feed_likes (
+  id uuid primary key default gen_random_uuid(),
+  post_id uuid not null references public.public_feed_posts(id) on delete cascade,
+  user_id uuid not null references public.profiles(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  unique (post_id, user_id)
+);
+
+create table if not exists public.channel_posts (
+  id uuid primary key default gen_random_uuid(),
+  channel_type text not null check (channel_type in ('community', 'freelancer')),
+  channel_id uuid not null,
+  author_id uuid not null references public.profiles(id) on delete cascade,
+  title text not null,
+  body text not null,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.channel_comments (
+  id uuid primary key default gen_random_uuid(),
+  post_id uuid not null references public.channel_posts(id) on delete cascade,
+  author_id uuid not null references public.profiles(id) on delete cascade,
+  body text not null,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.study_infos (
+  id uuid primary key default gen_random_uuid(),
+  category text not null check (category in ('visa', 'housing', 'hospital', 'lifeTips')),
+  title text not null,
+  content text not null,
+  image text,
+  tags text[] not null default '{}',
+  created_at timestamptz not null default now()
+);
+
+create index if not exists community_groups_category_idx on public.community_groups (category);
+create index if not exists public_feed_posts_feed_created_idx on public.public_feed_posts (feed_type, created_at desc);
+create index if not exists channel_posts_channel_idx on public.channel_posts (channel_type, channel_id, created_at desc);
+create index if not exists community_memberships_status_idx on public.community_memberships (status);
+create index if not exists freelancer_applications_status_idx on public.freelancer_applications (status);
+
+alter table public.community_groups enable row level security;
+alter table public.community_memberships enable row level security;
+alter table public.freelancer_groups enable row level security;
+alter table public.freelancer_applications enable row level security;
+alter table public.public_feed_posts enable row level security;
+alter table public.public_feed_comments enable row level security;
+alter table public.public_feed_likes enable row level security;
+alter table public.channel_posts enable row level security;
+alter table public.channel_comments enable row level security;
+alter table public.study_infos enable row level security;
+
+drop policy if exists "community_groups: public read" on public.community_groups;
+create policy "community_groups: public read" on public.community_groups for select using (true);
+
+drop policy if exists "freelancer_groups: public read" on public.freelancer_groups;
+create policy "freelancer_groups: public read" on public.freelancer_groups for select using (true);
+
+drop policy if exists "study_infos: public read" on public.study_infos;
+create policy "study_infos: public read" on public.study_infos for select using (true);
+
+drop policy if exists "community_memberships: own" on public.community_memberships;
+create policy "community_memberships: own" on public.community_memberships for all using (auth.uid() = user_id);
+
+drop policy if exists "community_memberships: admin" on public.community_memberships;
+create policy "community_memberships: admin" on public.community_memberships for all using (public.is_admin());
+
+drop policy if exists "freelancer_applications: own" on public.freelancer_applications;
+create policy "freelancer_applications: own" on public.freelancer_applications for all using (auth.uid() = user_id);
+
+drop policy if exists "freelancer_applications: admin" on public.freelancer_applications;
+create policy "freelancer_applications: admin" on public.freelancer_applications for all using (public.is_admin());
+
+drop policy if exists "public_feed_posts: read" on public.public_feed_posts;
+create policy "public_feed_posts: read" on public.public_feed_posts for select using (true);
+
+drop policy if exists "public_feed_posts: insert own" on public.public_feed_posts;
+create policy "public_feed_posts: insert own" on public.public_feed_posts for insert with check (auth.uid() = author_id);
+
+drop policy if exists "public_feed_comments: read" on public.public_feed_comments;
+create policy "public_feed_comments: read" on public.public_feed_comments for select using (true);
+
+drop policy if exists "public_feed_comments: insert own" on public.public_feed_comments;
+create policy "public_feed_comments: insert own" on public.public_feed_comments for insert with check (auth.uid() = author_id);
+
+drop policy if exists "public_feed_likes: read" on public.public_feed_likes;
+create policy "public_feed_likes: read" on public.public_feed_likes for select using (true);
+
+drop policy if exists "public_feed_likes: own write" on public.public_feed_likes;
+create policy "public_feed_likes: own write" on public.public_feed_likes for all using (auth.uid() = user_id);
+
+drop policy if exists "channel_posts: read" on public.channel_posts;
+create policy "channel_posts: read" on public.channel_posts for select using (true);
+
+drop policy if exists "channel_posts: insert own" on public.channel_posts;
+create policy "channel_posts: insert own" on public.channel_posts for insert with check (auth.uid() = author_id);
+
+drop policy if exists "channel_posts: admin" on public.channel_posts;
+create policy "channel_posts: admin" on public.channel_posts for all using (public.is_admin());
+
+drop policy if exists "channel_comments: read" on public.channel_comments;
+create policy "channel_comments: read" on public.channel_comments for select using (true);
+
+drop policy if exists "channel_comments: insert own" on public.channel_comments;
+create policy "channel_comments: insert own" on public.channel_comments for insert with check (auth.uid() = author_id);
+
+drop policy if exists "community_groups: admin write" on public.community_groups;
+create policy "community_groups: admin write" on public.community_groups for all using (public.is_admin());
+
+drop policy if exists "freelancer_groups: admin write" on public.freelancer_groups;
+create policy "freelancer_groups: admin write" on public.freelancer_groups for all using (public.is_admin());
+
+drop policy if exists "study_infos: admin write" on public.study_infos;
+create policy "study_infos: admin write" on public.study_infos for all using (public.is_admin());

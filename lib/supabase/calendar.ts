@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/client";
-import type { LifeEvent, LifeEventCategory, LifeEventStatus } from "@/lib/api/client";
+import type { LifeEvent, LifeEventCategory, LifeEventStatus } from "@/lib/types/life-plan";
 
 async function requireUserId() {
   const supabase = createClient();

@@ -1,29 +1,32 @@
 import { NextRequest, NextResponse } from "next/server";
-import connectDB from "@/lib/db/mongodb";
-import { authenticateRequest } from "@/lib/middleware/auth";
-import { adminDeleteChannelPost } from "@/lib/data/channelFeed";
+import { requireApiAdmin } from "@/lib/middleware/supabaseApiAuth";
+import { adminDeleteChannelPost } from "@/lib/supabase/channel-feed";
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { postId: string } }
-) {
+type RouteContext = { params: Promise<{ postId: string }> };
+
+export async function DELETE(request: NextRequest, context: RouteContext) {
   try {
-    await connectDB();
-    const auth = authenticateRequest(request);
-    if (!auth || auth.role !== "admin") {
+    const auth = await requireApiAdmin();
+    if (!auth) {
       return NextResponse.json({ error: "관리자 권한이 필요합니다." }, { status: 403 });
     }
-    const body = await request.json().catch(() => ({}));
-    const reason = String(body?.reason || "");
-    const res = await adminDeleteChannelPost(params.postId, reason);
+    const { postId } = await context.params;
+    let reason = "";
+    try {
+      const body = await request.json();
+      if (body && typeof body.reason === "string") reason = body.reason;
+    } catch {
+      /* empty body */
+    }
+    const res = await adminDeleteChannelPost(postId, reason);
     if ("error" in res && res.error) {
       return NextResponse.json({ error: res.error }, { status: 400 });
     }
-    return NextResponse.json({ ok: true });
-  } catch (e: any) {
+    return NextResponse.json(res);
+  } catch (e: unknown) {
     console.error(e);
     return NextResponse.json(
-      { error: e?.message || "삭제하지 못했습니다." },
+      { error: e instanceof Error ? e.message : "삭제에 실패했습니다." },
       { status: 500 }
     );
   }

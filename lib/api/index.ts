@@ -3,5 +3,8 @@ export * from "./admin";
 export * from "./lecture";
 export * from "./my";
 export * from "./feed";
-export { mentorsApi } from "./client";
-
+export { mentorsApi } from "./mentors";
+export { contentApi } from "./content";
+export { enrollmentApi } from "./enrollment";
+export { sessionApi } from "./sessions";
+export { inquiryApi } from "./inquiries";

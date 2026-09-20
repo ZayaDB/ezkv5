@@ -3,4 +3,4 @@ export {
   channelFeedApi,
   type ChannelFeedKind,
   type PublicFeedKind,
-} from "./client";
+} from "./mongo-routes";
