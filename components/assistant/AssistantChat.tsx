@@ -155,6 +155,7 @@ export default function AssistantChat({ embedded = false }: { embedded?: boolean
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={t("placeholder")}
+          maxLength={500}
           className="flex-1 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-300"
         />
         <button

@@ -105,7 +105,10 @@ alter table public.calendar_events enable row level security;
 alter table public.user_alerts enable row level security;
 
 drop policy if exists "profiles: own" on public.profiles;
-create policy "profiles: own" on public.profiles for all using (auth.uid() = id);
+drop policy if exists "profiles: own select" on public.profiles;
+drop policy if exists "profiles: own update" on public.profiles;
+create policy "profiles: own select" on public.profiles for select using (auth.uid() = id);
+create policy "profiles: own update" on public.profiles for update using (auth.uid() = id);
 
 drop policy if exists "roadmaps: own" on public.roadmaps;
 create policy "roadmaps: own" on public.roadmaps for all using (auth.uid() = user_id);
@@ -118,6 +121,18 @@ create policy "events: own" on public.calendar_events for all using (auth.uid() 
 
 drop policy if exists "alerts: own" on public.user_alerts;
 create policy "alerts: own" on public.user_alerts for all using (auth.uid() = user_id);
+
+create index if not exists roadmaps_user_status_updated_idx
+  on public.roadmaps (user_id, status, updated_at desc);
+
+create index if not exists roadmap_steps_roadmap_sort_idx
+  on public.roadmap_steps (roadmap_id, sort_order);
+
+create index if not exists calendar_events_user_starts_idx
+  on public.calendar_events (user_id, starts_at);
+
+create index if not exists user_alerts_user_dismissed_idx
+  on public.user_alerts (user_id, dismissed);
 
 -- ── Mentor & Lecture marketplace (Supabase) ──
 
@@ -310,7 +325,26 @@ alter table public.life_budget_lines enable row level security;
 alter table public.user_inquiries enable row level security;
 
 drop policy if exists "enrollments: own" on public.lecture_enrollments;
-create policy "enrollments: own" on public.lecture_enrollments for all using (auth.uid() = user_id);
+drop policy if exists "enrollments: own select" on public.lecture_enrollments;
+drop policy if exists "enrollments: own update" on public.lecture_enrollments;
+drop policy if exists "enrollments: own delete" on public.lecture_enrollments;
+drop policy if exists "enrollments: insert" on public.lecture_enrollments;
+create policy "enrollments: own select" on public.lecture_enrollments
+  for select using (auth.uid() = user_id);
+create policy "enrollments: own update" on public.lecture_enrollments
+  for update using (auth.uid() = user_id);
+create policy "enrollments: own delete" on public.lecture_enrollments
+  for delete using (auth.uid() = user_id);
+create policy "enrollments: insert" on public.lecture_enrollments
+  for insert with check (
+    auth.uid() = user_id
+    and exists (
+      select 1 from public.lectures l
+      where l.id = lecture_id
+        and l.approval_status = 'approved'
+        and l.instructor_id <> auth.uid()
+    )
+  );
 
 drop policy if exists "wishlist: own" on public.lecture_wishlist;
 create policy "wishlist: own" on public.lecture_wishlist for all using (auth.uid() = user_id);
@@ -899,10 +933,6 @@ on conflict (id) do update set
   allowed_mime_types = excluded.allowed_mime_types;
 
 drop policy if exists "uploads: public select" on storage.objects;
-create policy "uploads: public select"
-on storage.objects
-for select
-using (bucket_id = 'uploads');
 
 drop policy if exists "uploads: authenticated insert" on storage.objects;
 create policy "uploads: authenticated insert"

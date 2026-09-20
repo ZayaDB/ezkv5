@@ -92,8 +92,11 @@ export default function Chatbot() {
         data = {};
       }
 
-      // Build response content with links if available
-      let responseContent = data.response || data.error || t('error');
+      // 429 한도 안내는 data.response를 그대로 쓰고, 그 외 오류는 data.error를 노출하지 않는다
+      let responseContent =
+        response.status === 429 && data.response
+          ? data.response
+          : data.response || t('error');
       if (data.links && data.links.length > 0) {
         const linksText = data.links
           .map((link: SearchResult, index: number) => 
@@ -323,6 +326,7 @@ export default function Chatbot() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder={t('placeholder')}
+                maxLength={500}
                 className="flex-1 border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
                 disabled={isLoading}
               />

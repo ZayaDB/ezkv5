@@ -22,6 +22,10 @@ A full-stack web platform for international students studying in Korea, built wi
 - **AI**: OpenAI API
 - **Icons**: Lucide React
 
+## Database
+
+schema.sql 전체를 Supabase SQL Editor에서 한 번 실행 (idempotent)
+
 ## Getting Started
 
 ### Prerequisites
