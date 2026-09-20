@@ -79,9 +79,9 @@ export default function MentorsPageClient({ initialMentors, locale }: Props) {
 
         {initialMentors.length === 0 ? (
           <EmptyState
-            title="등록된 멘토가 없습니다"
-            description="MongoDB 연결 후 터미널에서 npx tsx scripts/seed.ts 를 실행해 샘플 멘토를 넣거나, 멘토 계정으로 프로필을 등록하세요."
-            actionLabel="홈으로"
+            title={t('emptyTitle')}
+            description={t('emptyDescription')}
+            actionLabel={t('emptyAction')}
             actionHref={`/${locale}`}
           />
         ) : filteredMentors.length > 0 ? (

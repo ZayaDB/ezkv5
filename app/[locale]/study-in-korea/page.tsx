@@ -56,9 +56,9 @@ export default async function StudyInKoreaPage({
 
         {items.length === 0 ? (
           <EmptyState
-            title="유학 가이드 콘텐츠가 없습니다"
-            description="MongoDB에 StudyInfo 문서를 추가하거나 시드 스크립트를 실행하세요."
-            actionLabel="홈으로"
+            title={t('emptyTitle')}
+            description={t('emptyDescription')}
+            actionLabel={t('emptyAction')}
             actionHref={`/${locale}`}
           />
         ) : (

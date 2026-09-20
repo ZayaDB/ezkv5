@@ -4,6 +4,7 @@ import { searchContent, SearchResult } from '@/lib/search';
 // Initialize OpenAI client
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || '',
+  timeout: 20_000,
 });
 
 export interface ChatContext {
@@ -53,15 +54,18 @@ Example responses:
       ? `${message}\n\nRelevant content found:\n${searchResults.map((r) => `- ${r.title}: ${r.description}`).join('\n')}`
       : message;
 
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userMessage },
-      ],
-      temperature: 0.7,
-      max_tokens: 500,
-    });
+    const completion = await openai.chat.completions.create(
+      {
+        model: 'gpt-4o-mini',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userMessage },
+        ],
+        temperature: 0.7,
+        max_tokens: 500,
+      },
+      { timeout: 20_000 }
+    );
 
     const response = completion.choices[0]?.message?.content || 'I apologize, but I could not generate a response.';
 

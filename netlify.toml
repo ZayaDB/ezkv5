@@ -17,8 +17,6 @@
 #
 # 선택:
 #   OPENAI_API_KEY=...                    # AI 챗봇
-#   MONGODB_URI=...                       # 레거시 마켓플레이스 API (없으면 비워둠)
-#   JWT_SECRET=...                        # Mongo API JWT (없으면 비워둠)
 #
 # ── Supabase Dashboard → Authentication → URL Configuration ──
 #   Site URL:        https://ezkv5.netlify.app

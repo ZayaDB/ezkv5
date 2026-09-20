@@ -1,4 +1,3 @@
-import { API_BASE_URL, authToken } from "./core";
 import type { PublicFeedKind } from "./social-types";
 import type { ChannelKind } from "@/lib/supabase/channel-feed";
 
@@ -64,20 +63,8 @@ export const publicFeedApi = {
     }
   },
   uploadFile: async (file: File) => {
-    const token = authToken.get();
-    const fd = new FormData();
-    fd.append("file", file);
-    const headers: Record<string, string> = {};
-    if (token) headers.Authorization = `Bearer ${token}`;
-    const res = await fetch(`${API_BASE_URL}/api/upload/feed`, {
-      method: "POST",
-      headers,
-      body: fd,
-      credentials: "include",
-    });
-    const data = await res.json();
-    if (!res.ok) return { error: data.error || "업로드 실패" } as const;
-    return { data: { url: data.url as string } };
+    const { uploadPublicImage } = await import("@/lib/supabase/storage");
+    return uploadPublicImage(file);
   },
 };
 

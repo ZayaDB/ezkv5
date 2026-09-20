@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/client";
+import { fetchPublicProfiles } from "@/lib/supabase/publicProfiles";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Lecture } from "@/types";
 import { userCanManageLectures } from "@/lib/supabase/mentors";
@@ -31,6 +32,23 @@ type LectureRow = {
   approval_status: string;
   profiles?: { name?: string } | null;
 };
+
+async function lectureRowsWithInstructorNames(
+  supabase: SupabaseClient,
+  rows: LectureRow[]
+): Promise<LectureRow[]> {
+  const profileMap = await fetchPublicProfiles(
+    supabase,
+    rows.map((r) => r.instructor_id)
+  );
+  return rows.map((r) => {
+    const pub = profileMap.get(r.instructor_id);
+    return {
+      ...r,
+      profiles: pub ? { name: pub.name } : null,
+    };
+  });
+}
 
 async function requireUserId() {
   const supabase = createClient();
@@ -88,7 +106,7 @@ export async function listApprovedLectures(
 
   let q = supabase
     .from("lectures")
-    .select("*, profiles!lectures_instructor_id_fkey(name)", { count: "exact" })
+    .select("*", { count: "exact" })
     .eq("approval_status", "approved");
 
   if (options?.type) q = q.eq("type", options.type);
@@ -101,21 +119,23 @@ export async function listApprovedLectures(
 
   if (error) throw new Error(error.message);
 
-  const lectures = ((data || []) as LectureRow[]).map((r) => mapLectureRow(r));
+  const rows = await lectureRowsWithInstructorNames(supabase, (data || []) as LectureRow[]);
+  const lectures = rows.map((r) => mapLectureRow(r));
   return { lectures, total: count ?? lectures.length };
 }
 
 export async function getApprovedLectureById(supabase: SupabaseClient, id: string) {
   const { data, error } = await supabase
     .from("lectures")
-    .select("*, profiles!lectures_instructor_id_fkey(name)")
+    .select("*")
     .eq("id", id)
     .eq("approval_status", "approved")
     .maybeSingle();
 
   if (error) throw new Error(error.message);
   if (!data) return null;
-  return mapLectureRow(data as LectureRow);
+  const [row] = await lectureRowsWithInstructorNames(supabase, [data as LectureRow]);
+  return mapLectureRow(row);
 }
 
 export async function getMyLectures() {
@@ -126,12 +146,13 @@ export async function getMyLectures() {
 
   const { data, error } = await supabase
     .from("lectures")
-    .select("*, profiles!lectures_instructor_id_fkey(name)")
+    .select("*")
     .eq("instructor_id", userId)
     .order("created_at", { ascending: false });
 
   if (error) throw new Error(error.message);
-  return { lectures: ((data || []) as LectureRow[]).map(serializeMine) };
+  const rows = await lectureRowsWithInstructorNames(supabase, (data || []) as LectureRow[]);
+  return { lectures: rows.map(serializeMine) };
 }
 
 export async function createLecture(payload: {
@@ -257,16 +278,17 @@ export async function getLectureByIdForOwner(id: string) {
   const { supabase, userId } = await requireUserId();
   const { data, error } = await supabase
     .from("lectures")
-    .select("*, profiles!lectures_instructor_id_fkey(name)")
+    .select("*")
     .eq("id", id)
     .maybeSingle();
 
   if (error) throw new Error(error.message);
   if (!data) return null;
-  const row = data as LectureRow;
-  if (row.instructor_id !== userId) {
+  const base = data as LectureRow;
+  if (base.instructor_id !== userId) {
     const { data: profile } = await supabase.from("profiles").select("role").eq("id", userId).single();
     if (profile?.role !== "admin") return null;
   }
+  const [row] = await lectureRowsWithInstructorNames(supabase, [base]);
   return serializeMine(row);
 }

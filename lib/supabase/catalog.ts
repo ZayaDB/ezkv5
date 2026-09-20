@@ -33,10 +33,19 @@ export async function joinCommunityGroup(groupId: string) {
   const { data: group } = await supabase.from("community_groups").select("id").eq("id", groupId).maybeSingle();
   if (!group) throw new Error("커뮤니티를 찾을 수 없습니다.");
 
-  const { error } = await supabase.from("community_memberships").upsert(
-    { user_id: userId, group_id: groupId, status: "pending" },
-    { onConflict: "user_id,group_id" }
-  );
+  const { data: existing } = await supabase
+    .from("community_memberships")
+    .select("id")
+    .eq("user_id", userId)
+    .eq("group_id", groupId)
+    .maybeSingle();
+  if (existing) return { ok: true as const };
+
+  const { error } = await supabase.from("community_memberships").insert({
+    user_id: userId,
+    group_id: groupId,
+    status: "pending",
+  });
   if (error) throw new Error(error.message);
   return { ok: true as const };
 }
@@ -46,10 +55,19 @@ export async function applyFreelancerGroup(groupId: string) {
   const { data: group } = await supabase.from("freelancer_groups").select("id").eq("id", groupId).maybeSingle();
   if (!group) throw new Error("프리랜서 그룹을 찾을 수 없습니다.");
 
-  const { error } = await supabase.from("freelancer_applications").upsert(
-    { user_id: userId, group_id: groupId, status: "pending" },
-    { onConflict: "user_id,group_id" }
-  );
+  const { data: existing } = await supabase
+    .from("freelancer_applications")
+    .select("id")
+    .eq("user_id", userId)
+    .eq("group_id", groupId)
+    .maybeSingle();
+  if (existing) return { ok: true as const };
+
+  const { error } = await supabase.from("freelancer_applications").insert({
+    user_id: userId,
+    group_id: groupId,
+    status: "pending",
+  });
   if (error) throw new Error(error.message);
   return { ok: true as const };
 }

@@ -327,7 +327,15 @@ create policy "sessions: mentor" on public.mentor_sessions for select using (
 );
 
 drop policy if exists "sessions: mentee insert" on public.mentor_sessions;
-create policy "sessions: mentee insert" on public.mentor_sessions for insert with check (auth.uid() = mentee_id);
+create policy "sessions: mentee insert" on public.mentor_sessions for insert with check (
+  auth.uid() = mentee_id
+  and exists (
+    select 1 from public.mentor_profiles mp
+    where mp.id = mentor_profile_id
+      and mp.approval_status = 'approved'
+      and mp.user_id is distinct from auth.uid()
+  )
+);
 
 drop policy if exists "sessions: participant update" on public.mentor_sessions;
 create policy "sessions: participant update" on public.mentor_sessions for update using (
@@ -419,6 +427,9 @@ security definer
 set search_path = public
 as $$
 begin
+  if current_setting('app.lecture_counter', true) = 'on' then
+    return new;
+  end if;
   if auth.uid() is null then
     return new;
   end if;
@@ -621,3 +632,339 @@ create policy "freelancer_groups: admin write" on public.freelancer_groups for a
 
 drop policy if exists "study_infos: admin write" on public.study_infos;
 create policy "study_infos: admin write" on public.study_infos for all using (public.is_admin());
+
+create or replace function public.get_public_profiles(ids uuid[])
+returns table(id uuid, name text, avatar_url text)
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select p.id, p.name, p.avatar_url
+  from public.profiles p
+  where p.id = any(ids)
+  limit 200;
+$$;
+
+revoke all on function public.get_public_profiles(uuid[]) from public;
+grant execute on function public.get_public_profiles(uuid[]) to anon, authenticated;
+
+-- ── Sensitive field locks (status / payment / admin_reply) ──
+-- (auth.uid() is null 이면 통과 / public.is_admin() 이면 통과 / 그 외 필드 강제)
+
+create or replace function public.enforce_join_request_moderation()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if auth.uid() is null then
+    return new;
+  end if;
+  if public.is_admin() then
+    return new;
+  end if;
+  if tg_op = 'INSERT' then
+    new.status := 'pending';
+  else
+    new.status := old.status;
+    new.user_id := old.user_id;
+    new.group_id := old.group_id;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists enforce_join_request_moderation on public.community_memberships;
+create trigger enforce_join_request_moderation
+  before insert or update on public.community_memberships
+  for each row execute function public.enforce_join_request_moderation();
+
+drop trigger if exists enforce_join_request_moderation on public.freelancer_applications;
+create trigger enforce_join_request_moderation
+  before insert or update on public.freelancer_applications
+  for each row execute function public.enforce_join_request_moderation();
+
+create or replace function public.is_channel_member(p_channel_type text, p_channel_id uuid)
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select case p_channel_type
+    when 'community' then exists (
+      select 1 from public.community_memberships m
+      where m.user_id = auth.uid()
+        and m.group_id = p_channel_id
+        and m.status = 'approved'
+    )
+    when 'freelancer' then exists (
+      select 1 from public.freelancer_applications a
+      where a.user_id = auth.uid()
+        and a.group_id = p_channel_id
+        and a.status = 'accepted'
+    )
+    else false
+  end;
+$$;
+
+revoke all on function public.is_channel_member(text, uuid) from public;
+grant execute on function public.is_channel_member(text, uuid) to authenticated;
+
+drop policy if exists "channel_posts: insert own" on public.channel_posts;
+create policy "channel_posts: insert own" on public.channel_posts
+for insert with check (
+  auth.uid() = author_id
+  and public.is_channel_member(channel_type, channel_id)
+);
+
+drop policy if exists "channel_comments: insert own" on public.channel_comments;
+create policy "channel_comments: insert own" on public.channel_comments
+for insert with check (
+  auth.uid() = author_id
+  and exists (
+    select 1 from public.channel_posts p
+    where p.id = post_id
+      and public.is_channel_member(p.channel_type, p.channel_id)
+  )
+);
+
+-- TODO: 실제 결제 연동 시 이 mock을 서비스 롤 웹훅 기반으로 교체
+
+create or replace function public.enforce_lecture_enrollments_payment()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if auth.uid() is null then
+    return new;
+  end if;
+  if public.is_admin() then
+    return new;
+  end if;
+  if tg_op = 'INSERT' then
+    new.payment_status := 'paid';
+  else
+    new.payment_status := old.payment_status;
+    new.user_id := old.user_id;
+    new.lecture_id := old.lecture_id;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists enforce_lecture_enrollments_payment on public.lecture_enrollments;
+create trigger enforce_lecture_enrollments_payment
+  before insert or update on public.lecture_enrollments
+  for each row execute function public.enforce_lecture_enrollments_payment();
+
+create or replace function public.sync_lecture_students()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_lecture_id uuid;
+  v_delta int := 0;
+begin
+  perform set_config('app.lecture_counter', 'on', true);
+
+  if tg_op = 'INSERT' then
+    if new.status <> 'cancelled' then
+      v_delta := 1;
+    end if;
+    v_lecture_id := new.lecture_id;
+  elsif tg_op = 'UPDATE' then
+    if old.status = 'cancelled' and new.status <> 'cancelled' then
+      v_delta := 1;
+    elsif old.status <> 'cancelled' and new.status = 'cancelled' then
+      v_delta := -1;
+    end if;
+    v_lecture_id := new.lecture_id;
+  elsif tg_op = 'DELETE' then
+    if old.status <> 'cancelled' then
+      v_delta := -1;
+    end if;
+    v_lecture_id := old.lecture_id;
+  end if;
+
+  if v_delta <> 0 then
+    begin
+      update public.lectures
+      set students = greatest(students + v_delta, 0)
+      where id = v_lecture_id;
+    exception
+      when triggered_data_change_violation then
+        null;
+    end;
+  end if;
+
+  if tg_op = 'DELETE' then
+    return old;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists sync_lecture_students on public.lecture_enrollments;
+create trigger sync_lecture_students
+  after insert or update or delete on public.lecture_enrollments
+  for each row execute function public.sync_lecture_students();
+
+create or replace function public.enforce_user_inquiries_admin_reply()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if auth.uid() is null then
+    return new;
+  end if;
+  if public.is_admin() then
+    return new;
+  end if;
+  if tg_op = 'INSERT' then
+    new.admin_reply := null;
+  else
+    new.admin_reply := old.admin_reply;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists enforce_user_inquiries_admin_reply on public.user_inquiries;
+create trigger enforce_user_inquiries_admin_reply
+  before insert or update on public.user_inquiries
+  for each row execute function public.enforce_user_inquiries_admin_reply();
+
+drop policy if exists "sessions: mentee insert" on public.mentor_sessions;
+create policy "sessions: mentee insert" on public.mentor_sessions
+for insert with check (
+  auth.uid() = mentee_id
+  and exists (
+    select 1 from public.mentor_profiles mp
+    where mp.id = mentor_profile_id
+      and mp.approval_status = 'approved'
+      and mp.user_id is distinct from auth.uid()
+  )
+);
+
+create or replace function public.enforce_mentor_sessions_update()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if auth.uid() is null then
+    return new;
+  end if;
+  if public.is_admin() then
+    return new;
+  end if;
+  new.mentor_profile_id := old.mentor_profile_id;
+  new.mentee_id := old.mentee_id;
+  new.scheduled_at := old.scheduled_at;
+  new.duration := old.duration;
+  new.type := old.type;
+  new.notes := old.notes;
+  return new;
+end;
+$$;
+
+drop trigger if exists enforce_mentor_sessions_update on public.mentor_sessions;
+create trigger enforce_mentor_sessions_update
+  before update on public.mentor_sessions
+  for each row execute function public.enforce_mentor_sessions_update();
+
+-- Public image uploads (lectures, feed attachments)
+
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values (
+  'uploads',
+  'uploads',
+  true,
+  3145728,
+  array['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+)
+on conflict (id) do update set
+  public = excluded.public,
+  file_size_limit = excluded.file_size_limit,
+  allowed_mime_types = excluded.allowed_mime_types;
+
+drop policy if exists "uploads: public select" on storage.objects;
+create policy "uploads: public select"
+on storage.objects
+for select
+using (bucket_id = 'uploads');
+
+drop policy if exists "uploads: authenticated insert" on storage.objects;
+create policy "uploads: authenticated insert"
+on storage.objects
+for insert
+to authenticated
+with check (
+  bucket_id = 'uploads'
+  and (storage.foldername(name))[1] = auth.uid()::text
+);
+
+drop policy if exists "uploads: authenticated delete" on storage.objects;
+create policy "uploads: authenticated delete"
+on storage.objects
+for delete
+to authenticated
+using (
+  bucket_id = 'uploads'
+  and (storage.foldername(name))[1] = auth.uid()::text
+);
+
+-- AI 채팅 일일 한도: 로그인 사용자당 하루 30회 (KST 기준, 원자적 차감)
+
+create table if not exists public.chat_usage (
+  user_id uuid not null references public.profiles(id) on delete cascade,
+  day date not null,
+  count int not null default 0,
+  primary key (user_id, day)
+);
+
+alter table public.chat_usage enable row level security;
+
+drop policy if exists "chat_usage: own select" on public.chat_usage;
+create policy "chat_usage: own select" on public.chat_usage
+  for select using (auth.uid() = user_id);
+
+create or replace function public.consume_chat_quota(p_limit int default 30)
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_uid uuid := auth.uid();
+  v_day date := (now() at time zone 'Asia/Seoul')::date;
+  v_count int;
+begin
+  if v_uid is null then
+    return false;
+  end if;
+
+  insert into public.chat_usage (user_id, day, count)
+  values (v_uid, v_day, 1)
+  on conflict (user_id, day)
+  do update set count = chat_usage.count + 1
+  returning count into v_count;
+
+  return v_count <= p_limit;
+end;
+$$;
+
+revoke all on function public.consume_chat_quota(int) from public;
+grant execute on function public.consume_chat_quota(int) to authenticated;
+
+

@@ -1,3 +1,4 @@
+import { fetchPublicProfiles } from "@/lib/supabase/publicProfiles";
 import { requireUserId } from "@/lib/supabase/requireUser";
 
 export async function listMySessions() {
@@ -12,7 +13,7 @@ export async function listMySessions() {
   let query = supabase
     .from("mentor_sessions")
     .select(
-      "id, scheduled_at, duration, type, status, mentee_id, mentor_profile_id, mentor_profiles(id, title, user_id, profiles(name))"
+      "id, scheduled_at, duration, type, status, mentee_id, mentor_profile_id, mentor_profiles(id, title, user_id)"
     )
     .order("scheduled_at", { ascending: true });
 
@@ -25,8 +26,19 @@ export async function listMySessions() {
   const { data, error } = await query;
   if (error) throw new Error(error.message);
 
-  return (data || []).map((row: Record<string, unknown>) => {
-    const mp = row.mentor_profiles as { id?: string; profiles?: { name?: string } } | null;
+  const rows = data || [];
+  const mentorUserIds = rows
+    .map((row) => {
+      const mp = row.mentor_profiles as { user_id?: string } | null;
+      return mp?.user_id ? String(mp.user_id) : "";
+    })
+    .filter(Boolean);
+  const profileMap = await fetchPublicProfiles(supabase, mentorUserIds);
+
+  return rows.map((row: Record<string, unknown>) => {
+    const mp = row.mentor_profiles as { id?: string; user_id?: string } | null;
+    const mentorUserId = mp?.user_id ? String(mp.user_id) : "";
+    const mentorName = (mentorUserId && profileMap.get(mentorUserId)?.name) || "멘토";
     return {
       id: String(row.id),
       date: row.scheduled_at,
@@ -34,7 +46,7 @@ export async function listMySessions() {
       type: row.type,
       status: row.status,
       mentorId: mp?.id ? String(mp.id) : null,
-      mentorName: mp?.profiles?.name || "멘토",
+      mentorName,
       menteeId: row.mentee_id ? String(row.mentee_id) : null,
       menteeName: "멘티",
     };
@@ -52,7 +64,7 @@ export async function bookMentorSession(payload: {
 
   const { data: mentor, error: mErr } = await supabase
     .from("mentor_profiles")
-    .select("id, user_id, approval_status, profiles(name)")
+    .select("id, user_id, approval_status")
     .eq("id", payload.mentorId)
     .maybeSingle();
 
@@ -81,8 +93,8 @@ export async function bookMentorSession(payload: {
 
   if (error) throw new Error(error.message);
 
-  const mentorName =
-    (mentor.profiles as { name?: string } | null)?.name || "멘토";
+  const profileMap = await fetchPublicProfiles(supabase, [String(mentor.user_id)]);
+  const mentorName = profileMap.get(String(mentor.user_id))?.name || "멘토";
 
   return {
     id: String(created.id),

@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/client";
+import { fetchPublicProfiles } from "@/lib/supabase/publicProfiles";
 import { requireAdmin, requireUserId } from "@/lib/supabase/requireUser";
 import { createUserAlert } from "@/lib/supabase/notifications";
 
@@ -32,21 +33,26 @@ export async function listChannelPosts(channelType: ChannelKind, channelId: stri
   const supabase = createClient();
   const { data, error } = await supabase
     .from("channel_posts")
-    .select("id, title, body, created_at, author_id, profiles(name)")
+    .select("id, title, body, created_at, author_id")
     .eq("channel_type", channelType)
     .eq("channel_id", channelId)
     .order("created_at", { ascending: false })
     .limit(80);
 
   if (error) throw new Error(error.message);
-  return (data || []).map((r) => {
-    const p = r.profiles as { name?: string } | null;
+  const rows = data || [];
+  const profileMap = await fetchPublicProfiles(
+    supabase,
+    rows.map((r) => String(r.author_id))
+  );
+  return rows.map((r) => {
+    const name = profileMap.get(String(r.author_id))?.name || "User";
     return {
       id: String(r.id),
       title: r.title,
       body: r.body,
       createdAt: r.created_at,
-      author: { id: String(r.author_id), name: p?.name || "User" },
+      author: { id: String(r.author_id), name },
     };
   });
 }
@@ -81,19 +87,24 @@ export async function listChannelComments(postId: string) {
   const supabase = createClient();
   const { data, error } = await supabase
     .from("channel_comments")
-    .select("id, body, created_at, author_id, profiles(name)")
+    .select("id, body, created_at, author_id")
     .eq("post_id", postId)
     .order("created_at", { ascending: true })
     .limit(200);
 
   if (error) throw new Error(error.message);
-  return (data || []).map((r) => {
-    const p = r.profiles as { name?: string } | null;
+  const rows = data || [];
+  const profileMap = await fetchPublicProfiles(
+    supabase,
+    rows.map((r) => String(r.author_id))
+  );
+  return rows.map((r) => {
+    const name = profileMap.get(String(r.author_id))?.name || "User";
     return {
       id: String(r.id),
       body: r.body,
       createdAt: r.created_at,
-      author: { id: String(r.author_id), name: p?.name || "User" },
+      author: { id: String(r.author_id), name },
     };
   });
 }

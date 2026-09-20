@@ -118,7 +118,10 @@
       "academic": "학업 지원",
       "career": "커리어 & 프리랜서",
       "dailyLife": "일상 생활"
-    }
+    },
+    "emptyTitle": "등록된 멘토가 없습니다",
+    "emptyDescription": "아직 등록된 정보가 없습니다.",
+    "emptyAction": "홈으로"
   },
   "lectures": {
     "title": "강의",
@@ -174,7 +177,10 @@
     "visa": "비자 정보",
     "housing": "주거 정보",
     "hospital": "병원 정보",
-    "lifeTips": "생활 팁"
+    "lifeTips": "생활 팁",
+    "emptyTitle": "유학 가이드 콘텐츠가 없습니다",
+    "emptyDescription": "아직 등록된 정보가 없습니다.",
+    "emptyAction": "홈으로"
   },
   "chatbot": {
     "title": "MentorLink AI 어시스턴트",

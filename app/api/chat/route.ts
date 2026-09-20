@@ -3,11 +3,19 @@ import { getChatbotResponse } from "@/lib/ai/chatbot";
 import { buildActionAssistantResponse } from "@/lib/ai/assistantActions";
 import { resolveTemplateKey } from "@/lib/roadmap/templates";
 import { searchContent, type SearchResult } from "@/lib/search";
+import { getApiUser } from "@/lib/middleware/supabaseApiAuth";
+import { createServerSupabase } from "@/lib/supabase/server";
 
 const errorMessages: Record<string, string> = {
   kr: "죄송합니다. 일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
   en: "Sorry, a temporary error occurred. Please try again later.",
   mn: "Уучлаарай, түр алдаа гарлаа. Дараа дахин оролдоно уу.",
+};
+
+const quotaMessages: Record<string, string> = {
+  kr: "오늘의 AI 대화 이용 한도(30회)에 도달했습니다. 내일 다시 이용해주세요.",
+  en: "You've reached today's AI chat limit (30 uses). Please try again tomorrow.",
+  mn: "Өнөөдрийн AI чатын хязгаар (30 удаа) хүрлээ. Маргааш дахин оролдоно уу.",
 };
 
 function buildLocalGuideResponse(
@@ -69,6 +77,23 @@ function buildLocalGuideResponse(
   return { response, links: links.slice(0, 4) };
 }
 
+async function ruleBasedJson(messageText: string, locale: string, actionIntent: boolean) {
+  if (actionIntent) {
+    const actionResult = buildActionAssistantResponse(messageText, locale);
+    const links = await searchContent(messageText, locale);
+    return NextResponse.json({
+      ...actionResult,
+      links: links.slice(0, 4),
+      mode: "assistant",
+    });
+  }
+  const links = await searchContent(messageText, locale);
+  return NextResponse.json({
+    ...buildLocalGuideResponse(messageText, locale, links),
+    mode: "guide",
+  });
+}
+
 export async function POST(request: NextRequest) {
   let locale = "kr";
   let messageText = "";
@@ -85,35 +110,42 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const apiKey = process.env.OPENAI_API_KEY?.trim() || "";
-    // OpenAI API 키 형식이 아닐 경우 즉시 로컬 가이드 모드로 처리
-    const looksInvalidKey = !/^sk-[A-Za-z0-9._-]{20,}$/.test(apiKey);
-
-    const actionIntent = resolveTemplateKey(messageText) ||
-      /이사|일정|캘린더|멘토|비자|연장|calendar|moving|visa|mentor/i.test(messageText);
-
-    if (looksInvalidKey) {
-      if (actionIntent) {
-        const actionResult = buildActionAssistantResponse(messageText, locale);
-        const links = await searchContent(messageText, locale);
-        return NextResponse.json({
-          ...actionResult,
-          links: links.slice(0, 4),
-          mode: "assistant",
-        });
-      }
-      const links = await searchContent(messageText, locale);
-      return NextResponse.json({ ...buildLocalGuideResponse(messageText, locale, links), mode: "guide" });
+    if (messageText.length > 500) {
+      return NextResponse.json(
+        { error: "Message must be 500 characters or fewer" },
+        { status: 400 }
+      );
     }
 
-    if (actionIntent) {
-      const actionResult = buildActionAssistantResponse(messageText, locale);
-      const links = await searchContent(messageText, locale);
-      return NextResponse.json({
-        ...actionResult,
-        links: links.slice(0, 4),
-        mode: "assistant",
-      });
+    const apiKey = process.env.OPENAI_API_KEY?.trim() || "";
+    const looksInvalidKey = !/^sk-[A-Za-z0-9._-]{20,}$/.test(apiKey);
+
+    const actionIntent = Boolean(
+      resolveTemplateKey(messageText) ||
+        /이사|일정|캘린더|멘토|비자|연장|calendar|moving|visa|mentor/i.test(messageText)
+    );
+
+    const user = await getApiUser();
+
+    // 비로그인·액션 의도·유효하지 않은 키: OpenAI 호출 없이 규칙 기반 응답만
+    if (!user || actionIntent || looksInvalidKey) {
+      return await ruleBasedJson(messageText, locale, actionIntent);
+    }
+
+    const supabase = await createServerSupabase();
+    const { data: allowed, error: quotaError } = await supabase.rpc("consume_chat_quota", {
+      p_limit: 30,
+    });
+
+    if (quotaError || allowed !== true) {
+      return NextResponse.json(
+        {
+          response: quotaMessages[locale] || quotaMessages.kr,
+          links: [],
+          mode: "limited",
+        },
+        { status: 429 }
+      );
     }
 
     const result = await getChatbotResponse(messageText, {

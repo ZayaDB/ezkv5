@@ -45,7 +45,7 @@ export async function enrollInLecture(lectureId: string) {
 
   const { data: lecture, error: lecErr } = await supabase
     .from("lectures")
-    .select("id, instructor_id, approval_status, students")
+    .select("id, instructor_id, approval_status")
     .eq("id", lectureId)
     .maybeSingle();
 
@@ -75,11 +75,6 @@ export async function enrollInLecture(lectureId: string) {
     .single();
 
   if (error) throw new Error(error.message);
-
-  await supabase
-    .from("lectures")
-    .update({ students: (lecture.students || 0) + 1 })
-    .eq("id", lectureId);
 
   return {
     id: String(created.id),

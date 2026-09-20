@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/client";
+import { fetchPublicProfiles } from "@/lib/supabase/publicProfiles";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Mentor } from "@/types";
 
@@ -33,6 +34,23 @@ export type MentorProfileRow = {
   updated_at: string;
   profiles?: { name?: string; avatar_url?: string | null } | null;
 };
+
+async function mentorRowsWithPublicProfiles(
+  supabase: SupabaseClient,
+  rows: MentorProfileRow[]
+): Promise<MentorProfileRow[]> {
+  const profileMap = await fetchPublicProfiles(
+    supabase,
+    rows.map((r) => r.user_id)
+  );
+  return rows.map((r) => {
+    const pub = profileMap.get(r.user_id);
+    return {
+      ...r,
+      profiles: pub ? { name: pub.name, avatar_url: pub.avatarUrl ?? null } : null,
+    };
+  });
+}
 
 async function requireUserId() {
   const supabase = createClient();
@@ -105,7 +123,7 @@ export async function listApprovedMentors(
 
   const { data, error, count } = await supabase
     .from("mentor_profiles")
-    .select("*, profiles(name, avatar_url)", { count: "exact" })
+    .select("*", { count: "exact" })
     .eq("approval_status", "approved")
     .order("rating", { ascending: false })
     .order("created_at", { ascending: false })
@@ -113,21 +131,23 @@ export async function listApprovedMentors(
 
   if (error) throw new Error(error.message);
 
-  const mentors = ((data || []) as MentorProfileRow[]).map(mapMentorRow);
+  const rows = await mentorRowsWithPublicProfiles(supabase, (data || []) as MentorProfileRow[]);
+  const mentors = rows.map(mapMentorRow);
   return { mentors, total: count ?? mentors.length, page, limit };
 }
 
 export async function getApprovedMentorById(supabase: SupabaseClient, id: string) {
   const { data, error } = await supabase
     .from("mentor_profiles")
-    .select("*, profiles(name, avatar_url)")
+    .select("*")
     .eq("id", id)
     .eq("approval_status", "approved")
     .maybeSingle();
 
   if (error) throw new Error(error.message);
   if (!data) return null;
-  return mapMentorRow(data as MentorProfileRow);
+  const [row] = await mentorRowsWithPublicProfiles(supabase, [data as MentorProfileRow]);
+  return mapMentorRow(row);
 }
 
 export async function getMyMentorProfile() {

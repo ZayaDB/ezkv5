@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/client";
+import { fetchPublicProfiles } from "@/lib/supabase/publicProfiles";
 import { requireUserId } from "@/lib/supabase/requireUser";
 
 export type PublicFeedType = "community" | "freelancer";
@@ -18,14 +19,20 @@ export async function listPublicFeed(
   const limit = Math.min(80, Math.max(1, opts?.limit ?? 40));
   const { data: rows, error } = await supabase
     .from("public_feed_posts")
-    .select("id, feed_type, body, attachment_urls, created_at, author_id, profiles(name)")
+    .select("id, feed_type, body, attachment_urls, created_at, author_id")
     .eq("feed_type", feedType)
     .order("created_at", { ascending: false })
     .limit(limit);
 
   if (error) return { error: error.message };
-  const postIds = (rows || []).map((r) => r.id);
+  const feedRows = rows || [];
+  const postIds = feedRows.map((r) => r.id);
   if (!postIds.length) return { posts: [] };
+
+  const profileMap = await fetchPublicProfiles(
+    supabase,
+    feedRows.map((r) => String(r.author_id))
+  );
 
   const [{ data: comments }, { data: likes }] = await Promise.all([
     supabase.from("public_feed_comments").select("post_id").in("post_id", postIds),
@@ -45,15 +52,15 @@ export async function listPublicFeed(
     }
   }
 
-  const posts = (rows || []).map((r) => {
-    const p = r.profiles as { name?: string } | null;
+  const posts = feedRows.map((r) => {
+    const name = profileMap.get(String(r.author_id))?.name || "User";
     return {
       id: String(r.id),
       feedType: r.feed_type,
       body: r.body,
       attachmentUrls: Array.isArray(r.attachment_urls) ? r.attachment_urls.slice(0, 10) : [],
       createdAt: r.created_at,
-      author: { id: String(r.author_id), name: p?.name || "User" },
+      author: { id: String(r.author_id), name },
       commentCount: commentCount.get(r.id) || 0,
       likeCount: likeCount.get(r.id) || 0,
       likedByMe: likedSet.has(r.id),
@@ -94,20 +101,25 @@ export async function listPublicFeedComments(postId: string) {
   const supabase = createClient();
   const { data, error } = await supabase
     .from("public_feed_comments")
-    .select("id, body, created_at, author_id, profiles(name)")
+    .select("id, body, created_at, author_id")
     .eq("post_id", postId)
     .order("created_at", { ascending: true })
     .limit(200);
 
   if (error) return { error: error.message };
+  const commentRows = data || [];
+  const profileMap = await fetchPublicProfiles(
+    supabase,
+    commentRows.map((r) => String(r.author_id))
+  );
   return {
-    comments: (data || []).map((r) => {
-      const p = r.profiles as { name?: string } | null;
+    comments: commentRows.map((r) => {
+      const name = profileMap.get(String(r.author_id))?.name || "User";
       return {
         id: String(r.id),
         body: r.body,
         createdAt: r.created_at,
-        author: { id: String(r.author_id), name: p?.name || "User" },
+        author: { id: String(r.author_id), name },
       };
     }),
   };

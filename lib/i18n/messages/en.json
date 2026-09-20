@@ -118,7 +118,10 @@
       "academic": "Academic Support",
       "career": "Career & Freelance",
       "dailyLife": "Daily Life"
-    }
+    },
+    "emptyTitle": "No mentors yet",
+    "emptyDescription": "No information has been registered yet.",
+    "emptyAction": "Go home"
   },
   "lectures": {
     "title": "Lectures",
@@ -174,7 +177,10 @@
     "visa": "Visa Information",
     "housing": "Housing Information",
     "hospital": "Hospital Information",
-    "lifeTips": "Life Tips"
+    "lifeTips": "Life Tips",
+    "emptyTitle": "No study guide content yet",
+    "emptyDescription": "No information has been registered yet.",
+    "emptyAction": "Go home"
   },
   "chatbot": {
     "title": "MentorLink AI Assistant",

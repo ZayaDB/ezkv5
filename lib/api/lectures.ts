@@ -1,5 +1,4 @@
 /** 강의 마켓 — Supabase */
-import { API_BASE_URL, authToken } from "./core";
 
 export const lecturesApi = {
   getMine: async () => {
@@ -89,19 +88,8 @@ export const lecturesApi = {
     }
   },
   uploadImage: async (file: File) => {
-    const token = authToken.get();
-    const fd = new FormData();
-    fd.append("file", file);
-    const headers: Record<string, string> = {};
-    if (token) headers.Authorization = `Bearer ${token}`;
-    const res = await fetch(`${API_BASE_URL}/api/upload/feed`, {
-      method: "POST",
-      headers,
-      body: fd,
-    });
-    const data = await res.json();
-    if (!res.ok) return { error: data.error || "업로드 실패" } as const;
-    return { data: { url: data.url as string } };
+    const { uploadPublicImage } = await import("@/lib/supabase/storage");
+    return uploadPublicImage(file);
   },
 };
 
