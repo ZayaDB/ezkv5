@@ -70,6 +70,8 @@ create table if not exists public.user_alerts (
   due_date date,
   dismissed boolean not null default false,
   dismissed_at timestamptz,
+  read boolean not null default false,
+  read_at timestamptz,
   action_url text,
   created_at timestamptz not null default now()
 );
@@ -79,6 +81,8 @@ alter table public.calendar_events add column if not exists notes text;
 alter table public.user_alerts add column if not exists kind text;
 alter table public.user_alerts add column if not exists due_date date;
 alter table public.user_alerts add column if not exists dismissed_at timestamptz;
+alter table public.user_alerts add column if not exists read boolean not null default false;
+alter table public.user_alerts add column if not exists read_at timestamptz;
 
 create or replace function public.handle_new_user()
 returns trigger as $$

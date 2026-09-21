@@ -128,7 +128,9 @@
     "subtitle": "Online and offline lectures",
     "online": "Online",
     "offline": "Offline",
-    "all": "All"
+    "all": "All",
+    "ownCourse": "This is your course",
+    "manageOwn": "Manage course"
   },
   "community": {
     "title": "Community Groups",
@@ -485,7 +487,35 @@
       "editProfile": "Edit profile",
       "createCourse": "Create course",
       "myCourses": "My courses",
-      "noCourses": "No courses yet."
+      "noCourses": "No courses yet.",
+      "backToProfile": "Back to my info",
+      "sessionDurationLabel": "Session length (minutes)",
+      "sessionFormatLabel": "Session format",
+      "formatOnline": "Online",
+      "formatOffline": "Offline",
+      "formatBoth": "Both",
+      "yearsLabel": "Years of experience",
+      "educationLabel": "Education / credentials",
+      "careerSummaryLabel": "Career summary",
+      "responseTimeLabel": "Average response time",
+      "responseTimePlaceholder": "e.g. within 24 hours",
+      "timezoneLabel": "Time zone",
+      "introVideoLabel": "Intro video URL (optional)",
+      "portfolioLabel": "Portfolio links (one URL per line, optional)",
+      "mentoringStyleLabel": "Mentoring style",
+      "recommendedForLabel": "Best for",
+      "notRecommendedForLabel": "Not recommended for",
+      "errTitleRequired": "Headline is required.",
+      "errLocationRequired": "Location is required.",
+      "errBioMin": "Bio must be at least 40 characters.",
+      "errLanguagesRequired": "Enter at least one language.",
+      "errSpecialtiesRequired": "Enter at least one specialty.",
+      "errPriceMin": "Session price must be 0 or more.",
+      "errDurationRange": "Session length must be between 15 and 240 minutes.",
+      "errYearsRange": "Experience must be between 0 and 60 years.",
+      "errStyleRequired": "Mentoring style is required.",
+      "errIntroVideoUrl": "Intro video URL must be a valid http(s) link.",
+      "errPortfolioUrl": "Portfolio links must be http(s) URLs."
     },
     "info": {
       "title": "Basic information",
@@ -506,7 +536,8 @@
       "newPassword": "New password",
       "confirmNewPassword": "Confirm new password",
       "passwordMismatch": "New passwords do not match.",
-      "passwordTooShort": "New password must be at least 6 characters."
+      "passwordTooShort": "New password must be at least 6 characters.",
+      "mentorCta": "Apply as mentor"
     },
     "lectureNew": {
       "title": "Create course",
@@ -524,7 +555,35 @@
       "submit": "Publish",
       "success": "Course created.",
       "successPending": "Submitted. It will appear publicly after admin approval.",
-      "error": "Could not create course."
+      "error": "Could not create course.",
+      "shortDescription": "Short intro",
+      "targetAudience": "Target learners",
+      "prerequisites": "Prerequisites",
+      "whatYouWillLearn": "Learning points (one per line, 3+)",
+      "curriculum": "Curriculum (one per line)",
+      "totalLessons": "Total lessons",
+      "totalHours": "Total hours",
+      "difficulty": "Level",
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced",
+      "maxStudents": "Max students",
+      "language": "Course language",
+      "previewVideoUrl": "Preview video URL",
+      "materialsIncluded": "Materials included (one per line)",
+      "faq": "FAQ (one per line)",
+      "durationPlaceholder": "e.g. 8 weeks / 1-day workshop",
+      "imageUpload": "Upload image",
+      "imageUploading": "Uploading...",
+      "imageHint": "JPG/PNG, up to 3MB",
+      "imagePreviewAlt": "Course image preview",
+      "imageUploadFail": "Image upload failed.",
+      "imageUploadOk": "Image uploaded.",
+      "editTitle": "Edit course",
+      "editSubtitle": "Update the course you published.",
+      "editSubmit": "Save changes",
+      "editSuccess": "Course updated.",
+      "loadError": "Could not load the course."
     }
   },
   "dashboardV2": {
@@ -664,7 +723,10 @@
     "page": "{current} / {total}",
     "toastApproved": "Updated successfully.",
     "toastRejected": "Rejected successfully.",
-    "toastError": "Action failed. Please try again."
+    "toastError": "Action failed. Please try again.",
+    "openReview": "View application",
+    "reviewMentorTitle": "Review mentor application",
+    "reviewLectureTitle": "Review course application"
   },
   "myPages": {
     "backDashboard": "Dashboard",

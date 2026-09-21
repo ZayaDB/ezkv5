@@ -32,6 +32,7 @@ export interface Lecture {
   id: string;
   title: string;
   instructor: string;
+  instructorId?: string;
   type: 'online' | 'offline';
   category: string;
   price: number;

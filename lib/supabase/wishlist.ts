@@ -28,8 +28,15 @@ export async function listWishlist() {
 export async function addToWishlist(lectureId: string) {
   const { supabase, userId } = await requireUserId();
 
-  const { data: lecture } = await supabase.from("lectures").select("id").eq("id", lectureId).maybeSingle();
+  const { data: lecture } = await supabase
+    .from("lectures")
+    .select("id, instructor_id")
+    .eq("id", lectureId)
+    .maybeSingle();
   if (!lecture) throw new Error("강의를 찾을 수 없습니다.");
+  if (lecture.instructor_id === userId) {
+    throw new Error("본인이 개설한 강의는 찜할 수 없습니다.");
+  }
 
   const { error } = await supabase.from("lecture_wishlist").upsert(
     { user_id: userId, lecture_id: lectureId },

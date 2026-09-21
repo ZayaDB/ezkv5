@@ -2,15 +2,17 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import { adminApi } from '@/lib/api';
-import { listPendingMentors, setMentorApproval } from '@/lib/supabase/moderation';
+import { listPendingMentors, setMentorApproval, type PendingMentorApplication } from '@/lib/supabase/moderation';
 import { Search, UserPlus, Users } from 'lucide-react';
 import Toast from '@/components/ui/Toast';
 import LoadingState from '@/components/ui/LoadingState';
 import AdminUserTable from '@/components/admin/users/AdminUserTable';
 import UserDetailModal from '@/components/admin/users/UserDetailModal';
+import MentorApplicationDetails from '@/components/admin/moderation/MentorApplicationDetails';
+import ModerationReviewModal from '@/components/admin/moderation/ModerationReviewModal';
 
 interface UserRow {
   id: string;
@@ -29,21 +31,15 @@ interface UserRow {
   } | null;
 }
 
-interface MentorPendingRow {
-  id: string;
-  createdAt: string;
-  user: { id: string; name: string; email: string } | null;
-  title?: string;
-  location?: string;
-  specialties?: string[];
-}
 
 export default function AdminUsersPage() {
   const locale = useLocale();
+  const tMod = useTranslations('adminModeration');
   const router = useRouter();
   const { user: currentUser, loading: authLoading } = useAuth();
   const [users, setUsers] = useState<UserRow[]>([]);
-  const [mentorPending, setMentorPending] = useState<MentorPendingRow[]>([]);
+  const [mentorPending, setMentorPending] = useState<PendingMentorApplication[]>([]);
+  const [reviewMentor, setReviewMentor] = useState<PendingMentorApplication | null>(null);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState<string>('mentee');
@@ -144,6 +140,7 @@ export default function AdminUsersPage() {
         variant: 'success',
       });
       await Promise.all([loadMentorPending(), loadUsers()]);
+      setReviewMentor(null);
     } catch (e: unknown) {
       setToast({
         message: e instanceof Error ? e.message : '처리에 실패했습니다.',
@@ -195,31 +192,25 @@ export default function AdminUsersPage() {
           ) : (
             <div className="space-y-3">
               {mentorPending.map((item) => (
-                <div key={item.id} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-                  <p className="font-semibold text-slate-900">{item.title || '멘토 신청'}</p>
+                <button
+                  type="button"
+                  key={item.id}
+                  onClick={() => setReviewMentor(item)}
+                  className="w-full text-left rounded-xl border border-slate-200 bg-slate-50 p-4 hover:bg-white hover:ring-1 hover:ring-primary-200"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <p className="font-semibold text-slate-900">{item.title || '멘토 신청'}</p>
+                    <span className="text-[11px] font-semibold text-primary-600 shrink-0">
+                      {tMod('openReview')}
+                    </span>
+                  </div>
                   <p className="text-xs text-slate-500 mt-1">
                     {item.user?.name} · {item.user?.email}
                   </p>
                   <p className="text-xs text-slate-500">
                     {item.location || '-'} · {(item.specialties || []).join(', ') || '분야 미입력'}
                   </p>
-                  <div className="mt-3 flex gap-2">
-                    <button
-                      type="button"
-                      onClick={() => void handleMentorModeration(item.id, 'approved')}
-                      className="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700"
-                    >
-                      승인
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => void handleMentorModeration(item.id, 'rejected')}
-                      className="rounded-lg bg-white px-3 py-1.5 text-xs font-semibold text-red-700 ring-1 ring-red-200 hover:bg-red-50"
-                    >
-                      반려
-                    </button>
-                  </div>
-                </div>
+                </button>
               ))}
             </div>
           )}
@@ -325,6 +316,18 @@ export default function AdminUsersPage() {
           </div>
         </div>
       </div>
+
+      {reviewMentor && (
+        <ModerationReviewModal
+          title={tMod('reviewMentorTitle')}
+          subtitle={`${reviewMentor.user?.name || ''} · ${reviewMentor.user?.email || ''}`}
+          onClose={() => setReviewMentor(null)}
+          onApprove={() => void handleMentorModeration(reviewMentor.id, 'approved')}
+          onReject={() => void handleMentorModeration(reviewMentor.id, 'rejected')}
+        >
+          <MentorApplicationDetails item={reviewMentor} framed={false} />
+        </ModerationReviewModal>
+      )}
 
       <UserDetailModal
         isOpen={!!selectedUserId}

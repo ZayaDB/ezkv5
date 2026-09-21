@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { contentApi, enrollmentApi, lectureWishlistApi } from '@/lib/api/client';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import Link from 'next/link';
@@ -28,8 +28,9 @@ function syllabusFromDescription(description: string): string[] {
 export default function LectureDetailPage() {
   const params = useParams();
   const locale = useLocale();
+  const tLec = useTranslations('lectures');
   const router = useRouter();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const id = params.id as string;
 
   const [lecture, setLecture] = useState<Lecture | null | undefined>(undefined);
@@ -51,10 +52,12 @@ export default function LectureDetailPage() {
     load();
   }, [load]);
 
+  const isOwner = Boolean(user?.id && lecture?.instructorId && user.id === lecture.instructorId);
+
   useEffect(() => {
     let active = true;
     const checkEnrollment = async () => {
-      if (!isAuthenticated) return;
+      if (!isAuthenticated || isOwner) return;
       const res = await enrollmentApi.getMine();
       const list = res.data?.enrollments || [];
       if (!active) return;
@@ -64,12 +67,12 @@ export default function LectureDetailPage() {
     return () => {
       active = false;
     };
-  }, [id, isAuthenticated]);
+  }, [id, isAuthenticated, isOwner]);
 
   useEffect(() => {
     let active = true;
     const loadWishlist = async () => {
-      if (!isAuthenticated) return;
+      if (!isAuthenticated || isOwner) return;
       const res = await lectureWishlistApi.list();
       if (!active) return;
       const list = res.data?.wishlist || [];
@@ -79,7 +82,7 @@ export default function LectureDetailPage() {
     return () => {
       active = false;
     };
-  }, [id, isAuthenticated]);
+  }, [id, isAuthenticated, isOwner]);
 
   if (lecture === undefined) {
     return (
@@ -105,6 +108,7 @@ export default function LectureDetailPage() {
   const syllabus = syllabusFromDescription(lecture.description);
 
   const enroll = async () => {
+    if (isOwner) return;
     if (!isAuthenticated) {
       router.push(`/${locale}/login`);
       return;
@@ -123,6 +127,7 @@ export default function LectureDetailPage() {
   };
 
   const toggleWishlist = async () => {
+    if (isOwner) return;
     if (!isAuthenticated) {
       router.push(`/${locale}/login`);
       return;
@@ -205,28 +210,39 @@ export default function LectureDetailPage() {
 
               <div className="flex items-center gap-4 flex-wrap">
                 <div className="text-4xl font-extrabold">₩{lecture.price.toLocaleString('ko-KR')}</div>
-                <Button
-                  type="button"
-                  onClick={toggleWishlist}
-                  className={`${
-                    isWishlisted ? 'bg-red-50 text-red-600 border border-red-200' : 'bg-white/20 text-white border border-white/30'
-                  }`}
-                  variant="ghost"
-                >
-                  <Heart className={`w-4 h-4 inline mr-2 ${isWishlisted ? 'fill-red-500' : ''}`} />
-                  {isWishlisted ? '찜됨' : '찜하기'}
-                </Button>
-                <Button
-                  type="button"
-                  onClick={enroll}
-                  disabled={isSubmitting || isEnrolled}
-                  variant="secondary"
-                  size="lg"
-                >
-                  {isSubmitting ? '신청 중...' : isEnrolled ? '수강 신청 완료' : '지금 등록하기'}
-                </Button>
+                {isOwner ? (
+                  <Link
+                    href={`/${locale}/my/lectures`}
+                    className="inline-flex items-center rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 hover:bg-white/90"
+                  >
+                    {tLec('ownCourse')} · {tLec('manageOwn')}
+                  </Link>
+                ) : (
+                  <>
+                    <Button
+                      type="button"
+                      onClick={toggleWishlist}
+                      className={`${
+                        isWishlisted ? 'bg-red-50 text-red-600 border border-red-200' : 'bg-white/20 text-white border border-white/30'
+                      }`}
+                      variant="ghost"
+                    >
+                      <Heart className={`w-4 h-4 inline mr-2 ${isWishlisted ? 'fill-red-500' : ''}`} />
+                      {isWishlisted ? '찜됨' : '찜하기'}
+                    </Button>
+                    <Button
+                      type="button"
+                      onClick={enroll}
+                      disabled={isSubmitting || isEnrolled}
+                      variant="secondary"
+                      size="lg"
+                    >
+                      {isSubmitting ? '신청 중...' : isEnrolled ? '수강 신청 완료' : '지금 등록하기'}
+                    </Button>
+                  </>
+                )}
               </div>
-              {enrollMessage && (
+              {!isOwner && enrollMessage && (
                 <p className="text-sm font-semibold text-white/90 mt-3">{enrollMessage}</p>
               )}
             </div>
@@ -304,17 +320,28 @@ export default function LectureDetailPage() {
                     <span className="font-semibold text-gray-900">{lecture.rating}</span>
                   </div>
                 </div>
-                <Button
-                  type="button"
-                  onClick={enroll}
-                  disabled={isSubmitting || isEnrolled}
-                  fullWidth
-                  size="lg"
-                >
-                  {isSubmitting ? '신청 중...' : isEnrolled ? '수강 신청 완료' : '지금 등록하기'}
-                </Button>
-                {enrollMessage && (
-                  <p className="text-xs text-primary-700 font-semibold">{enrollMessage}</p>
+                {isOwner ? (
+                  <Link
+                    href={`/${locale}/my/lectures`}
+                    className="block w-full text-center rounded-xl bg-primary-600 px-4 py-3 text-sm font-semibold text-white hover:bg-primary-700"
+                  >
+                    {tLec('manageOwn')}
+                  </Link>
+                ) : (
+                  <>
+                    <Button
+                      type="button"
+                      onClick={enroll}
+                      disabled={isSubmitting || isEnrolled}
+                      fullWidth
+                      size="lg"
+                    >
+                      {isSubmitting ? '신청 중...' : isEnrolled ? '수강 신청 완료' : '지금 등록하기'}
+                    </Button>
+                    {enrollMessage && (
+                      <p className="text-xs text-primary-700 font-semibold">{enrollMessage}</p>
+                    )}
+                  </>
                 )}
               </div>
             </div>

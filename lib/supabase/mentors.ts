@@ -99,16 +99,79 @@ export function serializeMine(row: MentorProfileRow) {
     userId: row.user_id,
     title: row.title,
     location: row.location,
-    languages: row.languages,
-    specialties: row.specialties,
-    price: row.price,
+    languages: row.languages || [],
+    specialties: row.specialties || [],
+    price: Number(row.price) || 0,
     availability: row.availability,
-    photo: row.photo,
+    photo: row.photo || "",
     verified: row.verified,
     approvalStatus: row.approval_status,
     bio: row.bio,
-    rating: row.rating,
-    reviewCount: row.review_count,
+    rating: Number(row.rating) || 0,
+    reviewCount: row.review_count || 0,
+    yearsOfExperience: Number(row.years_of_experience) || 0,
+    education: row.education || "",
+    careerSummary: row.career_summary || "",
+    sessionDuration: Number(row.session_duration) || 0,
+    sessionFormat: row.session_format || "online",
+    timezone: row.timezone || "",
+    responseTime: row.response_time || "",
+    introVideoUrl: row.intro_video_url || "",
+    portfolioLinks: row.portfolio_links || [],
+    mentoringStyle: row.mentoring_style || "",
+    recommendedFor: row.recommended_for || "",
+    notRecommendedFor: row.not_recommended_for || "",
+  };
+}
+
+export type MyMentorProfile = ReturnType<typeof serializeMine>;
+
+type MentorProfileWrite = {
+  title: string;
+  location: string;
+  bio: string;
+  languages?: string[];
+  specialties?: string[];
+  price?: number | string;
+  availability?: string;
+  photo?: string;
+  sessionDuration?: number;
+  sessionFormat?: "online" | "offline" | "both";
+  yearsOfExperience?: number;
+  education?: string;
+  careerSummary?: string;
+  responseTime?: string;
+  timezone?: string;
+  introVideoUrl?: string;
+  portfolioLinks?: string[];
+  mentoringStyle?: string;
+  recommendedFor?: string;
+  notRecommendedFor?: string;
+};
+
+function mentorContentFields(payload: MentorProfileWrite) {
+  return {
+    title: payload.title.trim(),
+    location: payload.location.trim(),
+    bio: payload.bio.trim(),
+    languages: payload.languages || [],
+    specialties: payload.specialties || [],
+    price: Number(payload.price) || 0,
+    availability: payload.availability || "available",
+    photo: payload.photo || null,
+    session_duration: Number(payload.sessionDuration) || 60,
+    session_format: payload.sessionFormat || "online",
+    years_of_experience: Number(payload.yearsOfExperience) || 0,
+    education: payload.education || "",
+    career_summary: payload.careerSummary || "",
+    response_time: payload.responseTime || "",
+    timezone: payload.timezone || "Asia/Seoul",
+    intro_video_url: payload.introVideoUrl || "",
+    portfolio_links: payload.portfolioLinks || [],
+    mentoring_style: payload.mentoringStyle || "",
+    recommended_for: payload.recommendedFor || "",
+    not_recommended_for: payload.notRecommendedFor || "",
+    updated_at: new Date().toISOString(),
   };
 }
 
@@ -163,28 +226,7 @@ export async function getMyMentorProfile() {
   return serializeMine(data as MentorProfileRow);
 }
 
-export async function applyMentorProfile(payload: {
-  title: string;
-  location: string;
-  bio: string;
-  languages?: string[];
-  specialties?: string[];
-  price?: number | string;
-  availability?: string;
-  photo?: string;
-  sessionDuration?: number;
-  sessionFormat?: "online" | "offline" | "both";
-  yearsOfExperience?: number;
-  education?: string;
-  careerSummary?: string;
-  responseTime?: string;
-  timezone?: string;
-  introVideoUrl?: string;
-  portfolioLinks?: string[];
-  mentoringStyle?: string;
-  recommendedFor?: string;
-  notRecommendedFor?: string;
-}) {
+export async function applyMentorProfile(payload: MentorProfileWrite) {
   const { supabase, userId } = await requireUserId();
 
   const { data: profile } = await supabase.from("profiles").select("role").eq("id", userId).single();
@@ -194,29 +236,9 @@ export async function applyMentorProfile(payload: {
 
   const row = {
     user_id: userId,
-    title: payload.title.trim(),
-    location: payload.location.trim(),
-    bio: payload.bio.trim(),
-    languages: payload.languages || [],
-    specialties: payload.specialties || [],
-    price: Number(payload.price) || 0,
-    availability: payload.availability || "available",
-    photo: payload.photo || null,
-    session_duration: Number(payload.sessionDuration) || 60,
-    session_format: payload.sessionFormat || "online",
-    years_of_experience: Number(payload.yearsOfExperience) || 0,
-    education: payload.education || "",
-    career_summary: payload.careerSummary || "",
-    response_time: payload.responseTime || "",
-    timezone: payload.timezone || "Asia/Seoul",
-    intro_video_url: payload.introVideoUrl || "",
-    portfolio_links: payload.portfolioLinks || [],
-    mentoring_style: payload.mentoringStyle || "",
-    recommended_for: payload.recommendedFor || "",
-    not_recommended_for: payload.notRecommendedFor || "",
+    ...mentorContentFields(payload),
     approval_status: profile?.role === "mentor" ? "approved" : "pending",
     verified: profile?.role === "mentor",
-    updated_at: new Date().toISOString(),
   };
 
   const { data: existing } = await supabase
@@ -242,6 +264,31 @@ export async function applyMentorProfile(payload: {
   }
 
   const { data, error } = await supabase.from("mentor_profiles").insert(row).select("*").single();
+  if (error) throw new Error(error.message);
+  return { mentor: serializeMine(data as MentorProfileRow) };
+}
+
+export async function updateMyMentorProfile(payload: MentorProfileWrite) {
+  const { supabase, userId } = await requireUserId();
+  const { data: existing, error: fetchErr } = await supabase
+    .from("mentor_profiles")
+    .select("id, approval_status")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (fetchErr) throw new Error(fetchErr.message);
+  if (!existing) throw new Error("멘토 프로필이 없습니다.");
+  if (existing.approval_status !== "approved") {
+    throw new Error("승인된 멘토 프로필만 수정할 수 있습니다.");
+  }
+
+  const { data, error } = await supabase
+    .from("mentor_profiles")
+    .update(mentorContentFields(payload))
+    .eq("id", existing.id)
+    .select("*")
+    .single();
+
   if (error) throw new Error(error.message);
   return { mentor: serializeMine(data as MentorProfileRow) };
 }

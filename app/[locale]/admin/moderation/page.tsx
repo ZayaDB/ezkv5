@@ -11,12 +11,17 @@ import {
   listPendingMentors,
   setLectureApproval,
   setMentorApproval,
+  type PendingLectureApplication,
+  type PendingMentorApplication,
 } from "@/lib/supabase/moderation";
 import StatusBadge from "@/components/ui/StatusBadge";
 import LoadingState from "@/components/ui/LoadingState";
 import PlatformCard from "@/components/ui/PlatformCard";
 import Toast from "@/components/ui/Toast";
 import ModerationTabs, { type ModerationTab } from "@/components/admin/moderation/ModerationTabs";
+import MentorApplicationDetails from "@/components/admin/moderation/MentorApplicationDetails";
+import LectureApplicationDetails from "@/components/admin/moderation/LectureApplicationDetails";
+import ModerationReviewModal from "@/components/admin/moderation/ModerationReviewModal";
 
 interface QueueItem {
   id: string;
@@ -25,23 +30,7 @@ interface QueueItem {
   group: { id: string; name: string; category: string } | null;
 }
 
-interface MentorQueueItem {
-  id: string;
-  createdAt: string;
-  user: { id: string; name: string; email: string } | null;
-  title?: string;
-  location?: string;
-  specialties?: string[];
-}
 
-interface LectureQueueItem {
-  id: string;
-  createdAt: string;
-  title?: string;
-  category?: string;
-  type?: string;
-  user: { id: string; name: string; email: string } | null;
-}
 
 interface ChannelPostAdminRow {
   id: string;
@@ -62,13 +51,14 @@ export default function AdminModerationPage() {
   const t = useTranslations("adminModeration");
   const tStatus = useTranslations("status");
   const tCommon = useTranslations("common");
+  const tl = useTranslations("profilePage.lectureNew");
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(true);
   const [communityPending, setCommunityPending] = useState<QueueItem[]>([]);
   const [freelancerPending, setFreelancerPending] = useState<QueueItem[]>([]);
-  const [mentorPending, setMentorPending] = useState<MentorQueueItem[]>([]);
-  const [lecturePending, setLecturePending] = useState<LectureQueueItem[]>([]);
+  const [mentorPending, setMentorPending] = useState<PendingMentorApplication[]>([]);
+  const [lecturePending, setLecturePending] = useState<PendingLectureApplication[]>([]);
   const [channelPosts, setChannelPosts] = useState<ChannelPostAdminRow[]>([]);
   const [search, setSearch] = useState("");
   const [tab, setTab] = useState<ModerationTab>("mentor");
@@ -79,6 +69,11 @@ export default function AdminModerationPage() {
   const [pageFree, setPageFree] = useState(1);
   const [pageMent, setPageMent] = useState(1);
   const [pageLec, setPageLec] = useState(1);
+  const [review, setReview] = useState<
+    | { kind: "mentor"; item: PendingMentorApplication }
+    | { kind: "lecture"; item: PendingLectureApplication }
+    | null
+  >(null);
   const [toast, setToast] = useState<{
     message: string;
     variant: "success" | "error" | "info";
@@ -123,16 +118,19 @@ export default function AdminModerationPage() {
         const res = await adminApi.updateModerationStatus({ type, id, status });
         if (res.error) {
           setToast({ message: res.error || t("toastError"), variant: "error" });
-          return;
+          return false;
         }
       }
       setToast({ message: t(successKey), variant: "success" });
+      setReview(null);
       await load();
+      return true;
     } catch (e: unknown) {
       setToast({
         message: e instanceof Error ? e.message : t("toastError"),
         variant: "error",
       });
+      return false;
     }
   };
 
@@ -172,8 +170,11 @@ export default function AdminModerationPage() {
         return (
           item.user?.name?.toLowerCase().includes(q) ||
           item.user?.email?.toLowerCase().includes(q) ||
-          (item.title || "").toLowerCase().includes(q) ||
-          (item.specialties || []).some((s) => s.toLowerCase().includes(q))
+          item.title.toLowerCase().includes(q) ||
+          item.bio.toLowerCase().includes(q) ||
+          item.location.toLowerCase().includes(q) ||
+          item.specialties.some((s) => s.toLowerCase().includes(q)) ||
+          item.languages.some((s) => s.toLowerCase().includes(q))
         );
       }),
     [mentorPending, search]
@@ -187,8 +188,10 @@ export default function AdminModerationPage() {
         return (
           item.user?.name?.toLowerCase().includes(q) ||
           item.user?.email?.toLowerCase().includes(q) ||
-          (item.title || "").toLowerCase().includes(q) ||
-          (item.category || "").toLowerCase().includes(q)
+          item.title.toLowerCase().includes(q) ||
+          item.category.toLowerCase().includes(q) ||
+          item.description.toLowerCase().includes(q) ||
+          item.shortDescription.toLowerCase().includes(q)
         );
       }),
     [lecturePending, search]
@@ -335,17 +338,24 @@ export default function AdminModerationPage() {
               ) : (
                 <div className="space-y-3">
                   {pagedMentor.map((item) => (
-                    <div
+                    <button
+                      type="button"
                       key={item.id}
-                      className="rounded-xl border border-slate-200 bg-slate-50/60 p-4"
+                      onClick={() => setReview({ kind: "mentor", item })}
+                      className="w-full text-left rounded-xl border border-slate-200 bg-slate-50/60 p-4 hover:bg-white hover:ring-1 hover:ring-primary-200 transition-colors"
                     >
-                      <p className="font-semibold text-slate-900 text-sm">{item.title}</p>
+                      <div className="flex items-start justify-between gap-3">
+                        <p className="font-semibold text-slate-900 text-sm">{item.title}</p>
+                        <span className="text-[11px] font-semibold text-primary-600 shrink-0">
+                          {t("openReview")}
+                        </span>
+                      </div>
                       <p className="text-xs text-slate-500 mt-1">
                         {item.user?.name} · {item.user?.email}
                       </p>
                       <p className="text-xs text-slate-500">
                         {item.location} · {t("mentorSpec")}:{" "}
-                        {(item.specialties || []).join(", ") || "—"}
+                        {item.specialties.length ? item.specialties.join(", ") : "—"}
                       </p>
                       <p className="text-xs text-slate-400 mt-1">
                         {fmt.dateTime(new Date(item.createdAt), {
@@ -353,24 +363,7 @@ export default function AdminModerationPage() {
                           timeStyle: "short",
                         })}
                       </p>
-                      <div className="mt-3 flex flex-wrap items-center gap-2">
-                        <StatusBadge label={tStatus("moderation.pending")} tone="purple" />
-                        <button
-                          type="button"
-                          onClick={() => updateStatus("mentor", item.id, "approved", "toastApproved")}
-                          className="rounded-lg bg-emerald-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-emerald-700"
-                        >
-                          {t("approve")}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => updateStatus("mentor", item.id, "rejected", "toastRejected")}
-                          className="rounded-lg bg-white px-2.5 py-1 text-xs font-semibold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50"
-                        >
-                          {t("reject")}
-                        </button>
-                      </div>
-                    </div>
+                    </button>
                   ))}
                 </div>
               )}
@@ -408,16 +401,23 @@ export default function AdminModerationPage() {
               ) : (
                 <div className="space-y-3">
                   {pagedLecture.map((item) => (
-                    <div
+                    <button
+                      type="button"
                       key={item.id}
-                      className="rounded-xl border border-slate-200 bg-slate-50/60 p-4"
+                      onClick={() => setReview({ kind: "lecture", item })}
+                      className="w-full text-left rounded-xl border border-slate-200 bg-slate-50/60 p-4 hover:bg-white hover:ring-1 hover:ring-primary-200 transition-colors"
                     >
-                      <p className="font-semibold text-slate-900 text-sm">{item.title}</p>
+                      <div className="flex items-start justify-between gap-3">
+                        <p className="font-semibold text-slate-900 text-sm">{item.title}</p>
+                        <span className="text-[11px] font-semibold text-primary-600 shrink-0">
+                          {t("openReview")}
+                        </span>
+                      </div>
                       <p className="text-xs text-slate-500 mt-1">
                         {item.user?.name} · {item.user?.email}
                       </p>
                       <p className="text-xs text-slate-500">
-                        {item.category} · {item.type}
+                        {item.category} · {item.type === "offline" ? tl("offline") : tl("online")}
                       </p>
                       <p className="text-xs text-slate-400 mt-1">
                         {fmt.dateTime(new Date(item.createdAt), {
@@ -425,24 +425,7 @@ export default function AdminModerationPage() {
                           timeStyle: "short",
                         })}
                       </p>
-                      <div className="mt-3 flex flex-wrap items-center gap-2">
-                        <StatusBadge label={tStatus("moderation.pending")} tone="purple" />
-                        <button
-                          type="button"
-                          onClick={() => updateStatus("lecture", item.id, "approved", "toastApproved")}
-                          className="rounded-lg bg-emerald-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-emerald-700"
-                        >
-                          {t("approve")}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => updateStatus("lecture", item.id, "rejected", "toastRejected")}
-                          className="rounded-lg bg-white px-2.5 py-1 text-xs font-semibold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50"
-                        >
-                          {t("reject")}
-                        </button>
-                      </div>
-                    </div>
+                    </button>
                   ))}
                 </div>
               )}
@@ -655,6 +638,26 @@ export default function AdminModerationPage() {
             </PlatformCard>
           )}
         </div>
+
+        {review && (
+          <ModerationReviewModal
+            title={review.kind === "mentor" ? t("reviewMentorTitle") : t("reviewLectureTitle")}
+            subtitle={`${review.item.user?.name || ""} · ${review.item.user?.email || ""}`}
+            onClose={() => setReview(null)}
+            onApprove={() =>
+              void updateStatus(review.kind, review.item.id, "approved", "toastApproved")
+            }
+            onReject={() =>
+              void updateStatus(review.kind, review.item.id, "rejected", "toastRejected")
+            }
+          >
+            {review.kind === "mentor" ? (
+              <MentorApplicationDetails item={review.item} framed={false} />
+            ) : (
+              <LectureApplicationDetails item={review.item} framed={false} />
+            )}
+          </ModerationReviewModal>
+        )}
 
         {deleteTarget && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">

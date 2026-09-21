@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { listAlerts, type UserAlert } from "@/lib/supabase/alerts";
+import { ALERTS_CHANGED_EVENT, listAlerts, type UserAlert } from "@/lib/supabase/alerts";
 
 export function useUnreadNotifications(enabled: boolean) {
   const [items, setItems] = useState<UserAlert[]>([]);
@@ -28,7 +28,7 @@ export function useUnreadNotifications(enabled: boolean) {
       }
       const alerts = await listAlerts(user.id);
       setItems(alerts.slice(0, 5));
-      setUnread(alerts.length);
+      setUnread(alerts.filter((a) => !a.read).length);
     } catch {
       setItems([]);
       setUnread(0);
@@ -44,10 +44,13 @@ export function useUnreadNotifications(enabled: boolean) {
   useEffect(() => {
     if (!enabled) return;
     const onFocus = () => void refresh();
+    const onChanged = () => void refresh();
     window.addEventListener("focus", onFocus);
+    window.addEventListener(ALERTS_CHANGED_EVENT, onChanged);
     const timer = window.setInterval(() => void refresh(), 60000);
     return () => {
       window.removeEventListener("focus", onFocus);
+      window.removeEventListener(ALERTS_CHANGED_EVENT, onChanged);
       window.clearInterval(timer);
     };
   }, [enabled, refresh]);

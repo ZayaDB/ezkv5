@@ -128,7 +128,9 @@
     "subtitle": "온라인 및 오프라인 강의",
     "online": "온라인",
     "offline": "오프라인",
-    "all": "전체"
+    "all": "전체",
+    "ownCourse": "내 강의입니다",
+    "manageOwn": "강의 관리"
   },
   "community": {
     "title": "커뮤니티 그룹",
@@ -486,7 +488,35 @@
       "myCourses": "내 강의",
       "noCourses": "등록한 강의가 없습니다.",
       "manageCoursesHint": "강의 목록·수정은 「강의 관리」 메뉴에서 하세요.",
-      "goMyLectures": "강의 관리로 이동"
+      "goMyLectures": "강의 관리로 이동",
+      "backToProfile": "나의 정보로",
+      "sessionDurationLabel": "세션 시간(분)",
+      "sessionFormatLabel": "세션 형식",
+      "formatOnline": "온라인",
+      "formatOffline": "오프라인",
+      "formatBoth": "모두 가능",
+      "yearsLabel": "경력(년)",
+      "educationLabel": "학력/자격",
+      "careerSummaryLabel": "경력 요약",
+      "responseTimeLabel": "평균 응답 시간",
+      "responseTimePlaceholder": "예: 24시간 이내",
+      "timezoneLabel": "시간대",
+      "introVideoLabel": "소개 영상 URL (선택)",
+      "portfolioLabel": "포트폴리오 링크 (줄바꿈 구분, 선택)",
+      "mentoringStyleLabel": "멘토링 스타일",
+      "recommendedForLabel": "추천 대상",
+      "notRecommendedForLabel": "비추천 대상",
+      "errTitleRequired": "멘토 직함은 필수입니다.",
+      "errLocationRequired": "활동 지역은 필수입니다.",
+      "errBioMin": "소개는 40자 이상 입력해 주세요.",
+      "errLanguagesRequired": "언어를 1개 이상 입력해 주세요.",
+      "errSpecialtiesRequired": "전문 분야를 1개 이상 입력해 주세요.",
+      "errPriceMin": "상담 가격은 0원 이상이어야 합니다.",
+      "errDurationRange": "세션 시간은 15~240분 사이여야 합니다.",
+      "errYearsRange": "경력은 0~60년 사이로 입력해 주세요.",
+      "errStyleRequired": "멘토링 스타일은 필수입니다.",
+      "errIntroVideoUrl": "소개 영상 URL 형식이 올바르지 않습니다.",
+      "errPortfolioUrl": "포트폴리오 링크는 http(s) URL만 입력 가능합니다."
     },
     "info": {
       "title": "기본 정보",
@@ -507,7 +537,8 @@
       "newPassword": "새 비밀번호",
       "confirmNewPassword": "새 비밀번호 확인",
       "passwordMismatch": "새 비밀번호가 일치하지 않습니다.",
-      "passwordTooShort": "새 비밀번호는 최소 6자 이상이어야 합니다."
+      "passwordTooShort": "새 비밀번호는 최소 6자 이상이어야 합니다.",
+      "mentorCta": "멘토 지원하기"
     },
     "lectureNew": {
       "title": "강의 등록",
@@ -525,7 +556,35 @@
       "submit": "등록하기",
       "success": "등록되었습니다.",
       "successPending": "등록되었습니다. 관리자 승인 후 공개 목록에 표시됩니다.",
-      "error": "등록에 실패했습니다."
+      "error": "등록에 실패했습니다.",
+      "shortDescription": "짧은 소개",
+      "targetAudience": "대상 학습자",
+      "prerequisites": "사전 요구사항",
+      "whatYouWillLearn": "학습 포인트 (줄바꿈, 3개 이상)",
+      "curriculum": "커리큘럼 (줄바꿈)",
+      "totalLessons": "총 레슨 수",
+      "totalHours": "총 시간(시간)",
+      "difficulty": "난이도",
+      "beginner": "초급",
+      "intermediate": "중급",
+      "advanced": "고급",
+      "maxStudents": "최대 수강생",
+      "language": "강의 언어",
+      "previewVideoUrl": "미리보기 영상 URL",
+      "materialsIncluded": "제공 자료 (줄바꿈)",
+      "faq": "FAQ (줄바꿈)",
+      "durationPlaceholder": "예: 8주 / 1일 워크숍",
+      "imageUpload": "이미지 파일 업로드",
+      "imageUploading": "업로드 중...",
+      "imageHint": "JPG/PNG, 최대 3MB",
+      "imagePreviewAlt": "강의 이미지 미리보기",
+      "imageUploadFail": "이미지 업로드에 실패했습니다.",
+      "imageUploadOk": "이미지가 업로드되었습니다.",
+      "editTitle": "강의 수정",
+      "editSubtitle": "개설한 강의 정보를 업데이트합니다.",
+      "editSubmit": "수정 완료",
+      "editSuccess": "강의가 수정되었습니다.",
+      "loadError": "강의를 불러오지 못했습니다."
     }
   },
   "dashboardV2": {
@@ -665,7 +724,10 @@
     "page": "{current} / {total}",
     "toastApproved": "처리되었습니다.",
     "toastRejected": "거절 처리되었습니다.",
-    "toastError": "처리에 실패했습니다. 다시 시도해 주세요."
+    "toastError": "처리에 실패했습니다. 다시 시도해 주세요.",
+    "openReview": "내용 보기",
+    "reviewMentorTitle": "멘토 신청 검토",
+    "reviewLectureTitle": "강의 신청 검토"
   },
   "myPages": {
     "backDashboard": "대시보드",

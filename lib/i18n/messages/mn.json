@@ -128,7 +128,9 @@
     "subtitle": "Онлайн болон оффлайн лекц",
     "online": "Онлайн",
     "offline": "Оффлайн",
-    "all": "Бүгд"
+    "all": "Бүгд",
+    "ownCourse": "Таны лекц",
+    "manageOwn": "Лекц удирдах"
   },
   "community": {
     "title": "Нийгэмлэгийн бүлгүүд",
@@ -485,7 +487,35 @@
       "editProfile": "Засах",
       "createCourse": "Шинэ лекц",
       "myCourses": "Миний лекцүүд",
-      "noCourses": "Лекц алга."
+      "noCourses": "Лекц алга.",
+      "backToProfile": "Миний мэдээлэл рүү",
+      "sessionDurationLabel": "Уулзалтын хугацаа (минут)",
+      "sessionFormatLabel": "Уулзалтын хэлбэр",
+      "formatOnline": "Онлайн",
+      "formatOffline": "Биечлэн",
+      "formatBoth": "Аль аль нь",
+      "yearsLabel": "Туршлага (жил)",
+      "educationLabel": "Боловсрол / мэргэжил",
+      "careerSummaryLabel": "Ажлын туршлагын товч",
+      "responseTimeLabel": "Дундаж хариу өгөх хугацаа",
+      "responseTimePlaceholder": "Ж: 24 цагийн дотор",
+      "timezoneLabel": "Цагийн бүс",
+      "introVideoLabel": "Танилцуулга видеоны URL (заавал биш)",
+      "portfolioLabel": "Портфолио холбоос (мөр бүр нэг URL, заавал биш)",
+      "mentoringStyleLabel": "Менторлох хэв маяг",
+      "recommendedForLabel": "Хэнд тохиромжтой",
+      "notRecommendedForLabel": "Хэнд тохирохгүй",
+      "errTitleRequired": "Гарчиг заавал байна.",
+      "errLocationRequired": "Байршил заавал байна.",
+      "errBioMin": "Танилцуулга хамгийн багадаа 40 тэмдэгт байна.",
+      "errLanguagesRequired": "Хамгийн багадаа нэг хэл оруулна уу.",
+      "errSpecialtiesRequired": "Хамгийн багадаа нэг мэргэжил оруулна уу.",
+      "errPriceMin": "Үнэ 0-ээс багагүй байна.",
+      "errDurationRange": "Хугацаа 15–240 минутын хооронд байна.",
+      "errYearsRange": "Туршлага 0–60 жилийн хооронд байна.",
+      "errStyleRequired": "Менторлох хэв маяг заавал байна.",
+      "errIntroVideoUrl": "Видеоны URL http(s) хэлбэртэй байх ёстой.",
+      "errPortfolioUrl": "Портфолио холбоос зөвхөн http(s) URL байна."
     },
     "info": {
       "title": "Үндсэн мэдээлэл",
@@ -506,7 +536,8 @@
       "newPassword": "Шинэ нууц үг",
       "confirmNewPassword": "Шинэ нууц үг давтах",
       "passwordMismatch": "Шинэ нууц үг таарахгүй байна.",
-      "passwordTooShort": "Шинэ нууц үг хамгийн багадаа 6 тэмдэгт байна."
+      "passwordTooShort": "Шинэ нууц үг хамгийн багадаа 6 тэмдэгт байна.",
+      "mentorCta": "Ментор болох"
     },
     "lectureNew": {
       "title": "Лекц бүртгэх",
@@ -524,7 +555,35 @@
       "submit": "Нийтлэх",
       "success": "Бүртгэгдлээ.",
       "successPending": "Илгээгдлээ. Админ баталсны дараа нийтэд харагдана.",
-      "error": "Алдаа гарлаа."
+      "error": "Алдаа гарлаа.",
+      "shortDescription": "Богино танилцуулга",
+      "targetAudience": "Зорилтот суралцагч",
+      "prerequisites": "Урьдчилсан шаардлага",
+      "whatYouWillLearn": "Суралцах зүйл (мөр бүрээр, 3-аас дээш)",
+      "curriculum": "Хөтөлбөр (мөр бүрээр)",
+      "totalLessons": "Нийт хичээл",
+      "totalHours": "Нийт цаг",
+      "difficulty": "Түвшин",
+      "beginner": "Анхан",
+      "intermediate": "Дунд",
+      "advanced": "Ахисан",
+      "maxStudents": "Хамгийн их суралцагч",
+      "language": "Лекцийн хэл",
+      "previewVideoUrl": "Урьдчилан үзэх видео URL",
+      "materialsIncluded": "Орсон материал (мөр бүрээр)",
+      "faq": "Түгээмэл асуулт (мөр бүрээр)",
+      "durationPlaceholder": "Жнь: 8 долоо хоног / 1 өдрийн семинар",
+      "imageUpload": "Зураг байршуулах",
+      "imageUploading": "Байршуулж байна...",
+      "imageHint": "JPG/PNG, 3MB хүртэл",
+      "imagePreviewAlt": "Лекцийн зураг",
+      "imageUploadFail": "Зураг байршуулахад алдаа гарлаа.",
+      "imageUploadOk": "Зураг байршууллаа.",
+      "editTitle": "Лекц засах",
+      "editSubtitle": "Нийтэлсэн лекцийн мэдээллээ шинэчилнэ.",
+      "editSubmit": "Хадгалах",
+      "editSuccess": "Лекцийг шинэчиллээ.",
+      "loadError": "Лекц ачаалж чадсангүй."
     }
   },
   "dashboardV2": {
@@ -664,7 +723,10 @@
     "page": "{current} / {total}",
     "toastApproved": "Амжилттай шинэчлэгдлээ.",
     "toastRejected": "Татгалзсан.",
-    "toastError": "Алдаа гарлаа. Дахин оролдоно уу."
+    "toastError": "Алдаа гарлаа. Дахин оролдоно уу.",
+    "openReview": "Харах",
+    "reviewMentorTitle": "Менторын хүсэлт шалгах",
+    "reviewLectureTitle": "Лекцийн хүсэлт шалгах"
   },
   "myPages": {
     "backDashboard": "Самбар",

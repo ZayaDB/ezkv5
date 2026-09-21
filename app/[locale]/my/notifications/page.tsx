@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { dismissAlert, listAlerts, type UserAlert } from "@/lib/supabase/alerts";
+import { dismissAlert, listAlerts, markAlertsRead, type UserAlert } from "@/lib/supabase/alerts";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import LoadingState from "@/components/ui/LoadingState";
 import PlatformCard from "@/components/ui/PlatformCard";
@@ -24,6 +24,7 @@ export default function MyNotificationsPage() {
     try {
       const alerts = await listAlerts(user.id);
       setItems(alerts);
+      await markAlertsRead(user.id);
     } catch {
       setItems([]);
     } finally {

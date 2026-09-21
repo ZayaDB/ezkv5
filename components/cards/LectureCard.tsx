@@ -14,13 +14,14 @@ interface LectureCardProps {
 
 export default function LectureCard({ lecture }: LectureCardProps) {
   const locale = useLocale();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
+  const isOwner = Boolean(user?.id && lecture.instructorId && user.id === lecture.instructorId);
   const [wishlisted, setWishlisted] = useState(false);
 
   useEffect(() => {
     let active = true;
     const load = async () => {
-      if (!isAuthenticated) {
+      if (!isAuthenticated || isOwner) {
         setWishlisted(false);
         return;
       }
@@ -32,12 +33,12 @@ export default function LectureCard({ lecture }: LectureCardProps) {
     return () => {
       active = false;
     };
-  }, [isAuthenticated, lecture.id]);
+  }, [isAuthenticated, isOwner, lecture.id]);
 
   const toggleWishlist = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!isAuthenticated) return;
+    if (!isAuthenticated || isOwner) return;
     if (wishlisted) {
       const res = await lectureWishlistApi.remove(lecture.id);
       if (!res.error) setWishlisted(false);
@@ -79,6 +80,7 @@ export default function LectureCard({ lecture }: LectureCardProps) {
               {lecture.category}
             </span>
           </div>
+          {!isOwner && (
           <button
             type="button"
             onClick={toggleWishlist}
@@ -90,6 +92,7 @@ export default function LectureCard({ lecture }: LectureCardProps) {
           >
             <Heart className={`w-4 h-4 ${wishlisted ? 'fill-red-500' : ''}`} />
           </button>
+          )}
         </div>
         
         <div className="p-6">

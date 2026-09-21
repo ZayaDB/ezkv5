@@ -91,4 +91,35 @@ export const mentorsApi = {
       return { error: e instanceof Error ? e.message : "멘토 신청에 실패했습니다." };
     }
   },
+
+  updateMine: async (payload: {
+    title: string;
+    location: string;
+    bio: string;
+    languages?: string[];
+    specialties?: string[];
+    price?: number | string;
+    availability?: string;
+    photo?: string;
+    sessionDuration?: number;
+    sessionFormat?: "online" | "offline" | "both";
+    yearsOfExperience?: number;
+    education?: string;
+    careerSummary?: string;
+    responseTime?: string;
+    timezone?: string;
+    introVideoUrl?: string;
+    portfolioLinks?: string[];
+    mentoringStyle?: string;
+    recommendedFor?: string;
+    notRecommendedFor?: string;
+  }) => {
+    try {
+      const { updateMyMentorProfile } = await import("@/lib/supabase/mentors");
+      const data = await updateMyMentorProfile(payload);
+      return { data };
+    } catch (e: unknown) {
+      return { error: e instanceof Error ? e.message : "멘토 프로필 저장에 실패했습니다." };
+    }
+  },
 };

@@ -64,6 +64,7 @@ export function mapLectureRow(row: LectureRow, instructorName?: string): Lecture
     id: row.id,
     title: row.title,
     instructor: instructorName || row.profiles?.name || "강사",
+    instructorId: row.instructor_id,
     type: row.type as Lecture["type"],
     category: row.category,
     price: Number(row.price) || 0,

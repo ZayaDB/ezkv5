@@ -58,7 +58,7 @@ export default function MentorLectureEditPage() {
       const res = await lecturesApi.getById(lectureId);
       if (!mounted) return;
       if (res.error || !res.data) {
-        setToast({ message: res.error || "강의를 불러오지 못했습니다.", variant: "error" });
+        setToast({ message: res.error || t("loadError"), variant: "error" });
         setLoading(false);
         return;
       }
@@ -136,7 +136,7 @@ export default function MentorLectureEditPage() {
       setToast({ message: res.error, variant: "error" });
       return;
     }
-    setToast({ message: "강의가 수정되었습니다.", variant: "success" });
+    setToast({ message: t("editSuccess"), variant: "success" });
     setTimeout(() => router.push(`/${locale}/my/lectures`), 700);
   };
 
@@ -146,11 +146,11 @@ export default function MentorLectureEditPage() {
     const res = await lecturesApi.uploadImage(file);
     setUploadingImage(false);
     if ("error" in res) {
-      setToast({ message: res.error || "이미지 업로드에 실패했습니다.", variant: "error" });
+      setToast({ message: res.error || t("imageUploadFail"), variant: "error" });
       return;
     }
     setImage(res.data.url);
-    setToast({ message: "이미지가 업로드되었습니다.", variant: "success" });
+    setToast({ message: t("imageUploadOk"), variant: "success" });
   };
 
   return (
@@ -172,8 +172,8 @@ export default function MentorLectureEditPage() {
           {t("back")}
         </Link>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">강의 수정</h1>
-          <p className="text-sm text-slate-600 mt-1">개설한 강의 정보를 업데이트합니다.</p>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">{t("editTitle")}</h1>
+          <p className="text-sm text-slate-600 mt-1">{t("editSubtitle")}</p>
         </div>
         <PlatformCard>
           {loading ? (
@@ -204,66 +204,66 @@ export default function MentorLectureEditPage() {
                 <Input type="number" min={0} value={price} onChange={(e) => setPrice(e.target.value)} />
               </Field>
               <Field label={t("duration")} required>
-                <Input required value={duration} onChange={(e) => setDuration(e.target.value)} />
+                <Input required value={duration} onChange={(e) => setDuration(e.target.value)} placeholder={t("durationPlaceholder")} />
               </Field>
-              <Field label="짧은 소개" required>
+              <Field label={t("shortDescription")} required>
                 <Textarea required rows={2} value={shortDescription} onChange={(e) => setShortDescription(e.target.value)} />
               </Field>
               <Field label={t("description")} required>
                 <Textarea required rows={5} value={description} onChange={(e) => setDescription(e.target.value)} />
               </Field>
-              <Field label="대상 학습자" required>
+              <Field label={t("targetAudience")} required>
                 <Textarea required rows={2} value={targetAudience} onChange={(e) => setTargetAudience(e.target.value)} />
               </Field>
-              <Field label="사전 요구사항">
+              <Field label={t("prerequisites")}>
                 <Textarea rows={2} value={prerequisites} onChange={(e) => setPrerequisites(e.target.value)} />
               </Field>
-              <Field label="학습 포인트(줄바꿈 3개 이상)" required>
+              <Field label={t("whatYouWillLearn")} required>
                 <Textarea required rows={4} value={whatYouWillLearn} onChange={(e) => setWhatYouWillLearn(e.target.value)} />
               </Field>
-              <Field label="커리큘럼(줄바꿈)" required>
+              <Field label={t("curriculum")} required>
                 <Textarea required rows={4} value={curriculum} onChange={(e) => setCurriculum(e.target.value)} />
               </Field>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">총 레슨 수</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">{t("totalLessons")}</label>
                   <Input type="number" min={0} value={totalLessons} onChange={(e) => setTotalLessons(e.target.value)} />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">총 시간(시간)</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">{t("totalHours")}</label>
                   <Input type="number" min={0} step="0.5" value={totalHours} onChange={(e) => setTotalHours(e.target.value)} />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">난이도</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">{t("difficulty")}</label>
                   <Select value={difficulty} onChange={(e) => setDifficulty(e.target.value as typeof difficulty)}>
-                    <option value="beginner">초급</option>
-                    <option value="intermediate">중급</option>
-                    <option value="advanced">고급</option>
+                    <option value="beginner">{t("beginner")}</option>
+                    <option value="intermediate">{t("intermediate")}</option>
+                    <option value="advanced">{t("advanced")}</option>
                   </Select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">최대 수강생</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">{t("maxStudents")}</label>
                   <Input type="number" min={1} value={maxStudents} onChange={(e) => setMaxStudents(e.target.value)} />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">강의 언어</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">{t("language")}</label>
                   <Input value={language} onChange={(e) => setLanguage(e.target.value)} />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">미리보기 영상 URL</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">{t("previewVideoUrl")}</label>
                   <Input value={previewVideoUrl} onChange={(e) => setPreviewVideoUrl(e.target.value)} />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">제공 자료(줄바꿈)</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1">{t("materialsIncluded")}</label>
                 <Textarea rows={3} value={materialsIncluded} onChange={(e) => setMaterialsIncluded(e.target.value)} />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">FAQ(줄바꿈)</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1">{t("faq")}</label>
                 <Textarea rows={3} value={faq} onChange={(e) => setFaq(e.target.value)} />
               </div>
               <div>
@@ -271,7 +271,7 @@ export default function MentorLectureEditPage() {
                 <Input value={image} onChange={(e) => setImage(e.target.value)} />
                 <div className="mt-2 flex items-center gap-3">
                   <label className="inline-flex cursor-pointer items-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">
-                    {uploadingImage ? "업로드 중..." : "이미지 파일 업로드"}
+                    {uploadingImage ? t("imageUploading") : t("imageUpload")}
                     <input
                       type="file"
                       accept="image/*"
@@ -280,18 +280,18 @@ export default function MentorLectureEditPage() {
                       onChange={(e) => void handleImageUpload(e.target.files?.[0])}
                     />
                   </label>
-                  <span className="text-xs text-slate-500">JPG/PNG, 최대 3MB</span>
+                  <span className="text-xs text-slate-500">{t("imageHint")}</span>
                 </div>
                 {image && (
                   <div className="mt-3 overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={image} alt="강의 이미지 미리보기" className="h-36 w-full object-cover" />
+                    <img src={image} alt={t("imagePreviewAlt")} className="h-36 w-full object-cover" />
                   </div>
                 )}
               </div>
               <FormError message={toast?.variant === "error" ? toast.message : ""} />
               <Button type="submit" disabled={submitting} fullWidth>
-                {submitting ? "…" : "수정 완료"}
+                {submitting ? "…" : t("editSubmit")}
               </Button>
             </form>
           )}

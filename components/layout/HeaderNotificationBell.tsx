@@ -6,6 +6,8 @@ import { Bell } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useUnreadNotifications } from "@/lib/hooks/useUnreadNotifications";
+import { markAlertsRead } from "@/lib/supabase/alerts";
+import { createClient } from "@/lib/supabase/client";
 
 export default function HeaderNotificationBell({ enabled }: { enabled: boolean }) {
   const locale = useLocale();
@@ -13,15 +15,22 @@ export default function HeaderNotificationBell({ enabled }: { enabled: boolean }
   const t = useTranslations("common.notificationsBell");
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const { items, unread, loading, refresh } = useUnreadNotifications(enabled && mounted);
+  const { items, unread, loading } = useUnreadNotifications(enabled && mounted);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   useEffect(() => {
-    if (open) void refresh();
-  }, [open, refresh]);
+    if (!open) return;
+    void (async () => {
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) await markAlertsRead(user.id);
+    })();
+  }, [open]);
 
   if (!enabled || !mounted) return null;
 
