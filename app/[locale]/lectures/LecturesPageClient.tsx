@@ -22,11 +22,10 @@ export default function LecturesPageClient({ initialLectures, locale }: Props) {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
-      <div className="relative overflow-hidden bg-gradient-to-br from-accent-600 via-accent-500 to-primary-500 py-16">
-        <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_30%_20%,white,transparent_50%)]" />
+      <div className="relative overflow-hidden bg-gradient-to-br from-accent-600 via-accent-500 to-primary-500 py-10">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-5xl md:text-6xl font-extrabold text-white mb-4 tracking-tight">{t('title')}</h1>
-          <p className="text-xl text-white/90 max-w-2xl">{t('subtitle')}</p>
+          <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-2 tracking-tight">{t('title')}</h1>
+          <p className="text-base text-white/90 max-w-xl">{t('subtitle')}</p>
         </div>
       </div>
 
@@ -70,14 +69,14 @@ export default function LecturesPageClient({ initialLectures, locale }: Props) {
         </div>
 
         <div className="mb-6 text-gray-600 dark:text-slate-400">
-          <span className="font-semibold text-gray-900 dark:text-slate-100">{filtered.length}</span>개의 강의
+          {t('count', { count: filtered.length })}
         </div>
 
         {initialLectures.length === 0 ? (
           <EmptyState
-            title="등록된 강의가 없습니다"
-            description="시드 스크립트를 실행하면 샘플 강의가 표시됩니다."
-            actionLabel="홈으로"
+            title={t('emptyTitle')}
+            description={t('emptyDescription')}
+            actionLabel={t('emptyAction')}
             actionHref={`/${locale}`}
           />
         ) : filtered.length > 0 ? (
@@ -88,7 +87,7 @@ export default function LecturesPageClient({ initialLectures, locale }: Props) {
           </div>
         ) : (
           <div className="text-center py-16 bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-700">
-            <p className="text-gray-600 dark:text-slate-400">선택한 타입에 해당하는 강의가 없습니다.</p>
+            <p className="text-gray-600 dark:text-slate-400">{t('noMatch')}</p>
           </div>
         )}
       </div>

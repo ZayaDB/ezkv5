@@ -21,7 +21,7 @@
     "dashboard": "Dashboard",
     "mySpace": "My space",
     "profile": "Profile",
-    "myActivity": "My Activity",
+    "myActivity": "Write",
     "myEnrollments": "My courses & study",
     "mySessions": "My Sessions",
     "myCommunity": "My Community",
@@ -34,7 +34,7 @@
     "footerPlatform": "Platform",
     "footerResources": "Resources",
     "footerSupport": "Support",
-    "footerTagline": "Your trusted guide to studying in Korea",
+    "footerTagline": "Life assistant for students in Korea",
     "copyright": "© 2026. All rights reserved.",
     "notificationsBell": {
       "title": "Notifications",
@@ -44,12 +44,14 @@
       "aria": "Notifications",
       "ariaWithCount": "{count} notifications",
       "unreadCount": "{count} new"
-    }
+    },
+    "lightMode": "Light mode",
+    "darkMode": "Dark mode"
   },
   "home": {
-    "heroBadge": "This month's community highlights",
-    "title": "Your trusted guide to studying in Korea",
-    "subtitle": "Connect with mentors who've walked your path. Get help with visas, housing, studies, and everything in between.",
+    "heroBadge": "Life assistant for international students",
+    "title": "Korea life, just what you need",
+    "subtitle": "Roadmap for visas and tasks. Mentors for people. Lectures for learning.",
     "cta": "Find Your Mentor",
     "heroCtaSecondary": "Browse lectures",
     "heroChipTop3": "Top 3 this month",
@@ -109,8 +111,10 @@
   },
   "mentors": {
     "title": "Find Your Mentor",
-    "subtitle": "2,547 mentors available",
+    "subtitle": "Find a mentor for visa, housing, and studies",
     "filter": "Filter",
+    "all": "All",
+    "count": "{count} mentors",
     "categories": {
       "visa": "Visa & Immigration",
       "housing": "Housing",
@@ -121,7 +125,16 @@
     },
     "emptyTitle": "No mentors yet",
     "emptyDescription": "No information has been registered yet.",
-    "emptyAction": "Go home"
+    "emptyAction": "Go home",
+    "reviewCount": "{count} reviews",
+    "available": "Available",
+    "viewDetails": "View details",
+    "verified": "Verified",
+    "noMatch": "No mentors in this category.",
+    "resetFilter": "Clear filter",
+    "fallbackRole": "Mentor",
+    "perHour": "/hr",
+    "free": "Free"
   },
   "lectures": {
     "title": "Lectures",
@@ -130,15 +143,44 @@
     "offline": "Offline",
     "all": "All",
     "ownCourse": "This is your course",
-    "manageOwn": "Manage course"
+    "manageOwn": "Manage course",
+    "count": "{count} courses",
+    "noMatch": "No courses match this type.",
+    "emptyTitle": "No courses yet",
+    "emptyDescription": "No courses have been published yet.",
+    "emptyAction": "Home",
+    "viewDetails": "View details"
   },
   "community": {
-    "title": "Community Groups",
-    "subtitle": "Share experiences and connect with others",
-    "feedSectionTitle": "Community feed",
-    "feedSectionSubtitle": "Public posts for this feed appear here. Create posts from My space → Activity & posts.",
+    "title": "Community",
+    "subtitle": "Write, start a group, and find people to work with.",
+    "tabFeed": "Feed",
+    "tabGroups": "Groups",
+    "tabJobs": "Jobs",
+    "jobsHint": "Post when you need help or want to work together.",
+    "createInMy": "Create a group from My page",
+    "writeInMy": "Write from My page",
+    "createGroup": "Create a group",
+    "groupName": "Group name",
+    "groupDesc": "What will you do together?",
+    "catMeetup": "Meetup",
+    "catVisa": "Visa",
+    "catStudy": "Study",
+    "catJob": "Jobs",
+    "noGroups": "No groups yet. Create the first one.",
     "join": "Join",
-    "joinSuccess": "You’re in. You can post and comment right away."
+    "joinSuccess": "You’re in. You can chat and post now.",
+    "notFound": "Group not found",
+    "backToList": "Back to community",
+    "groupPosts": "Group posts",
+    "feedSectionTitle": "Community feed",
+    "feedSectionSubtitle": "Anyone signed in can post and comment.",
+    "chatTitle": "Group chat",
+    "chatHint": "Only members can chat here.",
+    "chatEmpty": "No messages yet. Say hello.",
+    "chatPlaceholder": "Write a message",
+    "chatSend": "Send",
+    "chatLogin": "Log in and join the group to chat."
   },
   "freelancers": {
     "title": "Freelancer Groups",
@@ -171,11 +213,31 @@
     "hideComments": "Hide comments",
     "addCommentPlaceholder": "Write a comment",
     "submitComment": "Post comment",
-    "loginToComment": "Log in to comment."
+    "loginToComment": "Log in to comment.",
+    "writePost": "Post",
+    "titlePlaceholder": "Title (optional)",
+    "bodyPlaceholder": "Share with the group"
+  },
+  "publicProfile": {
+    "loading": "Loading profile…",
+    "notFound": "Profile not found",
+    "back": "Back to community",
+    "mentor": "Mentor",
+    "member": "Member",
+    "university": "University",
+    "nationality": "Nationality",
+    "bio": "About",
+    "emptyBio": "No bio yet.",
+    "posts": "Posts",
+    "jobs": "Jobs",
+    "emptyPosts": "No posts yet.",
+    "emptyJobs": "No job posts yet.",
+    "viewMentor": "View mentor profile",
+    "editMine": "Edit my profile"
   },
   "studyInKorea": {
     "title": "Study in Korea",
-    "subtitle": "All information about studying in Korea",
+    "subtitle": "Visa, housing, hospitals, and daily life",
     "visa": "Visa Information",
     "housing": "Housing Information",
     "hospital": "Hospital Information",
@@ -247,7 +309,8 @@
     "visaTypePlaceholder": "e.g. D-2",
     "nationalityPlaceholder": "e.g. Mongolia",
     "universityPlaceholder": "e.g. Seoul National University",
-    "regionPlaceholder": "e.g. Seoul"
+    "regionPlaceholder": "e.g. Seoul",
+    "mentorLabel": "Mentor"
   },
   "controlCenter": {
     "badge": "Control Center",
@@ -271,18 +334,94 @@
     "title": "Roadmap",
     "subtitle": "Manage your Korea life step by step",
     "templates": "Start from template",
-    "myRoadmaps": "My roadmaps",
-    "empty": "No roadmaps yet. Pick a template above.",
-    "steps": "steps"
+    "myRoadmaps": "Your steps",
+    "empty": "No steps yet. Ask the assistant.",
+    "steps": "steps",
+    "done": "Done",
+    "todo": "To do",
+    "stuck": "Stuck · mentor",
+    "learn": "My learning",
+    "allDone": "All done",
+    "tpl": {
+      "visa_extension": {
+        "title": "Visa extension",
+        "description": "Prepare documents and steps before your visa expires.",
+        "s0": "Check visa expiry",
+        "s0d": "Check expiry dates on your passport and ARC.",
+        "s1": "Request school documents",
+        "s1d": "Ask international office for enrollment and transcripts.",
+        "s2": "Proof of funds",
+        "s2d": "Prepare a bank balance certificate and related papers.",
+        "s3": "Book immigration appointment",
+        "s3d": "Book via HiKorea or visit in person.",
+        "s4": "Apply and pay fees",
+        "s4d": "Submit the form and pay the fee."
+      },
+      "settling_korea": {
+        "title": "Settling in Korea",
+        "description": "Set up the basics after you arrive.",
+        "s0": "Apply for ARC",
+        "s0d": "Apply within 90 days of arrival.",
+        "s1": "Get a phone plan",
+        "s1d": "Get a number you can use for identity checks.",
+        "s2": "Open a bank account",
+        "s2d": "Open an account with your ARC.",
+        "s3": "Check health insurance",
+        "s3d": "See if you must join National Health Insurance."
+      },
+      "moving": {
+        "title": "Moving",
+        "description": "Checklist for changing housing.",
+        "s0": "Set budget and area",
+        "s0d": "Decide rent, deposit, and preferred neighborhood.",
+        "s1": "Search listings",
+        "s1d": "Use licensed agents or school-recommended channels.",
+        "s2": "Review the contract",
+        "s2d": "Check deposit, termination, and maintenance fees.",
+        "s3": "Update your address",
+        "s3d": "Change your ARC address after moving."
+      },
+      "job_prep": {
+        "title": "Job prep",
+        "description": "Steps for internships, part-time, or post-graduation jobs.",
+        "s0": "Check work rules by visa",
+        "s0d": "Confirm what D-2, D-10, and others allow.",
+        "s1": "Resume and portfolio",
+        "s1d": "Prepare Korean and English versions.",
+        "s2": "Mentor / career chat",
+        "s2d": "Book a session with a mentor in your field.",
+        "s3": "Apply and interview",
+        "s3d": "Put application dates on your calendar."
+      },
+      "d10_prep": {
+        "title": "D-10 job-seeker visa",
+        "description": "Roadmap to switch after graduation.",
+        "s0": "Check eligibility",
+        "s0d": "Confirm degree, graduation, and stay period.",
+        "s1": "Document list",
+        "s1d": "Collect papers required by school and immigration.",
+        "s2": "Job-search plan",
+        "s2d": "Set targets and a timeline.",
+        "s3": "Book your application",
+        "s3d": "Apply with time to spare before expiry."
+      }
+    }
   },
   "assistant": {
     "title": "Life assistant",
     "subtitle": "Don't just ask — take action.",
     "pageTitle": "AI Assistant",
-    "pageSubtitle": "Visa, moving, schedule — we create roadmaps and events for you.",
+    "pageSubtitle": "Tell us about visa, moving, or plans — we'll turn it into checkable steps.",
     "placeholder": "e.g. I need to extend my visa",
     "thinking": "Thinking...",
-    "error": "A temporary error occurred."
+    "error": "A temporary error occurred.",
+    "quickVisa": "I need to extend my visa",
+    "quickMove": "Help me prepare to move",
+    "quickToday": "Plan my day",
+    "quickMentor": "I want to find a mentor",
+    "roadmapCreated": "Steps are ready. Check them off when done. They also show on your dashboard.",
+    "needLogin": "Log in to save and check off steps.",
+    "emptySteps": "Talk to the assistant and tasks will appear as steps."
   },
   "dashboard": {
     "title": "Dashboard",
@@ -373,7 +512,15 @@
     "schedule": {
       "title": "Schedule Management",
       "upcoming": "Upcoming Schedule",
-      "days": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+      "days": [
+        "Sun",
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat"
+      ]
     },
     "statistics": {
       "totalHours": "Total Study Hours",
@@ -515,7 +662,9 @@
       "errYearsRange": "Experience must be between 0 and 60 years.",
       "errStyleRequired": "Mentoring style is required.",
       "errIntroVideoUrl": "Intro video URL must be a valid http(s) link.",
-      "errPortfolioUrl": "Portfolio links must be http(s) URLs."
+      "errPortfolioUrl": "Portfolio links must be http(s) URLs.",
+      "manageCoursesHint": "Manage courses from the Teach courses menu.",
+      "goMyLectures": "Go to course management"
     },
     "info": {
       "title": "Basic information",
@@ -782,13 +931,18 @@
       "cardRoadmaps": "Roadmaps",
       "avgProgress": "Avg. {pct}% complete",
       "startRoadmap": "Start a roadmap",
+      "cardAssistant": "AI assistant",
+      "cardAssistantSub": "Talk to create steps",
       "cardSchedule": "Today",
       "cardScheduleSub": "Manage in Schedule",
       "cardCourses": "My courses",
+      "cardCoursesSub": "Enrolled courses",
       "comingSoon": "Coming soon",
       "cardProfile": "Profile",
       "cardProfileSub": "Edit profile",
-      "roadmapChart": "Roadmap progress",
+      "stepsTitle": "Your steps",
+      "askAssistant": "Ask the assistant",
+      "emptySteps": "Tell the assistant — steps appear here.",
       "openSchedule": "View all schedule",
       "notificationsLink": "Notifications"
     },
@@ -802,10 +956,12 @@
       "navWishlist": "Saved courses",
       "navLectures": "Teach courses",
       "navReceipts": "Receipts & billing",
-      "navActivity": "Activity & posts",
+      "navActivity": "Write",
       "navNotifications": "Notifications",
       "navSupport": "Support",
-      "navInquiries": "Help & tickets"
+      "navInquiries": "Help & tickets",
+      "collapseNav": "Collapse menu",
+      "expandNav": "Expand menu"
     },
     "courses": {
       "title": "My courses & study",
@@ -910,9 +1066,20 @@
       "enrolledAt": "Enrolled"
     },
     "activity": {
-      "title": "Activity & posts",
+      "title": "Write",
       "subtitle": "Posts appear on the community or freelancer group page you choose.",
-      "subtitlePublic": "Posts go to the public community or freelancer feed. Use “New post” at the top.",
+      "subtitlePublic": "Posts and groups you create here appear on Community.",
+      "groupHint": "New groups show up under Community → Groups.",
+      "groupNameErr": "Enter a group name.",
+      "groupOkCommunity": "Group created. You can see it on Community.",
+      "viewGroups": "View groups",
+      "myGroups": "My groups",
+      "myGroupsEmpty": "You haven’t created or joined a group yet.",
+      "channelJobs": "Jobs",
+      "postOkCommunity": "Posted. You can see it on Community.",
+      "viewOnCommunity": "View on Community",
+      "myPosts": "My posts",
+      "myPostsEmpty": "You haven’t posted yet.",
       "composeTitle": "New post",
       "composeHint": "After you join a group you can post right away.",
       "channelType": "Feed",
@@ -961,5 +1128,3 @@
     }
   }
 }
-
-

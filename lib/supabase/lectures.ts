@@ -239,6 +239,15 @@ export async function updateLecture(
   }
 ) {
   const { supabase, userId } = await requireUserId();
+  const { data: existing, error: existingErr } = await supabase
+    .from("lectures")
+    .select("id, approval_status")
+    .eq("id", id)
+    .eq("instructor_id", userId)
+    .maybeSingle();
+  if (existingErr) throw new Error(existingErr.message);
+  if (!existing) throw new Error("강의를 찾을 수 없습니다.");
+
   const patch = {
     title: payload.title.trim(),
     type: payload.type,
@@ -263,15 +272,27 @@ export async function updateLecture(
     updated_at: new Date().toISOString(),
   };
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("lectures")
     .update(patch)
     .eq("id", id)
-    .eq("instructor_id", userId)
-    .select("*")
-    .single();
+    .eq("instructor_id", userId);
 
   if (error) throw new Error(error.message);
+
+  if (existing.approval_status === "rejected") {
+    const { error: rpcError } = await supabase.rpc("resubmit_lecture_application", { p_id: id });
+    if (rpcError) throw new Error(rpcError.message);
+  }
+
+  const { data, error: selectError } = await supabase
+    .from("lectures")
+    .select("*")
+    .eq("id", id)
+    .eq("instructor_id", userId)
+    .single();
+
+  if (selectError) throw new Error(selectError.message);
   return { lecture: serializeMine(data as LectureRow) };
 }
 

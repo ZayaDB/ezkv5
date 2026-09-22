@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { mentorsApi, sessionApi } from '@/lib/api/client';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import { storage } from '@/lib/storage';
@@ -26,6 +26,7 @@ export default function MentorDetailPage() {
   const params = useParams();
   const router = useRouter();
   const locale = useLocale();
+  const tMentors = useTranslations("mentors");
   const { user, isAuthenticated } = useAuth();
   const id = params.id as string;
 
@@ -233,8 +234,12 @@ export default function MentorDetailPage() {
               <h3 className="text-xl font-bold text-gray-900 mb-4">세션 예약</h3>
               <div className="space-y-4">
                 <div>
-                  <div className="text-3xl font-extrabold text-gray-900 mb-1">{priceDisplay.label}</div>
-                  {priceDisplay.suffix && <div className="text-sm text-gray-600">{priceDisplay.suffix}</div>}
+                  <div className="text-3xl font-extrabold text-gray-900 mb-1">
+                    {priceDisplay.free ? tMentors("free") : priceDisplay.label}
+                  </div>
+                  {priceDisplay.perHour ? (
+                    <div className="text-sm text-gray-600">{tMentors("perHour")}</div>
+                  ) : null}
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-600">
                   <Clock className="w-4 h-4" />

@@ -143,6 +143,12 @@ export default function Header() {
                 {t("mentors")}
               </Link>
               <Link
+                href={getLocalizedPath("/community")}
+                className="text-[16px] font-bold text-gray-600 dark:text-slate-200 hover:text-primary-500 transition-colors"
+              >
+                {t("community")}
+              </Link>
+              <Link
                 href={getLocalizedPath("/study-in-korea")}
                 className="text-[16px] font-bold text-gray-600 dark:text-slate-200 hover:text-primary-500 transition-colors"
               >
@@ -172,8 +178,8 @@ export default function Header() {
               onClick={toggleTheme}
               role="switch"
               aria-checked={theme === "dark"}
-              aria-label={theme === "dark" ? "라이트 모드" : "다크 모드"}
-              title={theme === "dark" ? "라이트 모드" : "다크 모드"}
+              aria-label={theme === "dark" ? t("lightMode") : t("darkMode")}
+              title={theme === "dark" ? t("lightMode") : t("darkMode")}
               className="inline-flex items-center gap-2 rounded-full px-2 py-1.5 bg-slate-100 dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 hover:ring-primary-300 transition-colors"
             >
               <span
@@ -415,7 +421,7 @@ export default function Header() {
                 className="inline-flex items-center justify-between rounded-xl bg-slate-100 dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 px-3 py-2"
               >
                 <span className="text-sm font-medium text-slate-700 dark:text-slate-200">
-                  {theme === "dark" ? "다크 모드" : "라이트 모드"}
+                  {theme === "dark" ? t("darkMode") : t("lightMode")}
                 </span>
                 <span
                   className={`ml-3 relative w-11 h-6 rounded-full transition-colors ${
@@ -448,6 +454,13 @@ export default function Header() {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {t("mentors")}
+              </Link>
+              <Link
+                href={getLocalizedPath("/community")}
+                className="text-gray-600 hover:text-primary-500 transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {t("community")}
               </Link>
               <Link
                 href={getLocalizedPath("/study-in-korea")}

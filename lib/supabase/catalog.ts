@@ -39,15 +39,57 @@ export async function joinCommunityGroup(groupId: string) {
     .eq("user_id", userId)
     .eq("group_id", groupId)
     .maybeSingle();
-  if (existing) return { ok: true as const };
+  if (existing) {
+    await supabase
+      .from("community_memberships")
+      .update({ status: "approved" })
+      .eq("id", existing.id);
+    return { ok: true as const };
+  }
 
   const { error } = await supabase.from("community_memberships").insert({
     user_id: userId,
     group_id: groupId,
-    status: "pending",
+    status: "approved",
   });
   if (error) throw new Error(error.message);
   return { ok: true as const };
+}
+
+export async function createCommunityGroup(payload: {
+  name: string;
+  description: string;
+  category: string;
+}) {
+  const { supabase, userId } = await requireUserId();
+  const name = payload.name.trim().slice(0, 80);
+  const description = payload.description.trim().slice(0, 500);
+  const category = payload.category.trim().slice(0, 40) || "모임";
+  if (!name) throw new Error("모임 이름을 입력해 주세요.");
+
+  const { data, error } = await supabase
+    .from("community_groups")
+    .insert({
+      name,
+      description: description || name,
+      category,
+      created_by: userId,
+      members: 1,
+      tags: [],
+      image: "",
+    })
+    .select("id")
+    .single();
+  if (error) throw new Error(error.message);
+
+  const { error: memError } = await supabase.from("community_memberships").insert({
+    user_id: userId,
+    group_id: data.id,
+    status: "approved",
+  });
+  if (memError) throw new Error(memError.message);
+
+  return { id: String(data.id) };
 }
 
 export async function applyFreelancerGroup(groupId: string) {

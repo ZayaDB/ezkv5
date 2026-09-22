@@ -172,7 +172,18 @@ export const assistantApi = {
       { method: "POST", body: JSON.stringify({ message, locale }) }
     ),
   execute: async (executeAction: Record<string, unknown>) =>
-    apiRequest<{ ok: boolean; roadmapId?: string; redirectUrl?: string }>(
+    apiRequest<{
+      ok: boolean;
+      roadmapId?: string;
+      redirectUrl?: string;
+      roadmap?: {
+        id: string;
+        title: string;
+        templateKey?: string;
+        progress: number;
+        steps: Array<{ id: string; title: string; description?: string; completed: boolean }>;
+      };
+    }>(
       "/api/assistant/actions",
       { method: "POST", body: JSON.stringify({ executeAction }) }
     ),

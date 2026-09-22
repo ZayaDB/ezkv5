@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Lecture } from '@/types';
 import { Star, Users, Clock, ArrowRight, PlayCircle, Heart } from 'lucide-react';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useState, type MouseEvent } from 'react';
 import { lectureWishlistApi } from '@/lib/api/client';
 import { useAuth } from '@/lib/contexts/AuthContext';
@@ -14,6 +14,7 @@ interface LectureCardProps {
 
 export default function LectureCard({ lecture }: LectureCardProps) {
   const locale = useLocale();
+  const t = useTranslations('lectures');
   const { isAuthenticated, user } = useAuth();
   const isOwner = Boolean(user?.id && lecture.instructorId && user.id === lecture.instructorId);
   const [wishlisted, setWishlisted] = useState(false);
@@ -74,7 +75,7 @@ export default function LectureCard({ lecture }: LectureCardProps) {
                   : 'bg-emerald-600/90 text-white'
               }`}
             >
-              {lecture.type === 'online' ? '온라인' : '오프라인'}
+              {lecture.type === 'online' ? t('online') : t('offline')}
             </span>
             <span className="px-3 py-1.5 bg-white/90 dark:bg-slate-900/85 backdrop-blur-sm text-gray-700 dark:text-slate-200 text-xs font-semibold rounded-lg">
               {lecture.category}
@@ -122,7 +123,7 @@ export default function LectureCard({ lecture }: LectureCardProps) {
               <span className="text-base sm:text-lg font-bold text-primary-600">₩{lecture.price.toLocaleString()}</span>
             </div>
             <div className="inline-flex items-center text-xs font-semibold text-primary-700 dark:text-primary-300">
-              <span>자세히 보기</span>
+              <span>{t('viewDetails')}</span>
               <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
             </div>
           </div>

@@ -28,11 +28,10 @@ export default async function StudyInKoreaPage({
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50">
-      <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-500 to-purple-600 py-16">
-        <div className="absolute inset-0 opacity-30 bg-[radial-gradient(ellipse_at_bottom_left,_white,_transparent_50%)]" />
+      <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-500 to-purple-600 py-10">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-5xl md:text-6xl font-extrabold text-white mb-4 tracking-tight">{t('title')}</h1>
-          <p className="text-xl text-white/90 max-w-2xl">{t('subtitle')}</p>
+          <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-2 tracking-tight">{t('title')}</h1>
+          <p className="text-base text-white/90 max-w-xl">{t('subtitle')}</p>
         </div>
       </div>
 

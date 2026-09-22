@@ -1,5 +1,23 @@
 import type { Mentor } from "@/types";
 
+export const MENTOR_CATEGORY_KEYS = [
+  "visa",
+  "housing",
+  "healthcare",
+  "academic",
+  "career",
+  "dailyLife",
+] as const;
+
+export type MentorCategoryKey = (typeof MENTOR_CATEGORY_KEYS)[number];
+
+export function parseMentorCategory(raw: string | null | undefined): MentorCategoryKey | null {
+  if (!raw) return null;
+  return (MENTOR_CATEGORY_KEYS as readonly string[]).includes(raw)
+    ? (raw as MentorCategoryKey)
+    : null;
+}
+
 /** UI 카테고리 키 → 멘토 전문분야·소개 텍스트 키워드 매칭 */
 export function mentorMatchesCategoryKey(mentor: Mentor, key: string | null): boolean {
   if (!key) return true;

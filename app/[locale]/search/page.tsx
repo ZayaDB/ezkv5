@@ -1,10 +1,6 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import {
-  queryCommunityGroups,
-  queryFreelancerGroups,
-  queryStudyInfos,
-} from "@/lib/data/queries";
+import { queryStudyInfos, queryCommunityGroups } from "@/lib/data/queries";
 import { queryLecturesSupabase, queryMentorsSupabase } from "@/lib/supabase/public-queries";
 
 function containsText(haystack: string, query: string): boolean {
@@ -34,14 +30,12 @@ export default async function SearchPage({
     );
   }
 
-  const [mentorsR, lecturesR, communitiesR, freelancersR, studyInfosR] =
-    await Promise.all([
-      queryMentorsSupabase({ limit: 120 }),
-      queryLecturesSupabase({ limit: 120 }),
-      queryCommunityGroups({ limit: 120 }),
-      queryFreelancerGroups({ limit: 120 }),
-      queryStudyInfos(),
-    ]);
+  const [mentorsR, lecturesR, communitiesR, studyInfosR] = await Promise.all([
+    queryMentorsSupabase({ limit: 120 }),
+    queryLecturesSupabase({ limit: 120 }),
+    queryCommunityGroups({ limit: 120 }),
+    queryStudyInfos(),
+  ]);
 
   const mentors = mentorsR.mentors.filter((m) =>
     containsText(
@@ -55,19 +49,11 @@ export default async function SearchPage({
   const communities = communitiesR.filter((c) =>
     containsText([c.name, c.description, c.category, ...(c.tags || [])].join(" "), q)
   );
-  const freelancers = freelancersR.filter((f) =>
-    containsText([f.name, f.description, f.category].join(" "), q)
-  );
   const studyInfos = studyInfosR.filter((s) =>
     containsText([s.title, s.content, s.category, ...(s.tags || [])].join(" "), q)
   );
 
-  const total =
-    mentors.length +
-    lectures.length +
-    communities.length +
-    freelancers.length +
-    studyInfos.length;
+  const total = mentors.length + lectures.length + communities.length + studyInfos.length;
 
   return (
     <div className="ds-page">
@@ -127,22 +113,6 @@ export default async function SearchPage({
                 <Link key={c.id} href={`/${locale}/community/${c.id}`} className="ds-panel p-4 hover:ring-primary-300 transition-colors">
                   <p className="font-semibold text-slate-900 dark:text-slate-100">{c.name}</p>
                   <p className="text-sm text-slate-600 dark:text-slate-400">{c.description}</p>
-                </Link>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {freelancers.length > 0 && (
-          <section className="space-y-3">
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-              {t("freelancers")} ({freelancers.length})
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {freelancers.slice(0, 8).map((f) => (
-                <Link key={f.id} href={`/${locale}/freelancers/${f.id}`} className="ds-panel p-4 hover:ring-primary-300 transition-colors">
-                  <p className="font-semibold text-slate-900 dark:text-slate-100">{f.name}</p>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">{f.description}</p>
                 </Link>
               ))}
             </div>

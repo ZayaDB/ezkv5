@@ -2,20 +2,37 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import { MessageCircle, X, Send, Loader2, ChevronUp } from 'lucide-react';
 import { ChatMessage } from '@/types';
 import { SearchResult } from '@/lib/search';
+import { useAuth } from '@/lib/contexts/AuthContext';
+import { assistantApi } from '@/lib/api/client';
+import type { AssistantAction } from '@/lib/ai/assistantActions';
+
+const OPEN_EVENT = 'open-assistant';
+const ROADMAP_EVENT = 'roadmap-updated';
+
+export function openAssistant() {
+  if (typeof window === 'undefined') return;
+  window.dispatchEvent(new Event(OPEN_EVENT));
+}
+
+type Bubble = ChatMessage & { actions?: AssistantAction[] };
 
 export default function Chatbot() {
   const t = useTranslations('chatbot');
+  const tAsst = useTranslations('assistant');
   const locale = useLocale();
+  const router = useRouter();
+  const { isAuthenticated } = useAuth();
   const localeChoices = [
     { value: 'kr', label: '한국어' },
     { value: 'en', label: 'English' },
     { value: 'mn', label: 'Монгол' },
   ];
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<Bubble[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [scrollY, setScrollY] = useState(0);
@@ -36,6 +53,12 @@ export default function Chatbot() {
       inputRef.current.focus();
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    const open = () => setIsOpen(true);
+    window.addEventListener(OPEN_EVENT, open);
+    return () => window.removeEventListener(OPEN_EVENT, open);
+  }, []);
 
   useEffect(() => {
     try {
@@ -61,7 +84,7 @@ export default function Chatbot() {
     const text = (raw ?? input).trim();
     if (!text || isLoading) return;
 
-    const userMessage: ChatMessage = {
+    const userMessage: Bubble = {
       id: Date.now().toString(),
       role: 'user',
       content: text,
@@ -85,38 +108,44 @@ export default function Chatbot() {
       });
 
       const rawText = await response.text();
-      let data: { response?: string; links?: SearchResult[]; error?: string } = {};
+      let data: {
+        response?: string;
+        links?: SearchResult[];
+        error?: string;
+        actions?: AssistantAction[];
+      } = {};
       try {
         data = JSON.parse(rawText);
       } catch {
         data = {};
       }
 
-      // 429 한도 안내는 data.response를 그대로 쓰고, 그 외 오류는 data.error를 노출하지 않는다
       let responseContent =
         response.status === 429 && data.response
           ? data.response
           : data.response || t('error');
       if (data.links && data.links.length > 0) {
         const linksText = data.links
-          .map((link: SearchResult, index: number) => 
-            `${index + 1}. **${link.title}**\n   ${link.description.substring(0, 100)}...\n   🔗 ${link.url}`
+          .map(
+            (link: SearchResult, index: number) =>
+              `${index + 1}. **${link.title}**\n   ${link.description.substring(0, 100)}...\n   🔗 ${link.url}`
           )
           .join('\n\n');
         responseContent += `\n\n---\n\n**🔗 관련 링크:**\n\n${linksText}`;
       }
 
-      const assistantMessage: ChatMessage = {
+      const assistantMessage: Bubble = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
         content: responseContent,
         timestamp: new Date(),
+        actions: data.actions,
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
     } catch (error) {
       console.error('Chat error:', error);
-      const errorMessage: ChatMessage = {
+      const errorMessage: Bubble = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
         content: t('error'),
@@ -128,6 +157,56 @@ export default function Chatbot() {
     }
   };
 
+  const runAction = async (action: AssistantAction) => {
+    if (action.type === 'open_calendar') {
+      router.push(`/${locale}/calendar`);
+      setIsOpen(false);
+      return;
+    }
+    if (action.type === 'open_mentors') {
+      router.push(`/${locale}/mentors`);
+      setIsOpen(false);
+      return;
+    }
+    if (action.type === 'open_study_guide') {
+      router.push(`/${locale}/study-in-korea`);
+      setIsOpen(false);
+      return;
+    }
+    if (action.type === 'create_roadmap') {
+      if (!isAuthenticated) {
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: `${Date.now()}-login`,
+            role: 'assistant',
+            content: tAsst('needLogin'),
+            timestamp: new Date(),
+          },
+        ]);
+        return;
+      }
+      setIsLoading(true);
+      try {
+        await assistantApi.execute({
+          type: 'create_roadmap',
+          templateKey: action.templateKey,
+        });
+        window.dispatchEvent(new Event(ROADMAP_EVENT));
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: `${Date.now()}-rm`,
+            role: 'assistant',
+            content: tAsst('roadmapCreated'),
+            timestamp: new Date(),
+          },
+        ]);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -142,22 +221,22 @@ export default function Chatbot() {
 
   const quickPrompts: Record<string, string[]> = {
     kr: [
-      '비자 연장과 체류 준비를 도와줘',
-      '한국에서 집 구할 때 주의할 점 알려줘',
-      '멘토를 어떻게 찾아?',
-      '강의 결제와 환불은 어디서 확인해?',
+      '비자 연장해야 해',
+      '이사 준비 도와줘',
+      '오늘 일정 정리',
+      '멘토 찾고 싶어',
     ],
     en: [
-      'Help me with visa extension and stay preparation',
-      'What should I watch out for when finding housing in Korea?',
-      'How can I find the right mentor?',
-      'Where can I check lecture payments and refunds?',
+      'I need to extend my visa',
+      'Help me prepare to move',
+      'Plan my day',
+      'I want to find a mentor',
     ],
     mn: [
-      'Виз сунгалт болон оршин суух бэлтгэлд туслаач',
-      'Солонгост байр хайхдаа юуг анхаарах вэ?',
-      'Тохирох менторыг яаж олох вэ?',
-      'Лекцийн төлбөр, буцаалтыг хаанаас шалгах вэ?',
+      'Виз сунгах хэрэгтэй',
+      'Нүүхэд туслаач',
+      'Өнөөдрийн хуваарь',
+      'Ментор хайж байна',
     ],
   };
 
@@ -203,6 +282,10 @@ export default function Chatbot() {
     });
   };
 
+  const dock = isOpen
+    ? 'bottom-20 right-4 md:bottom-6 md:right-6'
+    : 'bottom-20 right-4 md:bottom-6 md:right-6';
+
   return (
     <>
       {scrollY > 80 && (
@@ -210,19 +293,18 @@ export default function Chatbot() {
           type="button"
           onClick={onClickScrollTop}
           aria-label="맨 위로 이동"
-          className={`fixed bottom-6 z-50 inline-flex items-center justify-center w-11 h-11 rounded-full bg-primary-600 text-white shadow-lg hover:bg-primary-700 transition-colors ${
-            isOpen ? 'right-[23.25rem] md:right-[26.25rem]' : 'right-[6.5rem]'
+          className={`fixed z-50 inline-flex items-center justify-center w-11 h-11 rounded-full bg-primary-600 text-white shadow-lg hover:bg-primary-700 transition-colors ${
+            isOpen ? 'right-[23.25rem] md:right-[26.25rem] bottom-20 md:bottom-6' : 'right-[6.5rem] bottom-20 md:bottom-6'
           }`}
         >
           <ChevronUp className="w-5 h-5" />
         </button>
       )}
 
-      {/* Floating Button - Modern Design */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 bg-gradient-to-br from-primary-500 to-accent-500 text-white p-5 rounded-2xl shadow-2xl hover:shadow-primary-500/50 transition-all hover:scale-110 z-50 group"
+          className={`fixed ${dock} bg-gradient-to-br from-primary-500 to-accent-500 text-white p-5 rounded-2xl shadow-2xl hover:shadow-primary-500/50 transition-all hover:scale-110 z-50 group`}
           aria-label="Open chatbot"
         >
           <MessageCircle className="w-6 h-6 group-hover:rotate-12 transition-transform" />
@@ -230,10 +312,10 @@ export default function Chatbot() {
         </button>
       )}
 
-      {/* Chat Window - Modern Design */}
       {isOpen && (
-        <div className="fixed bottom-6 right-6 w-96 h-[600px] bg-white rounded-2xl shadow-2xl border border-gray-200/50 flex flex-col z-50 overflow-hidden backdrop-blur-xl">
-          {/* Header */}
+        <div
+          className={`fixed ${dock} w-[min(24rem,calc(100vw-2rem))] h-[min(600px,calc(100vh-9rem))] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-200/50 dark:border-slate-700 flex flex-col z-50 overflow-hidden backdrop-blur-xl`}
+        >
           <div className="bg-gradient-to-r from-primary-500 to-accent-500 text-white p-5 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
@@ -267,10 +349,9 @@ export default function Chatbot() {
             </div>
           </div>
 
-          {/* Messages */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {messages.length === 0 && (
-              <div className="text-center text-gray-500 mt-8">
+              <div className="text-center text-gray-500 dark:text-slate-400 mt-8">
                 <p className="mb-3">{t('starterTitle')}</p>
                 <div className="grid grid-cols-1 gap-2 text-left">
                   {quickPrompts[chatLocale]?.map((prompt) => (
@@ -278,7 +359,7 @@ export default function Chatbot() {
                       key={prompt}
                       type="button"
                       onClick={() => handleSend(prompt)}
-                      className="rounded-xl border border-gray-200 bg-white hover:bg-gray-50 px-3 py-2 text-xs text-gray-700"
+                      className="rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 px-3 py-2 text-xs text-gray-700 dark:text-slate-200"
                     >
                       {prompt}
                     </button>
@@ -295,7 +376,7 @@ export default function Chatbot() {
                   className={`max-w-[80%] rounded-2xl p-4 ${
                     message.role === 'user'
                       ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg'
-                      : 'bg-gray-100 text-gray-900 border border-gray-200'
+                      : 'bg-gray-100 dark:bg-slate-800 text-gray-900 dark:text-slate-100 border border-gray-200 dark:border-slate-700'
                   }`}
                 >
                   <div className="whitespace-pre-wrap break-words leading-relaxed">
@@ -303,12 +384,26 @@ export default function Chatbot() {
                       ? renderMessageWithLinks(message.content)
                       : message.content}
                   </div>
+                  {message.actions && message.actions.length > 0 ? (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {message.actions.map((a, i) => (
+                        <button
+                          key={i}
+                          type="button"
+                          onClick={() => void runAction(a)}
+                          className="px-3 py-1.5 rounded-lg bg-white dark:bg-slate-700 text-primary-700 dark:text-primary-300 text-xs font-semibold border border-primary-200 dark:border-primary-700"
+                        >
+                          {a.label}
+                        </button>
+                      ))}
+                    </div>
+                  ) : null}
                 </div>
               </div>
             ))}
             {isLoading && (
               <div className="flex justify-start">
-                <div className="bg-gray-100 rounded-lg p-3">
+                <div className="bg-gray-100 dark:bg-slate-800 rounded-lg p-3">
                   <Loader2 className="w-5 h-5 animate-spin text-primary-500" />
                 </div>
               </div>
@@ -316,8 +411,7 @@ export default function Chatbot() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input */}
-          <div className="border-t border-gray-200 p-4">
+          <div className="border-t border-gray-200 dark:border-slate-700 p-4">
             <div className="flex space-x-2">
               <input
                 ref={inputRef}
@@ -327,7 +421,7 @@ export default function Chatbot() {
                 onKeyPress={handleKeyPress}
                 placeholder={t('placeholder')}
                 maxLength={500}
-                className="flex-1 border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                className="flex-1 border-2 border-gray-200 dark:border-slate-700 dark:bg-slate-800 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
                 disabled={isLoading}
               />
               <button
@@ -349,4 +443,3 @@ export default function Chatbot() {
     </>
   );
 }
-

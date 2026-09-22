@@ -31,6 +31,15 @@ export const contentApi = {
       return { error: e instanceof Error ? e.message : "가입 신청에 실패했습니다." };
     }
   },
+  createCommunityGroup: async (payload: { name: string; description: string; category: string }) => {
+    try {
+      const { createCommunityGroup } = await import("@/lib/supabase/catalog");
+      const data = await createCommunityGroup(payload);
+      return { data };
+    } catch (e: unknown) {
+      return { error: e instanceof Error ? e.message : "모임을 만들지 못했습니다." };
+    }
+  },
   applyFreelancer: async (id: string) => {
     try {
       const { applyFreelancerGroup } = await import("@/lib/supabase/catalog");

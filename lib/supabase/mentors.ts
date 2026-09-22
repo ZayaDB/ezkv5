@@ -199,6 +199,19 @@ export async function listApprovedMentors(
   return { mentors, total: count ?? mentors.length, page, limit };
 }
 
+export async function getApprovedMentorByUserId(supabase: SupabaseClient, userId: string) {
+  const { data, error } = await supabase
+    .from("mentor_profiles")
+    .select("id, title")
+    .eq("user_id", userId)
+    .eq("approval_status", "approved")
+    .maybeSingle();
+
+  if (error) throw new Error(error.message);
+  if (!data) return null;
+  return { id: String(data.id), title: String(data.title || "") };
+}
+
 export async function getApprovedMentorById(supabase: SupabaseClient, id: string) {
   const { data, error } = await supabase
     .from("mentor_profiles")
@@ -252,11 +265,22 @@ export async function applyMentorProfile(payload: MentorProfileWrite) {
     if (st === "pending") throw new Error("이미 심사 중인 멘토 신청이 있습니다.");
     if (st === "approved") throw new Error("이미 멘토 프로필이 있습니다.");
 
+    const { error: contentError } = await supabase
+      .from("mentor_profiles")
+      .update(mentorContentFields(payload))
+      .eq("id", existing.id);
+
+    if (contentError) throw new Error(contentError.message);
+
+    const { error: rpcError } = await supabase.rpc("resubmit_mentor_application", {
+      p_id: existing.id,
+    });
+    if (rpcError) throw new Error(rpcError.message);
+
     const { data, error } = await supabase
       .from("mentor_profiles")
-      .update({ ...row, approval_status: "pending", verified: false })
-      .eq("id", existing.id)
       .select("*")
+      .eq("id", existing.id)
       .single();
 
     if (error) throw new Error(error.message);

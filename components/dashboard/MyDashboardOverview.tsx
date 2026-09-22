@@ -1,40 +1,45 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import {
   AlertTriangle,
   BookMarked,
+  Bot,
   CalendarDays,
   ChevronRight,
-  Map,
   UserRound,
 } from "lucide-react";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { getControlCenter } from "@/lib/supabase/home";
+import { getCachedEnrollments } from "@/lib/hooks/useMyDataCache";
 import DashboardModeToggle from "@/components/dashboard/DashboardModeToggle";
+import RoadmapChecklist, { type RoadmapView } from "@/components/roadmap/RoadmapChecklist";
+import { roadmapsApi } from "@/lib/api/client";
+import { openAssistant } from "@/components/chatbot/Chatbot";
 
 type HomeData = Awaited<ReturnType<typeof getControlCenter>>;
 
 function SummaryCard({
   href,
+  onClick,
   icon: Icon,
   label,
   value,
   sub,
 }: {
-  href: string;
-  icon: typeof Map;
+  href?: string;
+  onClick?: () => void;
+  icon: typeof Bot;
   label: string;
   value: string | number;
   sub?: string;
 }) {
-  return (
-    <Link
-      href={href}
-      className="group rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 hover:border-primary-300 hover:shadow-sm transition-all"
-    >
+  const className =
+    "group rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 hover:border-primary-300 hover:shadow-sm transition-all text-left w-full";
+  const inner = (
+    <>
       <div className="flex items-start justify-between gap-2">
         <div className="w-9 h-9 rounded-xl bg-primary-50 dark:bg-primary-500/15 flex items-center justify-center">
           <Icon className="w-4 h-4 text-primary-600 dark:text-primary-400" />
@@ -44,6 +49,18 @@ function SummaryCard({
       <p className="text-xs text-slate-500 dark:text-slate-400 mt-3">{label}</p>
       <p className="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-0.5">{value}</p>
       {sub && <p className="text-xs text-slate-500 mt-1">{sub}</p>}
+    </>
+  );
+  if (onClick) {
+    return (
+      <button type="button" onClick={onClick} className={className}>
+        {inner}
+      </button>
+    );
+  }
+  return (
+    <Link href={href || "#"} className={className}>
+      {inner}
     </Link>
   );
 }
@@ -55,27 +72,45 @@ export default function MyDashboardOverview() {
   const locale = useLocale();
   const { user } = useAuth();
   const [data, setData] = useState<HomeData | null>(null);
+  const [courseCount, setCourseCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const load = async (withSpinner = true) => {
     if (!user?.id) {
       setLoading(false);
       return;
     }
-    setLoading(true);
-    getControlCenter(user)
-      .then(setData)
-      .catch(() => setData(null))
+    if (withSpinner) setLoading(true);
+    Promise.all([getControlCenter(user).catch(() => null), getCachedEnrollments().catch(() => [])])
+      .then(([home, enrollments]) => {
+        setData(home);
+        setCourseCount(Array.isArray(enrollments) ? enrollments.length : 0);
+      })
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    void load();
+    const onRoadmap = () => void load(false);
+    window.addEventListener("roadmap-updated", onRoadmap);
+    return () => window.removeEventListener("roadmap-updated", onRoadmap);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
   const base = `/${locale}/my`;
   const status = data?.statusCard as Record<string, unknown> | undefined;
-  const roadmaps = data?.activeRoadmaps ?? [];
-  const avgProgress = useMemo(() => {
-    if (!roadmaps.length) return 0;
-    return Math.round(roadmaps.reduce((s, r) => s + r.progress, 0) / roadmaps.length);
-  }, [roadmaps]);
+  const roadmapViews: RoadmapView[] = (data?.activeRoadmaps ?? []).map((r) => ({
+    id: r.id,
+    title: r.title,
+    templateKey: r.templateKey,
+    progress: r.progress,
+    steps: (r.steps || []).map((s) => ({
+      id: s.id,
+      title: s.title,
+      description: s.description,
+      completed: s.completed,
+    })),
+  }));
 
   const roleLabel = (() => {
     const key = user?.role === "user" ? "user" : user?.role ?? "user";
@@ -90,6 +125,7 @@ export default function MyDashboardOverview() {
     return (
       <div className="animate-pulse space-y-4">
         <div className="h-8 w-48 bg-slate-200 dark:bg-slate-800 rounded-lg" />
+        <div className="h-24 bg-slate-200 dark:bg-slate-800 rounded-2xl" />
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {[1, 2, 3, 4].map((i) => (
             <div key={i} className="h-28 bg-slate-200 dark:bg-slate-800 rounded-2xl" />
@@ -100,6 +136,7 @@ export default function MyDashboardOverview() {
   }
 
   const canUseMentorMode = user?.role === "mentor" || user?.role === "admin";
+  const visaDday = status?.visaDday;
 
   return (
     <div className="space-y-6">
@@ -110,18 +147,41 @@ export default function MyDashboardOverview() {
           </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             {roleLabel} · {t("subtitle")}
+            {visaDday != null ? (
+              <span className="ml-2 text-xs font-semibold text-amber-600">D-{String(visaDday)}</span>
+            ) : null}
           </p>
         </div>
         <DashboardModeToggle canUseMentorMode={canUseMentorMode} />
       </div>
 
+      <section className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3">
+        <div className="flex justify-end mb-1">
+          <button
+            type="button"
+            onClick={() => openAssistant()}
+            className="text-xs font-semibold text-primary-600"
+          >
+            {t("askAssistant")}
+          </button>
+        </div>
+        <RoadmapChecklist
+          roadmaps={roadmapViews}
+          onToggle={async (roadmapId, stepId, next) => {
+            await roadmapsApi.completeStep(roadmapId, stepId, next);
+            await load(false);
+          }}
+          emptyHint={t("emptySteps")}
+        />
+      </section>
+
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <SummaryCard
-          href={`/${locale}/roadmap`}
-          icon={Map}
-          label={t("cardRoadmaps")}
-          value={roadmaps.length}
-          sub={roadmaps.length ? t("avgProgress", { pct: avgProgress }) : t("startRoadmap")}
+          onClick={() => openAssistant()}
+          icon={Bot}
+          label={t("cardAssistant")}
+          value="→"
+          sub={t("cardAssistantSub")}
         />
         <SummaryCard
           href={`${base}/schedule`}
@@ -134,8 +194,8 @@ export default function MyDashboardOverview() {
           href={`${base}/courses`}
           icon={BookMarked}
           label={t("cardCourses")}
-          value={0}
-          sub={t("comingSoon")}
+          value={courseCount}
+          sub={t("cardCoursesSub")}
         />
         <SummaryCard
           href={`${base}/profile`}
@@ -146,66 +206,31 @@ export default function MyDashboardOverview() {
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <section className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
-          <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 mb-4">
-            {tControl("statusTitle")}
-          </h2>
-          <dl className="grid grid-cols-2 gap-3 text-sm">
-            <div>
-              <dt className="text-slate-500">{tControl("university")}</dt>
-              <dd className="font-semibold">{String(status?.university || "—")}</dd>
-            </div>
-            <div>
-              <dt className="text-slate-500">{tControl("nationality")}</dt>
-              <dd className="font-semibold">{String(status?.nationality || "—")}</dd>
-            </div>
-            <div>
-              <dt className="text-slate-500">{tControl("visaType")}</dt>
-              <dd className="font-semibold">{String(status?.visaType || "—")}</dd>
-            </div>
-            <div>
-              <dt className="text-slate-500">{tControl("visaDday")}</dt>
-              <dd className="font-semibold">
-                {status?.visaDday != null ? `D-${status.visaDday}` : "—"}
-              </dd>
-            </div>
-          </dl>
-        </section>
-
-        <section className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100">
-              {t("roadmapChart")}
-            </h2>
-            <Link href={`/${locale}/roadmap`} className="text-xs font-semibold text-primary-600">
-              {tControl("viewAll")}
-            </Link>
+      <section className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
+        <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 mb-4">
+          {tControl("statusTitle")}
+        </h2>
+        <dl className="grid grid-cols-2 gap-3 text-sm">
+          <div>
+            <dt className="text-slate-500">{tControl("university")}</dt>
+            <dd className="font-semibold">{String(status?.university || "—")}</dd>
           </div>
-          {roadmaps.length === 0 ? (
-            <p className="text-sm text-slate-500">{tControl("noRoadmaps")}</p>
-          ) : (
-            <div className="space-y-3">
-              {roadmaps.slice(0, 4).map((r) => (
-                <div key={r.id}>
-                  <div className="flex justify-between text-xs mb-1">
-                    <span className="font-medium text-slate-700 dark:text-slate-200 truncate pr-2">
-                      {r.title}
-                    </span>
-                    <span className="font-bold text-primary-600 shrink-0">{r.progress}%</span>
-                  </div>
-                  <div className="h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                    <div
-                      className="h-full bg-primary-500 rounded-full transition-all"
-                      style={{ width: `${r.progress}%` }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
-      </div>
+          <div>
+            <dt className="text-slate-500">{tControl("nationality")}</dt>
+            <dd className="font-semibold">{String(status?.nationality || "—")}</dd>
+          </div>
+          <div>
+            <dt className="text-slate-500">{tControl("visaType")}</dt>
+            <dd className="font-semibold">{String(status?.visaType || "—")}</dd>
+          </div>
+          <div>
+            <dt className="text-slate-500">{tControl("visaDday")}</dt>
+            <dd className="font-semibold">
+              {status?.visaDday != null ? `D-${status.visaDday}` : "—"}
+            </dd>
+          </div>
+        </dl>
+      </section>
 
       {(data?.alerts?.length ?? 0) > 0 && (
         <section className="space-y-2">
@@ -216,7 +241,7 @@ export default function MyDashboardOverview() {
           {data!.alerts.slice(0, 2).map((a) => (
             <Link
               key={a.id}
-              href={`/${locale}${a.actionUrl || "/roadmap"}`}
+              href={`/${locale}${a.actionUrl || "/assistant"}`}
               className="block rounded-xl border border-amber-200 bg-amber-50 dark:bg-amber-950/40 dark:border-amber-800 px-4 py-3 text-sm"
             >
               <p className="font-semibold text-slate-900 dark:text-slate-100">{a.title}</p>
@@ -257,7 +282,6 @@ export default function MyDashboardOverview() {
           </ul>
         )}
       </section>
-
     </div>
   );
 }

@@ -30,7 +30,6 @@ function buildLocalGuideResponse(
   const isMentor = /멘토|mentor|ментор/.test(m);
   const isLecture = /강의|수강|lecture|course|лекц/.test(m);
   const isCommunity = /커뮤니티|모임|community|group|нийгэмлэг/.test(m);
-  const isFreelance = /프리랜서|알바|job|freelance|ажил/.test(m);
 
   const msg: Record<string, string> = {
     kr: "필요한 정보를 빠르게 찾을 수 있도록 도와드릴게요.",
@@ -39,12 +38,11 @@ function buildLocalGuideResponse(
   };
   const tips: Record<string, string[]> = {
     kr: [
-      "비자/체류: `/study-in-korea` 또는 비자 멘토 탐색 `/mentors`",
+      "비자/체류: `/study-in-korea` 또는 비자 멘토 `/mentors`",
       "주거/생활: `/study-in-korea`",
       "멘토 상담: `/mentors`",
       "강의 탐색: `/lectures`",
       "커뮤니티: `/community`",
-      "프리랜서: `/freelancers`",
     ],
     en: [
       "Visa/Stay: `/study-in-korea` or visa mentors `/mentors`",
@@ -52,7 +50,6 @@ function buildLocalGuideResponse(
       "Mentor consultation: `/mentors`",
       "Lectures: `/lectures`",
       "Community: `/community`",
-      "Freelance jobs: `/freelancers`",
     ],
     mn: [
       "Виз/оршин суух: `/study-in-korea` эсвэл визийн ментор `/mentors`",
@@ -60,7 +57,6 @@ function buildLocalGuideResponse(
       "Ментор зөвлөгөө: `/mentors`",
       "Лекц хайх: `/lectures`",
       "Нийгэмлэг: `/community`",
-      "Freelance ажил: `/freelancers`",
     ],
   };
 
@@ -70,7 +66,6 @@ function buildLocalGuideResponse(
   else if (isMentor) first = tips[locale]?.[2] || tips.kr[2];
   else if (isLecture) first = tips[locale]?.[3] || tips.kr[3];
   else if (isCommunity) first = tips[locale]?.[4] || tips.kr[4];
-  else if (isFreelance) first = tips[locale]?.[5] || tips.kr[5];
   else first = tips[locale]?.[0] || tips.kr[0];
 
   const response = `${msg[locale] || msg.kr}\n\n${first}`;

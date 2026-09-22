@@ -21,7 +21,7 @@
     "dashboard": "대시보드",
     "mySpace": "마이 스페이스",
     "profile": "프로필",
-    "myActivity": "내 활동",
+    "myActivity": "글쓰기",
     "myEnrollments": "내 강의·학습",
     "mySessions": "내 세션",
     "myCommunity": "내 커뮤니티",
@@ -34,7 +34,7 @@
     "footerPlatform": "플랫폼",
     "footerResources": "자료",
     "footerSupport": "고객 지원",
-    "footerTagline": "한국 유학을 위한 신뢰할 수 있는 가이드",
+    "footerTagline": "유학생 생활 비서",
     "copyright": "© 2026. All rights reserved.",
     "notificationsBell": {
       "title": "알림",
@@ -44,12 +44,14 @@
       "aria": "알림",
       "ariaWithCount": "알림 {count}건",
       "unreadCount": "{count}건"
-    }
+    },
+    "lightMode": "라이트 모드",
+    "darkMode": "다크 모드"
   },
   "home": {
-    "heroBadge": "이번 달 커뮤니티 하이라이트",
-    "title": "한국 유학을 위한 신뢰할 수 있는 가이드",
-    "subtitle": "당신의 길을 걸어온 멘토들과 연결하세요. 비자, 주거, 학업, 그리고 그 사이의 모든 것에 대한 도움을 받으세요.",
+    "heroBadge": "유학생 생활 비서",
+    "title": "한국 생활, 필요한 것만",
+    "subtitle": "비자·일정은 로드맵으로, 사람은 멘토로, 공부는 강의로.",
     "cta": "멘토 찾기",
     "heroCtaSecondary": "강의 둘러보기",
     "heroChipTop3": "이번달 TOP 3 추천",
@@ -109,8 +111,10 @@
   },
   "mentors": {
     "title": "멘토 찾기",
-    "subtitle": "2,547명의 멘토가 대기 중입니다",
+    "subtitle": "비자, 주거, 학업을 도와줄 멘토를 찾으세요",
     "filter": "필터",
+    "all": "전체",
+    "count": "멘토 {count}명",
     "categories": {
       "visa": "비자 & 이민",
       "housing": "주거",
@@ -121,7 +125,16 @@
     },
     "emptyTitle": "등록된 멘토가 없습니다",
     "emptyDescription": "아직 등록된 정보가 없습니다.",
-    "emptyAction": "홈으로"
+    "emptyAction": "홈으로",
+    "reviewCount": "리뷰 {count}개",
+    "available": "예약 가능",
+    "viewDetails": "자세히 보기",
+    "verified": "인증",
+    "noMatch": "선택한 카테고리에 해당하는 멘토가 없습니다.",
+    "resetFilter": "필터 초기화",
+    "fallbackRole": "멘토",
+    "perHour": "/시간",
+    "free": "무료"
   },
   "lectures": {
     "title": "강의",
@@ -130,15 +143,44 @@
     "offline": "오프라인",
     "all": "전체",
     "ownCourse": "내 강의입니다",
-    "manageOwn": "강의 관리"
+    "manageOwn": "강의 관리",
+    "count": "{count}개의 강의",
+    "noMatch": "선택한 타입에 해당하는 강의가 없습니다.",
+    "emptyTitle": "등록된 강의가 없습니다",
+    "emptyDescription": "아직 등록된 강의가 없습니다.",
+    "emptyAction": "홈으로",
+    "viewDetails": "자세히 보기"
   },
   "community": {
-    "title": "커뮤니티 그룹",
-    "subtitle": "경험을 공유하고 다른 사람들과 연결하세요",
-    "feedSectionTitle": "커뮤니티 피드",
-    "feedSectionSubtitle": "그룹 가입 없이도 이 피드에 올린 글이 여기에 표시됩니다. 글 쓰기는 마이 스페이스 → 활동·게시에서 할 수 있습니다.",
+    "title": "커뮤니티",
+    "subtitle": "같은 길을 가는 사람들과 글 쓰고, 모임을 만들고, 같이 일해요.",
+    "tabFeed": "이야기",
+    "tabGroups": "모임",
+    "tabJobs": "같이 일해요",
+    "jobsHint": "사람 구하거나 일하고 싶을 때 마이페이지에서 글을 쓰면 여기에 보여요.",
+    "createInMy": "마이페이지에서 모임 만들기",
+    "writeInMy": "마이페이지에서 글 쓰기",
+    "createGroup": "모임 만들기",
+    "groupName": "모임 이름",
+    "groupDesc": "무엇을 같이 할지 짧게",
+    "catMeetup": "모임",
+    "catVisa": "비자",
+    "catStudy": "공부",
+    "catJob": "구인",
+    "noGroups": "아직 모임이 없습니다. 먼저 만들어 보세요.",
     "join": "가입하기",
-    "joinSuccess": "가입되었습니다. 바로 글과 댓글을 작성할 수 있습니다."
+    "joinSuccess": "가입했습니다. 이제 대화와 글을 쓸 수 있어요.",
+    "notFound": "모임을 찾을 수 없습니다",
+    "backToList": "커뮤니티로",
+    "groupPosts": "모임 게시글",
+    "feedSectionTitle": "커뮤니티 피드",
+    "feedSectionSubtitle": "로그인한 누구나 글을 올리고 댓글을 달 수 있습니다.",
+    "chatTitle": "그룹 대화",
+    "chatHint": "가입한 멤버만 대화할 수 있어요.",
+    "chatEmpty": "아직 대화가 없습니다. 먼저 인사해 보세요.",
+    "chatPlaceholder": "메시지 입력",
+    "chatSend": "보내기",
+    "chatLogin": "로그인하고 모임에 가입하면 대화할 수 있습니다."
   },
   "freelancers": {
     "title": "프리랜서 그룹",
@@ -150,7 +192,7 @@
   },
   "publicFeed": {
     "loading": "피드를 불러오는 중…",
-    "empty": "아직 게시글이 없습니다. 마이 스페이스 → 활동·게시에서 글을 올려 보세요.",
+    "empty": "아직 글이 없습니다. 첫 글을 남겨 보세요.",
     "comments": "댓글",
     "commentPlaceholder": "댓글을 입력하세요",
     "commentSubmit": "댓글 등록",
@@ -166,16 +208,36 @@
     "postsHeading": "그룹 게시글",
     "postsHint": "마이 스페이스 → 활동·게시에서 올린 글이 여기에 표시됩니다. 부적절한 글은 관리자가 사유와 함께 삭제할 수 있습니다.",
     "loading": "불러오는 중...",
-    "empty": "아직 게시글이 없습니다. 마이 스페이스 → 활동·게시에서 글을 올려 보세요.",
+    "empty": "아직 글이 없습니다. 가입한 뒤 첫 글을 남겨 보세요.",
     "comments": "댓글 보기",
     "hideComments": "댓글 접기",
     "addCommentPlaceholder": "댓글을 입력하세요",
     "submitComment": "댓글 등록",
-    "loginToComment": "로그인 후 댓글을 작성할 수 있습니다."
+    "loginToComment": "로그인 후 댓글을 작성할 수 있습니다.",
+    "writePost": "글 올리기",
+    "titlePlaceholder": "제목 (선택)",
+    "bodyPlaceholder": "모임에 공유할 내용"
+  },
+  "publicProfile": {
+    "loading": "프로필을 불러오는 중…",
+    "notFound": "프로필을 찾을 수 없습니다",
+    "back": "커뮤니티로",
+    "mentor": "멘토",
+    "member": "회원",
+    "university": "학교",
+    "nationality": "국적",
+    "bio": "소개",
+    "emptyBio": "아직 소개글이 없습니다.",
+    "posts": "이야기",
+    "jobs": "같이 일해요",
+    "emptyPosts": "아직 올린 이야기가 없습니다.",
+    "emptyJobs": "아직 올린 구인·구직 글이 없습니다.",
+    "viewMentor": "멘토 프로필 보기",
+    "editMine": "내 프로필 수정"
   },
   "studyInKorea": {
     "title": "한국에서 공부하기",
-    "subtitle": "한국 유학에 대한 모든 정보",
+    "subtitle": "비자, 주거, 병원, 생활 안내",
     "visa": "비자 정보",
     "housing": "주거 정보",
     "hospital": "병원 정보",
@@ -270,20 +332,96 @@
   },
   "roadmap": {
     "title": "로드맵",
-    "subtitle": "목표 기반으로 한국 생활을 단계별로 관리하세요",
+    "subtitle": "한국 생활을 단계로 관리하세요",
     "templates": "템플릿으로 시작",
-    "myRoadmaps": "내 로드맵",
-    "empty": "아직 로드맵이 없습니다. 위 템플릿에서 시작해 보세요.",
-    "steps": "단계"
+    "myRoadmaps": "진행 단계",
+    "empty": "아직 단계가 없습니다. 비서에게 말해 보세요.",
+    "steps": "단계",
+    "done": "완료",
+    "todo": "미완료",
+    "stuck": "막혔어요 · 상담",
+    "learn": "내 학습",
+    "allDone": "단계 완료",
+    "tpl": {
+      "visa_extension": {
+        "title": "비자 연장 준비",
+        "description": "비자 만료 전 필요한 서류와 절차를 단계별로 진행합니다.",
+        "s0": "비자 만료일 확인",
+        "s0d": "여권·외국인등록증의 만료일을 확인하세요.",
+        "s1": "학교 서류 요청",
+        "s1d": "재학증명서·성적증명서를 국제처에 요청하세요.",
+        "s2": "소득·잔고 증빙 준비",
+        "s2d": "은행 잔고증명서 등 필요 서류를 준비하세요.",
+        "s3": "출입국·외국인청 예약",
+        "s3d": "HiKorea 또는 방문 예약을 진행하세요.",
+        "s4": "신청 및 수수료 납부",
+        "s4d": "신청서 작성 후 수수료를 납부하세요."
+      },
+      "settling_korea": {
+        "title": "한국 정착",
+        "description": "입국 후 기본 생활 인프라를 갖춥니다.",
+        "s0": "외국인등록 신청",
+        "s0d": "입국 후 90일 이내 신청이 필요합니다.",
+        "s1": "휴대폰·통신 개통",
+        "s1d": "본인인증이 가능한 번호를 개통하세요.",
+        "s2": "은행 계좌 개설",
+        "s2d": "외국인등록증으로 계좌를 개설하세요.",
+        "s3": "건강보험 확인",
+        "s3d": "국민건강보험 가입 대상 여부를 확인하세요."
+      },
+      "moving": {
+        "title": "이사 준비",
+        "description": "주거 이전에 필요한 체크리스트입니다.",
+        "s0": "예산·지역 정하기",
+        "s0d": "월세·보증금 예산과 희망 지역을 정하세요.",
+        "s1": "매물 탐색",
+        "s1d": "사기 예방을 위해 공인중개사·학교 추천 경로를 활용하세요.",
+        "s2": "계약서 검토",
+        "s2d": "보증금·해지 조건·관리비를 확인하세요.",
+        "s3": "전입신고·주소 변경",
+        "s3d": "이사 후 외국인등록 주소를 변경하세요."
+      },
+      "job_prep": {
+        "title": "취업 준비",
+        "description": "졸업 후 또는 인턴·알바를 위한 준비 단계입니다.",
+        "s0": "비자별 취업 가능 범위 확인",
+        "s0d": "D-2·D-10 등 체류 자격별 근로 조건을 확인하세요.",
+        "s1": "이력서·포트폴리오 정리",
+        "s1d": "한국어·영어 버전을 준비하세요.",
+        "s2": "멘토·커리어 상담",
+        "s2d": "분야별 멘토와 상담 일정을 잡으세요.",
+        "s3": "지원 및 면접 준비",
+        "s3d": "지원 일정을 캘린더에 등록하세요."
+      },
+      "d10_prep": {
+        "title": "D-10 구직비자 준비",
+        "description": "졸업 후 구직비자 전환을 위한 로드맵입니다.",
+        "s0": "전환 자격 요건 확인",
+        "s0d": "학위·졸업 요건·체류 기간을 확인하세요.",
+        "s1": "필요 서류 목록 정리",
+        "s1d": "학교·출입국 요구 서류를 정리하세요.",
+        "s2": "구직 활동 계획 수립",
+        "s2d": "지원 목표·기간을 설정하세요.",
+        "s3": "신청 일정 예약",
+        "s3d": "만료 전 여유 있게 신청 일정을 잡으세요."
+      }
+    }
   },
   "assistant": {
     "title": "생활 비서",
-    "subtitle": "질문만 하지 마세요. 바로 행동을 만들어 드릴게요.",
+    "subtitle": "다음에 할 일을 바로 실행합니다.",
     "pageTitle": "AI 비서",
-    "pageSubtitle": "비자·이사·일정 — 말하면 로드맵과 일정을 만들어 드립니다.",
+    "pageSubtitle": "비자·이사·일정을 말하면 단계가 생기고, 끝나면 체크하세요.",
     "placeholder": "예: 비자 연장해야 해",
     "thinking": "생각 중...",
-    "error": "일시적인 오류가 발생했습니다."
+    "error": "일시적인 오류가 발생했습니다.",
+    "quickVisa": "비자 연장해야 해",
+    "quickMove": "이사 준비 도와줘",
+    "quickToday": "오늘 일정 정리",
+    "quickMentor": "멘토 찾고 싶어",
+    "roadmapCreated": "단계를 만들었어요. 끝나면 체크하세요. 대시보드에서도 볼 수 있어요.",
+    "needLogin": "로그인하면 단계를 저장하고 체크할 수 있어요.",
+    "emptySteps": "비서로 말하면 할 일이 단계로 생겨요."
   },
   "dashboard": {
     "title": "대시보드",
@@ -372,7 +510,15 @@
     "schedule": {
       "title": "일정 관리",
       "upcoming": "예정된 일정",
-      "days": ["일", "월", "화", "수", "목", "금", "토"]
+      "days": [
+        "일",
+        "월",
+        "화",
+        "수",
+        "목",
+        "금",
+        "토"
+      ]
     },
     "statistics": {
       "totalHours": "총 학습 시간",
@@ -779,17 +925,22 @@
     },
     "dashboard": {
       "greeting": "{name}님, 안녕하세요",
-      "subtitle": "메뉴별 요약을 한눈에 확인하세요",
+      "subtitle": "오늘 할 일을 한눈에",
       "cardRoadmaps": "로드맵",
       "avgProgress": "평균 {pct}% 진행",
       "startRoadmap": "로드맵 시작하기",
+      "cardAssistant": "AI 비서",
+      "cardAssistantSub": "말하면 단계가 생겨요",
       "cardSchedule": "오늘 일정",
       "cardScheduleSub": "일정·달력에서 관리",
       "cardCourses": "내 강의",
+      "cardCoursesSub": "수강 중인 강의",
       "comingSoon": "준비 중",
       "cardProfile": "나의 정보",
       "cardProfileSub": "프로필 수정",
-      "roadmapChart": "로드맵 진행률",
+      "stepsTitle": "진행 단계",
+      "askAssistant": "비서에게 말하기",
+      "emptySteps": "비서에게 말하면 단계가 생겨요.",
       "openSchedule": "일정 전체 보기",
       "notificationsLink": "알림 센터"
     },
@@ -803,14 +954,16 @@
       "navWishlist": "찜한 강의",
       "navLectures": "강의 관리",
       "navReceipts": "영수증·결제",
-      "navActivity": "활동·게시",
+      "navActivity": "글쓰기",
       "navNotifications": "알림",
       "navSupport": "고객 지원",
-      "navInquiries": "문의·지원"
+      "navInquiries": "문의·지원",
+      "collapseNav": "메뉴 닫기",
+      "expandNav": "메뉴 열기"
     },
     "courses": {
       "title": "내 강의·학습",
-      "subtitle": "수강 중인 강의를 학습하고, 신청·진행 상태는 별도 탭에서 확인합니다.",
+      "subtitle": "수강 중인 강의와 진행 상태",
       "tabLearn": "학습·노트",
       "tabStatus": "신청·진행 상태",
       "learnHint": "강의 페이지에서 본 내용을 복습하며 메모해 두세요. 브라우저에 임시 저장됩니다.",
@@ -911,9 +1064,20 @@
       "enrolledAt": "신청일"
     },
     "activity": {
-      "title": "활동·게시",
+      "title": "글쓰기",
       "subtitle": "가입한 커뮤니티·프리랜서 그룹에 글을 올리면 해당 그룹 페이지에 표시됩니다.",
-      "subtitlePublic": "커뮤니티 또는 프리랜서 전체 피드에 글이 올라갑니다. 상단 「글 올리기」로 작성하세요.",
+      "subtitlePublic": "여기에 쓴 글과 만든 모임이 커뮤니티 메뉴에 올라갑니다.",
+      "groupHint": "만든 모임은 커뮤니티 → 모임에 보여요.",
+      "groupNameErr": "모임 이름을 입력해 주세요.",
+      "groupOkCommunity": "모임을 만들었습니다. 커뮤니티에서 확인할 수 있어요.",
+      "viewGroups": "모임 목록 보기",
+      "myGroups": "내 모임",
+      "myGroupsEmpty": "아직 만든·가입한 모임이 없습니다.",
+      "channelJobs": "같이 일해요",
+      "postOkCommunity": "게시되었습니다. 커뮤니티에서 확인할 수 있어요.",
+      "viewOnCommunity": "커뮤니티에서 보기",
+      "myPosts": "내가 올린 글",
+      "myPostsEmpty": "아직 올린 글이 없습니다.",
       "composeTitle": "새 글 작성",
       "composeHint": "그룹에 가입한 뒤 바로 글을 쓸 수 있습니다.",
       "channelType": "올릴 피드",
@@ -962,5 +1126,3 @@
     }
   }
 }
-
-

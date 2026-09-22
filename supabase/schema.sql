@@ -432,6 +432,9 @@ security definer
 set search_path = public
 as $$
 begin
+  if current_setting('app.mentor_resubmit', true) = 'on' then
+    return new;
+  end if;
   if auth.uid() is null then
     return new;
   end if;
@@ -465,7 +468,8 @@ security definer
 set search_path = public
 as $$
 begin
-  if current_setting('app.lecture_counter', true) = 'on' then
+  if current_setting('app.lecture_counter', true) = 'on'
+     or current_setting('app.lecture_resubmit', true) = 'on' then
     return new;
   end if;
   if auth.uid() is null then
@@ -491,6 +495,74 @@ drop trigger if exists enforce_lectures_moderation on public.lectures;
 create trigger enforce_lectures_moderation
   before insert or update on public.lectures
   for each row execute function public.enforce_lectures_moderation();
+
+create or replace function public.resubmit_mentor_application(p_id uuid)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_updated int;
+begin
+  if auth.uid() is null then
+    raise exception '인증이 필요합니다.';
+  end if;
+
+  perform set_config('app.mentor_resubmit', 'on', true);
+
+  update public.mentor_profiles
+  set
+    approval_status = 'pending',
+    verified = false,
+    updated_at = now()
+  where id = p_id
+    and user_id = auth.uid()
+    and approval_status = 'rejected';
+
+  get diagnostics v_updated = row_count;
+  if v_updated = 0 then
+    raise exception '재신청할 수 없습니다.';
+  end if;
+end;
+$$;
+
+revoke all on function public.resubmit_mentor_application(uuid) from public;
+grant execute on function public.resubmit_mentor_application(uuid) to authenticated;
+
+create or replace function public.resubmit_lecture_application(p_id uuid)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_updated int;
+begin
+  if auth.uid() is null then
+    raise exception '인증이 필요합니다.';
+  end if;
+
+  perform set_config('app.lecture_resubmit', 'on', true);
+
+  update public.lectures
+  set
+    approval_status = 'pending',
+    updated_at = now()
+  where id = p_id
+    and instructor_id = auth.uid()
+    and approval_status = 'rejected';
+
+  get diagnostics v_updated = row_count;
+  if v_updated = 0 then
+    raise exception '재제출할 수 없습니다.';
+  end if;
+end;
+$$;
+
+revoke all on function public.resubmit_lecture_application(uuid) from public;
+grant execute on function public.resubmit_lecture_application(uuid) to authenticated;
+
 -- Community, freelancer, feeds, study info (Mongo replacement)
 
 create table if not exists public.community_groups (
@@ -671,14 +743,23 @@ create policy "freelancer_groups: admin write" on public.freelancer_groups for a
 drop policy if exists "study_infos: admin write" on public.study_infos;
 create policy "study_infos: admin write" on public.study_infos for all using (public.is_admin());
 
-create or replace function public.get_public_profiles(ids uuid[])
-returns table(id uuid, name text, avatar_url text)
+drop function if exists public.get_public_profiles(uuid[]);
+create function public.get_public_profiles(ids uuid[])
+returns table(
+  id uuid,
+  name text,
+  avatar_url text,
+  bio text,
+  university text,
+  nationality text,
+  role text
+)
 language sql
 stable
 security definer
 set search_path = public
 as $$
-  select p.id, p.name, p.avatar_url
+  select p.id, p.name, p.avatar_url, p.bio, p.university, p.nationality, p.role
   from public.profiles p
   where p.id = any(ids)
   limit 200;
@@ -1000,5 +1081,40 @@ $$;
 
 revoke all on function public.consume_chat_quota(int) from public;
 grant execute on function public.consume_chat_quota(int) to authenticated;
+
+-- ── Community: user-created groups, instant join, group chat, richer public profiles ──
+
+alter table public.community_groups
+  add column if not exists created_by uuid references public.profiles(id) on delete set null;
+
+drop trigger if exists enforce_join_request_moderation on public.community_memberships;
+
+drop policy if exists "community_groups: insert own" on public.community_groups;
+create policy "community_groups: insert own" on public.community_groups
+  for insert with check (auth.uid() = created_by);
+
+create table if not exists public.community_messages (
+  id uuid primary key default gen_random_uuid(),
+  group_id uuid not null references public.community_groups(id) on delete cascade,
+  author_id uuid not null references public.profiles(id) on delete cascade,
+  body text not null,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists community_messages_group_created_idx
+  on public.community_messages (group_id, created_at);
+
+alter table public.community_messages enable row level security;
+
+drop policy if exists "community_messages: member read" on public.community_messages;
+create policy "community_messages: member read" on public.community_messages
+  for select using (public.is_channel_member('community', group_id) or public.is_admin());
+
+drop policy if exists "community_messages: member insert" on public.community_messages;
+create policy "community_messages: member insert" on public.community_messages
+  for insert with check (
+    auth.uid() = author_id
+    and public.is_channel_member('community', group_id)
+  );
 
 

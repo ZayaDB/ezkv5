@@ -151,9 +151,17 @@ function CoursesInner() {
           closeLabel={tCommon("close")}
         />
       )}
-      <div>
-        <h1 className="text-xl sm:text-2xl font-bold text-zinc-900 tracking-tight">{t("title")}</h1>
-        <p className="text-sm text-zinc-600 mt-1">{t("subtitle")}</p>
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h1 className="text-xl sm:text-2xl font-bold text-zinc-900 tracking-tight">{t("title")}</h1>
+          <p className="text-sm text-zinc-600 mt-1">{t("subtitle")}</p>
+        </div>
+        <Link
+          href={`/${locale}/my/wishlist`}
+          className="shrink-0 text-sm font-semibold text-primary-600 hover:underline"
+        >
+          {tMy("wishlist.title")}
+        </Link>
       </div>
 
       <div className="flex flex-wrap gap-2 rounded-xl bg-zinc-100 p-1 ring-1 ring-zinc-200/80">

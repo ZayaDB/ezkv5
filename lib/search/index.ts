@@ -1,13 +1,9 @@
-import { Mentor, Lecture, CommunityGroup, FreelancerGroup, StudyInfo } from '@/types';
-import {
-  queryCommunityGroups,
-  queryFreelancerGroups,
-  queryStudyInfos,
-} from '@/lib/data/queries';
+import { Mentor, Lecture, CommunityGroup, StudyInfo } from '@/types';
+import { queryCommunityGroups, queryStudyInfos } from '@/lib/data/queries';
 import { queryLecturesSupabase, queryMentorsSupabase } from '@/lib/supabase/public-queries';
 
 export interface SearchResult {
-  type: 'mentor' | 'lecture' | 'community' | 'freelancer' | 'studyInfo';
+  type: 'mentor' | 'lecture' | 'community' | 'studyInfo';
   id: string;
   title: string;
   description: string;
@@ -26,11 +22,10 @@ export async function searchContent(query: string, locale: string = 'kr'): Promi
   const lowerQuery = trimmed.toLowerCase();
   const results: SearchResult[] = [];
 
-  const [{ mentors }, { lectures }, communities, freelancers, studyItems] = await Promise.all([
+  const [{ mentors }, { lectures }, communities, studyItems] = await Promise.all([
     queryMentorsSupabase({ limit: 80 }),
     queryLecturesSupabase({ limit: 80 }),
     queryCommunityGroups({ limit: 80 }),
-    queryFreelancerGroups({ limit: 80 }),
     queryStudyInfos(),
   ]);
 
@@ -76,27 +71,13 @@ export async function searchContent(query: string, locale: string = 'kr'): Promi
   });
 
   communities.forEach((group: CommunityGroup) => {
-    if (
-      match(lowerQuery, group.name, group.description, group.category, group.tags.join(' '))
-    ) {
+    if (match(lowerQuery, group.name, group.description, group.category, group.tags.join(' '))) {
       results.push({
         type: 'community',
         id: group.id,
         title: group.name,
         description: group.description,
         url: `/${locale}/community/${group.id}`,
-      });
-    }
-  });
-
-  freelancers.forEach((group: FreelancerGroup) => {
-    if (match(lowerQuery, group.name, group.description, group.category)) {
-      results.push({
-        type: 'freelancer',
-        id: group.id,
-        title: group.name,
-        description: group.description,
-        url: `/${locale}/freelancers/${group.id}`,
       });
     }
   });

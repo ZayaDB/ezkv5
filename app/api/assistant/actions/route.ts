@@ -67,10 +67,27 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: stepErr.message }, { status: 500 });
       }
 
+      const { data: savedSteps } = await supabase
+        .from("roadmap_steps")
+        .select("id, title, description, completed, sort_order")
+        .eq("roadmap_id", roadmap.id)
+        .order("sort_order", { ascending: true });
+
       return NextResponse.json({
         ok: true,
         roadmapId: roadmap.id,
-        redirectUrl: `/roadmap`,
+        roadmap: {
+          id: String(roadmap.id),
+          title: roadmap.title,
+          templateKey: roadmap.template_key,
+          progress: 0,
+          steps: (savedSteps || []).map((s) => ({
+            id: String(s.id),
+            title: s.title,
+            description: s.description || undefined,
+            completed: Boolean(s.completed),
+          })),
+        },
       });
     }
 

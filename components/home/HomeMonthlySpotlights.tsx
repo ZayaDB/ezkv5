@@ -36,7 +36,7 @@ export default async function HomeMonthlySpotlights({
   const mentorTop = topMentors.slice(0, 3);
 
   return (
-    <section className="py-16 sm:py-20 bg-slate-50/80 dark:bg-slate-950">
+    <section className="py-12 sm:py-14 bg-slate-50/80 dark:bg-slate-950">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="space-y-12 lg:space-y-14">
           <div>
@@ -44,12 +44,9 @@ export default async function HomeMonthlySpotlights({
               <Sparkles className="w-4 h-4 shrink-0" />
               {t('monthlyBestBadge')}
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-slate-100 mb-2">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-6">
               {t('monthlyBestLectureTop3')}
             </h2>
-            <p className="text-gray-600 dark:text-slate-400 text-sm sm:text-base mb-6 lg:mb-8">
-              {t('monthlyBestLectureHint')}
-            </p>
 
             {lectureTop.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -139,12 +136,9 @@ export default async function HomeMonthlySpotlights({
               <Sparkles className="w-4 h-4 shrink-0" />
               {t('monthlyBestBadge')}
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-slate-100 mb-2">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-6">
               {t('monthlyBestMentorTop3')}
             </h2>
-            <p className="text-gray-600 dark:text-slate-400 text-sm sm:text-base mb-6 lg:mb-8">
-              {t('monthlyBestMentorHint')}
-            </p>
 
             {mentorTop.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">

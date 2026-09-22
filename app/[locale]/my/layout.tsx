@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import {
@@ -9,12 +8,9 @@ import {
   GraduationCap,
   LayoutDashboard,
   LifeBuoy,
-  Map,
-  Receipt,
-  Sparkles,
   UserRound,
   BookMarked,
-  Heart,
+  PenLine,
 } from "lucide-react";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import SideLnbShell, { type SideLnbItem } from "@/components/layout/SideLnbShell";
@@ -100,28 +96,22 @@ export default function MySpaceLayout({ children }: { children: React.ReactNode 
       icon: CalendarDays,
       active: (p) => p.includes("/my/schedule"),
     },
-    {
-      href: `/${locale}/roadmap`,
-      label: t("navRoadmap"),
-      icon: Map,
-      active: (p) => p.includes("/roadmap"),
-    },
     ...(!isMentorMode
       ? [
           {
             href: `${base}/courses`,
             label: t("navCourses"),
             icon: BookMarked,
-            active: (p: string) => p.includes("/my/courses"),
-          },
-          {
-            href: `${base}/wishlist`,
-            label: t("navWishlist"),
-            icon: Heart,
-            active: (p: string) => p.includes("/my/wishlist"),
+            active: (p: string) => p.includes("/my/courses") || p.includes("/my/wishlist"),
           },
         ]
       : []),
+    {
+      href: `${base}/activity`,
+      label: t("navActivity"),
+      icon: PenLine,
+      active: (p) => p.includes("/my/activity"),
+    },
     ...(isMentorMode
       ? [
           {
@@ -132,18 +122,6 @@ export default function MySpaceLayout({ children }: { children: React.ReactNode 
           },
         ]
       : []),
-    {
-      href: `${base}/receipts`,
-      label: t("navReceipts"),
-      icon: Receipt,
-      active: (p) => p.includes("/my/receipts"),
-    },
-    {
-      href: `${base}/activity`,
-      label: t("navActivity"),
-      icon: Sparkles,
-      active: (p) => p.includes("/my/activity"),
-    },
   ];
 
   const supportNav: SideLnbItem[] = [

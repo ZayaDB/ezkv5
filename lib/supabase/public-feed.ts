@@ -10,19 +10,23 @@ function asFeedType(v: string): PublicFeedType | null {
 
 export async function listPublicFeed(
   feedTypeRaw: string,
-  opts?: { viewerUserId?: string; limit?: number }
+  opts?: { viewerUserId?: string; limit?: number; authorId?: string }
 ) {
   const feedType = asFeedType(feedTypeRaw);
   if (!feedType) return { error: "잘못된 피드입니다." };
 
   const supabase = createClient();
   const limit = Math.min(80, Math.max(1, opts?.limit ?? 40));
-  const { data: rows, error } = await supabase
+  let query = supabase
     .from("public_feed_posts")
     .select("id, feed_type, body, attachment_urls, created_at, author_id")
     .eq("feed_type", feedType)
     .order("created_at", { ascending: false })
     .limit(limit);
+  if (opts?.authorId) {
+    query = query.eq("author_id", opts.authorId);
+  }
+  const { data: rows, error } = await query;
 
   if (error) return { error: error.message };
   const feedRows = rows || [];

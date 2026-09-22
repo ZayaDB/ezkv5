@@ -547,8 +547,6 @@ export default function MySchedulePage() {
               </select>
               <button type="button" disabled={savingBudget} onClick={() => void addBudget()} className="w-full rounded-lg bg-zinc-900 py-2.5 text-sm font-semibold text-white hover:bg-zinc-800 disabled:opacity-60">{savingBudget ? "…" : editingBudgetId ? "수정 저장" : t("addBudgetBtn")}</button>
             </div>
-
-            <Link href={`/${locale}/my/receipts`} className="inline-block text-sm font-semibold text-primary-600 hover:underline">{t("goReceiptsLink")} →</Link>
           </div>
         </div>
       </PlatformCard>

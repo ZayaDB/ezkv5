@@ -38,6 +38,18 @@ export const mentorsApi = {
     }
   },
 
+  getApprovedByUserId: async (userId: string) => {
+    try {
+      const { createClient } = await import("@/lib/supabase/client");
+      const { getApprovedMentorByUserId } = await import("@/lib/supabase/mentors");
+      const supabase = createClient();
+      const mentor = await getApprovedMentorByUserId(supabase, userId);
+      return { data: { mentor } };
+    } catch (e: unknown) {
+      return { error: e instanceof Error ? e.message : "멘토 정보를 불러오지 못했습니다." };
+    }
+  },
+
   getById: async (id: string) => {
     try {
       const { createClient } = await import("@/lib/supabase/client");

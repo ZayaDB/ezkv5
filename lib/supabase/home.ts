@@ -4,8 +4,8 @@ import { getNextStepTitle } from "@/lib/roadmap/progressUtils";
 import type { User } from "@/lib/contexts/AuthContext";
 
 const RECOMMENDED_ACTIONS = [
-  { id: "arc", title: "외국인등록증 갱신 확인", actionUrl: "/roadmap" },
-  { id: "visa", title: "비자 연장 준비", actionUrl: "/roadmap" },
+  { id: "arc", title: "외국인등록증 갱신 확인", actionUrl: "/assistant" },
+  { id: "visa", title: "비자 연장 준비", actionUrl: "/assistant" },
   { id: "insurance", title: "건강보험 확인", actionUrl: "/calendar" },
 ];
 
@@ -75,7 +75,7 @@ export async function getControlCenter(profileUser: User) {
     supabase
       .from("roadmaps")
       .select(
-        "id, title, progress, due_date, roadmap_steps(title, completed, active, sort_order)"
+        "id, title, progress, due_date, template_key, roadmap_steps(id, title, description, completed, active, sort_order)"
       )
       .eq("user_id", userId)
       .eq("status", "active")
@@ -99,22 +99,33 @@ export async function getControlCenter(profileUser: User) {
 
   const activeRoadmaps = (roadmapsResult.data || []).map((r) => {
     const nested = r.roadmap_steps as
-      | Array<{ title: string; completed: boolean; active: boolean; sort_order: number }>
+      | Array<{
+          id: string;
+          title: string;
+          description: string | null;
+          completed: boolean;
+          active: boolean;
+          sort_order: number;
+        }>
       | null;
     const rSteps = (nested || [])
       .slice()
       .sort((a, b) => a.sort_order - b.sort_order)
       .map((s) => ({
+        id: String(s.id),
         title: s.title,
+        description: s.description || undefined,
         completed: s.completed,
         active: s.active,
       }));
     return {
       id: r.id,
       title: r.title,
+      templateKey: r.template_key as string | null,
       progress: r.progress,
       nextStep: getNextStepTitle(rSteps),
       dueDate: r.due_date,
+      steps: rSteps,
     };
   });
 

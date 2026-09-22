@@ -4,7 +4,7 @@ import type { ChannelKind } from "@/lib/supabase/channel-feed";
 export type { ChannelFeedKind, PublicFeedKind } from "./social-types";
 
 export const publicFeedApi = {
-  list: async (feed: PublicFeedKind) => {
+  list: async (feed: PublicFeedKind, opts?: { authorId?: string }) => {
     try {
       const { listPublicFeed } = await import("@/lib/supabase/public-feed");
       const { createClient } = await import("@/lib/supabase/client");
@@ -12,7 +12,10 @@ export const publicFeedApi = {
       const {
         data: { session },
       } = await supabase.auth.getSession();
-      const res = await listPublicFeed(feed, { viewerUserId: session?.user?.id });
+      const res = await listPublicFeed(feed, {
+        viewerUserId: session?.user?.id,
+        authorId: opts?.authorId,
+      });
       if ("error" in res && res.error) return { error: res.error };
       return { data: { posts: res.posts || [] } };
     } catch (e: unknown) {

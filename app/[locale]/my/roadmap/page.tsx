@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-export default async function RoadmapRedirect({
+export default async function MyRoadmapRedirect({
   params,
 }: {
   params: { locale: string } | Promise<{ locale: string }>;
