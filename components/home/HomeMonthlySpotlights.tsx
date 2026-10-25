@@ -1,6 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
-import { ArrowRight, BookOpen, Sparkles, Star, Users } from 'lucide-react';
+import { ArrowRight, BookOpen, Star, Users } from 'lucide-react';
 import type { Lecture, Mentor } from '@/types';
 
 function formatKrw(amount: number, locale: string) {
@@ -36,17 +36,18 @@ export default async function HomeMonthlySpotlights({
   const mentorTop = topMentors.slice(0, 3);
 
   return (
-    <section className="py-12 sm:py-14 bg-slate-50/80 dark:bg-slate-950">
+    <section className="py-12 sm:py-14 bg-paper dark:bg-night">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="space-y-12 lg:space-y-14">
+        <div className="space-y-14 lg:space-y-16">
           <div>
-            <div className="flex items-center gap-2 text-primary-600 font-semibold text-sm uppercase tracking-wide mb-2">
-              <Sparkles className="w-4 h-4 shrink-0" />
-              {t('monthlyBestBadge')}
+            <div className="flex items-baseline justify-between gap-4 mb-6 pb-4 border-b border-hairline dark:border-hairline-dark">
+              <h2 className="font-serif text-xl sm:text-2xl font-bold text-ink dark:text-parchment">
+                {t('monthlyBestLectureTop3')}
+              </h2>
+              <span className="font-mono text-[11px] text-ink-muted dark:text-parchment-muted whitespace-nowrap">
+                {t('monthlyBestLectureHint')}
+              </span>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-6">
-              {t('monthlyBestLectureTop3')}
-            </h2>
 
             {lectureTop.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -54,59 +55,48 @@ export default async function HomeMonthlySpotlights({
                   <Link
                     key={lecture.id}
                     href={`/${locale}/lectures/${lecture.id}`}
-                    className={`group block rounded-2xl overflow-hidden border bg-white dark:bg-slate-900 transition-all h-full ${
-                      idx === 0
-                        ? 'border-primary-300 dark:border-primary-700 shadow-md'
-                        : 'border-gray-200/80 dark:border-slate-700 shadow-sm hover:border-primary-200'
-                    }`}
+                    className="group block rounded-sm overflow-hidden border border-hairline dark:border-hairline-dark bg-paper-card dark:bg-night-card hover:border-stamp dark:hover:border-stamp-dark transition-colors h-full"
                   >
                     <div className="flex flex-col h-full">
-                      <div className="relative aspect-[16/9] bg-gradient-to-br from-primary-100 to-blue-100 dark:from-primary-900/30 dark:to-blue-900/20">
+                      <div className="relative aspect-[16/9] bg-paper dark:bg-night">
                         {lecture.image ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img
                             src={lecture.image}
                             alt={lecture.title}
-                            className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300"
+                            className="w-full h-full object-cover"
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
-                            <BookOpen className="w-14 h-14 text-primary-400/70" />
+                            <BookOpen className="w-10 h-10 text-ink-muted/40 dark:text-parchment-muted/40" />
                           </div>
                         )}
-                        <div
-                          className={`absolute top-3 left-3 inline-flex items-center justify-center rounded-xl font-bold ${
-                            idx === 0
-                              ? 'h-9 px-3 bg-primary-600 text-white text-xs'
-                              : 'h-8 px-2.5 bg-white/90 dark:bg-slate-900/80 text-primary-700 dark:text-primary-300 text-[11px]'
-                          }`}
-                        >
-                          {rankLabel(idx + 1)}
+                        <div className="absolute top-0 left-0 h-8 w-8 flex items-center justify-center bg-paper-card dark:bg-night-card border-b border-r border-hairline dark:border-hairline-dark font-mono text-[10px] font-semibold text-stamp dark:text-stamp-dark">
+                          {rankLabel(idx + 1).replace('TOP ', 'No.')}
                         </div>
-                        <div className="absolute top-3 right-3 inline-flex items-center rounded-lg px-2 py-1 text-xs font-semibold bg-white/90 dark:bg-slate-900/80 text-amber-700">
-                          <Star className="w-3.5 h-3.5 mr-1 fill-amber-500 text-amber-500" />
+                        <div className="absolute top-2 right-2 inline-flex items-center gap-1 px-1.5 py-0.5 bg-paper-card/95 dark:bg-night-card/95 font-mono text-[11px] text-ink dark:text-parchment">
+                          <Star className="w-3 h-3 fill-stamp text-stamp dark:fill-stamp-dark dark:text-stamp-dark" />
                           {lecture.rating.toFixed(1)}
                         </div>
                       </div>
                       <div className="p-5 flex flex-col flex-1">
-                        <div className="flex items-center gap-2 mb-1 flex-wrap">
-                          <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-primary-50 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300">
-                            {lecture.type === 'online' ? t('typeOnline') : t('typeOffline')}
-                          </span>
-                          <span className="text-xs text-gray-500 dark:text-slate-400">{lecture.category}</span>
+                        <div className="flex items-center gap-2 mb-2 font-mono text-[11px] text-ink-muted dark:text-parchment-muted">
+                          <span>{lecture.type === 'online' ? t('typeOnline') : t('typeOffline')}</span>
+                          <span>·</span>
+                          <span>{lecture.category}</span>
                         </div>
-                        <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-slate-100 group-hover:text-primary-700 transition-colors line-clamp-2">
+                        <h3 className="font-serif text-base sm:text-lg font-bold text-ink dark:text-parchment group-hover:text-stamp dark:group-hover:text-stamp-dark transition-colors line-clamp-2">
                           {lecture.title}
                         </h3>
-                        <p className="text-sm text-gray-600 dark:text-slate-400">{lecture.instructor}</p>
-                        <p className="text-sm text-gray-600 dark:text-slate-400 mt-2 line-clamp-3 flex-1">
+                        <p className="text-sm text-ink-muted dark:text-parchment-muted mt-1">{lecture.instructor}</p>
+                        <p className="text-sm text-ink-muted dark:text-parchment-muted mt-2 line-clamp-3 flex-1">
                           {excerpt(lecture.description, 120)}
                         </p>
-                        <div className="mt-4 flex items-center justify-between gap-2">
-                          <span className="text-sm sm:text-base font-bold text-primary-600">
+                        <div className="mt-4 pt-4 border-t border-hairline dark:border-hairline-dark flex items-center justify-between gap-2">
+                          <span className="text-sm sm:text-base font-semibold text-ink dark:text-parchment">
                             {formatKrw(lecture.price, locale)}
                           </span>
-                          <span className="inline-flex items-center text-xs font-semibold text-primary-700 dark:text-primary-300">
+                          <span className="inline-flex items-center text-xs font-semibold text-stamp dark:text-stamp-dark">
                             {t('viewDetail')}
                             <ArrowRight className="w-3.5 h-3.5 ml-1" />
                           </span>
@@ -117,12 +107,12 @@ export default async function HomeMonthlySpotlights({
                 ))}
               </div>
             ) : (
-              <div className="rounded-2xl border border-dashed border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-8 text-center">
-                <BookOpen className="w-12 h-12 mx-auto text-gray-400 dark:text-slate-500 mb-3" />
-                <p className="text-gray-600 dark:text-slate-400 mb-3">{t('emptyLecture')}</p>
+              <div className="rounded-sm border border-dashed border-hairline dark:border-hairline-dark bg-paper-card dark:bg-night-card p-8 text-center">
+                <BookOpen className="w-10 h-10 mx-auto text-ink-muted dark:text-parchment-muted mb-3" />
+                <p className="text-ink-muted dark:text-parchment-muted mb-3">{t('emptyLecture')}</p>
                 <Link
                   href={`/${locale}/lectures`}
-                  className="inline-flex items-center text-primary-600 font-semibold hover:underline"
+                  className="inline-flex items-center text-stamp dark:text-stamp-dark font-semibold hover:underline"
                 >
                   {t('goToLectures')}
                   <ArrowRight className="w-4 h-4 ml-1" />
@@ -132,13 +122,14 @@ export default async function HomeMonthlySpotlights({
           </div>
 
           <div>
-            <div className="flex items-center gap-2 text-accent-600 font-semibold text-sm uppercase tracking-wide mb-2">
-              <Sparkles className="w-4 h-4 shrink-0" />
-              {t('monthlyBestBadge')}
+            <div className="flex items-baseline justify-between gap-4 mb-6 pb-4 border-b border-hairline dark:border-hairline-dark">
+              <h2 className="font-serif text-xl sm:text-2xl font-bold text-ink dark:text-parchment">
+                {t('monthlyBestMentorTop3')}
+              </h2>
+              <span className="font-mono text-[11px] text-ink-muted dark:text-parchment-muted whitespace-nowrap">
+                {t('monthlyBestMentorHint')}
+              </span>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-6">
-              {t('monthlyBestMentorTop3')}
-            </h2>
 
             {mentorTop.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -146,61 +137,51 @@ export default async function HomeMonthlySpotlights({
                   <Link
                     key={mentor.id}
                     href={`/${locale}/mentors/${mentor.id}`}
-                    className={`group block rounded-2xl overflow-hidden border bg-white dark:bg-slate-900 transition-all h-full ${
-                      idx === 0
-                        ? 'border-accent-300 dark:border-accent-700 shadow-md'
-                        : 'border-gray-200/80 dark:border-slate-700 shadow-sm hover:border-accent-200'
-                    }`}
+                    className="group block rounded-sm overflow-hidden border border-hairline dark:border-hairline-dark bg-paper-card dark:bg-night-card hover:border-stamp dark:hover:border-stamp-dark transition-colors h-full"
                   >
                     <div className="flex flex-col h-full">
-                      <div className="relative aspect-[16/9] bg-gradient-to-br from-accent-100 to-primary-100 dark:from-accent-900/30 dark:to-primary-900/20">
+                      <div className="relative aspect-[16/9] bg-paper dark:bg-night">
                         {mentor.photo ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img
                             src={mentor.photo}
                             alt={mentor.name}
-                            className="w-full h-full object-cover object-top group-hover:scale-[1.03] transition-transform duration-300"
+                            className="w-full h-full object-cover object-top"
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
-                            <Users className="w-14 h-14 text-accent-400/70" />
+                            <Users className="w-10 h-10 text-ink-muted/40 dark:text-parchment-muted/40" />
                           </div>
                         )}
-                        <div
-                          className={`absolute top-3 left-3 inline-flex items-center justify-center rounded-xl font-bold ${
-                            idx === 0
-                              ? 'h-9 px-3 bg-accent-600 text-white text-xs'
-                              : 'h-8 px-2.5 bg-white/90 dark:bg-slate-900/80 text-accent-700 dark:text-accent-300 text-[11px]'
-                          }`}
-                        >
-                          {rankLabel(idx + 1)}
+                        <div className="absolute top-0 left-0 h-8 w-8 flex items-center justify-center bg-paper-card dark:bg-night-card border-b border-r border-hairline dark:border-hairline-dark font-mono text-[10px] font-semibold text-stamp dark:text-stamp-dark">
+                          {rankLabel(idx + 1).replace('TOP ', 'No.')}
                         </div>
-                        <div className="absolute top-3 right-3 inline-flex items-center rounded-lg px-2 py-1 text-xs font-semibold bg-white/90 dark:bg-slate-900/80 text-amber-700">
-                          <Star className="w-3.5 h-3.5 mr-1 fill-amber-500 text-amber-500" />
+                        <div className="absolute top-2 right-2 inline-flex items-center gap-1 px-1.5 py-0.5 bg-paper-card/95 dark:bg-night-card/95 font-mono text-[11px] text-ink dark:text-parchment">
+                          <Star className="w-3 h-3 fill-stamp text-stamp dark:fill-stamp-dark dark:text-stamp-dark" />
                           {mentor.rating.toFixed(1)}
                         </div>
                       </div>
                       <div className="p-5 flex flex-col flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-slate-100 truncate group-hover:text-primary-700 transition-colors">
+                          <h3 className="font-serif text-base sm:text-lg font-bold text-ink dark:text-parchment truncate group-hover:text-stamp dark:group-hover:text-stamp-dark transition-colors">
                             {mentor.name}
                           </h3>
                           {mentor.verified && (
-                            <span className="text-xs font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">
+                            <span className="font-mono text-[10px] text-stamp dark:text-stamp-dark border border-stamp dark:border-stamp-dark rounded-full h-4 w-4 flex items-center justify-center shrink-0">
                               ✓
                             </span>
                           )}
                         </div>
-                        <p className="text-sm font-medium text-gray-700 dark:text-slate-300 truncate">{mentor.title}</p>
-                        <p className="text-sm text-gray-500 dark:text-slate-400">{mentor.location}</p>
-                        <p className="text-sm text-gray-600 dark:text-slate-400 mt-2 line-clamp-3 flex-1">
+                        <p className="text-sm font-medium text-ink-muted dark:text-parchment-muted truncate">{mentor.title}</p>
+                        <p className="text-sm text-ink-muted dark:text-parchment-muted">{mentor.location}</p>
+                        <p className="text-sm text-ink-muted dark:text-parchment-muted mt-2 line-clamp-3 flex-1">
                           {excerpt(mentor.bio, 120)}
                         </p>
-                        <div className="mt-4 flex items-center justify-between gap-2">
-                          <span className="text-xs text-gray-500 dark:text-slate-400">
+                        <div className="mt-4 pt-4 border-t border-hairline dark:border-hairline-dark flex items-center justify-between gap-2">
+                          <span className="font-mono text-xs text-ink-muted dark:text-parchment-muted">
                             {mentor.reviewCount} {t('reviews')}
                           </span>
-                          <span className="inline-flex items-center text-xs font-semibold text-primary-700 dark:text-primary-300">
+                          <span className="inline-flex items-center text-xs font-semibold text-stamp dark:text-stamp-dark">
                             {t('viewDetail')}
                             <ArrowRight className="w-3.5 h-3.5 ml-1" />
                           </span>
@@ -211,12 +192,12 @@ export default async function HomeMonthlySpotlights({
                 ))}
               </div>
             ) : (
-              <div className="rounded-2xl border border-dashed border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-8 text-center">
-                <Users className="w-12 h-12 mx-auto text-gray-400 dark:text-slate-500 mb-3" />
-                <p className="text-gray-600 dark:text-slate-400 mb-3">{t('emptyMentor')}</p>
+              <div className="rounded-sm border border-dashed border-hairline dark:border-hairline-dark bg-paper-card dark:bg-night-card p-8 text-center">
+                <Users className="w-10 h-10 mx-auto text-ink-muted dark:text-parchment-muted mb-3" />
+                <p className="text-ink-muted dark:text-parchment-muted mb-3">{t('emptyMentor')}</p>
                 <Link
                   href={`/${locale}/mentors`}
-                  className="inline-flex items-center text-primary-600 font-semibold hover:underline"
+                  className="inline-flex items-center text-stamp dark:text-stamp-dark font-semibold hover:underline"
                 >
                   {t('goToMentors')}
                   <ArrowRight className="w-4 h-4 ml-1" />

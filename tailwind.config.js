@@ -17,6 +17,32 @@ module.exports = {
         soft: "0 1px 2px rgba(15, 23, 42, 0.06), 0 8px 24px rgba(15, 23, 42, 0.06)",
       },
       colors: {
+        // "Entry card" identity — grounded in the product's real subject matter
+        // (visas, arrival cards, official documents). Light = paper, dark = ink/night.
+        paper: {
+          DEFAULT: "#F3EEE3",
+          card: "#FAF7EF",
+        },
+        ink: {
+          DEFAULT: "#211D17",
+          muted: "#6B6253",
+        },
+        night: {
+          DEFAULT: "#171310",
+          card: "#1C1712",
+        },
+        parchment: {
+          DEFAULT: "#F3ECDB",
+          muted: "#A89C86",
+        },
+        stamp: {
+          DEFAULT: "#B33B2C",
+          dark: "#D14A36",
+        },
+        hairline: {
+          DEFAULT: "#D8CFBC",
+          dark: "#3A332A",
+        },
         primary: {
           50: "#eef2ff",
           100: "#e0e7ff",
@@ -44,6 +70,8 @@ module.exports = {
       },
       fontFamily: {
         sans: ["Pretendard", "system-ui", "sans-serif"],
+        serif: ["\"Noto Serif KR\"", "serif"],
+        mono: ["\"IBM Plex Mono\"", "ui-monospace", "monospace"],
       },
     },
   },
