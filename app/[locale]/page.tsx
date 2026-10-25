@@ -1,4 +1,3 @@
-import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import type { Lecture, Mentor } from "@/types";
@@ -13,7 +12,6 @@ export default async function HomePage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const t = await getTranslations("home");
 
   let topLectures: Lecture[] = [];
   let topMentors: Mentor[] = [];
@@ -30,72 +28,66 @@ export default async function HomePage({
   }
 
   return (
-    <div className="min-h-screen bg-paper dark:bg-night">
-      <section className="relative -mt-20 pt-28 pb-20 lg:pt-32 lg:pb-24">
+    <div className="min-h-screen bg-surface dark:bg-night">
+      <section className="relative pt-14 pb-16 lg:pt-20 lg:pb-20">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-14 items-stretch">
-            {/* Copy column — framed like a filled-out entry card */}
-            <div className="border border-hairline dark:border-hairline-dark rounded-sm bg-paper-card dark:bg-night-card px-6 py-8 sm:px-10 sm:py-10 flex flex-col">
-              <div className="flex items-center gap-2 mb-6">
-                <span className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-stamp dark:border-stamp-dark text-stamp dark:text-stamp-dark text-[10px] font-mono font-semibold">
-                  L
-                </span>
-                <span className="font-mono text-[11px] tracking-wide text-ink-muted dark:text-parchment-muted">
-                  {t("heroBadge")}
-                </span>
-              </div>
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-10 items-start">
+            {/* Copy column */}
+            <div className="flex flex-col">
+              <span className="inline-flex items-center self-start rounded-full bg-teal/10 dark:bg-teal-dark/15 px-3 py-1.5 text-xs font-medium text-teal dark:text-teal-dark mb-5">
+                한국 유학생과 외국인을 위해
+              </span>
 
-              <h1 className="font-serif text-3xl sm:text-4xl lg:text-[2.75rem] font-bold text-ink dark:text-parchment leading-[1.25] mb-5 max-w-xl">
-                {t("title")}
+              <h1 className="text-3xl sm:text-4xl lg:text-[2.6rem] font-bold text-ink dark:text-snow leading-[1.3] mb-5 max-w-xl">
+                비자·일정은 로드맵으로,
+                <br />
+                사람은 멘토로, 공부는 강의로.
               </h1>
-              <p className="text-base sm:text-lg text-ink-muted dark:text-parchment-muted mb-8 max-w-lg leading-relaxed">
-                {t("subtitle")}
+              <p className="text-base text-ink-muted dark:text-snow-muted mb-7 max-w-lg leading-relaxed">
+                한국 유학생을 위한 생활 비서. 만료일을 입력하면 로드맵이 만들어지고, 막히는 순간
+                멘토와 강의로 연결됩니다.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-3 mb-8">
-                <Link
-                  href={`/${locale}/mentors`}
-                  className="inline-flex items-center justify-center bg-stamp dark:bg-stamp-dark text-white px-6 py-3 rounded-sm text-sm font-semibold hover:opacity-90 transition-opacity"
-                >
-                  {t("cta")}
-                  <ArrowRight className="ml-2 w-4 h-4" />
-                </Link>
+              <div className="flex flex-wrap gap-3 mb-7">
                 <Link
                   href={`/${locale}/lectures`}
-                  className="inline-flex items-center justify-center text-ink dark:text-parchment px-6 py-3 rounded-sm text-sm font-semibold border border-hairline dark:border-hairline-dark hover:border-stamp dark:hover:border-stamp-dark transition-colors"
+                  className="inline-flex items-center justify-center gap-1.5 bg-teal dark:bg-teal-dark text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"
                 >
-                  {t("heroCtaSecondary")}
+                  코스 둘러보기
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+                <Link
+                  href={`/${locale}/study-in-korea`}
+                  className="inline-flex items-center justify-center text-ink dark:text-snow px-5 py-2.5 rounded-lg text-sm font-semibold border border-hairline dark:border-hairline-dark hover:border-teal dark:hover:border-teal-dark transition-colors"
+                >
+                  한국 생활 가이드
                 </Link>
               </div>
 
-              {/* form-field style meta rows, instead of generic pill chips */}
-              <div className="mt-auto pt-6 border-t border-hairline dark:border-hairline-dark grid sm:grid-cols-2 gap-4 font-mono text-xs">
-                <div>
-                  <div className="text-ink-muted dark:text-parchment-muted mb-1">대상</div>
-                  <div className="text-ink dark:text-parchment">한국 유학생 · 재학생 · 외국인 거주자</div>
-                </div>
-                <div>
-                  <div className="text-ink-muted dark:text-parchment-muted mb-1">제공 기능</div>
-                  <div className="text-ink dark:text-parchment">로드맵 · AI 비서 · 멘토/강의</div>
-                </div>
+              <div className="flex flex-wrap gap-2 text-xs">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-hairline dark:border-hairline-dark px-3 py-1.5 text-ink-muted dark:text-snow-muted">
+                  <span className="font-semibold text-ink dark:text-snow">대상</span>
+                  한국 유학생 · 재학생 · 외국인 거주자
+                </span>
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-hairline dark:border-hairline-dark px-3 py-1.5 text-ink-muted dark:text-snow-muted">
+                  <span className="font-semibold text-ink dark:text-snow">제공 기능</span>
+                  로드맵 · AI 비서 · 멘토/커뮤니티(예정)
+                </span>
               </div>
             </div>
 
-            {/* Photo column — framed, corner stamp instead of a floating badge.
-                The source photo is toned into the paper/stamp palette (duotone
-                overlay) rather than left as a mismatched cool-toned graphic. */}
-            <div className="relative border border-hairline dark:border-hairline-dark rounded-sm overflow-hidden bg-paper-card dark:bg-night-card min-h-[320px] lg:min-h-0">
-              <img
-                src="/repul_dppaMAIN_bkimg.png"
-                alt={t("heroBadge")}
-                className="absolute inset-0 w-full h-full object-cover grayscale sepia-[.45] contrast-[1.05] saturate-[1.1]"
-              />
-              <div className="absolute inset-0 bg-stamp/25 dark:bg-stamp-dark/35 mix-blend-multiply" />
-              <div className="absolute inset-0 bg-paper/10 dark:bg-night/40" />
-              <div className="absolute top-0 left-0 w-16 h-16 border-b border-r border-hairline dark:border-hairline-dark bg-paper dark:bg-night flex items-center justify-center">
-                <span className="rotate-[-18deg] rounded-full border-2 border-stamp dark:border-stamp-dark text-stamp dark:text-stamp-dark font-mono text-[9px] font-bold tracking-wide h-11 w-11 flex items-center justify-center text-center leading-tight">
-                  LNK
-                </span>
+            {/* Photo column */}
+            <div className="flex flex-col">
+              <div className="relative rounded-2xl overflow-hidden min-h-[320px] lg:min-h-[420px]">
+                <img
+                  src="/hero/campus-walk.jpg"
+                  alt="캠퍼스와 일상"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+              </div>
+              <div className="mt-3 flex items-center justify-between text-xs text-ink-muted dark:text-snow-muted">
+                <span>한국에서의 새로운 시작, 더 명확하게.</span>
+                <span>SEOUL, KR</span>
               </div>
             </div>
           </div>

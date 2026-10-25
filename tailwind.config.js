@@ -17,31 +17,31 @@ module.exports = {
         soft: "0 1px 2px rgba(15, 23, 42, 0.06), 0 8px 24px rgba(15, 23, 42, 0.06)",
       },
       colors: {
-        // "Entry card" identity — grounded in the product's real subject matter
-        // (visas, arrival cards, official documents). Light = paper, dark = ink/night.
-        paper: {
-          DEFAULT: "#F3EEE3",
-          card: "#FAF7EF",
+        // Matches the LNK Figma file's actual palette (dark teal/near-black
+        // with a sage-teal accent) rather than an invented identity.
+        surface: {
+          DEFAULT: "#F5F9F8",
+          card: "#FFFFFF",
         },
         ink: {
-          DEFAULT: "#211D17",
-          muted: "#6B6253",
+          DEFAULT: "#101817",
+          muted: "#5B6B68",
         },
         night: {
-          DEFAULT: "#171310",
-          card: "#1C1712",
+          DEFAULT: "#0F1917",
+          card: "#141F1D",
         },
-        parchment: {
-          DEFAULT: "#F3ECDB",
-          muted: "#A89C86",
+        snow: {
+          DEFAULT: "#F6F8F7",
+          muted: "#818A89",
         },
-        stamp: {
-          DEFAULT: "#B33B2C",
-          dark: "#D14A36",
+        teal: {
+          DEFAULT: "#2F7D6E",
+          dark: "#5DA194",
         },
         hairline: {
-          DEFAULT: "#D8CFBC",
-          dark: "#3A332A",
+          DEFAULT: "#DCE6E3",
+          dark: "#22302D",
         },
         primary: {
           50: "#eef2ff",
@@ -70,8 +70,6 @@ module.exports = {
       },
       fontFamily: {
         sans: ["Pretendard", "system-ui", "sans-serif"],
-        serif: ["\"Noto Serif KR\"", "serif"],
-        mono: ["\"IBM Plex Mono\"", "ui-monospace", "monospace"],
       },
     },
   },
