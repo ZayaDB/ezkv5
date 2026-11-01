@@ -1126,5 +1126,151 @@
       "channelCommunity": "Community",
       "channelFreelancer": "Freelancer group"
     }
+  },
+  "homeV2": {
+    "heroPill": "For international students in Korea",
+    "heroTitle": [
+      "Visas and deadlines on a roadmap,",
+      "people as mentors,",
+      "study as courses."
+    ],
+    "heroBody": "A daily-life assistant for international students in Korea. Enter your expiry dates to get a roadmap, and when you get stuck, you're connected to mentors and courses.",
+    "ctaCourses": "Browse courses",
+    "ctaGuide": "Korea life guide",
+    "metaTargetLabel": "For",
+    "metaTarget": "Incoming and current students · foreign residents",
+    "metaFeaturesLabel": "Features",
+    "metaFeatures": "Roadmap · AI assistant · Mentors/Community (coming soon)",
+    "heroCaption": "A new start in Korea, made clearer.",
+    "heroAlt": "A roadmap over the Seoul night skyline linking visa, schedule and mentors",
+    "audienceEyebrow": "Who it's for",
+    "audienceTitle": "Three audiences, one practical platform.",
+    "audienceBody": "Whether you're preparing to arrive, already studying in Korea, or settling into daily life — it's designed so you know what to do next.",
+    "audienceItems": [
+      "Students preparing to come to Korea",
+      "Students already in Korea who need practical help",
+      "Foreign residents who want structured learning and guidance"
+    ],
+    "valueEyebrow": "What you get",
+    "valueTitle": "Three pillars, one direction.",
+    "valueBody": "LNK is not just a course site. It's built to help you learn, find your way around daily life, and connect with people when you need them.",
+    "valueItems": [
+      "Structured course previews for learning and adjusting",
+      "Practical guides for arrival, campus, housing and daily life",
+      "Mentor and community connections, planned for later"
+    ],
+    "coursesEyebrow": "Learn with LNK",
+    "coursesTitle": "Course previews for your next step.",
+    "coursesBody": "The courses shown are samples of where learning is heading. They aren't running yet, and enrollment isn't open.",
+    "sampleBadge": "Sample course · Not open yet",
+    "coursePreview": "Preview course",
+    "coursesAll": "See all course previews",
+    "courses": [
+      {
+        "topic": "Study · Campus",
+        "title": "Your First Semester in Korea",
+        "body": "Understand campus routines, learn how to ask for help, and get ready for your first week.",
+        "meta": "4 lessons · Self-paced (concept)"
+      },
+      {
+        "topic": "Language · Culture",
+        "title": "Everyday Korean",
+        "body": "Practice phrases you can use right away in cafés, on transit and in daily conversation.",
+        "meta": "6 lessons · Self-paced (concept)"
+      },
+      {
+        "topic": "Daily essentials",
+        "title": "Settling in Seoul",
+        "body": "Covers the practical questions you meet in a new city and a new home.",
+        "meta": "5 lessons · Self-paced (concept)"
+      }
+    ],
+    "guideEyebrow": "Life in Korea",
+    "guideTitle": "Practical guides for everyday questions.",
+    "guideBody": "These guides are sample content. They aren't final, so always confirm important decisions with official sources.",
+    "guides": [
+      {
+        "title": "Arrival",
+        "body": "Documents, packing, first steps"
+      },
+      {
+        "title": "Study",
+        "body": "Campus life and academic calendar"
+      },
+      {
+        "title": "Housing",
+        "body": "Finding a place and what to check"
+      },
+      {
+        "title": "Health care",
+        "body": "Care options and official resources"
+      },
+      {
+        "title": "Daily essentials",
+        "body": "Transport · Banking · Phone"
+      },
+      {
+        "title": "Jobs · Career",
+        "body": "Career planning and rules to check"
+      }
+    ],
+    "guideBadge": "Sample guide · Verify before acting",
+    "guideNote": "Always confirm visa, legal and health information with the relevant official agency.",
+    "stepsEyebrow": "A clearer next step",
+    "stepsTitle": "Start from where you are.",
+    "steps": [
+      {
+        "title": "Look around",
+        "body": "Browse the course previews or the practical guides."
+      },
+      {
+        "title": "Check the details",
+        "body": "Confirm availability, eligibility and official sources."
+      },
+      {
+        "title": "Take the next step",
+        "body": "Enroll when a course opens, or use the guides to plan."
+      }
+    ],
+    "plannedEyebrow": "Carefully planned next steps",
+    "plannedTitle": "Connecting with people is on the plan too.",
+    "plannedBody": "Learning comes first. As the platform grows, people-centered support and community follow.",
+    "comingSoon": "Coming soon",
+    "viewPlan": "See the plan",
+    "planned": [
+      {
+        "name": "Mentor connections",
+        "purpose": "Ask someone who has walked the same path",
+        "body": "We're preparing a way to bring your visa, study and life questions to people with experience."
+      },
+      {
+        "name": "Community",
+        "purpose": "Share information with students in the same situation",
+        "body": "We're preparing a space to ask questions and share experiences by school and region."
+      }
+    ],
+    "principlesTitle": "The principles LNK keeps.",
+    "principles": [
+      "We don't present unverified information as fact.",
+      "For visas, law and health, we always point to official sources first."
+    ],
+    "faqEyebrow": "Before you start",
+    "faqTitle": "Common questions.",
+    "faqs": [
+      {
+        "q": "Can I enroll in a course right now?",
+        "a": "Not yet. The courses you see are samples, and enrollment isn't open. We'll announce the opening schedule as soon as it's ready."
+      },
+      {
+        "q": "When will mentors and community open?",
+        "a": "Learning content comes first, and mentors and community are being prepared as the next stage. We'll tell you here first when they open."
+      },
+      {
+        "q": "Can I follow the guides as they are?",
+        "a": "The guides are samples to help you understand. For decisions about visas, law or health, always confirm with the relevant official agency."
+      }
+    ],
+    "finalTitle": "Make your start in Korea clearer.",
+    "finalBody": "Begin today with course previews and the life guides."
   }
 }

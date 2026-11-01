@@ -4,7 +4,7 @@
 
 const GOLD = "#e8b86a";
 
-export function HeroIllustration({ className = "" }: { className?: string }) {
+export function HeroIllustration({ className = "", label = "" }: { className?: string; label?: string }) {
   const stars = [
     [48, 52, 1.6], [120, 30, 1.2], [210, 70, 1.4], [300, 36, 1.2], [372, 78, 1.6],
     [430, 40, 1.2], [560, 62, 1.4], [596, 120, 1.2], [90, 120, 1.2], [260, 118, 1.2],
@@ -19,7 +19,7 @@ export function HeroIllustration({ className = "" }: { className?: string }) {
     <svg
       viewBox="0 0 640 520"
       role="img"
-      aria-label="서울의 밤 풍경 위로 비자, 일정, 멘토로 이어지는 로드맵"
+      aria-label={label}
       className={className}
     >
       <defs>
