@@ -27,8 +27,8 @@ export default async function StudyInKoreaPage({
   ] as const;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50">
-      <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-500 to-purple-600 py-10">
+    <div className="min-h-screen bg-gradient-to-b from-surface via-surface to-surface dark:from-night dark:via-night dark:to-night">
+      <div className="relative overflow-hidden bg-gradient-to-br from-primary-600 via-primary-500 to-accent-500 dark:from-primary-800 dark:via-primary-700 dark:to-accent-800 py-10">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-2 tracking-tight">{t('title')}</h1>
           <p className="text-base text-white/90 max-w-xl">{t('subtitle')}</p>
@@ -36,16 +36,16 @@ export default async function StudyInKoreaPage({
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="mb-12 bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+        <div className="mb-12 bg-white dark:bg-night-card rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-hairline-dark">
           <div className="flex flex-wrap gap-3">
             {categories.map((category) => (
               <a
                 key={category.id}
                 href={`#${category.id}`}
-                className="group flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl border-2 border-gray-200 hover:border-primary-300 hover:from-primary-50 hover:to-primary-100 transition-all hover:scale-[1.02]"
+                className="group flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-night-pill dark:to-night-pill rounded-xl border-2 border-gray-200 dark:border-hairline-dark hover:border-primary-300 hover:from-primary-50 hover:to-primary-100 transition-all hover:scale-[1.02]"
               >
                 <span className="text-2xl">{category.icon}</span>
-                <span className="font-semibold text-gray-700 group-hover:text-primary-600 transition-colors">
+                <span className="font-semibold text-gray-700 dark:text-snow group-hover:text-primary-600 transition-colors">
                   {category.label}
                 </span>
               </a>

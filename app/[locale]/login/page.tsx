@@ -72,14 +72,14 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[url('/repul_dppaMAIN_bkimg.png')] bg-cover bg-top bg-no-repeat flex items-center justify-center p-4">
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-primary-50 via-surface to-primary-100 dark:from-night dark:via-night-card dark:to-primary-950 flex items-center justify-center p-4">
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute inset-0 bg-white/25 dark:bg-slate-950/55" />
+        <div className="absolute inset-0 bg-transparent" />
       </div>
 
       <div className="relative z-10 w-full max-w-md left-[-20%] top-[-40px]">
         {/* Logo */}
-        <h1 className=" absolute top-0 left-[180%] w-full text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[#7375a0] dark:text-white text-left mb-6 leading-tight">
+        <h1 className=" absolute top-0 left-[180%] w-full text-4xl sm:text-5xl lg:text-6xl font-extrabold text-teal dark:text-white text-left mb-6 leading-tight">
           {t("login")}
         </h1>
         {/* Login Form */}

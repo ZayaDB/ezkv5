@@ -35,6 +35,9 @@ export default async function HomeMonthlySpotlights({
   const lectureTop = topLectures.slice(0, 3);
   const mentorTop = topMentors.slice(0, 3);
 
+  // Nothing live to show yet: the page falls back to the Figma sample sections.
+  if (lectureTop.length === 0 && mentorTop.length === 0) return null;
+
   return (
     <section className="py-12 sm:py-14 bg-surface dark:bg-night">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">

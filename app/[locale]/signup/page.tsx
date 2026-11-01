@@ -126,11 +126,11 @@ export default function SignupPage() {
   const progressSteps = residingInKorea === true ? [1, 2, 3] : [1, 2];
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[url('/repul_dppaMAIN_bkimg.png')] bg-cover bg-top bg-no-repeat flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-white/25 dark:bg-slate-950/55" />
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-primary-50 via-surface to-primary-100 dark:from-night dark:via-night-card dark:to-primary-950 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-transparent" />
 
       <div className="relative z-10 w-full max-w-md">
-        <h1 className="text-3xl font-extrabold text-[#7375a0] dark:text-white text-center mb-6">
+        <h1 className="text-3xl font-extrabold text-teal dark:text-white text-center mb-6">
           {t("signUp")}
         </h1>
 

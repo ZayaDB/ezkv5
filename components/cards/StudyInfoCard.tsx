@@ -11,7 +11,7 @@ interface StudyInfoCardProps {
 const categoryColors: Record<string, string> = {
   visa: 'from-blue-500 to-cyan-500',
   housing: 'from-green-500 to-emerald-500',
-  hospital: 'from-red-500 to-pink-500',
+  hospital: 'from-red-500 to-primary-500',
   lifeTips: 'from-purple-500 to-indigo-500',
 };
 

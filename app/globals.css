@@ -32,7 +32,7 @@ body {
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: #fafafa;
+  background: #f4f8f7;
   @apply text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-slate-950;
 }
 
@@ -97,7 +97,7 @@ a {
 }
 
 .gradient-mesh {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #2f8a7b 0%, #1b3f3b 100%);
 }
 
 .glass-effect {
@@ -139,3 +139,66 @@ button {
   }
 }
 
+
+/* ---- LNK home: scroll reveal + illustration motion ---- */
+.lnk-reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.lnk-reveal.lnk-in {
+  opacity: 1;
+  transform: none;
+}
+
+@keyframes lnk-twinkle {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 1; }
+}
+.lnk-twinkle { animation: lnk-twinkle 3.2s ease-in-out infinite; }
+
+@keyframes lnk-flow {
+  to { stroke-dashoffset: -28; }
+}
+.lnk-path-flow { animation: lnk-flow 1.6s linear infinite; }
+
+@keyframes lnk-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-9px); }
+}
+.lnk-float { animation: lnk-float 6s ease-in-out infinite; }
+
+@keyframes lnk-pulse {
+  0% { transform: scale(0.9); opacity: 0.55; }
+  100% { transform: scale(1.7); opacity: 0; }
+}
+.lnk-pulse-ring { transform-box: fill-box; transform-origin: center; animation: lnk-pulse 2.6s ease-out infinite; }
+
+@keyframes lnk-hero-in {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: none; }
+}
+.lnk-hero-in { animation: lnk-hero-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .lnk-twinkle, .lnk-path-flow, .lnk-float, .lnk-pulse-ring, .lnk-hero-in { animation: none !important; }
+  .lnk-reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* ---- LNK dark-mode safety net ----
+   Older pages use light-only surfaces (bg-white, light borders) without dark: variants.
+   These sit in the components layer, so any explicit dark: utility still wins. */
+@layer components {
+  .dark .bg-white { background-color: #101e1c; }
+  .dark .bg-slate-50, .dark .bg-gray-50, .dark .bg-zinc-50 { background-color: #0e1a18; }
+  .dark .bg-slate-100, .dark .bg-gray-100, .dark .bg-zinc-100 { background-color: #1b332f; }
+  .dark .border-slate-100, .dark .border-slate-200, .dark .border-slate-300,
+  .dark .border-gray-100, .dark .border-gray-200, .dark .border-gray-300,
+  .dark .border-zinc-100, .dark .border-zinc-200, .dark .border-zinc-300 { border-color: #2a3b38; }
+  .dark .ring-slate-200, .dark .ring-gray-200, .dark .ring-zinc-200 { --tw-ring-color: #2a3b38; }
+  .dark .text-slate-900, .dark .text-gray-900, .dark .text-zinc-900,
+  .dark .text-slate-800, .dark .text-gray-800, .dark .text-zinc-800 { color: #f3f7f5; }
+  .dark .text-slate-700, .dark .text-gray-700, .dark .text-zinc-700,
+  .dark .text-slate-600, .dark .text-gray-600, .dark .text-zinc-600 { color: #c9d6d2; }
+  .dark .text-slate-500, .dark .text-gray-500, .dark .text-zinc-500 { color: #9fb0ac; }
+}

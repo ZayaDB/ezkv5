@@ -17,56 +17,110 @@ module.exports = {
         soft: "0 1px 2px rgba(15, 23, 42, 0.06), 0 8px 24px rgba(15, 23, 42, 0.06)",
       },
       colors: {
-        // Matches the LNK Figma file's actual palette (dark teal/near-black
-        // with a sage-teal accent) rather than an invented identity.
-        surface: {
-          DEFAULT: "#F5F9F8",
-          card: "#FFFFFF",
-        },
-        ink: {
-          DEFAULT: "#101817",
-          muted: "#5B6B68",
-        },
-        night: {
-          DEFAULT: "#0F1917",
-          card: "#141F1D",
-        },
-        snow: {
-          DEFAULT: "#F6F8F7",
-          muted: "#818A89",
-        },
-        teal: {
-          DEFAULT: "#2F7D6E",
-          dark: "#5DA194",
-        },
-        hairline: {
-          DEFAULT: "#DCE6E3",
-          dark: "#22302D",
-        },
+        // LNK design system — values read directly from the Figma file.
+        // Figma: bg #0e1a18, surface #101e1c, pill #1b332f, accent #3fa393,
+        // text #f3f7f5, muted #9fb0ac, divider #2a3b38.
+        surface: { DEFAULT: "#F4F8F7", card: "#FFFFFF" },
+        ink: { DEFAULT: "#0e1a18", muted: "#5b6b68" },
+        night: { DEFAULT: "#0e1a18", card: "#101e1c", pill: "#1b332f" },
+        snow: { DEFAULT: "#f3f7f5", muted: "#9fb0ac" },
+        teal: { DEFAULT: "#2f8a7b", dark: "#3fa393" },
+        hairline: { DEFAULT: "#dce6e3", dark: "#2a3b38" },
+        // Single brand hue everywhere: old indigo/violet palettes now map to
+        // the Figma teal so all existing pages unify without per-file edits.
         primary: {
-          50: "#eef2ff",
-          100: "#e0e7ff",
-          400: "#818cf8",
-          500: "#6366f1",
-          600: "#4f46e5",
-          700: "#4338ca",
-          900: "#312e81",
+          50: "#eaf6f3", 100: "#d3ede7", 200: "#a9dbd0", 300: "#7cc4b6",
+          400: "#5db5a4", 500: "#3fa393", 600: "#2f8a7b", 700: "#276f64",
+          800: "#205953", 900: "#1b3f3b", 950: "#0e2623",
         },
         accent: {
-          50: "#f5f3ff",
-          400: "#a78bfa",
-          500: "#8b5cf6",
-          600: "#7c3aed",
-          700: "#6d28d9",
+          50: "#ecfaf8", 100: "#d2f2ee", 200: "#a6e4dd", 300: "#76d1c9",
+          400: "#4fb8b0", 500: "#2ea39b", 600: "#23867f", 700: "#1d6b66",
+          800: "#195552", 900: "#164240",
+        },
+        slate: {
+          50: "#f4f8f7", 100: "#eaf1ef", 200: "#dce6e3", 300: "#bccac6",
+          400: "#9fb0ac", 500: "#6f827e", 600: "#4a5d59", 700: "#2a3b38",
+          800: "#182b28", 900: "#101e1c", 950: "#0e1a18",
         },
         gray: {
-          50: "#FAFAFA",
-          100: "#F5F5F5",
-          200: "#E5E5E5",
-          400: "#A3A3A3",
-          600: "#525252",
-          900: "#171717",
+          50: "#f4f8f7", 100: "#eaf1ef", 200: "#dce6e3", 300: "#bccac6",
+          400: "#9fb0ac", 500: "#6f827e", 600: "#4a5d59", 700: "#2a3b38",
+          800: "#182b28", 900: "#101e1c", 950: "#0e1a18",
         },
+        zinc: {
+          50: "#f4f8f7", 100: "#eaf1ef", 200: "#dce6e3", 300: "#bccac6",
+          400: "#9fb0ac", 500: "#6f827e", 600: "#4a5d59", 700: "#2a3b38",
+          800: "#182b28", 900: "#101e1c", 950: "#0e1a18",
+        },
+        neutral: {
+          50: "#f4f8f7", 100: "#eaf1ef", 200: "#dce6e3", 300: "#bccac6",
+          400: "#9fb0ac", 500: "#6f827e", 600: "#4a5d59", 700: "#2a3b38",
+          800: "#182b28", 900: "#101e1c", 950: "#0e1a18",
+        },
+        blue: {
+          50: "#eaf6f3", 100: "#d3ede7", 200: "#a9dbd0", 300: "#7cc4b6",
+          400: "#5db5a4", 500: "#3fa393", 600: "#2f8a7b", 700: "#276f64",
+          800: "#205953", 900: "#1b3f3b", 950: "#0e2623",
+        },
+        indigo: {
+          50: "#eaf6f3", 100: "#d3ede7", 200: "#a9dbd0", 300: "#7cc4b6",
+          400: "#5db5a4", 500: "#3fa393", 600: "#2f8a7b", 700: "#276f64",
+          800: "#205953", 900: "#1b3f3b", 950: "#0e2623",
+        },
+        violet: {
+          50: "#eaf6f3", 100: "#d3ede7", 200: "#a9dbd0", 300: "#7cc4b6",
+          400: "#5db5a4", 500: "#3fa393", 600: "#2f8a7b", 700: "#276f64",
+          800: "#205953", 900: "#1b3f3b", 950: "#0e2623",
+        },
+        purple: {
+          50: "#eaf6f3", 100: "#d3ede7", 200: "#a9dbd0", 300: "#7cc4b6",
+          400: "#5db5a4", 500: "#3fa393", 600: "#2f8a7b", 700: "#276f64",
+          800: "#205953", 900: "#1b3f3b", 950: "#0e2623",
+        },
+        cyan: {
+          50: "#eaf6f3", 100: "#d3ede7", 200: "#a9dbd0", 300: "#7cc4b6",
+          400: "#5db5a4", 500: "#3fa393", 600: "#2f8a7b", 700: "#276f64",
+          800: "#205953", 900: "#1b3f3b", 950: "#0e2623",
+        },
+        sky: {
+          50: "#eaf6f3", 100: "#d3ede7", 200: "#a9dbd0", 300: "#7cc4b6",
+          400: "#5db5a4", 500: "#3fa393", 600: "#2f8a7b", 700: "#276f64",
+          800: "#205953", 900: "#1b3f3b", 950: "#0e2623",
+        },
+        pink: {
+          50: "#eaf6f3", 100: "#d3ede7", 200: "#a9dbd0", 300: "#7cc4b6",
+          400: "#5db5a4", 500: "#3fa393", 600: "#2f8a7b", 700: "#276f64",
+          800: "#205953", 900: "#1b3f3b", 950: "#0e2623",
+        },
+        fuchsia: {
+          50: "#eaf6f3", 100: "#d3ede7", 200: "#a9dbd0", 300: "#7cc4b6",
+          400: "#5db5a4", 500: "#3fa393", 600: "#2f8a7b", 700: "#276f64",
+          800: "#205953", 900: "#1b3f3b", 950: "#0e2623",
+        },
+      },
+      keyframes: {
+        "fade-up": {
+          "0%": { opacity: "0", transform: "translateY(24px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        "float-slow": {
+          "0%,100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-10px)" },
+        },
+        "dash-draw": {
+          "0%": { strokeDashoffset: "1" },
+          "100%": { strokeDashoffset: "0" },
+        },
+        "pulse-ring": {
+          "0%": { transform: "scale(0.9)", opacity: "0.7" },
+          "100%": { transform: "scale(1.6)", opacity: "0" },
+        },
+      },
+      animation: {
+        "fade-up": "fade-up 0.7s cubic-bezier(0.22,1,0.36,1) both",
+        "float-slow": "float-slow 6s ease-in-out infinite",
+        "pulse-ring": "pulse-ring 2.4s ease-out infinite",
       },
       fontFamily: {
         sans: ["Pretendard", "system-ui", "sans-serif"],

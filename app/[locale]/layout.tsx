@@ -38,7 +38,7 @@ export default async function LocaleLayout({
                 try {
                   var saved = localStorage.getItem('theme');
                   var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                  if (saved === 'dark' || (!saved && prefersDark)) {
+                  if (saved !== 'light') {
                     document.documentElement.classList.add('dark');
                   }
                 } catch (e) {}
