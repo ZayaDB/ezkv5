@@ -342,7 +342,22 @@
     "universityPlaceholder": "e.g. Seoul National University",
     "regionPlaceholder": "e.g. Seoul",
     "mentorLabel": "Mentor",
-    "signupCompleteLogin": "Sign-up complete! Please log in."
+    "signupCompleteLogin": "Sign-up complete! Please log in.",
+    "shell": {
+      "eyebrow": "LNK · Learn · Network · Keep",
+      "title": "Life in Korea, with people who walked it first.",
+      "body": "From visas and study to everyday life and mentors — the paths international students need, in one place.",
+      "learnTitle": "Learn",
+      "learnDesc": "Learn from reviewed guides and courses",
+      "networkTitle": "Network",
+      "networkDesc": "Connect with seniors and mentors who settled first",
+      "keepTitle": "Keep",
+      "keepDesc": "Pass what you received on to the next student",
+      "note": "Always confirm visa, legal and medical details with official sources."
+    },
+    "loginSubtitle": "Welcome back. Sign in with your email.",
+    "signupSubtitle": "Tell us a few things and we will tailor your guidance.",
+    "stepOf": "Step {current} of {total}"
   },
   "controlCenter": {
     "badge": "Control Center",
@@ -1429,7 +1444,8 @@
     "stats": "Stats",
     "reviewCount": "Reviews",
     "avgRating": "Average rating",
-    "adminOnly": "Admin only: {email}"
+    "adminOnly": "Admin only: {email}",
+    "responseHours": "Within {hours} hours"
   },
   "lectureDetail": {
     "defaultCurriculum": [

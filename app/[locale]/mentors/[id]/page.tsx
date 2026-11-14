@@ -22,6 +22,9 @@ function splitBio(text: string) {
 }
 
 /* Figma 상세 패턴(강의 상세와 동일): 헤더 + 오른쪽 예약 패널 + 본문 섹션 */
+/** English search keywords stored alongside specialties (category codes) — not shown as chips. */
+const SPECIALTY_CODES = new Set(['visa', 'housing', 'health', 'healthcare', 'academic', 'career', 'daily', 'dailylife']);
+
 export default function MentorDetailPage() {
   const params = useParams();
   const router = useRouter();
@@ -178,7 +181,7 @@ export default function MentorDetailPage() {
               <section className="flex flex-col gap-4">
                 <h2 className={ui.h2}>{t('specialties')}</h2>
                 <ul className="flex flex-wrap gap-2">
-                  {mentor.specialties.map((s) => (
+                  {mentor.specialties.filter((s) => !SPECIALTY_CODES.has(s.trim().toLowerCase())).map((s) => (
                     <li key={s} className={`${ui.card} rounded-full px-3.5 py-1.5 text-sm text-ink dark:text-snow`}>
                       {s}
                     </li>
@@ -242,7 +245,7 @@ export default function MentorDetailPage() {
                 </div>
               ))}
             </dl>
-            <p className={`text-xs ${ui.muted}`}>{t('avgResponse', { time: mentor.responseTime || t('defaultResponse') })}</p>
+            <p className={`text-xs ${ui.muted}`}>{t('avgResponse', { time: /^\d+$/.test((mentor.responseTime || '').trim()) ? t('responseHours', { hours: (mentor.responseTime || '').trim() }) : mentor.responseTime || t('defaultResponse') })}</p>
             {isSelf ? (
               <Link href={`/${locale}/my/profile?tab=mentor`} className={ui.btnPrimary}>
                 {tp('editProfile')}

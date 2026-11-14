@@ -342,7 +342,22 @@
     "universityPlaceholder": "жишээ: Сөүл их сургууль",
     "regionPlaceholder": "жишээ: Сөүл",
     "mentorLabel": "Ментор",
-    "signupCompleteLogin": "Бүртгэл амжилттай! Нэвтэрнэ үү."
+    "signupCompleteLogin": "Бүртгэл амжилттай! Нэвтэрнэ үү.",
+    "shell": {
+      "eyebrow": "LNK · Learn · Network · Keep",
+      "title": "Солонгос дахь амьдрал — өмнө нь туулсан хүмүүстэй хамт.",
+      "body": "Виз, сурлага, өдөр тутмын амьдралаас эхлээд ментор хүртэл — гадаад оюутанд хэрэгтэй бүхнийг нэг дор.",
+      "learnTitle": "Learn",
+      "learnDesc": "Шалгагдсан заавар, лекцээс суралц",
+      "networkTitle": "Network",
+      "networkDesc": "Түрүүлж суурьшсан ахмад, ментортой холбогд",
+      "keepTitle": "Keep",
+      "keepDesc": "Авсан тусламжаа дараагийн оюутанд дамжуул",
+      "note": "Виз, хууль, эрүүл мэндийн мэдээллийг албан ёсны эх сурвалжаас заавал шалгаарай."
+    },
+    "loginSubtitle": "Тавтай морил. Имэйлээрээ нэвтэрнэ үү.",
+    "signupSubtitle": "Хэдэн зүйл хэлбэл танд тохирсон зааврыг бэлдье.",
+    "stepOf": "{total} алхмын {current}"
   },
   "controlCenter": {
     "badge": "Удирдлагын төв",
@@ -1429,7 +1444,8 @@
     "stats": "Статистик",
     "reviewCount": "Сэтгэгдлийн тоо",
     "avgRating": "Дундаж үнэлгээ",
-    "adminOnly": "Зөвхөн админд: {email}"
+    "adminOnly": "Зөвхөн админд: {email}",
+    "responseHours": "{hours} цагийн дотор"
   },
   "lectureDetail": {
     "defaultCurriculum": [

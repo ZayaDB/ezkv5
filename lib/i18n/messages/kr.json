@@ -342,7 +342,22 @@
     "nationalityPlaceholder": "예: 몽골",
     "universityPlaceholder": "예: 서울대학교",
     "regionPlaceholder": "예: 서울 관악구",
-    "signupCompleteLogin": "회원가입이 완료되었습니다! 로그인해주세요."
+    "signupCompleteLogin": "회원가입이 완료되었습니다! 로그인해주세요.",
+    "shell": {
+      "eyebrow": "LNK · Learn · Network · Keep",
+      "title": "한국 생활, 먼저 걸어간 사람들과 함께.",
+      "body": "비자·학업·생활 정보부터 멘토 연결까지, 유학생에게 필요한 길을 한곳에 모았어요.",
+      "learnTitle": "Learn",
+      "learnDesc": "검증된 가이드와 강의로 배워요",
+      "networkTitle": "Network",
+      "networkDesc": "먼저 정착한 선배·멘토와 연결돼요",
+      "keepTitle": "Keep",
+      "keepDesc": "받은 도움을 다음 후배에게 이어가요",
+      "note": "비자·법률·의료 정보는 공식 기관에서 꼭 다시 확인하세요."
+    },
+    "loginSubtitle": "다시 오셨네요. 이메일로 로그인하세요.",
+    "signupSubtitle": "몇 가지만 알려주시면 나에게 맞는 안내를 준비할게요.",
+    "stepOf": "{total}단계 중 {current}단계"
   },
   "controlCenter": {
     "badge": "컨트롤 센터",
@@ -1427,7 +1442,8 @@
     "stats": "통계",
     "reviewCount": "리뷰 수",
     "avgRating": "평균 평점",
-    "adminOnly": "관리자용: {email}"
+    "adminOnly": "관리자용: {email}",
+    "responseHours": "{hours}시간 이내"
   },
   "lectureDetail": {
     "defaultCurriculum": [

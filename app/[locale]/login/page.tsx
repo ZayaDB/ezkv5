@@ -4,9 +4,10 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import Link from "next/link";
-import Image from "next/image";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { Mail, Lock, ArrowRight } from "lucide-react";
+import { AuthShell, AuthField, AuthAlert, authInput } from "@/components/auth/AuthShell";
+import { ui } from "@/components/lnk/ui";
 
 export default function LoginPage() {
   const t = useTranslations("auth");
@@ -72,125 +73,60 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-primary-50 via-surface to-primary-100 dark:from-night dark:via-night-card dark:to-primary-950 flex items-center justify-center p-4">
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute inset-0 bg-transparent" />
-      </div>
+    <AuthShell
+      title={t("login")}
+      subtitle={t("loginSubtitle")}
+      footer={
+        <>
+          {t("noAccount")}{" "}
+          <Link href={`/${locale}/signup`} className="font-semibold text-teal hover:underline dark:text-teal-dark">
+            {t("signUp")}
+          </Link>
+        </>
+      }
+    >
+      <form onSubmit={handleSubmit} className="space-y-5">
+        {signupSuccess && <AuthAlert tone="success">{t("signupCompleteLogin")}</AuthAlert>}
+        {error && <AuthAlert tone="error">{error}</AuthAlert>}
 
-      <div className="relative z-10 w-full max-w-md left-[-20%] top-[-40px]">
-        {/* Logo */}
-        <h1 className=" absolute top-0 left-[180%] w-full text-4xl sm:text-5xl lg:text-6xl font-extrabold text-teal dark:text-white text-left mb-6 leading-tight">
-          {t("login")}
-        </h1>
-        {/* Login Form */}
-        <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl shadow-2xl p-8 border border-white/30 dark:border-slate-700">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {signupSuccess && (
-              <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl flex items-center gap-2">
-                <svg
-                  className="w-5 h-5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span>{t("signupCompleteLogin")}</span>
-              </div>
-            )}
-            {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl">
-                {error}
-              </div>
-            )}
+        <AuthField label={t("email")} icon={Mail}>
+          <input
+            type="email"
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className={authInput}
+            placeholder={t("emailPlaceholder")}
+          />
+        </AuthField>
 
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-slate-200 mb-2">
-                {t("email")}
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-slate-500" />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
-                  placeholder={t("emailPlaceholder")}
-                />
-              </div>
-            </div>
+        <AuthField label={t("password")} icon={Lock}>
+          <input
+            type="password"
+            autoComplete="current-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className={authInput}
+            placeholder={t("passwordPlaceholder")}
+          />
+        </AuthField>
 
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-slate-200 mb-2">
-                {t("password")}
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-slate-500" />
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
-                  placeholder={t("passwordPlaceholder")}
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  className="w-4 h-4 text-primary-500 rounded"
-                />
-                <span className="ml-2 text-sm text-gray-600 dark:text-slate-300">
-                  {t("rememberMe")}
-                </span>
-              </label>
-              <Link
-                href={`/${locale}/forgot-password`}
-                className="text-sm text-primary-600 font-semibold hover:text-primary-700"
-              >
-                {t("forgotPassword")}
-              </Link>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-gradient-to-r from-primary-500 to-accent-500 text-white py-4 rounded-xl font-bold text-lg hover:shadow-lg transition-all hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-            >
-              {loading ? (
-                <>
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  {t("loggingIn")}
-                </>
-              ) : (
-                <>
-                  {t("login")}
-                  <ArrowRight className="w-5 h-5" />
-                </>
-              )}
-            </button>
-          </form>
-
-          <div className="mt-6 text-center">
-            <p className="text-gray-600 dark:text-slate-300">
-              {t("noAccount")}{" "}
-              <Link
-                href={`/${locale}/signup`}
-                className="text-primary-600 font-semibold hover:text-primary-700"
-              >
-                {t("signUp")}
-              </Link>
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
+        <button type="submit" disabled={loading} className={`${ui.btnPrimary} w-full`}>
+          {loading ? (
+            <>
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+              {t("loggingIn")}
+            </>
+          ) : (
+            <>
+              {t("login")}
+              <ArrowRight className="h-4 w-4" />
+            </>
+          )}
+        </button>
+      </form>
+    </AuthShell>
   );
 }
