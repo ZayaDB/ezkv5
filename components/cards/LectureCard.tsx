@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Lecture } from '@/types';
 import { Star, Users, Clock, ArrowRight, PlayCircle, Heart } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
+import { intlLocale } from '@/lib/i18n/config';
 import { useEffect, useState, type MouseEvent } from 'react';
 import { lectureWishlistApi } from '@/lib/api/client';
 import { useAuth } from '@/lib/contexts/AuthContext';
@@ -110,7 +111,7 @@ export default function LectureCard({ lecture }: LectureCardProps) {
             </div>
             <div className="flex items-center gap-1.5">
               <Users className="w-4 h-4" />
-              <span>{lecture.students.toLocaleString()}명</span>
+              <span>{t("studentsCount", { count: lecture.students.toLocaleString(intlLocale(locale)) })}</span>
             </div>
             <div className="flex items-center gap-1.5">
               <Clock className="w-4 h-4" />

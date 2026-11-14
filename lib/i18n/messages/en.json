@@ -46,7 +46,19 @@
       "unreadCount": "{count} new"
     },
     "lightMode": "Light mode",
-    "darkMode": "Dark mode"
+    "darkMode": "Dark mode",
+    "redirecting": "Redirecting…",
+    "loadingShort": "Loading...",
+    "back": "Go back",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirmDelete": "Delete this item?",
+    "noInfo": "Not provided",
+    "none": "None",
+    "prev": "Previous",
+    "next": "Next",
+    "scrollTop": "Back to top",
+    "peopleCount": "{count}"
   },
   "home": {
     "heroBadge": "Life assistant for international students",
@@ -149,7 +161,8 @@
     "emptyTitle": "No courses yet",
     "emptyDescription": "No courses have been published yet.",
     "emptyAction": "Home",
-    "viewDetails": "View details"
+    "viewDetails": "View details",
+    "studentsCount": "{count} students"
   },
   "community": {
     "title": "Community",
@@ -180,7 +193,8 @@
     "chatEmpty": "No messages yet. Say hello.",
     "chatPlaceholder": "Write a message",
     "chatSend": "Send",
-    "chatLogin": "Log in and join the group to chat."
+    "chatLogin": "Log in and join the group to chat.",
+    "membersCount": "{count} members"
   },
   "freelancers": {
     "title": "Freelancer Groups",
@@ -244,7 +258,8 @@
     "lifeTips": "Life Tips",
     "emptyTitle": "No study guide content yet",
     "emptyDescription": "No information has been registered yet.",
-    "emptyAction": "Go home"
+    "emptyAction": "Go home",
+    "openDocument": "Open this guide"
   },
   "chatbot": {
     "title": "MentorLink AI Assistant",
@@ -254,7 +269,12 @@
     "placeholder": "Ask a question...",
     "send": "Send",
     "thinking": "Thinking...",
-    "error": "An error occurred. Please try again."
+    "error": "An error occurred. Please try again.",
+    "relatedLinks": "Related links",
+    "scrollTop": "Back to top",
+    "ariaOpen": "Open chatbot",
+    "ariaClose": "Close chatbot",
+    "ariaSend": "Send message"
   },
   "auth": {
     "login": "Login",
@@ -310,7 +330,8 @@
     "nationalityPlaceholder": "e.g. Mongolia",
     "universityPlaceholder": "e.g. Seoul National University",
     "regionPlaceholder": "e.g. Seoul",
-    "mentorLabel": "Mentor"
+    "mentorLabel": "Mentor",
+    "signupCompleteLogin": "Sign-up complete! Please log in."
   },
   "controlCenter": {
     "badge": "Control Center",
@@ -578,7 +599,8 @@
       "mentee": "Mentee",
       "mentor": "Mentor",
       "admin": "Admin"
-    }
+    },
+    "mentorSaveFailed": "Couldn't save the mentor profile."
   },
   "profilePage": {
     "title": "My page",
@@ -733,7 +755,12 @@
       "editSubmit": "Save changes",
       "editSuccess": "Course updated.",
       "loadError": "Could not load the course."
-    }
+    },
+    "errNameRequired": "Name is required.",
+    "errNameLength": "Name must be 2–40 characters.",
+    "errPhoneRequired": "Phone number is required.",
+    "errPhoneFormat": "Please enter a valid phone number.",
+    "errSaveFailed": "Couldn't save your profile."
   },
   "dashboardV2": {
     "loading": "Loading dashboard...",
@@ -1024,7 +1051,35 @@
       "budgetTableActions": "Actions",
       "budgetEditBtn": "Edit",
       "budgetSaveBtn": "Save",
-      "budgetCancelBtn": "Cancel"
+      "budgetCancelBtn": "Cancel",
+      "recurNone": "No repeat",
+      "recurWeekly": "Weekly",
+      "recurBiweekly": "Every 2 weeks",
+      "recurMonthly": "Monthly",
+      "recurWeeklyOn": "Every {day}",
+      "recurBiweeklyOn": "Every other {day}",
+      "recurMonthlyOn": "Monthly on day {day}",
+      "saveEdit": "Save changes",
+      "editEvent": "Update event",
+      "manualEntry": "Add your own event",
+      "eventCategory": {
+        "class": "Class",
+        "parttime": "Part-time job",
+        "rent": "Rent",
+        "insurance": "Insurance",
+        "visa": "Visa",
+        "roadmap": "Roadmap",
+        "general": "General",
+        "personal": "Personal",
+        "work": "Meeting",
+        "health": "Hospital",
+        "other": "Other"
+      },
+      "eventStatus": {
+        "planned": "Planned",
+        "completed": "Completed",
+        "cancelled": "Cancelled"
+      }
     },
     "lecturesHub": {
       "title": "Courses",
@@ -1036,7 +1091,8 @@
       "newLecture": "Create course",
       "view": "View",
       "pendingBadge": "Pending",
-      "rejectedBadge": "Rejected"
+      "rejectedBadge": "Rejected",
+      "edit": "Edit"
     },
     "inquiries": {
       "formTitle": "New inquiry",
@@ -1272,5 +1328,147 @@
     ],
     "finalTitle": "Make your start in Korea clearer.",
     "finalBody": "Begin today with course previews and the life guides."
+  },
+  "mentorDetail": {
+    "notFound": "Mentor not found",
+    "backToList": "Back to mentors",
+    "bookingRequested": "Your session request was sent. Check your dashboard for the schedule.",
+    "booking": "Booking...",
+    "bookSession": "Book a session",
+    "about": "About",
+    "mentoringInfo": "Mentoring details",
+    "experience": "Experience",
+    "years": "{n} yrs",
+    "sessionLength": "Session length",
+    "minutes": "{n} min",
+    "sessionFormat": "Format",
+    "formatOnline": "Online",
+    "formatOffline": "In person",
+    "formatHybrid": "Online & in person",
+    "timezone": "Time zone",
+    "education": "Education / credentials",
+    "careerSummary": "Career summary",
+    "mentoringStyle": "Mentoring style",
+    "recommendedFor": "Good fit for",
+    "notRecommendedFor": "Not a good fit for",
+    "specialties": "Specialties",
+    "languages": "Languages",
+    "bookingTitle": "Book a session",
+    "avgResponse": "Typical response: {time}",
+    "defaultResponse": "Same day to 48 hours (business days)",
+    "inquiryAvailable": "Accepting booking inquiries",
+    "sendMessage": "Send a message",
+    "stats": "Stats",
+    "reviewCount": "Reviews",
+    "avgRating": "Average rating",
+    "adminOnly": "Admin only: {email}"
+  },
+  "lectureDetail": {
+    "defaultCurriculum": [
+      "Course overview and learning goals",
+      "Core concepts and practice",
+      "Case-based learning",
+      "Review and Q&A",
+      "Assignments and next steps"
+    ],
+    "notFound": "Lecture not found",
+    "backToList": "Back to lectures",
+    "enrolledMsg": "You're enrolled!",
+    "studentsEnrolled": "{count} enrolled",
+    "wishlisted": "Saved",
+    "wishlist": "Save",
+    "enrolling": "Enrolling...",
+    "enrolled": "Enrolled",
+    "enrollNow": "Enroll now",
+    "about": "About this lecture",
+    "learningGuide": "Learning guide",
+    "shortDescription": "Summary",
+    "targetAudience": "Who it's for",
+    "prerequisites": "Prerequisites",
+    "whatYouLearn": "What you'll learn",
+    "curriculumHighlights": "Curriculum highlights",
+    "info": "Lecture info",
+    "instructor": "Instructor",
+    "duration": "Duration",
+    "level": "Level",
+    "lessonsHours": "Lessons / hours",
+    "lessonsHoursValue": "{lessons} lessons / {hours}h",
+    "maxStudents": "Max students",
+    "students": "Students",
+    "rating": "Rating"
+  },
+  "admin": {
+    "navDashboard": "Operations dashboard",
+    "navUsers": "User management",
+    "navModeration": "Moderation",
+    "navInquiries": "Inquiries",
+    "statsLoading": "Loading statistics...",
+    "dashboardTitle": "Admin dashboard",
+    "welcome": "Welcome, {name}",
+    "periodAll": "All time",
+    "periodDay": "Today",
+    "periodMonth": "This month",
+    "periodYear": "This year",
+    "totalUsers": "Total users",
+    "roleMentee": "Student",
+    "roleMenteeLong": "Students (mentees)",
+    "roleMentor": "Mentor",
+    "roleAdmin": "Admin",
+    "sessions": "Sessions",
+    "roleStats": "By role",
+    "sessionStatus": "Session status",
+    "sessionUpcoming": "Upcoming",
+    "sessionCompleted": "Completed",
+    "sessionCancelled": "Cancelled",
+    "monthlySignups": "Monthly sign-ups (last 12 months)",
+    "newInPeriod": "New in period:",
+    "pendingMentors": "Pending mentor applications",
+    "pendingCommunity": "Pending community requests",
+    "pendingFreelancer": "Pending freelancer requests",
+    "usersLoadFailed": "Couldn't load users",
+    "userDetailFailed": "Couldn't load user details",
+    "adminCreated": "Admin account created.",
+    "passwordReset": "Password has been reset.",
+    "mentorApproved": "Mentor approved.",
+    "mentorRejected": "Mentor application declined.",
+    "actionFailed": "Something went wrong.",
+    "checkingPermission": "Checking permissions...",
+    "usersTitle": "User console",
+    "usersSubtitle": "Add admins, reset passwords, view student details",
+    "mentorReviewTitle": "Approve or decline mentor applications",
+    "noPendingMentors": "No pending mentor applications.",
+    "mentorApplication": "Mentor application",
+    "noSpecialty": "No specialty given",
+    "addAdmin": "Add admin",
+    "email": "Email",
+    "name": "Name",
+    "initialPassword": "Initial password (8+ characters)",
+    "createAdmin": "Create admin",
+    "searchPlaceholder": "Search name or email",
+    "all": "All",
+    "search": "Search",
+    "colUser": "User",
+    "colRole": "Role",
+    "colJoined": "Joined",
+    "colDetail": "Details",
+    "view": "View",
+    "userDetail": "User details",
+    "language": "Language",
+    "studentInfo": "Student info",
+    "studentStats": "{enrollments} enrollments / {sessions} sessions",
+    "mentorProfile": "Mentor profile",
+    "resetPasswordTitle": "Reset password",
+    "newPassword": "New password (8+ characters)",
+    "reset": "Reset",
+    "inquiriesTitle": "Member inquiries",
+    "inquiriesSubtitle": "Review inquiries and reply — the member is notified when you answer.",
+    "noInquiries": "No inquiries yet.",
+    "answered": "Answered",
+    "received": "Received",
+    "previousReply": "Previous reply",
+    "adminReply": "Admin reply",
+    "replyPlaceholder": "Write your reply. The member will be notified when you save.",
+    "saving": "Saving…",
+    "submitReply": "Post reply"
   }
 }

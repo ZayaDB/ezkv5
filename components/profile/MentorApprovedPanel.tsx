@@ -177,7 +177,7 @@ export default function MentorApprovedPanel({
     });
     setSaving(false);
     if (res.error || !res.data?.mentor) {
-      setSaveError(res.error || "멘토 프로필 저장에 실패했습니다.");
+      setSaveError(res.error || tProf("mentorSaveFailed"));
       return;
     }
     onUpdated(res.data.mentor);

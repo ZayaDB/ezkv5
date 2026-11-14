@@ -1,3 +1,4 @@
+import { trError } from "@/lib/i18n/runtime";
 import { createClient } from "@/lib/supabase/client";
 import { fetchPublicProfiles } from "@/lib/supabase/publicProfiles";
 import { requireUserId } from "@/lib/supabase/requireUser";
@@ -13,7 +14,7 @@ export async function listPublicFeed(
   opts?: { viewerUserId?: string; limit?: number; authorId?: string }
 ) {
   const feedType = asFeedType(feedTypeRaw);
-  if (!feedType) return { error: "잘못된 피드입니다." };
+  if (!feedType) return { error: trError("invalidFeed") };
 
   const supabase = createClient();
   const limit = Math.min(80, Math.max(1, opts?.limit ?? 40));
@@ -80,10 +81,10 @@ export async function createPublicFeedPost(
   attachmentUrls: string[]
 ) {
   const feedType = asFeedType(feedTypeRaw);
-  if (!feedType) return { error: "잘못된 피드입니다." };
+  if (!feedType) return { error: trError("invalidFeed") };
   const { supabase, userId } = await requireUserId();
   const text = body.trim();
-  if (!text) return { error: "내용을 입력해 주세요." };
+  if (!text) return { error: trError("contentRequired") };
   const urls = (attachmentUrls || []).map((u) => String(u).trim()).filter(Boolean).slice(0, 10);
 
   const { data, error } = await supabase
@@ -132,9 +133,9 @@ export async function listPublicFeedComments(postId: string) {
 export async function addPublicFeedComment(postId: string, body: string) {
   const { supabase, userId } = await requireUserId();
   const { data: post } = await supabase.from("public_feed_posts").select("id").eq("id", postId).maybeSingle();
-  if (!post) return { error: "글을 찾을 수 없습니다." };
+  if (!post) return { error: trError("postNotFound") };
   const text = body.trim();
-  if (!text) return { error: "댓글을 입력해 주세요." };
+  if (!text) return { error: trError("commentRequired") };
 
   const { error } = await supabase.from("public_feed_comments").insert({
     post_id: postId,
@@ -148,7 +149,7 @@ export async function addPublicFeedComment(postId: string, body: string) {
 export async function togglePublicFeedLike(postId: string) {
   const { supabase, userId } = await requireUserId();
   const { data: post } = await supabase.from("public_feed_posts").select("id").eq("id", postId).maybeSingle();
-  if (!post) return { error: "글을 찾을 수 없습니다." };
+  if (!post) return { error: trError("postNotFound") };
 
   const { data: existing } = await supabase
     .from("public_feed_likes")

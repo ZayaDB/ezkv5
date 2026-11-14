@@ -1,3 +1,4 @@
+import { trError } from "@/lib/i18n/runtime";
 import { createClient } from "@/lib/supabase/client";
 import type { User } from "@/lib/contexts/AuthContext";
 import { normalizeRole } from "@/lib/auth/userRole";
@@ -62,17 +63,17 @@ export const supabaseAuth = {
         return {
           success: false as const,
           error:
-            "이메일 인증이 필요합니다. 메일함을 확인하거나, Supabase에서 Confirm email을 끄고 다시 가입해 주세요.",
+            trError("emailNotConfirmed"),
         };
       }
       if (msg.includes("invalid login credentials")) {
         return {
           success: false as const,
           error:
-            "이메일 또는 비밀번호가 맞지 않습니다. Supabase에 가입한 계정인지 확인해 주세요. (예전 Spring/Mongo 계정은 다시 가입해야 합니다.)",
+            trError("invalidCredentials"),
         };
       }
-      return { success: false as const, error: error.message || "로그인에 실패했습니다." };
+      return { success: false as const, error: error.message || trError("loginFailed") };
     }
 
     const user = await fetchProfile(data.user.id);
@@ -80,7 +81,7 @@ export const supabaseAuth = {
       return {
         success: false as const,
         error:
-          "로그인은 됐지만 profiles 테이블에 프로필이 없습니다. Supabase SQL Editor에서 supabase/schema.sql을 실행했는지 확인해 주세요.",
+          trError("profileMissing"),
       };
     }
 
@@ -109,11 +110,11 @@ export const supabaseAuth = {
     });
 
     if (error) {
-      return { success: false as const, error: error.message || "회원가입에 실패했습니다." };
+      return { success: false as const, error: error.message || trError("signupFailed") };
     }
 
     if (!data.user) {
-      return { success: false as const, error: "회원가입에 실패했습니다." };
+      return { success: false as const, error: trError("signupFailed") };
     }
 
     const countryStatus = input.residingInKorea ? "residing_korea" : "abroad";
@@ -145,7 +146,7 @@ export const supabaseAuth = {
 
     return {
       success: true as const,
-      message: "회원가입이 완료되었습니다. 로그인해 주세요.",
+      message: trError("signupComplete"),
       email,
     };
   },
@@ -179,7 +180,7 @@ export const supabaseAuth = {
     } = await supabase.auth.getSession();
 
     if (!session?.user) {
-      return { success: false as const, error: "인증이 필요합니다." };
+      return { success: false as const, error: trError("authRequired") };
     }
 
     if (data.newPassword) {
@@ -211,7 +212,7 @@ export const supabaseAuth = {
 
     const user = await fetchProfile(session.user.id);
     if (!user) {
-      return { success: false as const, error: "프로필을 불러오지 못했습니다." };
+      return { success: false as const, error: trError("profileLoadFailed") };
     }
 
     return { success: true as const, user };

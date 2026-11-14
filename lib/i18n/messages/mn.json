@@ -46,7 +46,19 @@
       "unreadCount": "{count} шинэ"
     },
     "lightMode": "Цайвар горим",
-    "darkMode": "Бараан горим"
+    "darkMode": "Бараан горим",
+    "redirecting": "Шилжиж байна…",
+    "loadingShort": "Ачаалж байна...",
+    "back": "Буцах",
+    "edit": "Засах",
+    "delete": "Устгах",
+    "confirmDelete": "Устгах уу?",
+    "noInfo": "Мэдээлэлгүй",
+    "none": "Байхгүй",
+    "prev": "Өмнөх",
+    "next": "Дараах",
+    "scrollTop": "Дээш буцах",
+    "peopleCount": "{count} хүн"
   },
   "home": {
     "heroBadge": "Олон улсын оюутны амьдралын туслах",
@@ -149,7 +161,8 @@
     "emptyTitle": "Лекц алга",
     "emptyDescription": "Одоогоор нийтлэгдсэн лекц алга.",
     "emptyAction": "Нүүр",
-    "viewDetails": "Дэлгэрэнгүй"
+    "viewDetails": "Дэлгэрэнгүй",
+    "studentsCount": "{count} суралцагч"
   },
   "community": {
     "title": "Нийгэмлэг",
@@ -180,7 +193,8 @@
     "chatEmpty": "Мессеж алга. Мэндчилээрэй.",
     "chatPlaceholder": "Мессеж бичих",
     "chatSend": "Илгээх",
-    "chatLogin": "Нэвтэрч бүлэгт нэгдсэний дараа чатлана."
+    "chatLogin": "Нэвтэрч бүлэгт нэгдсэний дараа чатлана.",
+    "membersCount": "{count} гишүүн"
   },
   "freelancers": {
     "title": "Чөлөөт ажилчдын бүлгүүд",
@@ -244,7 +258,8 @@
     "lifeTips": "Амьдралын зөвлөмж",
     "emptyTitle": "Суралцах гарын авлага алга",
     "emptyDescription": "Одоогоор бүртгэгдсэн мэдээлэл алга.",
-    "emptyAction": "Нүүр"
+    "emptyAction": "Нүүр",
+    "openDocument": "Энэ заавар руу очих"
   },
   "chatbot": {
     "title": "MentorLink AI Туслах",
@@ -254,7 +269,12 @@
     "placeholder": "Асуулт асуу...",
     "send": "Илгээх",
     "thinking": "Бодож байна...",
-    "error": "Алдаа гарлаа. Дахин оролдоно уу."
+    "error": "Алдаа гарлаа. Дахин оролдоно уу.",
+    "relatedLinks": "Холбоотой холбоосууд",
+    "scrollTop": "Дээш буцах",
+    "ariaOpen": "Чатбот нээх",
+    "ariaClose": "Чатбот хаах",
+    "ariaSend": "Мессеж илгээх"
   },
   "auth": {
     "login": "Нэвтрэх",
@@ -310,7 +330,8 @@
     "nationalityPlaceholder": "жишээ: Монгол",
     "universityPlaceholder": "жишээ: Сөүл их сургууль",
     "regionPlaceholder": "жишээ: Сөүл",
-    "mentorLabel": "Ментор"
+    "mentorLabel": "Ментор",
+    "signupCompleteLogin": "Бүртгэл амжилттай! Нэвтэрнэ үү."
   },
   "controlCenter": {
     "badge": "Удирдлагын төв",
@@ -578,7 +599,8 @@
       "mentee": "Оюутан",
       "mentor": "Ментор",
       "admin": "Админ"
-    }
+    },
+    "mentorSaveFailed": "Менторын профайл хадгалж чадсангүй."
   },
   "profilePage": {
     "title": "Миний хуудас",
@@ -733,7 +755,12 @@
       "editSubmit": "Хадгалах",
       "editSuccess": "Лекцийг шинэчиллээ.",
       "loadError": "Лекц ачаалж чадсангүй."
-    }
+    },
+    "errNameRequired": "Нэр заавал шаардлагатай.",
+    "errNameLength": "Нэр 2–40 тэмдэгт байх ёстой.",
+    "errPhoneRequired": "Утасны дугаар заавал шаардлагатай.",
+    "errPhoneFormat": "Утасны дугаарын формат буруу байна.",
+    "errSaveFailed": "Профайл хадгалж чадсангүй."
   },
   "dashboardV2": {
     "loading": "Самбар ачааллаж байна...",
@@ -1024,7 +1051,35 @@
       "budgetTableActions": "Үйлдэл",
       "budgetEditBtn": "Засах",
       "budgetSaveBtn": "Хадгалах",
-      "budgetCancelBtn": "Цуцлах"
+      "budgetCancelBtn": "Цуцлах",
+      "recurNone": "Давтахгүй",
+      "recurWeekly": "Долоо хоног бүр",
+      "recurBiweekly": "2 долоо хоног тутам",
+      "recurMonthly": "Сар бүр",
+      "recurWeeklyOn": "{day} гараг бүр",
+      "recurBiweeklyOn": "2 долоо хоног тутам {day}",
+      "recurMonthlyOn": "Сар бүрийн {day}-нд",
+      "saveEdit": "Өөрчлөлт хадгалах",
+      "editEvent": "Үйл явдлыг шинэчлэх",
+      "manualEntry": "Өөрийн үйл явдал нэмэх",
+      "eventCategory": {
+        "class": "Хичээл",
+        "parttime": "Цагийн ажил",
+        "rent": "Түрээс",
+        "insurance": "Даатгал",
+        "visa": "Виз",
+        "roadmap": "Roadmap",
+        "general": "Ерөнхий",
+        "personal": "Хувийн",
+        "work": "Уулзалт",
+        "health": "Эмнэлэг",
+        "other": "Бусад"
+      },
+      "eventStatus": {
+        "planned": "Төлөвлөсөн",
+        "completed": "Дууссан",
+        "cancelled": "Цуцалсан"
+      }
     },
     "lecturesHub": {
       "title": "Лекцүүд",
@@ -1036,7 +1091,8 @@
       "newLecture": "Шинэ лекц",
       "view": "Нээх",
       "pendingBadge": "Хүлээгдэж буй",
-      "rejectedBadge": "Татгалзсан"
+      "rejectedBadge": "Татгалзсан",
+      "edit": "Засах"
     },
     "inquiries": {
       "formTitle": "Шинэ асуулга",
@@ -1272,5 +1328,147 @@
     ],
     "finalTitle": "Солонгос дахь эхлэлээ илүү тодорхой болго.",
     "finalBody": "Хичээлийн танилцуулга, амьдралын гарын авлагаар өнөөдөр эхний алхмаа хий."
+  },
+  "mentorDetail": {
+    "notFound": "Ментор олдсонгүй",
+    "backToList": "Менторуудын жагсаалт руу буцах",
+    "bookingRequested": "Сешн захиалгын хүсэлт илгээгдлээ. Хуваарийг хянах самбараас шалгана уу.",
+    "booking": "Захиалж байна...",
+    "bookSession": "Сешн захиалах",
+    "about": "Танилцуулга",
+    "mentoringInfo": "Менторингийн мэдээлэл",
+    "experience": "Туршлага",
+    "years": "{n} жил",
+    "sessionLength": "Сешний хугацаа",
+    "minutes": "{n} мин",
+    "sessionFormat": "Хэлбэр",
+    "formatOnline": "Онлайн",
+    "formatOffline": "Биечлэн",
+    "formatHybrid": "Онлайн ба биечлэн",
+    "timezone": "Цагийн бүс",
+    "education": "Боловсрол / мэргэшил",
+    "careerSummary": "Ажлын туршлагын товч",
+    "mentoringStyle": "Менторингийн хэв маяг",
+    "recommendedFor": "Хэнд тохирох",
+    "notRecommendedFor": "Хэнд тохирохгүй",
+    "specialties": "Мэргэшсэн чиглэл",
+    "languages": "Хэл",
+    "bookingTitle": "Сешн захиалах",
+    "avgResponse": "Дундаж хариу: {time}",
+    "defaultResponse": "Ажлын өдрөөр тухайн өдөр ~48 цаг",
+    "inquiryAvailable": "Захиалгын асуулт хүлээн авч байна",
+    "sendMessage": "Мессеж илгээх",
+    "stats": "Статистик",
+    "reviewCount": "Сэтгэгдлийн тоо",
+    "avgRating": "Дундаж үнэлгээ",
+    "adminOnly": "Зөвхөн админд: {email}"
+  },
+  "lectureDetail": {
+    "defaultCurriculum": [
+      "Хөтөлбөрийн танилцуулга, суралцах зорилго",
+      "Үндсэн ойлголт ба дадлага",
+      "Жишээнд суурилсан сургалт",
+      "Давталт ба асуулт хариулт",
+      "Даалгавар ба дараагийн алхам"
+    ],
+    "notFound": "Лекц олдсонгүй",
+    "backToList": "Лекцүүдийн жагсаалт руу буцах",
+    "enrolledMsg": "Амжилттай бүртгүүллээ.",
+    "studentsEnrolled": "{count} суралцагч",
+    "wishlisted": "Хадгалсан",
+    "wishlist": "Хадгалах",
+    "enrolling": "Бүртгэж байна...",
+    "enrolled": "Бүртгүүлсэн",
+    "enrollNow": "Одоо бүртгүүлэх",
+    "about": "Лекцийн танилцуулга",
+    "learningGuide": "Суралцах заавар",
+    "shortDescription": "Товч танилцуулга",
+    "targetAudience": "Хэнд зориулсан",
+    "prerequisites": "Урьдчилсан шаардлага",
+    "whatYouLearn": "Юу сурах вэ",
+    "curriculumHighlights": "Хөтөлбөрийн онцлох хэсэг",
+    "info": "Лекцийн мэдээлэл",
+    "instructor": "Багш",
+    "duration": "Хугацаа",
+    "level": "Түвшин",
+    "lessonsHours": "Хичээл / цаг",
+    "lessonsHoursValue": "{lessons} хичээл / {hours}ц",
+    "maxStudents": "Дээд тал суралцагч",
+    "students": "Суралцагч",
+    "rating": "Үнэлгээ"
+  },
+  "admin": {
+    "navDashboard": "Үйл ажиллагааны самбар",
+    "navUsers": "Хэрэглэгчийн удирдлага",
+    "navModeration": "Шалгалт",
+    "navInquiries": "Лавлагаа",
+    "statsLoading": "Статистик ачаалж байна...",
+    "dashboardTitle": "Админ самбар",
+    "welcome": "Тавтай морил, {name}",
+    "periodAll": "Бүгд",
+    "periodDay": "Өнөөдөр",
+    "periodMonth": "Энэ сар",
+    "periodYear": "Энэ жил",
+    "totalUsers": "Нийт хэрэглэгч",
+    "roleMentee": "Оюутан",
+    "roleMenteeLong": "Оюутан (менти)",
+    "roleMentor": "Ментор",
+    "roleAdmin": "Админ",
+    "sessions": "Сешн",
+    "roleStats": "Үүргээр",
+    "sessionStatus": "Сешний төлөв",
+    "sessionUpcoming": "Удахгүй болох",
+    "sessionCompleted": "Дууссан",
+    "sessionCancelled": "Цуцлагдсан",
+    "monthlySignups": "Сар бүрийн бүртгэл (сүүлийн 12 сар)",
+    "newInPeriod": "Хугацаанд шинэ:",
+    "pendingMentors": "Хүлээгдэж буй менторын өргөдөл",
+    "pendingCommunity": "Хүлээгдэж буй нийгэмлэгийн хүсэлт",
+    "pendingFreelancer": "Хүлээгдэж буй фрилансерын хүсэлт",
+    "usersLoadFailed": "Хэрэглэгчдийг ачаалж чадсангүй",
+    "userDetailFailed": "Хэрэглэгчийн дэлгэрэнгүйг ачаалж чадсангүй",
+    "adminCreated": "Админ бүртгэл үүслээ.",
+    "passwordReset": "Нууц үг шинэчлэгдлээ.",
+    "mentorApproved": "Ментор баталгаажлаа.",
+    "mentorRejected": "Менторын өргөдөл татгалзагдлаа.",
+    "actionFailed": "Алдаа гарлаа.",
+    "checkingPermission": "Эрх шалгаж байна...",
+    "usersTitle": "Хэрэглэгчийн консол",
+    "usersSubtitle": "Админ нэмэх, нууц үг шинэчлэх, оюутны дэлгэрэнгүй харах",
+    "mentorReviewTitle": "Менторын өргөдөл батлах/татгалзах",
+    "noPendingMentors": "Хүлээгдэж буй менторын өргөдөл алга.",
+    "mentorApplication": "Менторын өргөдөл",
+    "noSpecialty": "Чиглэл оруулаагүй",
+    "addAdmin": "Админ нэмэх",
+    "email": "Имэйл",
+    "name": "Нэр",
+    "initialPassword": "Анхны нууц үг (8+ тэмдэгт)",
+    "createAdmin": "Админ үүсгэх",
+    "searchPlaceholder": "Нэр/имэйлээр хайх",
+    "all": "Бүгд",
+    "search": "Хайх",
+    "colUser": "Хэрэглэгч",
+    "colRole": "Үүрэг",
+    "colJoined": "Бүртгүүлсэн",
+    "colDetail": "Дэлгэрэнгүй",
+    "view": "Харах",
+    "userDetail": "Хэрэглэгчийн дэлгэрэнгүй",
+    "language": "Хэл",
+    "studentInfo": "Оюутны мэдээлэл",
+    "studentStats": "{enrollments} бүртгэл / {sessions} сешн",
+    "mentorProfile": "Менторын профайл",
+    "resetPasswordTitle": "Нууц үг шинэчлэх",
+    "newPassword": "Шинэ нууц үг (8+ тэмдэгт)",
+    "reset": "Шинэчлэх",
+    "inquiriesTitle": "Гишүүдийн лавлагаа",
+    "inquiriesSubtitle": "Лавлагааг шалгаж хариулбал тухайн гишүүнд мэдэгдэл очно.",
+    "noInquiries": "Лавлагаа алга.",
+    "answered": "Хариулсан",
+    "received": "Хүлээн авсан",
+    "previousReply": "Өмнөх хариулт",
+    "adminReply": "Админы хариулт",
+    "replyPlaceholder": "Хариултаа бичнэ үү. Хадгалахад гишүүнд мэдэгдэл очно.",
+    "saving": "Хадгалж байна…",
+    "submitReply": "Хариулт илгээх"
   }
 }

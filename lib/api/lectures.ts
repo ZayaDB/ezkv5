@@ -1,3 +1,4 @@
+import { trError } from "@/lib/i18n/runtime";
 /** 강의 마켓 — Supabase */
 
 export const lecturesApi = {
@@ -7,7 +8,7 @@ export const lecturesApi = {
       const data = await getMyLectures();
       return { data };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "강의 목록을 불러오지 못했습니다." };
+      return { error: e instanceof Error ? e.message : trError("lecturesLoadFailed") };
     }
   },
   getById: async (id: string) => {
@@ -19,9 +20,9 @@ export const lecturesApi = {
       if (approved) return { data: approved };
       const own = await getLectureByIdForOwner(id);
       if (own) return { data: own };
-      return { error: "강의를 찾을 수 없습니다." };
+      return { error: trError("lectureNotFound") };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "강의를 불러오지 못했습니다." };
+      return { error: e instanceof Error ? e.message : trError("lectureLoadFailed") };
     }
   },
   create: async (payload: {
@@ -51,7 +52,7 @@ export const lecturesApi = {
       const data = await createLecture(payload);
       return { data };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "강의 등록에 실패했습니다." };
+      return { error: e instanceof Error ? e.message : trError("lectureCreateFailed") };
     }
   },
   update: async (
@@ -84,7 +85,7 @@ export const lecturesApi = {
       const data = await updateLecture(id, payload);
       return { data };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "강의 수정에 실패했습니다." };
+      return { error: e instanceof Error ? e.message : trError("lectureUpdateFailed") };
     }
   },
   uploadImage: async (file: File) => {
@@ -100,7 +101,7 @@ export const lectureWishlistApi = {
       const wishlist = await listWishlist();
       return { data: { wishlist } };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "찜 목록 조회 실패" };
+      return { error: e instanceof Error ? e.message : trError("wishlistLoadFailed") };
     }
   },
   add: async (lectureId: string) => {
@@ -109,7 +110,7 @@ export const lectureWishlistApi = {
       const data = await addToWishlist(lectureId);
       return { data };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "찜 추가 실패" };
+      return { error: e instanceof Error ? e.message : trError("wishlistAddFailed") };
     }
   },
   remove: async (lectureId: string) => {
@@ -118,7 +119,7 @@ export const lectureWishlistApi = {
       const data = await removeFromWishlist(lectureId);
       return { data };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "찜 삭제 실패" };
+      return { error: e instanceof Error ? e.message : trError("wishlistRemoveFailed") };
     }
   },
 };

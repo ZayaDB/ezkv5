@@ -1,3 +1,4 @@
+import { trError, tr } from "@/lib/i18n/runtime";
 import { createClient } from "@/lib/supabase/client";
 import { fetchPublicProfiles } from "@/lib/supabase/publicProfiles";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -55,7 +56,7 @@ async function requireUserId() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) throw new Error("인증이 필요합니다.");
+  if (!user) throw new Error(trError("authRequired"));
   return { supabase, userId: user.id };
 }
 
@@ -63,7 +64,7 @@ export function mapLectureRow(row: LectureRow, instructorName?: string): Lecture
   return {
     id: row.id,
     title: row.title,
-    instructor: instructorName || row.profiles?.name || "강사",
+    instructor: instructorName || row.profiles?.name || tr("names.instructor"),
     instructorId: row.instructor_id,
     type: row.type as Lecture["type"],
     category: row.category,
@@ -143,7 +144,7 @@ export async function getMyLectures() {
   const { supabase, userId } = await requireUserId();
   const { data: profile } = await supabase.from("profiles").select("role").eq("id", userId).single();
   const allowed = await userCanManageLectures(userId, profile?.role || "user");
-  if (!allowed) throw new Error("멘토 권한이 없습니다.");
+  if (!allowed) throw new Error(trError("mentorPermissionRequired"));
 
   const { data, error } = await supabase
     .from("lectures")
@@ -181,7 +182,7 @@ export async function createLecture(payload: {
   const { supabase, userId } = await requireUserId();
   const { data: profile } = await supabase.from("profiles").select("role").eq("id", userId).single();
   const allowed = await userCanManageLectures(userId, profile?.role || "user");
-  if (!allowed) throw new Error("멘토만 강의를 등록할 수 있습니다.");
+  if (!allowed) throw new Error(trError("onlyMentorsCanCreateLectures"));
 
   const row = {
     instructor_id: userId,
@@ -246,7 +247,7 @@ export async function updateLecture(
     .eq("instructor_id", userId)
     .maybeSingle();
   if (existingErr) throw new Error(existingErr.message);
-  if (!existing) throw new Error("강의를 찾을 수 없습니다.");
+  if (!existing) throw new Error(trError("lectureNotFound"));
 
   const patch = {
     title: payload.title.trim(),

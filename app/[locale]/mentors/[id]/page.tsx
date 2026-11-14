@@ -27,6 +27,8 @@ export default function MentorDetailPage() {
   const router = useRouter();
   const locale = useLocale();
   const tMentors = useTranslations("mentors");
+  const t = useTranslations("mentorDetail");
+  const tCommon = useTranslations("common");
   const { user, isAuthenticated } = useAuth();
   const id = params.id as string;
 
@@ -62,9 +64,9 @@ export default function MentorDetailPage() {
     return (
       <div className="min-h-screen flex items-center justify-center px-4">
         <div className="text-center max-w-md">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">멘토를 찾을 수 없습니다</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">{t("notFound")}</h1>
           <Link href={`/${locale}/mentors`} className="text-primary-600 font-semibold hover:underline">
-            멘토 목록으로 돌아가기
+            {t("backToList")}
           </Link>
         </div>
       </div>
@@ -98,7 +100,7 @@ export default function MentorDetailPage() {
       setBookingMessage(result.error);
       return;
     }
-    setBookingMessage('세션 예약 요청이 접수되었습니다. 대시보드에서 일정을 확인하세요.');
+    setBookingMessage(t('bookingRequested'));
   };
 
   const toggleFavorite = () => {
@@ -118,7 +120,7 @@ export default function MentorDetailPage() {
             className="inline-flex items-center text-white/90 hover:text-white mb-6 transition-colors"
           >
             <ArrowLeft className="w-5 h-5 mr-2" />
-            뒤로 가기
+            {tCommon("back")}
           </Link>
 
           <div className="flex flex-col md:flex-row items-start md:items-center gap-8">
@@ -174,7 +176,7 @@ export default function MentorDetailPage() {
                 disabled={isBooking}
                 className="px-8 py-4 bg-white text-primary-600 rounded-xl font-bold hover:bg-gray-50 transition-all shadow-lg hover:scale-105 disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                {isBooking ? '예약 중...' : '세션 예약하기'}
+                {isBooking ? t('booking') : t('bookSession')}
               </button>
             </div>
           </div>
@@ -185,26 +187,26 @@ export default function MentorDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
             <div className="ds-panel p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">소개</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("about")}</h2>
               <p className="text-gray-600 leading-relaxed whitespace-pre-line">{mentor.bio}</p>
             </div>
             <div className="ds-panel p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">멘토링 정보</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("mentoringInfo")}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <div><span className="text-gray-500">경력</span><p className="font-semibold text-gray-900">{mentor.yearsOfExperience || 0}년</p></div>
-                <div><span className="text-gray-500">세션 시간</span><p className="font-semibold text-gray-900">{mentor.sessionDuration || 60}분</p></div>
-                <div><span className="text-gray-500">세션 형식</span><p className="font-semibold text-gray-900">{mentor.sessionFormat || 'online'}</p></div>
-                <div><span className="text-gray-500">시간대</span><p className="font-semibold text-gray-900">{mentor.timezone || 'Asia/Seoul'}</p></div>
-                <div className="md:col-span-2"><span className="text-gray-500">학력/자격</span><p className="font-semibold text-gray-900">{mentor.education || '정보 없음'}</p></div>
-                <div className="md:col-span-2"><span className="text-gray-500">경력 요약</span><p className="text-gray-700 whitespace-pre-line">{mentor.careerSummary || '정보 없음'}</p></div>
-                <div className="md:col-span-2"><span className="text-gray-500">멘토링 스타일</span><p className="text-gray-700 whitespace-pre-line">{mentor.mentoringStyle || '정보 없음'}</p></div>
-                <div className="md:col-span-2"><span className="text-gray-500">추천 대상</span><p className="text-gray-700 whitespace-pre-line">{mentor.recommendedFor || '정보 없음'}</p></div>
-                <div className="md:col-span-2"><span className="text-gray-500">비추천 대상</span><p className="text-gray-700 whitespace-pre-line">{mentor.notRecommendedFor || '정보 없음'}</p></div>
+                <div><span className="text-gray-500">{t("experience")}</span><p className="font-semibold text-gray-900">{t("years", { n: mentor.yearsOfExperience || 0 })}</p></div>
+                <div><span className="text-gray-500">{t("sessionLength")}</span><p className="font-semibold text-gray-900">{t("minutes", { n: mentor.sessionDuration || 60 })}</p></div>
+                <div><span className="text-gray-500">{t("sessionFormat")}</span><p className="font-semibold text-gray-900">{mentor.sessionFormat === 'offline' ? t('formatOffline') : mentor.sessionFormat === 'both' ? t('formatHybrid') : t('formatOnline')}</p></div>
+                <div><span className="text-gray-500">{t("timezone")}</span><p className="font-semibold text-gray-900">{mentor.timezone || 'Asia/Seoul'}</p></div>
+                <div className="md:col-span-2"><span className="text-gray-500">{t("education")}</span><p className="font-semibold text-gray-900">{mentor.education || tCommon('noInfo')}</p></div>
+                <div className="md:col-span-2"><span className="text-gray-500">{t("careerSummary")}</span><p className="text-gray-700 whitespace-pre-line">{mentor.careerSummary || tCommon('noInfo')}</p></div>
+                <div className="md:col-span-2"><span className="text-gray-500">{t("mentoringStyle")}</span><p className="text-gray-700 whitespace-pre-line">{mentor.mentoringStyle || tCommon('noInfo')}</p></div>
+                <div className="md:col-span-2"><span className="text-gray-500">{t("recommendedFor")}</span><p className="text-gray-700 whitespace-pre-line">{mentor.recommendedFor || tCommon('noInfo')}</p></div>
+                <div className="md:col-span-2"><span className="text-gray-500">{t("notRecommendedFor")}</span><p className="text-gray-700 whitespace-pre-line">{mentor.notRecommendedFor || tCommon('noInfo')}</p></div>
               </div>
             </div>
 
             <div className="ds-panel p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">전문 분야</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("specialties")}</h2>
               <div className="flex flex-wrap gap-3">
                 {mentor.specialties.map((specialty) => (
                   <span
@@ -218,7 +220,7 @@ export default function MentorDetailPage() {
             </div>
 
             <div className="ds-panel p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">언어</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("languages")}</h2>
               <div className="flex flex-wrap gap-3">
                 {mentor.languages.map((lang) => (
                   <span key={lang} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-xl font-semibold">
@@ -231,7 +233,7 @@ export default function MentorDetailPage() {
 
           <div className="space-y-6">
             <div className="ds-panel p-6 sticky top-24">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">세션 예약</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">{t("bookingTitle")}</h3>
               <div className="space-y-4">
                 <div>
                   <div className="text-3xl font-extrabold text-gray-900 mb-1">
@@ -243,11 +245,11 @@ export default function MentorDetailPage() {
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-600">
                   <Clock className="w-4 h-4" />
-                  <span>평균 응답: {mentor.responseTime || '영업일 기준 당일~48시간'}</span>
+                  <span>{t('avgResponse', { time: mentor.responseTime || t('defaultResponse') })}</span>
                 </div>
                 {mentor.availability === 'available' && (
                   <div className="px-4 py-2 bg-accent-50 text-accent-700 rounded-xl text-sm font-semibold text-center">
-                    예약 문의 가능
+                    {t("inquiryAvailable")}
                   </div>
                 )}
                 <Button
@@ -257,7 +259,7 @@ export default function MentorDetailPage() {
                   fullWidth
                   size="lg"
                 >
-                  {isBooking ? '예약 중...' : '세션 예약하기'}
+                  {isBooking ? t('booking') : t('bookSession')}
                 </Button>
                 <Button
                   type="button"
@@ -266,7 +268,7 @@ export default function MentorDetailPage() {
                   fullWidth
                 >
                   <MessageCircle className="w-5 h-5 inline mr-2" />
-                  메시지 보내기
+                  {t("sendMessage")}
                 </Button>
                 {bookingMessage && (
                   <p className="text-xs text-primary-700 font-semibold">{bookingMessage}</p>
@@ -275,18 +277,18 @@ export default function MentorDetailPage() {
             </div>
 
             <div className="ds-panel p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">통계</h3>
+              <h3 className="text-lg font-bold text-gray-900 mb-4">{t("stats")}</h3>
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">리뷰 수</span>
+                  <span className="text-gray-600">{t("reviewCount")}</span>
                   <span className="font-bold text-gray-900">{mentor.reviewCount}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">평균 평점</span>
+                  <span className="text-gray-600">{t("avgRating")}</span>
                   <span className="font-bold text-gray-900">{mentor.rating} ⭐</span>
                 </div>
                 {mentor.email && user?.role === 'admin' && (
-                  <div className="pt-2 border-t border-gray-100 text-xs text-gray-500">관리자용: {mentor.email}</div>
+                  <div className="pt-2 border-t border-gray-100 text-xs text-gray-500">{t("adminOnly", { email: mentor.email })}</div>
                 )}
               </div>
             </div>

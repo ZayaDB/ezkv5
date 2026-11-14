@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { adminApi } from "@/lib/api";
 import { fetchModerationSummary } from "@/lib/supabase/admin-dashboard";
@@ -12,6 +12,7 @@ import type { AdminStats, StatsPeriod } from "@/components/admin/dashboard/types
 
 export default function AdminDashboardPage() {
   const locale = useLocale();
+  const t = useTranslations("admin");
   const router = useRouter();
   const { user: currentUser, loading: authLoading } = useAuth();
   const [stats, setStats] = useState<AdminStats | null>(null);
@@ -58,7 +59,7 @@ export default function AdminDashboardPage() {
       <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">통계를 불러오는 중...</p>
+          <p className="text-gray-600">{t("statsLoading")}</p>
         </div>
       </div>
     );
@@ -68,8 +69,8 @@ export default function AdminDashboardPage() {
     <div className="bg-gradient-to-b from-gray-50 to-white rounded-2xl border border-gray-100">
       <div className="bg-gradient-to-r from-primary-600 to-accent-500 py-10 rounded-t-2xl">
         <div className="px-6 sm:px-8">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-2">관리자 대시보드</h1>
-          <p className="text-xl text-white/90">{currentUser.name}님, 환영합니다</p>
+          <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-2">{t("dashboardTitle")}</h1>
+          <p className="text-xl text-white/90">{t("welcome", { name: currentUser.name })}</p>
         </div>
       </div>
 

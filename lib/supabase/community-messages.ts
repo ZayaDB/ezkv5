@@ -1,3 +1,4 @@
+import { trError } from "@/lib/i18n/runtime";
 import { createClient } from "@/lib/supabase/client";
 import { fetchPublicProfiles } from "@/lib/supabase/publicProfiles";
 import { requireUserId } from "@/lib/supabase/requireUser";
@@ -30,7 +31,7 @@ export async function listCommunityMessages(groupId: string) {
 export async function sendCommunityMessage(groupId: string, body: string) {
   const { supabase, userId } = await requireUserId();
   const text = body.trim().slice(0, 2000);
-  if (!text) return { error: "메시지를 입력해 주세요." };
+  if (!text) return { error: trError("messageRequired") };
   const { error } = await supabase.from("community_messages").insert({
     group_id: groupId,
     author_id: userId,

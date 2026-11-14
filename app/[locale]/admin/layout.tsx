@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { LayoutDashboard, ShieldCheck, Users, MessageSquare } from "lucide-react";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import SideLnbShell, { type SideLnbItem } from "@/components/layout/SideLnbShell";
@@ -9,6 +9,7 @@ import { useRouteGuard } from "@/lib/hooks/useRouteGuard";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const locale = useLocale();
+  const t = useTranslations("admin");
   const pathname = usePathname();
   const { user, loading } = useAuth();
   useRouteGuard({ loading, userRole: user?.role, locale, requireAuth: true, requireRole: "admin" });
@@ -25,25 +26,25 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const navItems: SideLnbItem[] = [
     {
       href: `${base}/dashboard`,
-      label: "운영 대시보드",
+      label: t("navDashboard"),
       icon: LayoutDashboard,
       active: (p) => p.includes("/admin/dashboard"),
     },
     {
       href: `${base}/users`,
-      label: "사용자 관리",
+      label: t("navUsers"),
       icon: Users,
       active: (p) => p.includes("/admin/users"),
     },
     {
       href: `${base}/moderation`,
-      label: "운영 검수",
+      label: t("navModeration"),
       icon: ShieldCheck,
       active: (p) => p.includes("/admin/moderation"),
     },
     {
       href: `${base}/inquiries`,
-      label: "문의 관리",
+      label: t("navInquiries"),
       icon: MessageSquare,
       active: (p) => p.includes("/admin/inquiries"),
     },

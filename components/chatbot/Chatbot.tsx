@@ -131,7 +131,7 @@ export default function Chatbot() {
               `${index + 1}. **${link.title}**\n   ${link.description.substring(0, 100)}...\n   🔗 ${link.url}`
           )
           .join('\n\n');
-        responseContent += `\n\n---\n\n**🔗 관련 링크:**\n\n${linksText}`;
+        responseContent += `\n\n---\n\n**🔗 ${t('relatedLinks')}:**\n\n${linksText}`;
       }
 
       const assistantMessage: Bubble = {
@@ -292,7 +292,7 @@ export default function Chatbot() {
         <button
           type="button"
           onClick={onClickScrollTop}
-          aria-label="맨 위로 이동"
+          aria-label={t('scrollTop')}
           className={`fixed z-50 inline-flex items-center justify-center w-11 h-11 rounded-full bg-primary-600 text-white shadow-lg hover:bg-primary-700 transition-colors ${
             isOpen ? 'right-[23.25rem] md:right-[26.25rem] bottom-20 md:bottom-6' : 'right-[6.5rem] bottom-20 md:bottom-6'
           }`}
@@ -305,7 +305,7 @@ export default function Chatbot() {
         <button
           onClick={() => setIsOpen(true)}
           className={`fixed ${dock} bg-gradient-to-br from-primary-500 to-accent-500 text-white p-5 rounded-2xl shadow-2xl hover:shadow-primary-500/50 transition-all hover:scale-110 z-50 group`}
-          aria-label="Open chatbot"
+          aria-label={t('ariaOpen')}
         >
           <MessageCircle className="w-6 h-6 group-hover:rotate-12 transition-transform" />
           <div className="absolute -top-1 -right-1 w-4 h-4 bg-accent-300 rounded-full animate-pulse"></div>
@@ -342,7 +342,7 @@ export default function Chatbot() {
               <button
                 onClick={() => setIsOpen(false)}
                 className="hover:bg-white/20 rounded-xl p-2 transition-colors"
-                aria-label="Close chatbot"
+                aria-label={t('ariaClose')}
               >
                 <X className="w-5 h-5" />
               </button>
@@ -428,7 +428,7 @@ export default function Chatbot() {
                 onClick={() => handleSend()}
                 disabled={!input.trim() || isLoading}
                 className="bg-gradient-to-r from-primary-500 to-accent-500 text-white p-3 rounded-xl hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105"
-                aria-label="Send message"
+                aria-label={t('ariaSend')}
               >
                 {isLoading ? (
                   <Loader2 className="w-5 h-5 animate-spin" />

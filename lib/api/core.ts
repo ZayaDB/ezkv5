@@ -1,3 +1,4 @@
+import { trError } from "@/lib/i18n/runtime";
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "";
 
 export interface ApiResponse<T> {
@@ -45,11 +46,11 @@ export async function apiRequest<T>(
       credentials: "include",
     });
     const data = await response.json();
-    if (!response.ok) return { error: data.error || "요청 처리 중 오류가 발생했습니다." };
+    if (!response.ok) return { error: data.error || trError("requestFailed") };
     return { data };
   } catch (error: any) {
     console.error("API request error:", error);
-    return { error: error.message || "네트워크 오류가 발생했습니다." };
+    return { error: error.message || trError("networkError") };
   }
 }
 

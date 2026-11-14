@@ -35,6 +35,7 @@ interface UserRow {
 export default function AdminUsersPage() {
   const locale = useLocale();
   const tMod = useTranslations('adminModeration');
+  const t = useTranslations('admin');
   const router = useRouter();
   const { user: currentUser, loading: authLoading } = useAuth();
   const [users, setUsers] = useState<UserRow[]>([]);
@@ -80,7 +81,7 @@ export default function AdminUsersPage() {
       setUsers(response.data.users || []);
       setTotalPages(response.data.pagination?.pages || 1);
     } else {
-      setToast({ message: response.error || '사용자 목록 조회 실패', variant: 'error' });
+      setToast({ message: response.error || t('usersLoadFailed'), variant: 'error' });
     }
     setLoading(false);
   };
@@ -100,7 +101,7 @@ export default function AdminUsersPage() {
     if (response.data) {
       setSelectedUserDetail(response.data);
     } else {
-      setToast({ message: response.error || '사용자 상세 조회 실패', variant: 'error' });
+      setToast({ message: response.error || t('userDetailFailed'), variant: 'error' });
       setSelectedUserId(null);
     }
     setLoadingDetail(false);
@@ -113,7 +114,7 @@ export default function AdminUsersPage() {
       setToast({ message: response.error, variant: 'error' });
       return;
     }
-    setToast({ message: '관리자 계정이 생성되었습니다.', variant: 'success' });
+    setToast({ message: t('adminCreated'), variant: 'success' });
     setAdminForm({ email: '', name: '', password: '', locale: 'kr' });
     await loadUsers();
   };
@@ -128,7 +129,7 @@ export default function AdminUsersPage() {
       setToast({ message: response.error, variant: 'error' });
       return;
     }
-    setToast({ message: '비밀번호가 초기화되었습니다.', variant: 'success' });
+    setToast({ message: t('passwordReset'), variant: 'success' });
     setNewPassword('');
   };
 
@@ -136,14 +137,14 @@ export default function AdminUsersPage() {
     try {
       await setMentorApproval(id, status);
       setToast({
-        message: status === 'approved' ? '멘토 승인 처리되었습니다.' : '멘토 반려 처리되었습니다.',
+        message: status === 'approved' ? t('mentorApproved') : t('mentorRejected'),
         variant: 'success',
       });
       await Promise.all([loadMentorPending(), loadUsers()]);
       setReviewMentor(null);
     } catch (e: unknown) {
       setToast({
-        message: e instanceof Error ? e.message : '처리에 실패했습니다.',
+        message: e instanceof Error ? e.message : t('actionFailed'),
         variant: 'error',
       });
     }
@@ -157,7 +158,7 @@ export default function AdminUsersPage() {
   }, [users]);
 
   if (authLoading || !currentUser) {
-    return <LoadingState message="권한 확인 중..." />;
+    return <LoadingState message={t("checkingPermission")} />;
   }
 
   return (
@@ -166,29 +167,29 @@ export default function AdminUsersPage() {
 
       <div className="px-6 sm:px-8 py-10 space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">관리자 사용자 콘솔</h1>
-          <p className="text-slate-600 mt-1">관리자 추가, 비밀번호 초기화, 학생 상세 열람</p>
+          <h1 className="text-3xl font-bold text-slate-900">{t("usersTitle")}</h1>
+          <p className="text-slate-600 mt-1">{t("usersSubtitle")}</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div className="bg-white rounded-xl border border-slate-200 p-4">
-            <p className="text-sm text-slate-500">학생(멘티)</p>
+            <p className="text-sm text-slate-500">{t("roleMenteeLong")}</p>
             <p className="text-3xl font-bold text-slate-900">{roleStats.mentee}</p>
           </div>
           <div className="bg-white rounded-xl border border-slate-200 p-4">
-            <p className="text-sm text-slate-500">멘토</p>
+            <p className="text-sm text-slate-500">{t("roleMentor")}</p>
             <p className="text-3xl font-bold text-slate-900">{roleStats.mentor}</p>
           </div>
           <div className="bg-white rounded-xl border border-slate-200 p-4">
-            <p className="text-sm text-slate-500">관리자</p>
+            <p className="text-sm text-slate-500">{t("roleAdmin")}</p>
             <p className="text-3xl font-bold text-slate-900">{roleStats.admin}</p>
           </div>
         </div>
 
         <div className="bg-white rounded-xl border border-slate-200 p-5">
-          <h2 className="text-lg font-semibold text-slate-900 mb-3">멘토 신청 승인/반려</h2>
+          <h2 className="text-lg font-semibold text-slate-900 mb-3">{t("mentorReviewTitle")}</h2>
           {mentorPending.length === 0 ? (
-            <p className="text-sm text-slate-500">대기 중인 멘토 신청이 없습니다.</p>
+            <p className="text-sm text-slate-500">{t("noPendingMentors")}</p>
           ) : (
             <div className="space-y-3">
               {mentorPending.map((item) => (
@@ -199,7 +200,7 @@ export default function AdminUsersPage() {
                   className="w-full text-left rounded-xl border border-slate-200 bg-slate-50 p-4 hover:bg-white hover:ring-1 hover:ring-primary-200"
                 >
                   <div className="flex items-start justify-between gap-3">
-                    <p className="font-semibold text-slate-900">{item.title || '멘토 신청'}</p>
+                    <p className="font-semibold text-slate-900">{item.title || t('mentorApplication')}</p>
                     <span className="text-[11px] font-semibold text-primary-600 shrink-0">
                       {tMod('openReview')}
                     </span>
@@ -208,7 +209,7 @@ export default function AdminUsersPage() {
                     {item.user?.name} · {item.user?.email}
                   </p>
                   <p className="text-xs text-slate-500">
-                    {item.location || '-'} · {(item.specialties || []).join(', ') || '분야 미입력'}
+                    {item.location || '-'} · {(item.specialties || []).join(', ') || t('noSpecialty')}
                   </p>
                 </button>
               ))}
@@ -220,18 +221,18 @@ export default function AdminUsersPage() {
           <form onSubmit={handleCreateAdmin} className="bg-white rounded-xl border border-slate-200 p-5 space-y-3">
             <h2 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
               <UserPlus className="w-5 h-5 text-primary-600" />
-              관리자 추가
+              {t("addAdmin")}
             </h2>
             <input
               required
-              placeholder="이메일"
+              placeholder={t("email")}
               value={adminForm.email}
               onChange={(e) => setAdminForm((p) => ({ ...p, email: e.target.value }))}
               className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
             />
             <input
               required
-              placeholder="이름"
+              placeholder={t("name")}
               value={adminForm.name}
               onChange={(e) => setAdminForm((p) => ({ ...p, name: e.target.value }))}
               className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
@@ -240,7 +241,7 @@ export default function AdminUsersPage() {
               required
               minLength={8}
               type="password"
-              placeholder="초기 비밀번호(8자 이상)"
+              placeholder={t("initialPassword")}
               value={adminForm.password}
               onChange={(e) => setAdminForm((p) => ({ ...p, password: e.target.value }))}
               className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
@@ -255,7 +256,7 @@ export default function AdminUsersPage() {
               <option value="mn">mn</option>
             </select>
             <button className="w-full rounded-lg bg-primary-600 text-white py-2 font-semibold hover:bg-primary-700">
-              관리자 생성
+              {t("createAdmin")}
             </button>
           </form>
 
@@ -266,7 +267,7 @@ export default function AdminUsersPage() {
                 <input
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="이름/이메일 검색"
+                  placeholder={t("searchPlaceholder")}
                   className="w-full pl-9 pr-3 py-2 rounded-lg border border-slate-200 text-sm"
                 />
               </div>
@@ -278,17 +279,17 @@ export default function AdminUsersPage() {
                 }}
                 className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
               >
-                <option value="">전체</option>
-                <option value="mentee">학생</option>
-                <option value="mentor">멘토</option>
-                <option value="admin">관리자</option>
+                <option value="">{t("all")}</option>
+                <option value="mentee">{t("roleMentee")}</option>
+                <option value="mentor">{t("roleMentor")}</option>
+                <option value="admin">{t("roleAdmin")}</option>
               </select>
               <button
                 type="button"
                 onClick={() => void loadUsers()}
                 className="rounded-lg bg-slate-900 text-white px-4 py-2 text-sm font-semibold"
               >
-                조회
+                {t("search")}
               </button>
             </div>
 
@@ -301,7 +302,7 @@ export default function AdminUsersPage() {
                   disabled={page === 1}
                   className="px-3 py-1.5 rounded bg-slate-100 disabled:opacity-50"
                 >
-                  이전
+                  {tMod("prev")}
                 </button>
                 <span>{page} / {totalPages}</span>
                 <button
@@ -309,7 +310,7 @@ export default function AdminUsersPage() {
                   disabled={page === totalPages}
                   className="px-3 py-1.5 rounded bg-slate-100 disabled:opacity-50"
                 >
-                  다음
+                  {tMod("next")}
                 </button>
               </div>
             )}

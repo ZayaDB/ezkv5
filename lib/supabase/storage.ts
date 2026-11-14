@@ -1,3 +1,4 @@
+import { trError } from "@/lib/i18n/runtime";
 import { createClient } from "@/lib/supabase/client";
 
 const MAX_BYTES = 3 * 1024 * 1024;
@@ -12,17 +13,17 @@ export async function uploadPublicImage(
   file: File
 ): Promise<{ data: { url: string } } | { error: string }> {
   if (file.size > MAX_BYTES) {
-    return { error: "파일이 너무 큽니다. (최대 3MB)" };
+    return { error: trError("fileTooLarge") };
   }
 
   const lowerName = file.name.toLowerCase();
   if (file.type === "image/svg+xml" || lowerName.endsWith(".svg")) {
-    return { error: "SVG 파일은 허용되지 않습니다." };
+    return { error: trError("svgNotAllowed") };
   }
 
   const ext = EXT_BY_MIME[file.type];
   if (!ext) {
-    return { error: "jpeg, png, webp, gif 이미지만 업로드할 수 있습니다." };
+    return { error: trError("imageTypeNotAllowed") };
   }
 
   const supabase = createClient();
@@ -31,7 +32,7 @@ export async function uploadPublicImage(
   } = await supabase.auth.getSession();
   const userId = session?.user?.id;
   if (!userId) {
-    return { error: "로그인이 필요합니다." };
+    return { error: trError("loginRequired") };
   }
 
   const path = `${userId}/${crypto.randomUUID()}.${ext}`;
@@ -40,12 +41,12 @@ export async function uploadPublicImage(
     contentType: file.type,
   });
   if (error) {
-    return { error: error.message || "업로드에 실패했습니다." };
+    return { error: error.message || trError("uploadFailed") };
   }
 
   const { data } = supabase.storage.from("uploads").getPublicUrl(path);
   if (!data.publicUrl) {
-    return { error: "업로드에 실패했습니다." };
+    return { error: trError("uploadFailed") };
   }
   return { data: { url: data.publicUrl } };
 }

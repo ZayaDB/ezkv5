@@ -209,13 +209,15 @@ export default function MySchedulePage() {
   const inSum = monthBudget.filter((b) => b.kind === "income").reduce((acc, b) => acc + b.amount, 0);
 
   const recurrenceLabel = (type: LifeRecurrence["type"] | undefined) => {
-    if (type === "weekly") return "매주";
-    if (type === "biweekly") return "격주";
-    if (type === "monthly") return "매월";
-    return "반복 없음";
+    if (type === "weekly") return t("recurWeekly");
+    if (type === "biweekly") return t("recurBiweekly");
+    if (type === "monthly") return t("recurMonthly");
+    return t("recurNone");
   };
 
-  const weekdayLabel = (day: number) => ["일", "월", "화", "수", "목", "금", "토"][day] || "-";
+  // 2024-01-07 은 일요일 — day(0=일)를 더해 로케일별 요일 이름을 만든다
+  const weekdayLabel = (day: number) =>
+    day >= 0 && day <= 6 ? fmt.dateTime(new Date(2024, 0, 7 + day), { weekday: "short" }) : "-";
 
   const buildBudgetIsoDate = () => {
     const base = parseSafeDate(`${budgetDate}T09:00:00`) || new Date();
@@ -249,15 +251,15 @@ export default function MySchedulePage() {
     const recType = line.recurrence?.type;
     if (recType === "weekly") {
       const wd = line.recurrence?.dayOfWeek ?? (d ? d.getDay() : null);
-      return `매주 ${wd != null ? weekdayLabel(wd) : "-"}`;
+      return t("recurWeeklyOn", { day: wd != null ? weekdayLabel(wd) : "-" });
     }
     if (recType === "biweekly") {
       const wd = line.recurrence?.dayOfWeek ?? (d ? d.getDay() : null);
-      return `격주 ${wd != null ? weekdayLabel(wd) : "-"}`;
+      return t("recurBiweeklyOn", { day: wd != null ? weekdayLabel(wd) : "-" });
     }
     if (recType === "monthly") {
       const md = line.recurrence?.dayOfMonth ?? (d ? d.getDate() : null);
-      return `매월 ${md ?? "-"}일`;
+      return t("recurMonthlyOn", { day: md ?? "-" });
     }
     if (!d) return "-";
     const ymd = d.toISOString().slice(0, 10);
@@ -414,7 +416,7 @@ export default function MySchedulePage() {
               deleteBtn: t("deleteBtn"),
               sessionWith: (name) => t("sessionWith", { name }),
               budgetLine: (kind, label, amount) =>
-                `${kind === "income" ? "수입" : "지출"} · ${label} (${fmt.number(amount, {
+                `${kind === "income" ? t("budgetKindIncome") : t("budgetKindExpense")} · ${label} (${fmt.number(amount, {
                   style: "currency",
                   currency: "KRW",
                   maximumFractionDigits: 0,
@@ -473,8 +475,8 @@ export default function MySchedulePage() {
                               type="button"
                               onClick={() => startEditBudget(line)}
                               className="rounded p-1.5 text-zinc-600 hover:bg-zinc-100 hover:text-primary-700"
-                              aria-label="수정"
-                              title="수정"
+                              aria-label={t("budgetEditBtn")}
+                              title={t("budgetEditBtn")}
                             >
                               <Pencil className="h-4 w-4" />
                             </button>
@@ -482,8 +484,8 @@ export default function MySchedulePage() {
                               type="button"
                               onClick={() => void removeBudget(line.id)}
                               className="rounded p-1.5 text-zinc-600 hover:bg-zinc-100 hover:text-red-600"
-                              aria-label="삭제"
-                              title="삭제"
+                              aria-label={t("deleteBtn")}
+                              title={t("deleteBtn")}
                             >
                               <Trash2 className="h-4 w-4" />
                             </button>
@@ -521,14 +523,14 @@ export default function MySchedulePage() {
               {budgetRecurrence === "monthly" ? (
                 <select value={budgetMonthday} onChange={(e) => setBudgetMonthday(e.target.value)} className="w-full rounded-lg border border-zinc-200 px-2 py-1.5 text-sm">
                   {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
-                    <option key={day} value={String(day)}>{`매월 ${day}일`}</option>
+                    <option key={day} value={String(day)}>{t("recurMonthlyOn", { day })}</option>
                   ))}
                 </select>
               ) : null}
               {budgetRecurrence === "weekly" || budgetRecurrence === "biweekly" ? (
                 <select value={budgetWeekday} onChange={(e) => setBudgetWeekday(e.target.value)} className="w-full rounded-lg border border-zinc-200 px-2 py-1.5 text-sm">
                   {[0, 1, 2, 3, 4, 5, 6].map((day) => (
-                    <option key={day} value={String(day)}>{`${budgetRecurrence === "weekly" ? "매주" : "격주"} ${weekdayLabel(day)}`}</option>
+                    <option key={day} value={String(day)}>{budgetRecurrence === "weekly" ? t("recurWeeklyOn", { day: weekdayLabel(day) }) : t("recurBiweeklyOn", { day: weekdayLabel(day) })}</option>
                   ))}
                 </select>
               ) : null}
@@ -543,9 +545,9 @@ export default function MySchedulePage() {
                 }}
                 className="w-full rounded-lg border border-zinc-200 px-2 py-1.5 text-sm"
               >
-                <option value="none">반복 없음</option><option value="weekly">매주</option><option value="biweekly">격주</option><option value="monthly">매월</option>
+                <option value="none">{t("recurNone")}</option><option value="weekly">{t("recurWeekly")}</option><option value="biweekly">{t("recurBiweekly")}</option><option value="monthly">{t("recurMonthly")}</option>
               </select>
-              <button type="button" disabled={savingBudget} onClick={() => void addBudget()} className="w-full rounded-lg bg-zinc-900 py-2.5 text-sm font-semibold text-white hover:bg-zinc-800 disabled:opacity-60">{savingBudget ? "…" : editingBudgetId ? "수정 저장" : t("addBudgetBtn")}</button>
+              <button type="button" disabled={savingBudget} onClick={() => void addBudget()} className="w-full rounded-lg bg-zinc-900 py-2.5 text-sm font-semibold text-white hover:bg-zinc-800 disabled:opacity-60">{savingBudget ? "…" : editingBudgetId ? t("saveEdit") : t("addBudgetBtn")}</button>
             </div>
           </div>
         </div>
@@ -570,23 +572,23 @@ export default function MySchedulePage() {
               {lifeOnDay(dayModal).map((ev) => (
                 <div key={ev.id} className="rounded-lg border border-violet-100 bg-violet-50/60 px-3 py-2">
                   <p className="font-medium text-zinc-900">{ev.title}</p>
-                  <p className="text-sm text-zinc-500">{fmt.dateTime(new Date(ev.startsAt), { timeStyle: "short" })} · {ev.category} · {ev.status}</p>
+                  <p className="text-sm text-zinc-500">{fmt.dateTime(new Date(ev.startsAt), { timeStyle: "short" })} · {t.has(`eventCategory.${ev.category}`) ? t(`eventCategory.${ev.category}`) : ev.category} · {t.has(`eventStatus.${ev.status}`) ? t(`eventStatus.${ev.status}`) : ev.status}</p>
                   <div className="mt-1 flex gap-3 text-sm">
-                    <button type="button" className="font-semibold text-primary-700 hover:underline" onClick={() => startEditEvent(ev)}>수정</button>
+                    <button type="button" className="font-semibold text-primary-700 hover:underline" onClick={() => startEditEvent(ev)}>{t("budgetEditBtn")}</button>
                     <button type="button" className="font-semibold text-red-600 hover:underline" onClick={() => void removeEvent(ev.sourceId || ev.id)}>{t("deleteBtn")}</button>
                   </div>
                 </div>
               ))}
               {budgetOnDay(dayModal).map((b) => (
                 <div key={b.id} className="rounded-lg border border-rose-100 bg-rose-50/70 px-3 py-2">
-                  <p className="font-medium text-zinc-900">{b.kind === "income" ? "수입" : "지출"} · {b.label}</p>
+                  <p className="font-medium text-zinc-900">{b.kind === "income" ? t("budgetKindIncome") : t("budgetKindExpense")} · {b.label}</p>
                   <p className="text-sm text-zinc-500">{fmt.number(b.amount, { style: "currency", currency: "KRW", maximumFractionDigits: 0 })} · {recurrenceLabel(b.recurrence?.type)}</p>
                 </div>
               ))}
             </div>
 
             <div className="border-t border-zinc-200 pt-4 space-y-2">
-              <h4 className="text-sm font-bold text-zinc-900">일정 직접 입력</h4>
+              <h4 className="text-sm font-bold text-zinc-900">{t("manualEntry")}</h4>
               <input value={eventTitle} onChange={(e) => setEventTitle(e.target.value)} placeholder={t("eventTitlePh")} className="w-full rounded-lg border border-zinc-200 px-2 py-1.5 text-sm" />
               <div className="grid grid-cols-2 gap-2">
                 <input type="date" value={eventDate} onChange={(e) => setEventDate(e.target.value)} className="rounded-lg border border-zinc-200 px-2 py-1.5 text-sm" />
@@ -594,18 +596,22 @@ export default function MySchedulePage() {
               </div>
               <div className="grid grid-cols-3 gap-2">
                 <select value={eventCategory} onChange={(e) => setEventCategory(e.target.value as LifeEventCategory)} className="rounded-lg border border-zinc-200 px-2 py-1.5 text-sm">
-                  <option value="personal">개인</option><option value="work">회의</option><option value="health">병원</option><option value="parttime">아르바이트</option><option value="other">기타</option>
+                  {(["personal", "work", "health", "parttime", "other"] as const).map((c) => (
+                    <option key={c} value={c}>{t(`eventCategory.${c}`)}</option>
+                  ))}
                 </select>
                 <select value={eventStatus} onChange={(e) => setEventStatus(e.target.value as LifeEventStatus)} className="rounded-lg border border-zinc-200 px-2 py-1.5 text-sm">
-                  <option value="planned">예정</option><option value="completed">완료</option><option value="cancelled">취소</option>
+                  {(["planned", "completed", "cancelled"] as const).map((st) => (
+                    <option key={st} value={st}>{t(`eventStatus.${st}`)}</option>
+                  ))}
                 </select>
                 <select value={eventRecurrence} onChange={(e) => setEventRecurrence(e.target.value as LifeRecurrence["type"])} className="rounded-lg border border-zinc-200 px-2 py-1.5 text-sm">
-                  <option value="none">반복 없음</option><option value="weekly">매주</option><option value="biweekly">격주</option><option value="monthly">매월</option>
+                  <option value="none">{t("recurNone")}</option><option value="weekly">{t("recurWeekly")}</option><option value="biweekly">{t("recurBiweekly")}</option><option value="monthly">{t("recurMonthly")}</option>
                 </select>
               </div>
               <textarea value={eventNotes} onChange={(e) => setEventNotes(e.target.value)} placeholder={t("eventNotesPh")} rows={2} className="w-full rounded-lg border border-zinc-200 px-2 py-1.5 text-sm" />
               <button type="button" disabled={savingEvent} onClick={() => void addOrUpdateEvent()} className="w-full rounded-lg bg-violet-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-violet-800 disabled:opacity-60">
-                {savingEvent ? "…" : editingEventSourceId ? "일정 수정" : t("addEventBtn")}
+                {savingEvent ? "…" : editingEventSourceId ? t("editEvent") : t("addEventBtn")}
               </button>
             </div>
 

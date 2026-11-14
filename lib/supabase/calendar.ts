@@ -1,3 +1,4 @@
+import { trError } from "@/lib/i18n/runtime";
 import { createClient } from "@/lib/supabase/client";
 import type { LifeEvent, LifeEventCategory, LifeEventStatus } from "@/lib/types/life-plan";
 
@@ -6,7 +7,7 @@ async function requireUserId() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) throw new Error("인증이 필요합니다.");
+  if (!user) throw new Error(trError("authRequired"));
   return { supabase, userId: user.id };
 }
 
@@ -60,7 +61,7 @@ export async function addLifeEvent(payload: {
     .select("*")
     .single();
 
-  if (error || !data) throw new Error(error?.message || "일정 추가 실패");
+  if (error || !data) throw new Error(error?.message || trError("eventAddFailed"));
   return { event: mapEvent(data as Record<string, unknown>) };
 }
 
@@ -91,7 +92,7 @@ export async function updateLifeEvent(
     .select("*")
     .single();
 
-  if (error || !data) throw new Error(error?.message || "일정 수정 실패");
+  if (error || !data) throw new Error(error?.message || trError("eventUpdateFailed"));
   return { event: mapEvent(data as Record<string, unknown>) };
 }
 

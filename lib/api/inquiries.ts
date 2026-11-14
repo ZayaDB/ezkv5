@@ -1,3 +1,4 @@
+import { trError } from "@/lib/i18n/runtime";
 export const inquiryApi = {
   list: async () => {
     try {
@@ -5,7 +6,7 @@ export const inquiryApi = {
       const inquiries = await listMyInquiries();
       return { data: { inquiries } };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "문의 목록을 불러오지 못했습니다." };
+      return { error: e instanceof Error ? e.message : trError("inquiriesLoadFailed") };
     }
   },
   create: async (payload: { subject: string; body: string }) => {
@@ -14,7 +15,7 @@ export const inquiryApi = {
       const inquiry = await createInquiry(payload);
       return { data: { inquiry } };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "문의 등록에 실패했습니다." };
+      return { error: e instanceof Error ? e.message : trError("inquiryCreateFailed") };
     }
   },
   update: async (id: string, payload: { subject?: string; body?: string }) => {
@@ -23,7 +24,7 @@ export const inquiryApi = {
       const inquiry = await updateInquiry(id, payload);
       return { data: { inquiry } };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "문의 수정에 실패했습니다." };
+      return { error: e instanceof Error ? e.message : trError("inquiryUpdateFailed") };
     }
   },
   remove: async (id: string) => {
@@ -32,7 +33,7 @@ export const inquiryApi = {
       await deleteInquiry(id);
       return { data: { ok: true } };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "문의 삭제에 실패했습니다." };
+      return { error: e instanceof Error ? e.message : trError("inquiryDeleteFailed") };
     }
   },
 };

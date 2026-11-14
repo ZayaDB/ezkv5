@@ -1,6 +1,7 @@
 "use client";
 
 import { Shield, Users } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function UserDetailModal({
   isOpen,
@@ -19,6 +20,8 @@ export default function UserDetailModal({
   onClose: () => void;
   onResetPassword: () => void;
 }) {
+  const t = useTranslations("admin");
+  const tCommon = useTranslations("common");
   if (!isOpen) return null;
 
   return (
@@ -27,48 +30,48 @@ export default function UserDetailModal({
         <div className="flex items-center justify-between">
           <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
             <Users className="w-5 h-5 text-primary-600" />
-            사용자 상세
+            {t("userDetail")}
           </h3>
           <button onClick={onClose} className="text-slate-500">
-            닫기
+            {tCommon("close")}
           </button>
         </div>
 
         {loading || !detail ? (
-          <p className="text-slate-500 mt-4">불러오는 중...</p>
+          <p className="text-slate-500 mt-4">{tCommon("loadingShort")}</p>
         ) : (
           <div className="mt-4 space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div className="p-3 rounded-lg bg-slate-50">
-                <p className="text-xs text-slate-500">이름</p>
+                <p className="text-xs text-slate-500">{t("name")}</p>
                 <p className="font-semibold text-slate-900">{detail.user.name}</p>
               </div>
               <div className="p-3 rounded-lg bg-slate-50">
-                <p className="text-xs text-slate-500">이메일</p>
+                <p className="text-xs text-slate-500">{t("email")}</p>
                 <p className="font-semibold text-slate-900">{detail.user.email}</p>
               </div>
               <div className="p-3 rounded-lg bg-slate-50">
-                <p className="text-xs text-slate-500">역할</p>
+                <p className="text-xs text-slate-500">{t("colRole")}</p>
                 <p className="font-semibold text-slate-900">{detail.user.role}</p>
               </div>
               <div className="p-3 rounded-lg bg-slate-50">
-                <p className="text-xs text-slate-500">언어</p>
+                <p className="text-xs text-slate-500">{t("language")}</p>
                 <p className="font-semibold text-slate-900">{detail.user.locale}</p>
               </div>
             </div>
 
             {detail.user.role === "mentee" && (
               <div className="p-4 rounded-xl border border-blue-200 bg-blue-50">
-                <p className="font-semibold text-blue-900">학생 정보</p>
+                <p className="font-semibold text-blue-900">{t("studentInfo")}</p>
                 <p className="text-sm text-blue-800 mt-1">
-                  수강 {detail.stats?.enrollmentCount || 0}건 / 세션 {detail.stats?.sessionCount || 0}건
+                  {t("studentStats", { enrollments: detail.stats?.enrollmentCount || 0, sessions: detail.stats?.sessionCount || 0 })}
                 </p>
               </div>
             )}
 
             {detail.user.mentorProfile && (
               <div className="p-4 rounded-xl border border-emerald-200 bg-emerald-50">
-                <p className="font-semibold text-emerald-900">멘토 프로필</p>
+                <p className="font-semibold text-emerald-900">{t("mentorProfile")}</p>
                 <p className="text-sm text-emerald-900 mt-1">{detail.user.mentorProfile.title}</p>
                 <p className="text-sm text-emerald-800">{detail.user.mentorProfile.location}</p>
               </div>
@@ -77,7 +80,7 @@ export default function UserDetailModal({
             <div className="border rounded-xl p-4">
               <h4 className="font-semibold text-slate-900 flex items-center gap-2">
                 <Shield className="w-4 h-4 text-red-600" />
-                비밀번호 초기화
+                {t("resetPasswordTitle")}
               </h4>
               <div className="mt-2 flex gap-2">
                 <input
@@ -85,7 +88,7 @@ export default function UserDetailModal({
                   minLength={8}
                   value={newPassword}
                   onChange={(e) => onChangePassword(e.target.value)}
-                  placeholder="새 비밀번호 (8자 이상)"
+                  placeholder={t("newPassword")}
                   className="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-sm"
                 />
                 <button
@@ -93,7 +96,7 @@ export default function UserDetailModal({
                   onClick={onResetPassword}
                   className="rounded-lg bg-red-600 text-white px-4 py-2 text-sm font-semibold"
                 >
-                  초기화
+                  {t("reset")}
                 </button>
               </div>
             </div>

@@ -1,3 +1,4 @@
+import { trError } from "@/lib/i18n/runtime";
 import { createClient } from "@/lib/supabase/client";
 import { requireUserId } from "@/lib/supabase/requireUser";
 import {
@@ -31,7 +32,7 @@ export async function queryStudyInfos(options?: { category?: import("@/types").S
 export async function joinCommunityGroup(groupId: string) {
   const { supabase, userId } = await requireUserId();
   const { data: group } = await supabase.from("community_groups").select("id").eq("id", groupId).maybeSingle();
-  if (!group) throw new Error("커뮤니티를 찾을 수 없습니다.");
+  if (!group) throw new Error(trError("communityNotFound"));
 
   const { data: existing } = await supabase
     .from("community_memberships")
@@ -65,7 +66,7 @@ export async function createCommunityGroup(payload: {
   const name = payload.name.trim().slice(0, 80);
   const description = payload.description.trim().slice(0, 500);
   const category = payload.category.trim().slice(0, 40) || "모임";
-  if (!name) throw new Error("모임 이름을 입력해 주세요.");
+  if (!name) throw new Error(trError("groupNameRequired"));
 
   const { data, error } = await supabase
     .from("community_groups")
@@ -95,7 +96,7 @@ export async function createCommunityGroup(payload: {
 export async function applyFreelancerGroup(groupId: string) {
   const { supabase, userId } = await requireUserId();
   const { data: group } = await supabase.from("freelancer_groups").select("id").eq("id", groupId).maybeSingle();
-  if (!group) throw new Error("프리랜서 그룹을 찾을 수 없습니다.");
+  if (!group) throw new Error(trError("freelancerGroupNotFound"));
 
   const { data: existing } = await supabase
     .from("freelancer_applications")

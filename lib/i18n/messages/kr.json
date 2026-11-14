@@ -46,7 +46,19 @@
       "unreadCount": "{count}건"
     },
     "lightMode": "라이트 모드",
-    "darkMode": "다크 모드"
+    "darkMode": "다크 모드",
+    "redirecting": "이동 중…",
+    "loadingShort": "불러오는 중...",
+    "back": "뒤로 가기",
+    "edit": "수정",
+    "delete": "삭제",
+    "confirmDelete": "삭제할까요?",
+    "noInfo": "정보 없음",
+    "none": "없음",
+    "prev": "이전",
+    "next": "다음",
+    "scrollTop": "맨 위로 이동",
+    "peopleCount": "{count}명"
   },
   "home": {
     "heroBadge": "유학생 생활 비서",
@@ -149,7 +161,8 @@
     "emptyTitle": "등록된 강의가 없습니다",
     "emptyDescription": "아직 등록된 강의가 없습니다.",
     "emptyAction": "홈으로",
-    "viewDetails": "자세히 보기"
+    "viewDetails": "자세히 보기",
+    "studentsCount": "{count}명"
   },
   "community": {
     "title": "커뮤니티",
@@ -180,7 +193,8 @@
     "chatEmpty": "아직 대화가 없습니다. 먼저 인사해 보세요.",
     "chatPlaceholder": "메시지 입력",
     "chatSend": "보내기",
-    "chatLogin": "로그인하고 모임에 가입하면 대화할 수 있습니다."
+    "chatLogin": "로그인하고 모임에 가입하면 대화할 수 있습니다.",
+    "membersCount": "{count}명"
   },
   "freelancers": {
     "title": "프리랜서 그룹",
@@ -244,7 +258,8 @@
     "lifeTips": "생활 팁",
     "emptyTitle": "유학 가이드 콘텐츠가 없습니다",
     "emptyDescription": "아직 등록된 정보가 없습니다.",
-    "emptyAction": "홈으로"
+    "emptyAction": "홈으로",
+    "openDocument": "이 문서로 바로가기"
   },
   "chatbot": {
     "title": "MentorLink AI 어시스턴트",
@@ -254,7 +269,12 @@
     "placeholder": "질문을 입력하세요...",
     "send": "전송",
     "thinking": "생각 중...",
-    "error": "오류가 발생했습니다. 다시 시도해주세요."
+    "error": "오류가 발생했습니다. 다시 시도해주세요.",
+    "relatedLinks": "관련 링크",
+    "scrollTop": "맨 위로 이동",
+    "ariaOpen": "챗봇 열기",
+    "ariaClose": "챗봇 닫기",
+    "ariaSend": "메시지 보내기"
   },
   "auth": {
     "login": "로그인",
@@ -310,7 +330,8 @@
     "visaTypePlaceholder": "예: D-2",
     "nationalityPlaceholder": "예: 몽골",
     "universityPlaceholder": "예: 서울대학교",
-    "regionPlaceholder": "예: 서울 관악구"
+    "regionPlaceholder": "예: 서울 관악구",
+    "signupCompleteLogin": "회원가입이 완료되었습니다! 로그인해주세요."
   },
   "controlCenter": {
     "badge": "컨트롤 센터",
@@ -576,7 +597,8 @@
       "mentee": "멘티",
       "mentor": "멘토",
       "admin": "관리자"
-    }
+    },
+    "mentorSaveFailed": "멘토 프로필 저장에 실패했습니다."
   },
   "profilePage": {
     "title": "마이페이지",
@@ -731,7 +753,12 @@
       "editSubmit": "수정 완료",
       "editSuccess": "강의가 수정되었습니다.",
       "loadError": "강의를 불러오지 못했습니다."
-    }
+    },
+    "errNameRequired": "이름은 필수입니다.",
+    "errNameLength": "이름은 2~40자로 입력해 주세요.",
+    "errPhoneRequired": "전화번호는 필수입니다.",
+    "errPhoneFormat": "전화번호 형식이 올바르지 않습니다.",
+    "errSaveFailed": "프로필 저장에 실패했습니다."
   },
   "dashboardV2": {
     "loading": "대시보드를 불러오는 중...",
@@ -1022,7 +1049,35 @@
       "budgetTableActions": "관리",
       "budgetEditBtn": "수정",
       "budgetSaveBtn": "저장",
-      "budgetCancelBtn": "취소"
+      "budgetCancelBtn": "취소",
+      "recurNone": "반복 없음",
+      "recurWeekly": "매주",
+      "recurBiweekly": "격주",
+      "recurMonthly": "매월",
+      "recurWeeklyOn": "매주 {day}",
+      "recurBiweeklyOn": "격주 {day}",
+      "recurMonthlyOn": "매월 {day}일",
+      "saveEdit": "수정 저장",
+      "editEvent": "일정 수정",
+      "manualEntry": "일정 직접 입력",
+      "eventCategory": {
+        "class": "수업",
+        "parttime": "아르바이트",
+        "rent": "월세",
+        "insurance": "보험",
+        "visa": "비자",
+        "roadmap": "로드맵",
+        "general": "일반",
+        "personal": "개인",
+        "work": "회의",
+        "health": "병원",
+        "other": "기타"
+      },
+      "eventStatus": {
+        "planned": "예정",
+        "completed": "완료",
+        "cancelled": "취소"
+      }
     },
     "lecturesHub": {
       "title": "강의 관리",
@@ -1034,7 +1089,8 @@
       "newLecture": "강의 만들기",
       "view": "보기",
       "pendingBadge": "승인 대기",
-      "rejectedBadge": "반려됨"
+      "rejectedBadge": "반려됨",
+      "edit": "수정"
     },
     "inquiries": {
       "formTitle": "새 문의",
@@ -1270,5 +1326,147 @@
     ],
     "finalTitle": "한국에서의 시작을 더 명확하게.",
     "finalBody": "코스 미리보기와 생활 가이드로 오늘 첫걸음을 시작해 보세요."
+  },
+  "mentorDetail": {
+    "notFound": "멘토를 찾을 수 없습니다",
+    "backToList": "멘토 목록으로 돌아가기",
+    "bookingRequested": "세션 예약 요청이 접수되었습니다. 대시보드에서 일정을 확인하세요.",
+    "booking": "예약 중...",
+    "bookSession": "세션 예약하기",
+    "about": "소개",
+    "mentoringInfo": "멘토링 정보",
+    "experience": "경력",
+    "years": "{n}년",
+    "sessionLength": "세션 시간",
+    "minutes": "{n}분",
+    "sessionFormat": "세션 형식",
+    "formatOnline": "온라인",
+    "formatOffline": "오프라인",
+    "formatHybrid": "온·오프라인",
+    "timezone": "시간대",
+    "education": "학력/자격",
+    "careerSummary": "경력 요약",
+    "mentoringStyle": "멘토링 스타일",
+    "recommendedFor": "추천 대상",
+    "notRecommendedFor": "비추천 대상",
+    "specialties": "전문 분야",
+    "languages": "언어",
+    "bookingTitle": "세션 예약",
+    "avgResponse": "평균 응답: {time}",
+    "defaultResponse": "영업일 기준 당일~48시간",
+    "inquiryAvailable": "예약 문의 가능",
+    "sendMessage": "메시지 보내기",
+    "stats": "통계",
+    "reviewCount": "리뷰 수",
+    "avgRating": "평균 평점",
+    "adminOnly": "관리자용: {email}"
+  },
+  "lectureDetail": {
+    "defaultCurriculum": [
+      "커리큘럼 소개 및 학습 목표",
+      "핵심 개념과 실습",
+      "사례 기반 학습",
+      "복습 및 Q&A",
+      "과제 및 다음 단계 안내"
+    ],
+    "notFound": "강의를 찾을 수 없습니다",
+    "backToList": "강의 목록으로 돌아가기",
+    "enrolledMsg": "수강 신청이 완료되었습니다.",
+    "studentsEnrolled": "{count}명 수강",
+    "wishlisted": "찜됨",
+    "wishlist": "찜하기",
+    "enrolling": "신청 중...",
+    "enrolled": "수강 신청 완료",
+    "enrollNow": "지금 등록하기",
+    "about": "강의 소개",
+    "learningGuide": "학습 안내",
+    "shortDescription": "짧은 소개",
+    "targetAudience": "대상 학습자",
+    "prerequisites": "사전 요구사항",
+    "whatYouLearn": "배우게 될 내용",
+    "curriculumHighlights": "커리큘럼 하이라이트",
+    "info": "강의 정보",
+    "instructor": "강사",
+    "duration": "기간",
+    "level": "난이도",
+    "lessonsHours": "총 레슨 / 시간",
+    "lessonsHoursValue": "{lessons}개 / {hours}h",
+    "maxStudents": "최대 수강생",
+    "students": "수강생",
+    "rating": "평점"
+  },
+  "admin": {
+    "navDashboard": "운영 대시보드",
+    "navUsers": "사용자 관리",
+    "navModeration": "운영 검수",
+    "navInquiries": "문의 관리",
+    "statsLoading": "통계를 불러오는 중...",
+    "dashboardTitle": "관리자 대시보드",
+    "welcome": "{name}님, 환영합니다",
+    "periodAll": "전체",
+    "periodDay": "오늘",
+    "periodMonth": "이번 달",
+    "periodYear": "올해",
+    "totalUsers": "전체 사용자",
+    "roleMentee": "학생",
+    "roleMenteeLong": "학생 (멘티)",
+    "roleMentor": "멘토",
+    "roleAdmin": "관리자",
+    "sessions": "세션",
+    "roleStats": "역할별 통계",
+    "sessionStatus": "세션 상태",
+    "sessionUpcoming": "예정된 세션",
+    "sessionCompleted": "완료된 세션",
+    "sessionCancelled": "취소된 세션",
+    "monthlySignups": "월별 가입 추이 (최근 12개월)",
+    "newInPeriod": "기간 내 신규:",
+    "pendingMentors": "멘토 대기 신청",
+    "pendingCommunity": "커뮤니티 대기 신청",
+    "pendingFreelancer": "프리랜서 대기 신청",
+    "usersLoadFailed": "사용자 목록 조회 실패",
+    "userDetailFailed": "사용자 상세 조회 실패",
+    "adminCreated": "관리자 계정이 생성되었습니다.",
+    "passwordReset": "비밀번호가 초기화되었습니다.",
+    "mentorApproved": "멘토 승인 처리되었습니다.",
+    "mentorRejected": "멘토 반려 처리되었습니다.",
+    "actionFailed": "처리에 실패했습니다.",
+    "checkingPermission": "권한 확인 중...",
+    "usersTitle": "관리자 사용자 콘솔",
+    "usersSubtitle": "관리자 추가, 비밀번호 초기화, 학생 상세 열람",
+    "mentorReviewTitle": "멘토 신청 승인/반려",
+    "noPendingMentors": "대기 중인 멘토 신청이 없습니다.",
+    "mentorApplication": "멘토 신청",
+    "noSpecialty": "분야 미입력",
+    "addAdmin": "관리자 추가",
+    "email": "이메일",
+    "name": "이름",
+    "initialPassword": "초기 비밀번호(8자 이상)",
+    "createAdmin": "관리자 생성",
+    "searchPlaceholder": "이름/이메일 검색",
+    "all": "전체",
+    "search": "조회",
+    "colUser": "사용자",
+    "colRole": "역할",
+    "colJoined": "가입일",
+    "colDetail": "상세",
+    "view": "보기",
+    "userDetail": "사용자 상세",
+    "language": "언어",
+    "studentInfo": "학생 정보",
+    "studentStats": "수강 {enrollments}건 / 세션 {sessions}건",
+    "mentorProfile": "멘토 프로필",
+    "resetPasswordTitle": "비밀번호 초기화",
+    "newPassword": "새 비밀번호 (8자 이상)",
+    "reset": "초기화",
+    "inquiriesTitle": "회원 문의",
+    "inquiriesSubtitle": "접수된 문의를 확인하고 답변하면 해당 회원에게 알림이 전송됩니다.",
+    "noInquiries": "등록된 문의가 없습니다.",
+    "answered": "답변 완료",
+    "received": "접수",
+    "previousReply": "이전 답변",
+    "adminReply": "관리자 답변",
+    "replyPlaceholder": "답변 내용을 입력하세요. 저장 시 회원에게 알림이 전송됩니다.",
+    "saving": "저장 중…",
+    "submitReply": "답변 등록"
   }
 }

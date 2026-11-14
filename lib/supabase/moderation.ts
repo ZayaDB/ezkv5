@@ -1,3 +1,5 @@
+import { tr, trError } from "@/lib/i18n/runtime";
+import { defaultLocale } from "@/lib/i18n/config";
 import { createUserAlert } from "@/lib/supabase/notifications";
 import { requireAdmin } from "@/lib/supabase/requireUser";
 
@@ -152,7 +154,7 @@ export async function setMentorApproval(id: string, status: "approved" | "reject
     .eq("id", id)
     .single();
 
-  if (fetchErr || !mentor) throw new Error("멘토 신청을 찾을 수 없습니다.");
+  if (fetchErr || !mentor) throw new Error(trError("mentorApplicationNotFound"));
 
   const { error } = await supabase
     .from("mentor_profiles")
@@ -174,8 +176,8 @@ export async function setMentorApproval(id: string, status: "approved" | "reject
     await createUserAlert({
       userId: mentor.user_id,
       kind: "mentor_approved",
-      title: "멘토 신청이 승인되었습니다",
-      message: "이제 멘토 모드와 강의 개설 메뉴를 사용할 수 있습니다.",
+      title: tr("alerts.mentor_approvedTitle", undefined, defaultLocale),
+      message: tr("alerts.mentor_approvedBody", undefined, defaultLocale),
       severity: "info",
       actionUrl: "/my/dashboard",
     });
@@ -195,8 +197,8 @@ export async function setMentorApproval(id: string, status: "approved" | "reject
     await createUserAlert({
       userId: mentor.user_id,
       kind: "mentor_rejected",
-      title: "멘토 신청이 반려되었습니다",
-      message: "나의 정보에서 멘토 지원 페이지로 이동해 내용을 수정 후 다시 신청할 수 있습니다.",
+      title: tr("alerts.mentor_rejectedTitle", undefined, defaultLocale),
+      message: tr("alerts.mentor_rejectedBody", undefined, defaultLocale),
       severity: "warning",
       actionUrl: "/my/profile/apply",
     });
@@ -214,7 +216,7 @@ export async function setLectureApproval(id: string, status: "approved" | "rejec
     .eq("id", id)
     .single();
 
-  if (fetchErr || !lecture) throw new Error("강의를 찾을 수 없습니다.");
+  if (fetchErr || !lecture) throw new Error(trError("lectureNotFound"));
 
   const { error } = await supabase
     .from("lectures")
@@ -230,8 +232,8 @@ export async function setLectureApproval(id: string, status: "approved" | "rejec
     await createUserAlert({
       userId: lecture.instructor_id,
       kind: "lecture_approved",
-      title: "강의가 승인되었습니다",
-      message: `"${lecture.title}" 강의가 공개 목록에 표시됩니다.`,
+      title: tr("alerts.lecture_approvedTitle", undefined, defaultLocale),
+      message: `"${lecture.title}" ${tr("alerts.lecture_approvedBody", undefined, defaultLocale)}`,
       severity: "info",
       actionUrl: `/lectures/${lecture.id}`,
     });
@@ -239,8 +241,8 @@ export async function setLectureApproval(id: string, status: "approved" | "rejec
     await createUserAlert({
       userId: lecture.instructor_id,
       kind: "lecture_rejected",
-      title: "강의 승인이 반려되었습니다",
-      message: `"${lecture.title}" 내용을 수정한 뒤 다시 등록해 주세요.`,
+      title: tr("alerts.lecture_rejectedTitle", undefined, defaultLocale),
+      message: `"${lecture.title}" ${tr("alerts.lecture_rejectedBody", undefined, defaultLocale)}`,
       severity: "warning",
       actionUrl: "/my/lectures",
     });

@@ -1,5 +1,6 @@
+import { trError } from "@/lib/i18n/runtime";
 import { createClient } from "@/lib/supabase/client";
-import { ROADMAP_TEMPLATES } from "@/lib/roadmap/templates";
+import { getRoadmapTemplate, listRoadmapTemplates } from "@/lib/roadmap/templates";
 import { calcProgress, getNextStepTitle } from "@/lib/roadmap/progressUtils";
 
 async function requireUserId() {
@@ -7,7 +8,7 @@ async function requireUserId() {
   const {
     data: { session },
   } = await supabase.auth.getSession();
-  if (!session?.user) throw new Error("인증이 필요합니다.");
+  if (!session?.user) throw new Error(trError("authRequired"));
   return { supabase, userId: session.user.id };
 }
 
@@ -60,7 +61,7 @@ export async function listRoadmaps(status = "active") {
     steps = stepRows || [];
   }
 
-  const templates = Object.values(ROADMAP_TEMPLATES).map((t) => ({
+  const templates = listRoadmapTemplates().map((t) => ({
     key: t.key,
     title: t.title,
     description: t.description,
@@ -101,8 +102,8 @@ async function recalculateProgress(supabase: ReturnType<typeof createClient>, ro
 }
 
 export async function createFromTemplate(templateKey: string) {
-  const template = ROADMAP_TEMPLATES[templateKey];
-  if (!template) throw new Error("알 수 없는 로드맵 템플릿입니다.");
+  const template = getRoadmapTemplate(templateKey);
+  if (!template) throw new Error(trError("unknownRoadmapTemplate"));
 
   const { supabase, userId } = await requireUserId();
 
@@ -120,7 +121,7 @@ export async function createFromTemplate(templateKey: string) {
     .select("*")
     .single();
 
-  if (error || !roadmap) throw new Error(error?.message || "로드맵 생성 실패");
+  if (error || !roadmap) throw new Error(error?.message || trError("roadmapCreateFailed"));
 
   const stepRows = template.steps.map((step, index) => ({
     roadmap_id: roadmap.id,

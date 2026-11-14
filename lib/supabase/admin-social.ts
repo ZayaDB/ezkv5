@@ -1,3 +1,4 @@
+import { trError } from "@/lib/i18n/runtime";
 import { requireAdmin } from "@/lib/supabase/requireUser";
 
 export async function getSocialModerationQueue() {
@@ -64,14 +65,14 @@ export async function updateSocialModerationStatus(payload: {
 
   if (payload.type === "community") {
     if (!["pending", "approved", "rejected"].includes(payload.status)) {
-      throw new Error("community status는 pending/approved/rejected만 허용됩니다.");
+      throw new Error(trError("invalidCommunityStatus"));
     }
     const { data: row, error: fetchErr } = await supabase
       .from("community_memberships")
       .select("id, group_id, status")
       .eq("id", payload.id)
       .maybeSingle();
-    if (fetchErr || !row) throw new Error("요청 대상을 찾을 수 없습니다.");
+    if (fetchErr || !row) throw new Error(trError("targetNotFound"));
 
     const { error } = await supabase
       .from("community_memberships")
@@ -93,14 +94,14 @@ export async function updateSocialModerationStatus(payload: {
 
   if (payload.type === "freelancer") {
     if (!["pending", "accepted", "rejected"].includes(payload.status)) {
-      throw new Error("freelancer status는 pending/accepted/rejected만 허용됩니다.");
+      throw new Error(trError("invalidFreelancerStatus"));
     }
     const { data: row, error: fetchErr } = await supabase
       .from("freelancer_applications")
       .select("id, group_id, status")
       .eq("id", payload.id)
       .maybeSingle();
-    if (fetchErr || !row) throw new Error("요청 대상을 찾을 수 없습니다.");
+    if (fetchErr || !row) throw new Error(trError("targetNotFound"));
 
     const { error } = await supabase
       .from("freelancer_applications")
@@ -120,5 +121,5 @@ export async function updateSocialModerationStatus(payload: {
     return { ok: true };
   }
 
-  throw new Error("type은 community 또는 freelancer 여야 합니다.");
+  throw new Error(trError("invalidModerationType"));
 }

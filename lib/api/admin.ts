@@ -1,3 +1,4 @@
+import { trError } from "@/lib/i18n/runtime";
 /** 어드민 — Supabase 전용 */
 export const adminApi = {
   getStats: async (period: "all" | "day" | "month" | "year" = "all") => {
@@ -6,7 +7,7 @@ export const adminApi = {
       const data = await fetchAdminStats(period);
       return { data };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "통계를 불러오지 못했습니다." };
+      return { error: e instanceof Error ? e.message : trError("statsLoadFailed") };
     }
   },
   getUsers: async (params?: {
@@ -20,7 +21,7 @@ export const adminApi = {
       const data = await fetchAdminUsers(params);
       return { data };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "사용자 목록을 불러오지 못했습니다." };
+      return { error: e instanceof Error ? e.message : trError("usersLoadFailed") };
     }
   },
   getUserDetail: async (userId: string) => {
@@ -29,7 +30,7 @@ export const adminApi = {
       const data = await fetchAdminUserDetail(userId);
       return { data };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "사용자 정보를 불러오지 못했습니다." };
+      return { error: e instanceof Error ? e.message : trError("userLoadFailed") };
     }
   },
   createAdminUser: async (_payload: {
@@ -38,10 +39,10 @@ export const adminApi = {
     password: string;
     locale?: "kr" | "en" | "mn";
   }) => ({
-    error: "Supabase 대시보드에서 사용자를 생성한 뒤 profiles.role을 admin으로 설정해 주세요.",
+    error: trError("adminCreateUnsupported"),
   }),
   resetUserPassword: async (_payload: { userId: string; newPassword: string }) => ({
-    error: "비밀번호 재설정은 Supabase Auth 또는 비밀번호 찾기 기능을 사용해 주세요.",
+    error: trError("passwordResetUnsupported"),
   }),
   getModerationQueue: async () => {
     try {
@@ -49,7 +50,7 @@ export const adminApi = {
       const data = await getSocialModerationQueue();
       return { data };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "검수 목록을 불러오지 못했습니다." };
+      return { error: e instanceof Error ? e.message : trError("moderationLoadFailed") };
     }
   },
   updateModerationStatus: async (payload: {
@@ -58,7 +59,7 @@ export const adminApi = {
     status: string;
   }) => {
     if (payload.type === "mentor") {
-      return { error: "멘토 승인은 Supabase 모더레이션 API를 사용하세요." };
+      return { error: trError("mentorApprovalUseModeration") };
     }
     try {
       const { updateSocialModerationStatus } = await import("@/lib/supabase/admin-social");
@@ -69,7 +70,7 @@ export const adminApi = {
       });
       return { data: { ok: true } };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "상태 변경에 실패했습니다." };
+      return { error: e instanceof Error ? e.message : trError("statusChangeFailed") };
     }
   },
   getChannelPosts: async (limit?: number) => {
@@ -78,7 +79,7 @@ export const adminApi = {
       const posts = await listChannelPostsForAdmin(limit ?? 80);
       return { data: { posts } };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "채널 글 목록을 불러오지 못했습니다." };
+      return { error: e instanceof Error ? e.message : trError("channelPostsLoadFailed") };
     }
   },
   deleteChannelPost: async (postId: string, reason: string) => {
@@ -88,7 +89,7 @@ export const adminApi = {
       if ("error" in res && res.error) return { error: res.error };
       return { data: res };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "삭제에 실패했습니다." };
+      return { error: e instanceof Error ? e.message : trError("deleteFailed") };
     }
   },
   listInquiries: async () => {
@@ -97,7 +98,7 @@ export const adminApi = {
       const inquiries = await listInquiriesAdmin();
       return { data: { inquiries } };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "문의 목록을 불러오지 못했습니다." };
+      return { error: e instanceof Error ? e.message : trError("inquiriesLoadFailed") };
     }
   },
   replyInquiry: async (id: string, adminReply: string) => {
@@ -106,7 +107,7 @@ export const adminApi = {
       const inquiry = await replyInquiryAdmin(id, adminReply);
       return { data: { inquiry } };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "답변 등록에 실패했습니다." };
+      return { error: e instanceof Error ? e.message : trError("replyFailed") };
     }
   },
 };

@@ -1,5 +1,9 @@
 "use client";
 
+import { useLocale, useTranslations } from "next-intl";
+import { intlLocale } from "@/lib/i18n/config";
+import { tr } from "@/lib/i18n/runtime";
+
 export default function ScheduleLearningPanel({
   view,
   labels,
@@ -42,13 +46,20 @@ export default function ScheduleLearningPanel({
   onOpenDay: (day: Date) => void;
   onRemoveEvent: (id: string) => void;
 }) {
+  const t = useTranslations("myPages.schedule");
+  const loc = intlLocale(useLocale());
+  const timeFmt = (d: string | Date) => new Date(d).toLocaleTimeString(loc, { hour: "2-digit", minute: "2-digit" });
+  // 2024-01-01 은 월요일 — 월요일 시작 요일 헤더
+  const weekdayHeaders = Array.from({ length: 7 }, (_, i) =>
+    new Date(2024, 0, 1 + i).toLocaleDateString(loc, { weekday: "short" })
+  );
   return (
     <div className="lg:col-span-2 space-y-2">
       {labels.title ? <h3 className="text-sm font-semibold text-zinc-800">{labels.title}</h3> : null}
       {view === "month" && (
         <div>
           <div className="grid grid-cols-7 gap-1 text-center text-xs font-semibold uppercase text-zinc-500 mb-2">
-            {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d) => (
+            {weekdayHeaders.map((d) => (
               <div key={d}>{d}</div>
             ))}
           </div>
@@ -62,22 +73,22 @@ export default function ScheduleLearningPanel({
               const bars = [
                 ...ll.map((ev: any) => ({
                   id: `life-${ev.id}`,
-                  text: `${new Date(ev.startsAt).toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" })} ${ev.title}`,
+                  text: `${timeFmt(ev.startsAt)} ${ev.title}`,
                   cls: "bg-violet-600 text-white",
                 })),
                 ...ss.map((s: any) => ({
                   id: `session-${s.id}`,
-                  text: `${s.date ? new Date(s.date).toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" }) : ""} ${s.mentorName || s.menteeName || "세션"}`.trim(),
+                  text: `${s.date ? timeFmt(s.date) : ""} ${s.mentorName || s.menteeName || tr("names.session")}`.trim(),
                   cls: "bg-blue-600 text-white",
                 })),
                 ...ee.map((e: any) => ({
                   id: `enroll-${e.id}`,
-                  text: e.lecture?.title || "강의 일정",
+                  text: e.lecture?.title || tr("names.lectureEvent"),
                   cls: "bg-emerald-600 text-white",
                 })),
                 ...bb.map((b: any) => ({
                   id: `budget-${b.id}`,
-                  text: `${b.kind === "income" ? "수입" : "지출"} · ${b.label}`,
+                  text: `${b.kind === "income" ? t("budgetKindIncome") : t("budgetKindExpense")} · ${b.label}`,
                   cls: b.kind === "income" ? "bg-cyan-600 text-white" : "bg-rose-600 text-white",
                 })),
               ];
@@ -210,7 +221,7 @@ export default function ScheduleLearningPanel({
               <ul className="space-y-2">
                 {sessionsOnDay(anchor).map((s) => (
                   <li key={s.id} className="rounded-xl border border-zinc-100 bg-zinc-50 px-3 py-2 text-sm">
-                    {s.date ? new Date(s.date).toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" }) : "—"} ·{" "}
+                    {s.date ? timeFmt(s.date) : "—"} ·{" "}
                     {labels.sessionWith(s.mentorName || s.menteeName || "—")}
                   </li>
                 ))}

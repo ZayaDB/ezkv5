@@ -1,3 +1,5 @@
+import { tr, trError } from "@/lib/i18n/runtime";
+import { defaultLocale } from "@/lib/i18n/config";
 import { createClient } from "@/lib/supabase/client";
 import { fetchPublicProfiles } from "@/lib/supabase/publicProfiles";
 import { requireAdmin, requireUserId } from "@/lib/supabase/requireUser";
@@ -15,7 +17,7 @@ async function assertCanPostToChannel(userId: string, channelType: ChannelKind, 
       .eq("group_id", channelId)
       .eq("status", "approved")
       .maybeSingle();
-    if (!data) return { ok: false as const, message: "커뮤니티에 가입한 뒤 글을 작성할 수 있습니다." };
+    if (!data) return { ok: false as const, message: trError("joinCommunityToPost") };
     return { ok: true as const };
   }
   const { data } = await supabase
@@ -25,7 +27,7 @@ async function assertCanPostToChannel(userId: string, channelType: ChannelKind, 
     .eq("group_id", channelId)
     .eq("status", "accepted")
     .maybeSingle();
-  if (!data) return { ok: false as const, message: "프리랜서 그룹에 참여한 뒤 글을 작성할 수 있습니다." };
+  if (!data) return { ok: false as const, message: trError("joinFreelancerToPost") };
   return { ok: true as const };
 }
 
@@ -123,10 +125,10 @@ export async function addChannelComment(
     .eq("channel_type", channelType)
     .eq("channel_id", channelId)
     .maybeSingle();
-  if (!post) return { error: "글을 찾을 수 없습니다." };
+  if (!post) return { error: trError("postNotFound") };
 
   const gate = await assertCanPostToChannel(userId, channelType, channelId);
-  if (!gate.ok) return { error: gate.message || "댓글을 작성할 수 없습니다." };
+  if (!gate.ok) return { error: gate.message || trError("cannotComment") };
 
   const { error } = await supabase.from("channel_comments").insert({
     post_id: postId,
@@ -186,14 +188,14 @@ export async function listChannelPostsForAdmin(limit = 80) {
 export async function adminDeleteChannelPost(postId: string, reason: string) {
   const { supabase } = await requireAdmin();
   const reasonTrim = reason.trim();
-  if (!reasonTrim) return { error: "삭제 사유를 입력해 주세요." };
+  if (!reasonTrim) return { error: trError("deleteReasonRequired") };
 
   const { data: post } = await supabase
     .from("channel_posts")
     .select("id, title, author_id, channel_type, channel_id")
     .eq("id", postId)
     .maybeSingle();
-  if (!post) return { error: "글을 찾을 수 없습니다." };
+  if (!post) return { error: trError("postNotFound") };
 
   await supabase.from("channel_comments").delete().eq("post_id", postId);
   const { error } = await supabase.from("channel_posts").delete().eq("id", postId);
@@ -202,7 +204,7 @@ export async function adminDeleteChannelPost(postId: string, reason: string) {
   await createUserAlert({
     userId: post.author_id,
     kind: "channel_post_removed",
-    title: "게시글이 관리자에 의해 삭제되었습니다",
+    title: tr("alerts.channel_post_removedTitle", undefined, defaultLocale),
     message: reasonTrim,
     severity: "warning",
     actionUrl:

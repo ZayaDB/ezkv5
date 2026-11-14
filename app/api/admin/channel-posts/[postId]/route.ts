@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
+import { localeFromRequest, trError } from "@/lib/i18n/runtime";
 import { requireApiAdmin } from "@/lib/middleware/supabaseApiAuth";
 import { adminDeleteChannelPost } from "@/lib/supabase/channel-feed";
 
 type RouteContext = { params: Promise<{ postId: string }> };
 
 export async function DELETE(request: NextRequest, context: RouteContext) {
+  const locale = localeFromRequest(request);
   try {
     const auth = await requireApiAdmin();
     if (!auth) {
-      return NextResponse.json({ error: "관리자 권한이 필요합니다." }, { status: 403 });
+      return NextResponse.json({ error: trError("adminRequired", locale) }, { status: 403 });
     }
     const { postId } = await context.params;
     let reason = "";
@@ -26,7 +28,7 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
   } catch (e: unknown) {
     console.error(e);
     return NextResponse.json(
-      { error: e instanceof Error ? e.message : "삭제에 실패했습니다." },
+      { error: e instanceof Error ? e.message : trError("deleteFailed", locale) },
       { status: 500 }
     );
   }

@@ -1,3 +1,4 @@
+import { trError, tr } from "@/lib/i18n/runtime";
 import { fetchPublicProfiles } from "@/lib/supabase/publicProfiles";
 import { requireUserId } from "@/lib/supabase/requireUser";
 
@@ -38,7 +39,7 @@ export async function listMySessions() {
   return rows.map((row: Record<string, unknown>) => {
     const mp = row.mentor_profiles as { id?: string; user_id?: string } | null;
     const mentorUserId = mp?.user_id ? String(mp.user_id) : "";
-    const mentorName = (mentorUserId && profileMap.get(mentorUserId)?.name) || "멘토";
+    const mentorName = (mentorUserId && profileMap.get(mentorUserId)?.name) || tr("names.mentor");
     return {
       id: String(row.id),
       date: row.scheduled_at,
@@ -48,7 +49,7 @@ export async function listMySessions() {
       mentorId: mp?.id ? String(mp.id) : null,
       mentorName,
       menteeId: row.mentee_id ? String(row.mentee_id) : null,
-      menteeName: "멘티",
+      menteeName: tr("names.mentee"),
     };
   });
 }
@@ -70,12 +71,12 @@ export async function bookMentorSession(payload: {
 
   if (mErr) throw new Error(mErr.message);
   if (!mentor || mentor.approval_status !== "approved") {
-    throw new Error("멘토 정보를 찾을 수 없습니다.");
+    throw new Error(trError("mentorNotFound"));
   }
-  if (mentor.user_id === userId) throw new Error("본인 멘토 프로필에는 예약할 수 없습니다.");
+  if (mentor.user_id === userId) throw new Error(trError("cannotBookSelf"));
 
   const bookingDate = new Date(payload.date);
-  if (Number.isNaN(bookingDate.getTime())) throw new Error("유효하지 않은 날짜입니다.");
+  if (Number.isNaN(bookingDate.getTime())) throw new Error(trError("invalidDate"));
 
   const { data: created, error } = await supabase
     .from("mentor_sessions")
@@ -94,7 +95,7 @@ export async function bookMentorSession(payload: {
   if (error) throw new Error(error.message);
 
   const profileMap = await fetchPublicProfiles(supabase, [String(mentor.user_id)]);
-  const mentorName = profileMap.get(String(mentor.user_id))?.name || "멘토";
+  const mentorName = profileMap.get(String(mentor.user_id))?.name || tr("names.mentor");
 
   return {
     id: String(created.id),
@@ -119,7 +120,7 @@ export async function updateSessionStatus(
     .eq("id", sessionId)
     .maybeSingle();
 
-  if (!session) throw new Error("세션을 찾을 수 없습니다.");
+  if (!session) throw new Error(trError("sessionNotFound"));
 
   const { data: mp } = await supabase
     .from("mentor_profiles")
@@ -128,7 +129,7 @@ export async function updateSessionStatus(
     .maybeSingle();
 
   const isParticipant = session.mentee_id === userId || mp?.user_id === userId;
-  if (!isParticipant) throw new Error("권한이 없습니다.");
+  if (!isParticipant) throw new Error(trError("noPermission"));
 
   const { data, error } = await supabase
     .from("mentor_sessions")

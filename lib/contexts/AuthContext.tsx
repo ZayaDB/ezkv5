@@ -1,4 +1,5 @@
 'use client';
+import { trError } from "@/lib/i18n/runtime";
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { createClient } from '@/lib/supabase/client';
@@ -130,7 +131,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       return { success: true, user: result.user };
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : '로그인 중 오류가 발생했습니다.';
+      const message = error instanceof Error ? error.message : trError("loginError");
       return { success: false, error: message };
     }
   };
@@ -159,7 +160,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       return { success: true };
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : '회원가입 중 오류가 발생했습니다.';
+      const message = error instanceof Error ? error.message : trError("signupError");
       return { success: false, error: message };
     }
   };
@@ -192,7 +193,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       return { success: true };
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : '프로필 저장 중 오류가 발생했습니다.';
+      const message = error instanceof Error ? error.message : trError("profileSaveError");
       return { success: false, error: message };
     }
   };

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import {
   Users,
   GraduationCap,
@@ -11,12 +12,14 @@ import {
   TrendingUp,
 } from "lucide-react";
 import type { AdminStats, StatsPeriod } from "./types";
+import { intlLocale } from "@/lib/i18n/config";
 
-const periodLabels: Record<StatsPeriod, string> = {
-  all: "전체",
-  day: "오늘",
-  month: "이번 달",
-  year: "올해",
+const PERIODS: StatsPeriod[] = ["all", "day", "month", "year"];
+const periodKey: Record<StatsPeriod, string> = {
+  all: "periodAll",
+  day: "periodDay",
+  month: "periodMonth",
+  year: "periodYear",
 };
 
 type Props = {
@@ -28,13 +31,14 @@ type Props = {
 
 export default function AdminStatsPanels({ locale, stats, period, onPeriodChange }: Props) {
   const router = useRouter();
+  const t = useTranslations("admin");
   const maxSignup = Math.max(...stats.monthlySignups.map((m) => m.count), 1);
 
   return (
     <>
       <div className="mb-8 bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
         <div className="flex flex-wrap gap-3">
-          {(Object.keys(periodLabels) as StatsPeriod[]).map((key) => (
+          {PERIODS.map((key) => (
             <button
               key={key}
               type="button"
@@ -45,7 +49,7 @@ export default function AdminStatsPanels({ locale, stats, period, onPeriodChange
                   : "bg-white border-2 border-gray-200 text-gray-700 hover:border-primary-300"
               }`}
             >
-              {periodLabels[key]}
+              {t(periodKey[key])}
             </button>
           ))}
         </div>
@@ -56,7 +60,7 @@ export default function AdminStatsPanels({ locale, stats, period, onPeriodChange
           icon={<Users className="w-6 h-6 text-primary-600" />}
           iconBg="bg-primary-100"
           value={stats.totals.users}
-          label="전체 사용자"
+          label={t("totalUsers")}
           delta={stats.periodStats.newUsers}
           deltaClass="text-primary-600"
         />
@@ -64,7 +68,7 @@ export default function AdminStatsPanels({ locale, stats, period, onPeriodChange
           icon={<GraduationCap className="w-6 h-6 text-accent-600" />}
           iconBg="bg-accent-100"
           value={stats.totals.mentors}
-          label="멘토"
+          label={t("roleMentor")}
           delta={stats.periodStats.newMentors}
           deltaClass="text-accent-600"
         />
@@ -72,7 +76,7 @@ export default function AdminStatsPanels({ locale, stats, period, onPeriodChange
           icon={<UserPlus className="w-6 h-6 text-green-600" />}
           iconBg="bg-green-100"
           value={stats.totals.mentees}
-          label="학생 (멘티)"
+          label={t("roleMenteeLong")}
           delta={stats.periodStats.newMentees}
           deltaClass="text-green-600"
         />
@@ -80,7 +84,7 @@ export default function AdminStatsPanels({ locale, stats, period, onPeriodChange
           icon={<Calendar className="w-6 h-6 text-purple-600" />}
           iconBg="bg-purple-100"
           value={stats.totals.sessions}
-          label="세션"
+          label={t("sessions")}
           delta={stats.periodStats.newSessions}
           deltaClass="text-purple-600"
         />
@@ -90,7 +94,7 @@ export default function AdminStatsPanels({ locale, stats, period, onPeriodChange
         <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
           <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
             <BarChart3 className="w-6 h-6 text-primary-500" />
-            역할별 통계
+            {t("roleStats")}
           </h2>
           <div className="space-y-4">
             <button
@@ -98,15 +102,15 @@ export default function AdminStatsPanels({ locale, stats, period, onPeriodChange
               onClick={() => router.push(`/${locale}/admin/users?role=mentee`)}
               className="w-full flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors text-left"
             >
-              <RoleRow icon={<Users className="w-5 h-5 text-primary-600" />} bg="bg-primary-100" label="학생 (멘티)" />
+              <RoleRow icon={<Users className="w-5 h-5 text-primary-600" />} bg="bg-primary-100" label={t("roleMenteeLong")} />
               <span className="text-2xl font-bold text-primary-600">{stats.roleStats.mentee}</span>
             </button>
             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-              <RoleRow icon={<GraduationCap className="w-5 h-5 text-accent-600" />} bg="bg-accent-100" label="멘토" />
+              <RoleRow icon={<GraduationCap className="w-5 h-5 text-accent-600" />} bg="bg-accent-100" label={t("roleMentor")} />
               <span className="text-2xl font-bold text-accent-600">{stats.roleStats.mentor}</span>
             </div>
             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-              <RoleRow icon={<Users className="w-5 h-5 text-purple-600" />} bg="bg-purple-100" label="관리자" />
+              <RoleRow icon={<Users className="w-5 h-5 text-purple-600" />} bg="bg-purple-100" label={t("roleAdmin")} />
               <span className="text-2xl font-bold text-purple-600">{stats.roleStats.admin}</span>
             </div>
           </div>
@@ -115,11 +119,11 @@ export default function AdminStatsPanels({ locale, stats, period, onPeriodChange
         <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
           <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
             <BookOpen className="w-6 h-6 text-primary-500" />
-            세션 상태
+            {t("sessionStatus")}
           </h2>
-          <SessionRow label="예정된 세션" value={stats.sessionStatus.upcoming} color="text-blue-600" />
-          <SessionRow label="완료된 세션" value={stats.sessionStatus.completed} color="text-green-600" />
-          <SessionRow label="취소된 세션" value={stats.sessionStatus.cancelled} color="text-red-600" />
+          <SessionRow label={t("sessionUpcoming")} value={stats.sessionStatus.upcoming} color="text-blue-600" />
+          <SessionRow label={t("sessionCompleted")} value={stats.sessionStatus.completed} color="text-green-600" />
+          <SessionRow label={t("sessionCancelled")} value={stats.sessionStatus.cancelled} color="text-red-600" />
         </div>
       </div>
 
@@ -127,13 +131,13 @@ export default function AdminStatsPanels({ locale, stats, period, onPeriodChange
         <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
           <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
             <TrendingUp className="w-6 h-6 text-primary-500" />
-            월별 가입 추이 (최근 12개월)
+            {t("monthlySignups")}
           </h2>
           <div className="space-y-3">
             {stats.monthlySignups.map((item, index) => (
               <div key={`${item.year}-${item.month}-${index}`} className="flex items-center gap-4">
                 <div className="w-24 text-sm text-gray-600">
-                  {item.year}년 {item.month}월
+                  {new Date(item.year, item.month - 1, 1).toLocaleDateString(intlLocale(locale), { year: "numeric", month: "short" })}
                 </div>
                 <div className="flex-1 bg-gray-100 rounded-full h-8 relative overflow-hidden">
                   <div
@@ -167,6 +171,7 @@ function StatCard({
   delta: number;
   deltaClass: string;
 }) {
+  const t = useTranslations("admin");
   return (
     <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
       <div className="flex items-center justify-between mb-4">
@@ -175,7 +180,7 @@ function StatCard({
       </div>
       <p className="text-gray-600 font-medium">{label}</p>
       <p className="text-sm text-gray-500 mt-1">
-        기간 내 신규: <span className={`font-semibold ${deltaClass}`}>{delta}</span>
+        {t("newInPeriod")} <span className={`font-semibold ${deltaClass}`}>{delta}</span>
       </p>
     </div>
   );

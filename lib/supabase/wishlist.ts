@@ -1,3 +1,4 @@
+import { trError } from "@/lib/i18n/runtime";
 import { requireUserId } from "@/lib/supabase/requireUser";
 import { mapLectureRow } from "@/lib/supabase/lectures";
 
@@ -33,9 +34,9 @@ export async function addToWishlist(lectureId: string) {
     .select("id, instructor_id")
     .eq("id", lectureId)
     .maybeSingle();
-  if (!lecture) throw new Error("강의를 찾을 수 없습니다.");
+  if (!lecture) throw new Error(trError("lectureNotFound"));
   if (lecture.instructor_id === userId) {
-    throw new Error("본인이 개설한 강의는 찜할 수 없습니다.");
+    throw new Error(trError("cannotWishlistOwnLecture"));
   }
 
   const { error } = await supabase.from("lecture_wishlist").upsert(

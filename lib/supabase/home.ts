@@ -1,13 +1,18 @@
+import { tr, trError } from "@/lib/i18n/runtime";
 import { createClient } from "@/lib/supabase/client";
 import { buildVisaAlertsFromProfile, listAlerts, type UserAlert } from "@/lib/supabase/alerts";
 import { getNextStepTitle } from "@/lib/roadmap/progressUtils";
 import type { User } from "@/lib/contexts/AuthContext";
 
-const RECOMMENDED_ACTIONS = [
-  { id: "arc", title: "외국인등록증 갱신 확인", actionUrl: "/assistant" },
-  { id: "visa", title: "비자 연장 준비", actionUrl: "/assistant" },
-  { id: "insurance", title: "건강보험 확인", actionUrl: "/calendar" },
-];
+const RECOMMENDED_ACTION_DEFS = [
+  { id: "arc", actionUrl: "/assistant" },
+  { id: "visa", actionUrl: "/assistant" },
+  { id: "insurance", actionUrl: "/calendar" },
+] as const;
+
+function buildRecommendedActions() {
+  return RECOMMENDED_ACTION_DEFS.map((a) => ({ ...a, title: tr(`recommended.${a.id}`) }));
+}
 
 function daysUntil(date: Date): number | null {
   const now = new Date();
@@ -37,7 +42,7 @@ export async function getControlCenter(profileUser: User) {
     data: { session },
   } = await supabase.auth.getSession();
   if (!session?.user || session.user.id !== profileUser.id) {
-    throw new Error("인증이 필요합니다.");
+    throw new Error(trError("authRequired"));
   }
 
   const userId = profileUser.id;
@@ -137,7 +142,7 @@ export async function getControlCenter(profileUser: User) {
     category: e.category,
   }));
 
-  const recommendedActions = RECOMMENDED_ACTIONS.filter((a) => {
+  const recommendedActions = buildRecommendedActions().filter((a) => {
     if (a.id === "visa" && visaDday !== null && visaDday <= 60) return true;
     if (a.id === "insurance" && profileFields.country_status === "residing_korea") return true;
     if (a.id === "arc" && profileFields.country_status === "residing_korea") return true;
@@ -145,7 +150,7 @@ export async function getControlCenter(profileUser: User) {
   });
 
   if (recommendedActions.length === 0) {
-    recommendedActions.push(RECOMMENDED_ACTIONS[0]);
+    recommendedActions.push(buildRecommendedActions()[0]);
   }
 
   return {

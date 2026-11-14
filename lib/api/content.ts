@@ -1,3 +1,4 @@
+import { trError } from "@/lib/i18n/runtime";
 import { lecturesApi } from "./lectures";
 
 export const contentApi = {
@@ -6,20 +7,20 @@ export const contentApi = {
     try {
       const { queryCommunityById } = await import("@/lib/supabase/catalog");
       const data = await queryCommunityById(id);
-      if (!data) return { error: "커뮤니티를 찾을 수 없습니다." };
+      if (!data) return { error: trError("communityNotFound") };
       return { data };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "불러오지 못했습니다." };
+      return { error: e instanceof Error ? e.message : trError("loadFailed") };
     }
   },
   getFreelancer: async (id: string) => {
     try {
       const { queryFreelancerById } = await import("@/lib/supabase/catalog");
       const data = await queryFreelancerById(id);
-      if (!data) return { error: "프리랜서 그룹을 찾을 수 없습니다." };
+      if (!data) return { error: trError("freelancerGroupNotFound") };
       return { data };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "불러오지 못했습니다." };
+      return { error: e instanceof Error ? e.message : trError("loadFailed") };
     }
   },
   joinCommunity: async (id: string) => {
@@ -28,7 +29,7 @@ export const contentApi = {
       await joinCommunityGroup(id);
       return { data: { ok: true } };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "가입 신청에 실패했습니다." };
+      return { error: e instanceof Error ? e.message : trError("joinFailed") };
     }
   },
   createCommunityGroup: async (payload: { name: string; description: string; category: string }) => {
@@ -37,7 +38,7 @@ export const contentApi = {
       const data = await createCommunityGroup(payload);
       return { data };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "모임을 만들지 못했습니다." };
+      return { error: e instanceof Error ? e.message : trError("groupCreateFailed") };
     }
   },
   applyFreelancer: async (id: string) => {
@@ -46,7 +47,7 @@ export const contentApi = {
       await applyFreelancerGroup(id);
       return { data: { ok: true } };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "신청에 실패했습니다." };
+      return { error: e instanceof Error ? e.message : trError("applyFailed") };
     }
   },
 };

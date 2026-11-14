@@ -141,19 +141,19 @@ function ProfilePageContent() {
   const handleSave = async () => {
     const nextErr = "";
     if (!formData.name.trim()) {
-      setSaveError("이름은 필수입니다.");
+      setSaveError(tp("errNameRequired"));
       return;
     }
     if (formData.name.trim().length < 2 || formData.name.trim().length > 40) {
-      setSaveError("이름은 2~40자로 입력해 주세요.");
+      setSaveError(tp("errNameLength"));
       return;
     }
     if (!formData.phone.trim()) {
-      setSaveError("전화번호는 필수입니다.");
+      setSaveError(tp("errPhoneRequired"));
       return;
     }
     if (!/^[0-9+\-\s()]{8,20}$/.test(formData.phone.trim())) {
-      setSaveError("전화번호 형식이 올바르지 않습니다.");
+      setSaveError(tp("errPhoneFormat"));
       return;
     }
     if (newPassword && newPassword !== confirmNewPassword) {
@@ -174,7 +174,7 @@ function ProfilePageContent() {
       newPassword: newPassword || undefined,
     });
     if (!res.success) {
-      setSaveError(res.error || "프로필 저장에 실패했습니다.");
+      setSaveError(res.error || tp("errSaveFailed"));
       setSaving(false);
       return;
     }

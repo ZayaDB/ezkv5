@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
+import { intlLocale } from '@/lib/i18n/config';
 import { contentApi, enrollmentApi, lectureWishlistApi } from '@/lib/api/client';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import Link from 'next/link';
@@ -10,25 +11,21 @@ import { Star, Users, Clock, PlayCircle, ArrowLeft, CheckCircle, Heart } from 'l
 import type { Lecture } from '@/types';
 import Button from '@/components/ui/Button';
 
-function syllabusFromDescription(description: string): string[] {
+function syllabusFromDescription(description: string, fallback: string[]): string[] {
   const lines = description
     .split(/\n|•|-\s+/)
     .map((s) => s.trim())
     .filter(Boolean);
   if (lines.length >= 2) return lines.slice(0, 8);
-  return [
-    '커리큘럼 소개 및 학습 목표',
-    '핵심 개념과 실습',
-    '사례 기반 학습',
-    '복습 및 Q&A',
-    '과제 및 다음 단계 안내',
-  ];
+  return fallback;
 }
 
 export default function LectureDetailPage() {
   const params = useParams();
   const locale = useLocale();
   const tLec = useTranslations('lectures');
+  const t = useTranslations('lectureDetail');
+  const tCommon = useTranslations('common');
   const router = useRouter();
   const { isAuthenticated, user } = useAuth();
   const id = params.id as string;
@@ -96,16 +93,16 @@ export default function LectureDetailPage() {
     return (
       <div className="min-h-screen flex items-center justify-center px-4">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">강의를 찾을 수 없습니다</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">{t("notFound")}</h1>
           <Link href={`/${locale}/lectures`} className="text-primary-600 font-semibold hover:underline">
-            강의 목록으로 돌아가기
+            {t("backToList")}
           </Link>
         </div>
       </div>
     );
   }
 
-  const syllabus = syllabusFromDescription(lecture.description);
+  const syllabus = syllabusFromDescription(lecture.description, t.raw("defaultCurriculum") as string[]);
 
   const enroll = async () => {
     if (isOwner) return;
@@ -123,7 +120,7 @@ export default function LectureDetailPage() {
       return;
     }
     setIsEnrolled(true);
-    setEnrollMessage('수강 신청이 완료되었습니다.');
+    setEnrollMessage(t('enrolledMsg'));
   };
 
   const toggleWishlist = async () => {
@@ -156,7 +153,7 @@ export default function LectureDetailPage() {
             className="inline-flex items-center text-white/90 hover:text-white mb-6 transition-colors"
           >
             <ArrowLeft className="w-5 h-5 mr-2" />
-            뒤로 가기
+            {tCommon("back")}
           </Link>
 
           <div className="flex flex-col md:flex-row items-start gap-8">
@@ -184,7 +181,7 @@ export default function LectureDetailPage() {
                       : 'bg-green-500/30 backdrop-blur-sm'
                   }`}
                 >
-                  {lecture.type === 'online' ? '온라인' : '오프라인'}
+                  {lecture.type === 'online' ? tLec('online') : tLec('offline')}
                 </span>
                 <span className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-xl font-semibold">
                   {lecture.category}
@@ -200,7 +197,7 @@ export default function LectureDetailPage() {
                 </div>
                 <div className="flex items-center gap-2">
                   <Users className="w-5 h-5" />
-                  <span>{lecture.students.toLocaleString()}명 수강</span>
+                  <span>{t("studentsEnrolled", { count: lecture.students.toLocaleString(intlLocale(locale)) })}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Clock className="w-5 h-5" />
@@ -228,7 +225,7 @@ export default function LectureDetailPage() {
                       variant="ghost"
                     >
                       <Heart className={`w-4 h-4 inline mr-2 ${isWishlisted ? 'fill-red-500' : ''}`} />
-                      {isWishlisted ? '찜됨' : '찜하기'}
+                      {isWishlisted ? t('wishlisted') : t('wishlist')}
                     </Button>
                     <Button
                       type="button"
@@ -237,7 +234,7 @@ export default function LectureDetailPage() {
                       variant="secondary"
                       size="lg"
                     >
-                      {isSubmitting ? '신청 중...' : isEnrolled ? '수강 신청 완료' : '지금 등록하기'}
+                      {isSubmitting ? t('enrolling') : isEnrolled ? t('enrolled') : t('enrollNow')}
                     </Button>
                   </>
                 )}
@@ -254,18 +251,18 @@ export default function LectureDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
             <div className="ds-panel p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">강의 소개</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("about")}</h2>
               <p className="text-gray-600 leading-relaxed whitespace-pre-line">{lecture.description}</p>
             </div>
             <div className="ds-panel p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">학습 안내</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("learningGuide")}</h2>
               <div className="space-y-4 text-sm text-gray-700">
-                <div><p className="text-gray-500">짧은 소개</p><p className="font-medium">{lecture.shortDescription || '정보 없음'}</p></div>
-                <div><p className="text-gray-500">대상 학습자</p><p className="whitespace-pre-line">{lecture.targetAudience || '정보 없음'}</p></div>
-                <div><p className="text-gray-500">사전 요구사항</p><p className="whitespace-pre-line">{lecture.prerequisites || '없음'}</p></div>
+                <div><p className="text-gray-500">{t("shortDescription")}</p><p className="font-medium">{lecture.shortDescription || tCommon('noInfo')}</p></div>
+                <div><p className="text-gray-500">{t("targetAudience")}</p><p className="whitespace-pre-line">{lecture.targetAudience || tCommon('noInfo')}</p></div>
+                <div><p className="text-gray-500">{t("prerequisites")}</p><p className="whitespace-pre-line">{lecture.prerequisites || tCommon('none')}</p></div>
                 {lecture.whatYouWillLearn && lecture.whatYouWillLearn.length > 0 && (
                   <div>
-                    <p className="text-gray-500 mb-1">배우게 될 내용</p>
+                    <p className="text-gray-500 mb-1">{t("whatYouLearn")}</p>
                     <ul className="list-disc pl-5 space-y-1">{lecture.whatYouWillLearn.map((x, i) => <li key={i}>{x}</li>)}</ul>
                   </div>
                 )}
@@ -273,7 +270,7 @@ export default function LectureDetailPage() {
             </div>
 
             <div className="ds-panel p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">커리큘럼 하이라이트</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("curriculumHighlights")}</h2>
               <ul className="space-y-3">
                 {syllabus.map((line, i) => (
                   <li key={i} className="flex items-start gap-3">
@@ -287,34 +284,34 @@ export default function LectureDetailPage() {
 
           <div className="space-y-6">
             <div className="ds-panel p-6 sticky top-24">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">강의 정보</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">{t("info")}</h3>
               <div className="space-y-4 text-sm">
                 <div>
-                  <div className="text-gray-600 mb-1">강사</div>
+                  <div className="text-gray-600 mb-1">{t("instructor")}</div>
                   <div className="font-semibold text-gray-900">{lecture.instructor}</div>
                 </div>
                 <div>
-                  <div className="text-gray-600 mb-1">기간</div>
+                  <div className="text-gray-600 mb-1">{t("duration")}</div>
                   <div className="font-semibold text-gray-900">{lecture.duration}</div>
                 </div>
                 <div>
-                  <div className="text-gray-600 mb-1">난이도</div>
+                  <div className="text-gray-600 mb-1">{t("level")}</div>
                   <div className="font-semibold text-gray-900">{lecture.difficulty || 'beginner'}</div>
                 </div>
                 <div>
-                  <div className="text-gray-600 mb-1">총 레슨 / 시간</div>
-                  <div className="font-semibold text-gray-900">{lecture.totalLessons || 0}개 / {lecture.totalHours || 0}h</div>
+                  <div className="text-gray-600 mb-1">{t("lessonsHours")}</div>
+                  <div className="font-semibold text-gray-900">{t("lessonsHoursValue", { lessons: lecture.totalLessons || 0, hours: lecture.totalHours || 0 })}</div>
                 </div>
                 <div>
-                  <div className="text-gray-600 mb-1">최대 수강생</div>
-                  <div className="font-semibold text-gray-900">{lecture.maxStudents || 30}명</div>
+                  <div className="text-gray-600 mb-1">{t("maxStudents")}</div>
+                  <div className="font-semibold text-gray-900">{tCommon("peopleCount", { count: lecture.maxStudents || 30 })}</div>
                 </div>
                 <div>
-                  <div className="text-gray-600 mb-1">수강생</div>
-                  <div className="font-semibold text-gray-900">{lecture.students.toLocaleString()}명</div>
+                  <div className="text-gray-600 mb-1">{t("students")}</div>
+                  <div className="font-semibold text-gray-900">{tCommon("peopleCount", { count: lecture.students.toLocaleString(intlLocale(locale)) })}</div>
                 </div>
                 <div>
-                  <div className="text-gray-600 mb-1">평점</div>
+                  <div className="text-gray-600 mb-1">{t("rating")}</div>
                   <div className="flex items-center gap-2">
                     <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
                     <span className="font-semibold text-gray-900">{lecture.rating}</span>
@@ -336,7 +333,7 @@ export default function LectureDetailPage() {
                       fullWidth
                       size="lg"
                     >
-                      {isSubmitting ? '신청 중...' : isEnrolled ? '수강 신청 완료' : '지금 등록하기'}
+                      {isSubmitting ? t('enrolling') : isEnrolled ? t('enrolled') : t('enrollNow')}
                     </Button>
                     {enrollMessage && (
                       <p className="text-xs text-primary-700 font-semibold">{enrollMessage}</p>

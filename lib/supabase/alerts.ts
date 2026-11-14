@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/client";
+import { tr } from "@/lib/i18n/runtime";
 
 export const ALERTS_CHANGED_EVENT = "alerts:changed";
 
@@ -75,8 +76,8 @@ export function buildVisaAlertsFromProfile(
         id: `client:visa_expiry:${userId}`,
         kind: "visa_expiry",
         severity: "urgent",
-        title: "비자가 만료되었습니다",
-        body: "즉시 연장·체류 자격을 확인하세요.",
+        title: tr("alerts.visaExpiredTitle"),
+        body: tr("alerts.visaExpiredBody"),
         dueDate: profile.visa_expire_date,
         actionUrl: "/assistant",
         read: true,
@@ -91,8 +92,8 @@ export function buildVisaAlertsFromProfile(
         id: `client:visa_expiry:${userId}`,
         kind: "visa_expiry",
         severity: severityForVisaDays(days),
-        title: `${visaLabel}비자 만료 D-${days}`,
-        body: days <= 30 ? "연장 준비를 시작하세요." : "만료일을 확인하고 일정을 잡으세요.",
+        title: tr("alerts.visaDdayTitle", { visa: visaLabel, days }),
+        body: days <= 30 ? tr("alerts.visaDdaySoonBody") : tr("alerts.visaDdayBody"),
         dueDate: profile.visa_expire_date,
         actionUrl: "/assistant",
         read: true,
@@ -120,6 +121,26 @@ type AlertRow = {
   created_at?: string | null;
 };
 
+/** DB에 저장된 시스템 알림은 kind 기준으로 현재 언어로 다시 표시한다 */
+const LOCALIZED_KINDS = new Set([
+  "mentor_approved",
+  "mentor_rejected",
+  "lecture_approved",
+  "lecture_rejected",
+  "channel_post_removed",
+]);
+
+function localizeStoredAlert(kind: string | null, title: string, message: string | null) {
+  if (!kind || !LOCALIZED_KINDS.has(kind)) return { title, body: message };
+  const localizedTitle = tr(`alerts.${kind}Title`);
+  // 게시글 삭제 알림의 본문은 관리자가 입력한 사유이므로 그대로 둔다
+  if (kind === "channel_post_removed") return { title: localizedTitle, body: message };
+  let body = tr(`alerts.${kind}Body`);
+  const quoted = message?.match(/^"([^"]+)"/);
+  if (quoted && kind.startsWith("lecture_")) body = `"${quoted[1]}" ${body}`;
+  return { title: localizedTitle, body };
+}
+
 function mapAlert(a: AlertRow, userId: string, hasReadCol: boolean): UserAlert {
   const createdAt = a.created_at || null;
   const seenAt = getLocalSeenAt(userId);
@@ -131,8 +152,7 @@ function mapAlert(a: AlertRow, userId: string, hasReadCol: boolean): UserAlert {
     id: a.id,
     kind: a.kind,
     severity: a.severity,
-    title: a.title,
-    body: a.message,
+    ...localizeStoredAlert(a.kind, a.title, a.message),
     dueDate: a.due_date,
     actionUrl: a.action_url,
     read: hasReadCol ? Boolean(a.read) || locallyRead : locallyRead,

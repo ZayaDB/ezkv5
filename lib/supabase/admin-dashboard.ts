@@ -1,3 +1,4 @@
+import { trError } from "@/lib/i18n/runtime";
 import { requireAdmin } from "@/lib/supabase/requireUser";
 import { listPendingLectures, listPendingMentors } from "@/lib/supabase/moderation";
 
@@ -161,7 +162,7 @@ export async function fetchAdminUserDetail(userId: string) {
   const { supabase } = await requireAdmin();
   const { data, error } = await supabase.from("profiles").select("*").eq("id", userId).maybeSingle();
   if (error) throw new Error(error.message);
-  if (!data) throw new Error("사용자를 찾을 수 없습니다.");
+  if (!data) throw new Error(trError("userNotFound"));
   return data;
 }
 

@@ -18,6 +18,7 @@ import DashboardModeToggle from "@/components/dashboard/DashboardModeToggle";
 import RoadmapChecklist, { type RoadmapView } from "@/components/roadmap/RoadmapChecklist";
 import { roadmapsApi } from "@/lib/api/client";
 import { openAssistant } from "@/components/chatbot/Chatbot";
+import { intlLocale } from "@/lib/i18n/config";
 
 type HomeData = Awaited<ReturnType<typeof getControlCenter>>;
 
@@ -271,7 +272,7 @@ export default function MyDashboardOverview() {
                 className="flex items-center gap-3 text-sm border-b border-slate-100 dark:border-slate-800 last:border-0 pb-2 last:pb-0"
               >
                 <span className="text-xs font-mono text-slate-500 w-14 shrink-0">
-                  {new Date(s.startsAt).toLocaleTimeString(locale === "kr" ? "ko-KR" : "en-US", {
+                  {new Date(s.startsAt).toLocaleTimeString(intlLocale(locale), {
                     hour: "2-digit",
                     minute: "2-digit",
                   })}

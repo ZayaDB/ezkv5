@@ -1,3 +1,4 @@
+import { currentLocale, trError } from "@/lib/i18n/runtime";
 /** Supabase로 이전된 기능 제외 — 어시스턴트 API만 유지 */
 import { apiRequest } from "./core";
 import type {
@@ -29,7 +30,7 @@ export const lifePlanApi = {
       const data = await listBudgetLines(params);
       return { data };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "예산을 불러오지 못했습니다." };
+      return { error: e instanceof Error ? e.message : trError("budgetLoadFailed") };
     }
   },
   addBudgetLine: async (payload: {
@@ -44,7 +45,7 @@ export const lifePlanApi = {
       const line = await addBudgetLine(payload);
       return { data: { line } };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "예산 추가 실패" };
+      return { error: e instanceof Error ? e.message : trError("budgetAddFailed") };
     }
   },
   deleteBudgetLine: async (id: string) => {
@@ -53,7 +54,7 @@ export const lifePlanApi = {
       const data = await deleteBudgetLine(id);
       return { data };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "예산 삭제 실패" };
+      return { error: e instanceof Error ? e.message : trError("budgetDeleteFailed") };
     }
   },
   updateBudgetLine: async (
@@ -71,7 +72,7 @@ export const lifePlanApi = {
       const line = await updateBudgetLine(id, payload);
       return { data: { line } };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "예산 수정 실패" };
+      return { error: e instanceof Error ? e.message : trError("budgetUpdateFailed") };
     }
   },
   getLifeEvents: async (fromIso: string, toIso: string) => {
@@ -80,7 +81,7 @@ export const lifePlanApi = {
       const data = await getLifeEvents(fromIso, toIso);
       return { data };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "일정을 불러오지 못했습니다." };
+      return { error: e instanceof Error ? e.message : trError("eventsLoadFailed") };
     }
   },
   addLifeEvent: async (payload: {
@@ -97,7 +98,7 @@ export const lifePlanApi = {
       const data = await addLifeEvent(payload);
       return { data };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "일정 추가 실패" };
+      return { error: e instanceof Error ? e.message : trError("eventAddFailed") };
     }
   },
   updateLifeEvent: async (
@@ -117,7 +118,7 @@ export const lifePlanApi = {
       const data = await updateLifeEvent(id, payload);
       return { data };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "일정 수정 실패" };
+      return { error: e instanceof Error ? e.message : trError("eventUpdateFailed") };
     }
   },
   deleteLifeEvent: async (id: string) => {
@@ -126,7 +127,7 @@ export const lifePlanApi = {
       const data = await deleteLifeEvent(id);
       return { data };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "일정 삭제 실패" };
+      return { error: e instanceof Error ? e.message : trError("eventDeleteFailed") };
     }
   },
 };
@@ -138,18 +139,18 @@ export const roadmapsApi = {
       const data = await listRoadmaps(status);
       return { data };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "로드맵을 불러오지 못했습니다." };
+      return { error: e instanceof Error ? e.message : trError("roadmapLoadFailed") };
     }
   },
   get: async (_id: string) => ({ error: "Not implemented" }),
   create: async (payload: { templateKey?: string }) => {
     try {
-      if (!payload.templateKey) return { error: "templateKey가 필요합니다." };
+      if (!payload.templateKey) return { error: trError("templateKeyRequired") };
       const { createFromTemplate } = await import("@/lib/supabase/roadmaps");
       const data = await createFromTemplate(payload.templateKey);
       return { data };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "로드맵 생성 실패" };
+      return { error: e instanceof Error ? e.message : trError("roadmapCreateFailed") };
     }
   },
   update: async (_id: string, _payload: Record<string, unknown>) => ({ error: "Not implemented" }),
@@ -159,7 +160,7 @@ export const roadmapsApi = {
       await completeStep(roadmapId, stepId, completed);
       return { data: { ok: true } };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "단계 업데이트 실패" };
+      return { error: e instanceof Error ? e.message : trError("stepUpdateFailed") };
     }
   },
   delete: async (_id: string) => ({ error: "Not implemented" }),
@@ -185,6 +186,6 @@ export const assistantApi = {
       };
     }>(
       "/api/assistant/actions",
-      { method: "POST", body: JSON.stringify({ executeAction }) }
+      { method: "POST", body: JSON.stringify({ executeAction, locale: currentLocale() }) }
     ),
 };

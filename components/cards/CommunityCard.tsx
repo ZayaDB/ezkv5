@@ -4,6 +4,7 @@ import Link from "next/link";
 import { CommunityGroup } from "@/types";
 import { Users, ArrowRight, Hash } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
+import { intlLocale } from '@/lib/i18n/config';
 
 interface CommunityCardProps {
   group: CommunityGroup;
@@ -54,7 +55,7 @@ export default function CommunityCard({ group }: CommunityCardProps) {
             <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-slate-400">
               <Users className="w-5 h-5 text-primary-500" />
               <span className="font-semibold">
-                {group.members.toLocaleString()}명
+                {t("membersCount", { count: group.members.toLocaleString(intlLocale(locale)) })}
               </span>
             </div>
             <div className="flex items-center gap-2 text-primary-600 font-semibold group-hover:gap-3 transition-all">

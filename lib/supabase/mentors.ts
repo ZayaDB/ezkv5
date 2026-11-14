@@ -1,3 +1,4 @@
+import { trError, tr } from "@/lib/i18n/runtime";
 import { createClient } from "@/lib/supabase/client";
 import { fetchPublicProfiles } from "@/lib/supabase/publicProfiles";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -57,12 +58,12 @@ async function requireUserId() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) throw new Error("인증이 필요합니다.");
+  if (!user) throw new Error(trError("authRequired"));
   return { supabase, userId: user.id };
 }
 
 export function mapMentorRow(row: MentorProfileRow): Mentor {
-  const name = row.profiles?.name || "멘토";
+  const name = row.profiles?.name || tr("names.mentor");
   return {
     id: row.id,
     userId: row.user_id,
@@ -244,7 +245,7 @@ export async function applyMentorProfile(payload: MentorProfileWrite) {
 
   const { data: profile } = await supabase.from("profiles").select("role").eq("id", userId).single();
   if (profile?.role === "admin") {
-    throw new Error("관리자는 이 경로로 멘토 신청을 할 수 없습니다.");
+    throw new Error(trError("adminCannotApplyMentor"));
   }
 
   const row = {
@@ -262,8 +263,8 @@ export async function applyMentorProfile(payload: MentorProfileWrite) {
 
   if (existing) {
     const st = existing.approval_status;
-    if (st === "pending") throw new Error("이미 심사 중인 멘토 신청이 있습니다.");
-    if (st === "approved") throw new Error("이미 멘토 프로필이 있습니다.");
+    if (st === "pending") throw new Error(trError("mentorApplicationPending"));
+    if (st === "approved") throw new Error(trError("mentorProfileExists"));
 
     const { error: contentError } = await supabase
       .from("mentor_profiles")
@@ -301,9 +302,9 @@ export async function updateMyMentorProfile(payload: MentorProfileWrite) {
     .maybeSingle();
 
   if (fetchErr) throw new Error(fetchErr.message);
-  if (!existing) throw new Error("멘토 프로필이 없습니다.");
+  if (!existing) throw new Error(trError("mentorProfileMissing"));
   if (existing.approval_status !== "approved") {
-    throw new Error("승인된 멘토 프로필만 수정할 수 있습니다.");
+    throw new Error(trError("onlyApprovedMentorEditable"));
   }
 
   const { data, error } = await supabase

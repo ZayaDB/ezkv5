@@ -1,3 +1,4 @@
+import { trError } from "@/lib/i18n/runtime";
 /** 멘토·강의 마켓 — Supabase (Mongo `/api/mentors` 미사용) */
 
 export const mentorsApi = {
@@ -34,7 +35,7 @@ export const mentorsApi = {
         },
       };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "멘토 목록을 불러오지 못했습니다." };
+      return { error: e instanceof Error ? e.message : trError("mentorsLoadFailed") };
     }
   },
 
@@ -46,7 +47,7 @@ export const mentorsApi = {
       const mentor = await getApprovedMentorByUserId(supabase, userId);
       return { data: { mentor } };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "멘토 정보를 불러오지 못했습니다." };
+      return { error: e instanceof Error ? e.message : trError("mentorLoadFailed") };
     }
   },
 
@@ -56,10 +57,10 @@ export const mentorsApi = {
       const { getApprovedMentorById } = await import("@/lib/supabase/mentors");
       const supabase = createClient();
       const mentor = await getApprovedMentorById(supabase, id);
-      if (!mentor) return { error: "멘토를 찾을 수 없습니다." };
+      if (!mentor) return { error: trError("mentorNotFound") };
       return { data: mentor };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "멘토 정보를 불러오지 못했습니다." };
+      return { error: e instanceof Error ? e.message : trError("mentorLoadFailed") };
     }
   },
 
@@ -69,7 +70,7 @@ export const mentorsApi = {
       const mentor = await getMyMentorProfile();
       return { data: { mentor } };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "멘토 정보를 불러오지 못했습니다." };
+      return { error: e instanceof Error ? e.message : trError("mentorLoadFailed") };
     }
   },
 
@@ -100,7 +101,7 @@ export const mentorsApi = {
       const data = await applyMentorProfile(payload);
       return { data };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "멘토 신청에 실패했습니다." };
+      return { error: e instanceof Error ? e.message : trError("mentorApplyFailed") };
     }
   },
 
@@ -131,7 +132,7 @@ export const mentorsApi = {
       const data = await updateMyMentorProfile(payload);
       return { data };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "멘토 프로필 저장에 실패했습니다." };
+      return { error: e instanceof Error ? e.message : trError("mentorProfileSaveFailed") };
     }
   },
 };

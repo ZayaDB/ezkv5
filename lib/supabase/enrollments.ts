@@ -1,3 +1,4 @@
+import { trError } from "@/lib/i18n/runtime";
 import { requireUserId } from "@/lib/supabase/requireUser";
 import { mapLectureRow } from "@/lib/supabase/lectures";
 
@@ -50,9 +51,9 @@ export async function enrollInLecture(lectureId: string) {
     .maybeSingle();
 
   if (lecErr) throw new Error(lecErr.message);
-  if (!lecture) throw new Error("강의를 찾을 수 없습니다.");
-  if (lecture.approval_status !== "approved") throw new Error("승인된 강의만 수강 신청할 수 있습니다.");
-  if (lecture.instructor_id === userId) throw new Error("본인이 개설한 강의에는 수강 신청할 수 없습니다.");
+  if (!lecture) throw new Error(trError("lectureNotFound"));
+  if (lecture.approval_status !== "approved") throw new Error(trError("onlyApprovedLectureEnroll"));
+  if (lecture.instructor_id === userId) throw new Error(trError("cannotEnrollOwnLecture"));
 
   const { data: existing } = await supabase
     .from("lecture_enrollments")
@@ -61,7 +62,7 @@ export async function enrollInLecture(lectureId: string) {
     .eq("lecture_id", lectureId)
     .maybeSingle();
 
-  if (existing) throw new Error("이미 신청한 강의입니다.");
+  if (existing) throw new Error(trError("alreadyEnrolled"));
 
   const { data: created, error } = await supabase
     .from("lecture_enrollments")

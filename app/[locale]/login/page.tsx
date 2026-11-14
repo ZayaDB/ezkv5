@@ -98,7 +98,7 @@ export default function LoginPage() {
                     clipRule="evenodd"
                   />
                 </svg>
-                <span>회원가입이 완료되었습니다! 로그인해주세요.</span>
+                <span>{t("signupCompleteLogin")}</span>
               </div>
             )}
             {error && (

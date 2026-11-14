@@ -1,0 +1,261 @@
+{
+  "errors": {
+    "authRequired": "Please sign in to continue.",
+    "loginRequired": "Please log in.",
+    "adminRequired": "Administrator permission is required.",
+    "noPermission": "You don't have permission.",
+    "lectureNotFound": "Lecture not found.",
+    "postNotFound": "Post not found.",
+    "mentorNotFound": "Mentor not found.",
+    "sessionNotFound": "Session not found.",
+    "userNotFound": "User not found.",
+    "communityNotFound": "Community not found.",
+    "freelancerGroupNotFound": "Freelancer group not found.",
+    "targetNotFound": "The requested item could not be found.",
+    "mentorApplicationNotFound": "Mentor application not found.",
+    "mentorProfileMissing": "No mentor profile found.",
+    "unknownRoadmapTemplate": "Unknown roadmap template.",
+    "invalidFeed": "Invalid feed.",
+    "invalidDate": "Invalid date.",
+    "unsupportedAction": "This action is not supported.",
+    "messageOrActionRequired": "A message or action is required.",
+    "templateKeyRequired": "A roadmap template is required.",
+    "invalidModerationType": "Type must be community or freelancer.",
+    "invalidCommunityStatus": "Community status must be pending, approved or rejected.",
+    "invalidFreelancerStatus": "Freelancer status must be pending, accepted or rejected.",
+    "roadmapCreateFailed": "Couldn't create the roadmap.",
+    "roadmapLoadFailed": "Couldn't load roadmaps.",
+    "stepUpdateFailed": "Couldn't update the step.",
+    "eventAddFailed": "Couldn't add the event.",
+    "eventUpdateFailed": "Couldn't update the event.",
+    "eventDeleteFailed": "Couldn't delete the event.",
+    "eventsLoadFailed": "Couldn't load your schedule.",
+    "budgetLoadFailed": "Couldn't load your budget.",
+    "budgetAddFailed": "Couldn't add the budget item.",
+    "budgetUpdateFailed": "Couldn't update the budget item.",
+    "budgetDeleteFailed": "Couldn't delete the budget item.",
+    "mentorLoadFailed": "Couldn't load mentor information.",
+    "mentorsLoadFailed": "Couldn't load mentors.",
+    "mentorApplyFailed": "Couldn't submit your mentor application.",
+    "mentorProfileSaveFailed": "Couldn't save the mentor profile.",
+    "mentorApprovalUseModeration": "Please approve mentors from the moderation page.",
+    "mentorPermissionRequired": "Mentor permission is required.",
+    "onlyMentorsCanCreateLectures": "Only mentors can create lectures.",
+    "onlyApprovedMentorEditable": "Only approved mentor profiles can be edited.",
+    "mentorApplicationPending": "You already have a mentor application under review.",
+    "mentorProfileExists": "You already have a mentor profile.",
+    "adminCannotApplyMentor": "Administrators can't apply as mentors here.",
+    "cannotBookSelf": "You can't book a session with yourself.",
+    "sessionsLoadFailed": "Couldn't load sessions.",
+    "sessionBookFailed": "Couldn't book the session.",
+    "sessionStatusFailed": "Couldn't update the session status.",
+    "lectureLoadFailed": "Couldn't load the lecture.",
+    "lecturesLoadFailed": "Couldn't load lectures.",
+    "lectureCreateFailed": "Couldn't create the lecture.",
+    "lectureUpdateFailed": "Couldn't update the lecture.",
+    "wishlistLoadFailed": "Couldn't load your wishlist.",
+    "wishlistAddFailed": "Couldn't add to your wishlist.",
+    "wishlistRemoveFailed": "Couldn't remove from your wishlist.",
+    "cannotWishlistOwnLecture": "You can't save your own lecture.",
+    "onlyApprovedLectureEnroll": "You can only enroll in approved lectures.",
+    "cannotEnrollOwnLecture": "You can't enroll in your own lecture.",
+    "alreadyEnrolled": "You're already enrolled in this lecture.",
+    "enrollmentsLoadFailed": "Couldn't load your enrollments.",
+    "enrollFailed": "Couldn't enroll in the lecture.",
+    "statusChangeFailed": "Couldn't change the status.",
+    "deleteFailed": "Couldn't delete.",
+    "actionFailed": "Something went wrong. Please try again.",
+    "loadFailed": "Couldn't load the data.",
+    "listLoadFailed": "Couldn't load the list.",
+    "submitFailed": "Couldn't submit.",
+    "applyFailed": "Couldn't submit your application.",
+    "joinFailed": "Couldn't submit your join request.",
+    "applicationsLoadFailed": "Couldn't load applications.",
+    "membershipsLoadFailed": "Couldn't load memberships.",
+    "groupCreateFailed": "Couldn't create the group.",
+    "groupNameRequired": "Please enter a group name.",
+    "postsLoadFailed": "Couldn't load posts.",
+    "postCreateFailed": "Couldn't publish the post.",
+    "channelPostsLoadFailed": "Couldn't load channel posts.",
+    "commentsLoadFailed": "Couldn't load comments.",
+    "commentCreateFailed": "Couldn't post the comment.",
+    "cannotComment": "You can't comment here.",
+    "commentRequired": "Please enter a comment.",
+    "contentRequired": "Please enter some content.",
+    "messageRequired": "Please enter a message.",
+    "deleteReasonRequired": "Please enter a reason for deletion.",
+    "joinCommunityToPost": "Join the community to post.",
+    "joinFreelancerToPost": "Join the freelancer group to post.",
+    "inquiriesLoadFailed": "Couldn't load inquiries.",
+    "inquiryCreateFailed": "Couldn't submit your inquiry.",
+    "inquiryUpdateFailed": "Couldn't update your inquiry.",
+    "inquiryDeleteFailed": "Couldn't delete your inquiry.",
+    "replyFailed": "Couldn't save the reply.",
+    "statsLoadFailed": "Couldn't load statistics.",
+    "usersLoadFailed": "Couldn't load users.",
+    "userLoadFailed": "Couldn't load user information.",
+    "moderationLoadFailed": "Couldn't load the moderation queue.",
+    "adminCreateUnsupported": "Create the user in the Supabase dashboard, then set profiles.role to admin.",
+    "passwordResetUnsupported": "Please reset passwords via Supabase Auth or the forgot-password flow.",
+    "fileTooLarge": "The file is too large (max 3MB).",
+    "svgNotAllowed": "SVG files are not allowed.",
+    "imageTypeNotAllowed": "Only JPEG, PNG, WebP or GIF images can be uploaded.",
+    "uploadFailed": "Upload failed.",
+    "requestFailed": "Something went wrong while processing your request.",
+    "networkError": "A network error occurred.",
+    "loginFailed": "Login failed.",
+    "signupFailed": "Sign-up failed.",
+    "profileLoadFailed": "Couldn't load your profile.",
+    "loginError": "An error occurred while logging in.",
+    "signupError": "An error occurred during sign-up.",
+    "profileSaveError": "An error occurred while saving your profile.",
+    "signupComplete": "Sign-up complete. Please log in.",
+    "emailNotConfirmed": "Please verify your email. Check your inbox for the confirmation link.",
+    "invalidCredentials": "Incorrect email or password.",
+    "profileMissing": "You're signed in, but your profile couldn't be found. Please contact support."
+  },
+  "names": {
+    "mentor": "Mentor",
+    "mentee": "Mentee",
+    "instructor": "Instructor",
+    "session": "Session",
+    "lectureEvent": "Lecture"
+  },
+  "alerts": {
+    "visaExpiredTitle": "Your visa has expired",
+    "visaExpiredBody": "Check your extension and residence status right away.",
+    "visaDdayTitle": "{visa}visa expires in {days} days",
+    "visaDdaySoonBody": "Start preparing your extension.",
+    "visaDdayBody": "Check the expiry date and plan ahead.",
+    "mentor_approvedTitle": "Your mentor application was approved",
+    "mentor_approvedBody": "You can now use mentor mode and create lectures.",
+    "mentor_rejectedTitle": "Your mentor application was declined",
+    "mentor_rejectedBody": "Go to the mentor application page under My Info to edit and reapply.",
+    "lecture_approvedTitle": "Your lecture was approved",
+    "lecture_approvedBody": "Your lecture is now listed publicly.",
+    "lecture_rejectedTitle": "Your lecture was not approved",
+    "lecture_rejectedBody": "Please edit your lecture and submit it again.",
+    "channel_post_removedTitle": "Your post was removed by an administrator"
+  },
+  "recommended": {
+    "arc": "Check your residence card renewal",
+    "visa": "Prepare your visa extension",
+    "insurance": "Check your health insurance"
+  },
+  "roadmapTemplates": {
+    "visa_extension": {
+      "title": "Visa extension",
+      "description": "Work through the documents and steps you need before your visa expires.",
+      "steps": [
+        {
+          "title": "Check your visa expiry date",
+          "description": "Check the expiry dates on your passport and residence card."
+        },
+        {
+          "title": "Request school documents",
+          "description": "Ask the international office for your enrollment certificate and transcript."
+        },
+        {
+          "title": "Prepare proof of funds",
+          "description": "Prepare a bank balance certificate and other required documents."
+        },
+        {
+          "title": "Book an immigration appointment",
+          "description": "Book online via HiKorea or in person."
+        },
+        {
+          "title": "Apply and pay the fee",
+          "description": "Fill in the application form and pay the fee."
+        }
+      ]
+    },
+    "settling_korea": {
+      "title": "Settling in Korea",
+      "description": "Set up the basics for daily life after you arrive.",
+      "steps": [
+        {
+          "title": "Apply for alien registration",
+          "description": "You must apply within 90 days of arrival."
+        },
+        {
+          "title": "Get a phone plan",
+          "description": "Open a number that can be used for identity verification."
+        },
+        {
+          "title": "Open a bank account",
+          "description": "Open an account with your residence card."
+        },
+        {
+          "title": "Check health insurance",
+          "description": "Check whether you must join National Health Insurance."
+        }
+      ]
+    },
+    "moving": {
+      "title": "Moving",
+      "description": "A checklist for moving to a new place.",
+      "steps": [
+        {
+          "title": "Set your budget and area",
+          "description": "Decide your monthly rent and deposit budget and preferred area."
+        },
+        {
+          "title": "Search for listings",
+          "description": "Use licensed agents or school-recommended channels to avoid scams."
+        },
+        {
+          "title": "Review the contract",
+          "description": "Check the deposit, termination terms and maintenance fees."
+        },
+        {
+          "title": "Register your new address",
+          "description": "Update the address on your alien registration after moving."
+        }
+      ]
+    },
+    "job_prep": {
+      "title": "Job preparation",
+      "description": "Steps to prepare for a job, internship or part-time work.",
+      "steps": [
+        {
+          "title": "Check what your visa allows",
+          "description": "Check the work conditions for your status, such as D-2 or D-10."
+        },
+        {
+          "title": "Update your résumé and portfolio",
+          "description": "Prepare Korean and English versions."
+        },
+        {
+          "title": "Talk to a mentor",
+          "description": "Book a session with a mentor in your field."
+        },
+        {
+          "title": "Prepare applications and interviews",
+          "description": "Add your application deadlines to the calendar."
+        }
+      ]
+    },
+    "d10_prep": {
+      "title": "D-10 job-seeker visa",
+      "description": "A roadmap for switching to a job-seeker visa after graduation.",
+      "steps": [
+        {
+          "title": "Check eligibility",
+          "description": "Check your degree, graduation requirements and length of stay."
+        },
+        {
+          "title": "List required documents",
+          "description": "Organize the documents required by your school and immigration."
+        },
+        {
+          "title": "Plan your job search",
+          "description": "Set your target roles and timeline."
+        },
+        {
+          "title": "Book your application date",
+          "description": "Schedule your application well before your visa expires."
+        }
+      ]
+    }
+  }
+}

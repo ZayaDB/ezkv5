@@ -1,3 +1,4 @@
+import { trError } from "@/lib/i18n/runtime";
 import type { PublicFeedKind } from "./social-types";
 import type { ChannelKind } from "@/lib/supabase/channel-feed";
 
@@ -19,7 +20,7 @@ export const publicFeedApi = {
       if ("error" in res && res.error) return { error: res.error };
       return { data: { posts: res.posts || [] } };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "목록을 불러오지 못했습니다." };
+      return { error: e instanceof Error ? e.message : trError("listLoadFailed") };
     }
   },
   create: async (feed: PublicFeedKind, payload: { body: string; attachmentUrls?: string[] }) => {
@@ -29,7 +30,7 @@ export const publicFeedApi = {
       if ("error" in res && res.error) return { error: res.error };
       return { data: res };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "등록에 실패했습니다." };
+      return { error: e instanceof Error ? e.message : trError("submitFailed") };
     }
   },
   listComments: async (feed: PublicFeedKind, postId: string) => {
@@ -40,7 +41,7 @@ export const publicFeedApi = {
       if ("error" in res && res.error) return { error: res.error };
       return { data: { comments: res.comments || [] } };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "댓글을 불러오지 못했습니다." };
+      return { error: e instanceof Error ? e.message : trError("commentsLoadFailed") };
     }
   },
   addComment: async (feed: PublicFeedKind, postId: string, body: string) => {
@@ -51,7 +52,7 @@ export const publicFeedApi = {
       if ("error" in res && res.error) return { error: res.error };
       return { data: res };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "댓글 등록에 실패했습니다." };
+      return { error: e instanceof Error ? e.message : trError("commentCreateFailed") };
     }
   },
   toggleLike: async (feed: PublicFeedKind, postId: string) => {
@@ -62,7 +63,7 @@ export const publicFeedApi = {
       if ("error" in res && res.error) return { error: res.error };
       return { data: { likeCount: res.likeCount, likedByMe: res.likedByMe } };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "처리에 실패했습니다." };
+      return { error: e instanceof Error ? e.message : trError("actionFailed") };
     }
   },
   uploadFile: async (file: File) => {
@@ -78,7 +79,7 @@ export const channelFeedApi = {
       const posts = await listChannelPosts(channel, channelId);
       return { data: { posts } };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "글 목록을 불러오지 못했습니다." };
+      return { error: e instanceof Error ? e.message : trError("postsLoadFailed") };
     }
   },
   createPost: async (channel: ChannelKind, channelId: string, payload: { title: string; body: string }) => {
@@ -88,7 +89,7 @@ export const channelFeedApi = {
       if ("error" in res && res.error) return { error: res.error };
       return { data: res };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "글 등록에 실패했습니다." };
+      return { error: e instanceof Error ? e.message : trError("postCreateFailed") };
     }
   },
   listComments: async (channel: ChannelKind, channelId: string, postId: string) => {
@@ -99,7 +100,7 @@ export const channelFeedApi = {
       const comments = await listChannelComments(postId);
       return { data: { comments } };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "댓글을 불러오지 못했습니다." };
+      return { error: e instanceof Error ? e.message : trError("commentsLoadFailed") };
     }
   },
   addComment: async (channel: ChannelKind, channelId: string, postId: string, body: string) => {
@@ -109,7 +110,7 @@ export const channelFeedApi = {
       if ("error" in res && res.error) return { error: res.error };
       return { data: res };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "댓글 등록에 실패했습니다." };
+      return { error: e instanceof Error ? e.message : trError("commentCreateFailed") };
     }
   },
 };
@@ -121,7 +122,7 @@ export const communityApi = {
       const memberships = await listMyCommunityMemberships();
       return { data: { memberships } };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "멤버십을 불러오지 못했습니다." };
+      return { error: e instanceof Error ? e.message : trError("membershipsLoadFailed") };
     }
   },
 };
@@ -133,7 +134,7 @@ export const freelancerApi = {
       const applications = await listMyFreelancerApplications();
       return { data: { applications } };
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : "신청 목록을 불러오지 못했습니다." };
+      return { error: e instanceof Error ? e.message : trError("applicationsLoadFailed") };
     }
   },
 };

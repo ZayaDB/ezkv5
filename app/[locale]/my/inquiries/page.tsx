@@ -83,7 +83,7 @@ export default function MyInquiriesPage() {
   };
 
   const remove = async (id: string) => {
-    if (!confirm("삭제할까요?")) return;
+    if (!confirm(tCommon("confirmDelete"))) return;
     const res = await inquiryApi.remove(id);
     if (res.error) {
       setToast({ message: res.error, variant: "error" });

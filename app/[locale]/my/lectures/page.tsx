@@ -96,7 +96,7 @@ export default function MyLecturesHubPage() {
                         href={`/${locale}/mentor/lectures/${lec.id}/edit`}
                         className="inline-block text-xs font-semibold text-slate-700 hover:text-slate-900 underline underline-offset-2"
                       >
-                        수정
+                        {t("edit")}
                       </Link>
                     </div>
                   </li>
