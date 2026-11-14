@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useTranslations, useLocale } from "next-intl";
 
 export default function Footer() {
@@ -15,12 +14,13 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
           <div className="flex items-center gap-3">
-            <Image
-              src="/logo/logo.png"
-              alt="logo"
-              width={48}
-              height={48}
-              className="w-12 h-12 object-contain"
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/brand/lnk-logo-dark.svg"
+              alt="LNK — Learn · Network · Keep"
+              width={94}
+              height={40}
+              className="h-10 w-auto"
             />
             <p className="text-sm text-gray-400">{t("footerTagline")}</p>
           </div>

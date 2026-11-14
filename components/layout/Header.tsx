@@ -115,16 +115,22 @@ export default function Header() {
             href={getLocalizedPath("")}
             className="flex items-center group justify-self-start"
           >
-            <div className="">
-              <Image
-                src="/logo/logo.png"
-                alt="logo"
-                width={44}
-                height={44}
-                className="w-full h-full object-cover"
-                priority
-              />
-            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/brand/lnk-logo.svg"
+              alt="LNK — Learn · Network · Keep"
+              width={85}
+              height={36}
+              className="h-9 w-auto dark:hidden"
+            />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/brand/lnk-logo-dark.svg"
+              alt="LNK — Learn · Network · Keep"
+              width={85}
+              height={36}
+              className="hidden h-9 w-auto dark:block"
+            />
           </Link>
 
           {/* Desktop center area */}

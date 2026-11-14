@@ -1,5 +1,6 @@
 import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
+import type { Metadata } from 'next';
+import { getMessages, getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { locales } from '@/lib/i18n/config';
 import { AuthProvider } from '@/lib/contexts/AuthContext';
@@ -11,6 +12,39 @@ import '../globals.css';
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'common' });
+  const title = 'LNK — Learn · Network · Keep';
+  const description = t('footerTagline');
+  return {
+    metadataBase: new URL('https://ezkv5.netlify.app'),
+    title: { default: title, template: '%s · LNK' },
+    description,
+    icons: {
+      icon: [
+        { url: '/favicon.ico', sizes: 'any' },
+        { url: '/brand/lnk-icon.svg', type: 'image/svg+xml' },
+      ],
+      apple: '/apple-touch-icon.png',
+    },
+    openGraph: {
+      title,
+      description,
+      siteName: 'LNK',
+      images: [{ url: '/brand/og-image.png', width: 1200, height: 630, alt: title }],
+      locale: locale === 'kr' ? 'ko_KR' : locale === 'mn' ? 'mn_MN' : 'en_US',
+      type: 'website',
+    },
+    manifest: '/site.webmanifest',
+    twitter: { card: 'summary_large_image', title, description, images: ['/brand/og-image.png'] },
+  };
 }
 
 export default async function LocaleLayout({
