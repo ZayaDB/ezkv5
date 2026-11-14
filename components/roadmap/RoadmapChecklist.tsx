@@ -80,7 +80,7 @@ export default function RoadmapChecklist({
               onClick={() => setPickedId(r.id)}
               className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold ${
                 r.id === selected.id
-                  ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900"
+                  ? "bg-teal text-white dark:bg-teal-dark dark:text-night"
                   : "bg-zinc-100 text-zinc-500 dark:bg-slate-800"
               }`}
             >
@@ -158,7 +158,7 @@ export default function RoadmapChecklist({
             </Link>
             <Link
               href={learnHref}
-              className="rounded-full bg-zinc-900 dark:bg-white px-3 py-1.5 text-xs font-semibold text-white dark:text-zinc-900"
+              className="rounded-full bg-teal dark:bg-teal-dark px-3 py-1.5 text-xs font-semibold text-white dark:text-night hover:opacity-90"
             >
               {t("learn")}
             </Link>
