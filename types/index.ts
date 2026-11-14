@@ -76,13 +76,22 @@ export interface FreelancerGroup {
   jobsPosted: number;
 }
 
+export type GuideTopic = 'arrival' | 'study' | 'housing' | 'hospital' | 'lifeTips' | 'work' | 'visa';
+
 export interface StudyInfo {
   id: string;
-  category: 'visa' | 'housing' | 'hospital' | 'lifeTips';
+  category: GuideTopic;
   title: string;
   content: string;
   image?: string;
   tags: string[];
+  summary: string;
+  audience: string;
+  readMinutes: number;
+  featured: boolean;
+  language: string;
+  reviewedAt: string | null;
+  createdAt: string | null;
 }
 
 export interface ChatMessage {

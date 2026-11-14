@@ -5,6 +5,7 @@ import {
   queryFreelancerByIdWith,
   queryFreelancerGroupsWith,
   queryStudyInfosWith,
+  queryStudyInfoByIdWith,
 } from "@/lib/supabase/catalog-core";
 import type { StudyInfo } from "@/types";
 
@@ -26,6 +27,11 @@ export async function queryFreelancerGroups(options?: { category?: string; limit
 export async function queryFreelancerById(id: string) {
   const supabase = await createServerSupabase();
   return queryFreelancerByIdWith(supabase, id);
+}
+
+export async function queryStudyInfoById(id: string) {
+  const supabase = await createServerSupabase();
+  return queryStudyInfoByIdWith(supabase, id);
 }
 
 export async function queryStudyInfos(options?: { category?: StudyInfo["category"] }) {

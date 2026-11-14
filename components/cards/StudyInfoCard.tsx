@@ -46,7 +46,7 @@ export default function StudyInfoCard({ info }: StudyInfoCardProps) {
           ))}
         </div>
         <a
-          href={`/${locale}/study-in-korea#article-${info.id}`}
+          href={`/${locale}/study-in-korea/${info.id}`}
           className="inline-flex items-center text-primary-600 font-semibold group-hover:gap-2 transition-all"
         >
           <span>{t("openDocument")}</span>

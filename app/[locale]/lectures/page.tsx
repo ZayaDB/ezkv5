@@ -1,3 +1,5 @@
+export const revalidate = 300;
+
 import { queryLecturesSupabase } from '@/lib/supabase/public-queries';
 import LecturesPageClient from './LecturesPageClient';
 import type { Lecture } from '@/types';
