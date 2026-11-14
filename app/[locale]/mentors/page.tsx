@@ -1,3 +1,5 @@
+export const revalidate = 300;
+
 import { queryMentorsSupabase } from '@/lib/supabase/public-queries';
 import MentorsPageClient from './MentorsPageClient';
 import type { Mentor } from '@/types';

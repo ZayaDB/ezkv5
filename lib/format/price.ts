@@ -4,7 +4,7 @@ export function formatMentorHourlyPrice(price: number | "Free"): {
   free?: boolean;
   perHour?: boolean;
 } {
-  if (price === "Free") return { label: "", free: true };
+  if (price === "Free" || !Number(price)) return { label: "", free: true };
   if (typeof price === "number" && price >= 5000) {
     return { label: `₩${price.toLocaleString("ko-KR")}`, perHour: true };
   }

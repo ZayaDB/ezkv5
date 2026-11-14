@@ -5,4 +5,5 @@ export {
   queryFreelancerGroups,
   queryFreelancerById,
   queryStudyInfos,
+  queryStudyInfoById,
 } from "@/lib/supabase/catalog-server";

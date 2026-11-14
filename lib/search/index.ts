@@ -97,7 +97,7 @@ export async function searchContent(query: string, locale: string = 'kr'): Promi
         id: info.id,
         title: info.title,
         description: info.content.substring(0, 120),
-        url: `/${locale}/study-in-korea#article-${info.id}`,
+        url: `/${locale}/study-in-korea/${info.id}`,
       });
     }
   });

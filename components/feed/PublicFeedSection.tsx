@@ -132,34 +132,34 @@ export default function PublicFeedSection({
   return (
     <div className="space-y-4">
       {compose && isAuthenticated ? (
-        <div className="rounded-2xl border border-zinc-200 bg-white p-4">
+        <div className="rounded-2xl border border-zinc-200 bg-white p-4 dark:bg-night-card dark:border-hairline-dark">
           <textarea
             value={body}
             onChange={(e) => setBody(e.target.value)}
             rows={3}
             placeholder={t("bodyPlaceholder")}
-            className="w-full rounded-xl border border-zinc-200 px-3 py-2 text-sm"
+            className="w-full rounded-xl border border-zinc-200 px-3 py-2 text-sm dark:border-hairline-dark"
           />
           <div className="mt-2 flex items-center justify-between">
-            <p className="text-xs text-zinc-500">{msg}</p>
+            <p className="text-xs text-zinc-500 dark:text-snow-muted">{msg}</p>
             <button
               type="button"
               disabled={posting}
               onClick={() => void submitPost()}
-              className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
+              className="rounded-lg bg-teal px-4 py-2 text-sm font-semibold text-white disabled:opacity-60 dark:bg-teal-dark dark:text-night dark:hover:bg-primary-400"
             >
               {posting ? t("posting") : t("writeTitle")}
             </button>
           </div>
         </div>
       ) : compose && !isAuthenticated ? (
-        <p className="text-sm text-zinc-500 rounded-xl border border-zinc-100 bg-zinc-50 px-4 py-3">
+        <p className="text-sm text-zinc-500 rounded-xl border border-zinc-100 bg-zinc-50 px-4 py-3 dark:text-snow-muted dark:bg-night dark:border-hairline-dark">
           {t("loginToComment")}
         </p>
       ) : null}
 
       {loading ? (
-        <p className="text-sm text-zinc-500 py-6">{t("loading")}</p>
+        <p className="text-sm text-zinc-500 py-6 dark:text-snow-muted">{t("loading")}</p>
       ) : posts.length === 0 ? (
         <p className="text-sm text-zinc-600 dark:text-slate-400 py-4 bg-zinc-50 dark:bg-slate-900 rounded-xl px-4 border border-zinc-100 dark:border-slate-800">
           {emptyLabel || t("empty")}
@@ -169,7 +169,7 @@ export default function PublicFeedSection({
           <article key={p.id} className="rounded-2xl border border-zinc-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm">
             <header className="flex items-start gap-3 mb-3">
               {hideAuthor ? (
-                <p className="text-xs text-zinc-500">
+                <p className="text-xs text-zinc-500 dark:text-snow-muted">
                   {fd(new Date(p.createdAt), { dateStyle: "medium", timeStyle: "short" })}
                 </p>
               ) : (
@@ -187,7 +187,7 @@ export default function PublicFeedSection({
                     >
                       {p.author.name}
                     </Link>
-                    <p className="text-xs text-zinc-500">
+                    <p className="text-xs text-zinc-500 dark:text-snow-muted">
                       {fd(new Date(p.createdAt), { dateStyle: "medium", timeStyle: "short" })}
                     </p>
                   </div>
@@ -204,7 +204,7 @@ export default function PublicFeedSection({
                       alt=""
                       width={200}
                       height={200}
-                      className="max-h-48 w-auto rounded-lg border border-zinc-100 object-cover"
+                      className="max-h-48 w-auto rounded-lg border border-zinc-100 object-cover dark:border-hairline-dark"
                       unoptimized
                     />
                   </a>
@@ -241,7 +241,7 @@ export default function PublicFeedSection({
                     >
                       {c.author.name}
                     </Link>
-                    <span className="text-zinc-400 text-xs ml-2">
+                    <span className="text-zinc-400 text-xs ml-2 dark:text-snow-muted">
                       {fd(new Date(c.createdAt), { dateStyle: "short", timeStyle: "short" })}
                     </span>
                     <p className="text-zinc-700 dark:text-slate-300 mt-1 whitespace-pre-wrap">{c.body}</p>
@@ -254,19 +254,19 @@ export default function PublicFeedSection({
                       onChange={(e) => setDraft((d) => ({ ...d, [p.id]: e.target.value }))}
                       rows={2}
                       placeholder={t("commentPlaceholder")}
-                      className="w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm"
+                      className="w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm dark:border-hairline-dark"
                     />
                     <button
                       type="button"
                       disabled={submitting === p.id}
                       onClick={() => void submitComment(p.id)}
-                      className="self-start rounded-lg bg-zinc-900 px-4 py-2 text-xs font-semibold text-white disabled:opacity-60"
+                      className="self-start rounded-lg bg-teal px-4 py-2 text-xs font-semibold text-white disabled:opacity-60 dark:bg-teal-dark dark:text-night dark:hover:bg-primary-400"
                     >
                       {submitting === p.id ? "…" : t("commentSubmit")}
                     </button>
                   </div>
                 ) : (
-                  <p className="text-xs text-zinc-500">{t("loginToComment")}</p>
+                  <p className="text-xs text-zinc-500 dark:text-snow-muted">{t("loginToComment")}</p>
                 )}
               </div>
             )}

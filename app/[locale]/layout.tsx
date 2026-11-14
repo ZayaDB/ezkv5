@@ -72,7 +72,8 @@ export default async function LocaleLayout({
                 try {
                   var saved = localStorage.getItem('theme');
                   var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                  if (saved !== 'light') {
+                  // Figma 기준 라이트가 기본. 사용자가 다크를 고른 경우에만 다크
+                  if (saved === 'dark') {
                     document.documentElement.classList.add('dark');
                   }
                 } catch (e) {}

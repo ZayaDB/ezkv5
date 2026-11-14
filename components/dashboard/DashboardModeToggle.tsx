@@ -21,14 +21,15 @@ export default function DashboardModeToggle({ canUseMentorMode }: { canUseMentor
   };
 
   return (
-    <div className="inline-flex rounded-xl bg-slate-100 dark:bg-slate-800 p-1 ring-1 ring-slate-200 dark:ring-slate-700">
+    <div className="grid grid-cols-2 rounded-lg bg-surface p-1 dark:bg-night" role="group">
       <button
         type="button"
         onClick={() => setDashboardMode("mentee")}
-        className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
+        aria-pressed={mode === "mentee"}
+        className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
           mode === "mentee"
-            ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 shadow-sm"
-            : "text-slate-600 dark:text-slate-300"
+            ? "bg-white text-ink shadow-sm dark:bg-night-card dark:text-snow"
+            : "text-ink-muted dark:text-snow-muted"
         }`}
       >
         {t("modeMentee")}
@@ -36,10 +37,11 @@ export default function DashboardModeToggle({ canUseMentorMode }: { canUseMentor
       <button
         type="button"
         onClick={() => setDashboardMode("mentor")}
-        className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
+        aria-pressed={mode === "mentor"}
+        className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
           mode === "mentor"
-            ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 shadow-sm"
-            : "text-slate-600 dark:text-slate-300"
+            ? "bg-white text-ink shadow-sm dark:bg-night-card dark:text-snow"
+            : "text-ink-muted dark:text-snow-muted"
         }`}
       >
         {t("modeMentor")}

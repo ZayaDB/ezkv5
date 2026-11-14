@@ -125,19 +125,19 @@ export default function MyActivityPage() {
       : `/${locale}/community`;
 
   return (
-    <div className="w-full space-y-6">
+    <div className="w-full space-y-8">
       <div>
-        <h1 className="text-xl sm:text-2xl font-bold text-zinc-900 tracking-tight">{t("title")}</h1>
-        <p className="text-sm text-zinc-600 mt-1">{t("subtitlePublic")}</p>
+        <h1 className="text-2xl font-semibold leading-[1.2] text-ink dark:text-snow sm:text-[32px]">{t("title")}</h1>
+        <p className="mt-2 text-base leading-[1.55] text-ink-muted dark:text-snow-muted">{t("subtitlePublic")}</p>
       </div>
 
-      <div className="rounded-2xl border border-zinc-200 bg-white p-5 space-y-4">
+      <div className="rounded-2xl border border-zinc-200 bg-white p-5 space-y-4 dark:bg-night-card dark:border-hairline-dark">
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
             onClick={() => setFeedType("community")}
             className={`rounded-lg px-3 py-1.5 text-sm font-semibold ${
-              feedType === "community" ? "bg-primary-600 text-white" : "bg-zinc-100 text-zinc-700"
+              feedType === "community" ? "bg-primary-600 text-white" : "bg-zinc-100 text-zinc-700 dark:text-snow-muted dark:bg-night"
             }`}
           >
             {t("channelCommunity")}
@@ -146,7 +146,7 @@ export default function MyActivityPage() {
             type="button"
             onClick={() => setFeedType("freelancer")}
             className={`rounded-lg px-3 py-1.5 text-sm font-semibold ${
-              feedType === "freelancer" ? "bg-primary-600 text-white" : "bg-zinc-100 text-zinc-700"
+              feedType === "freelancer" ? "bg-primary-600 text-white" : "bg-zinc-100 text-zinc-700 dark:text-snow-muted dark:bg-night"
             }`}
           >
             {t("channelJobs")}
@@ -157,7 +157,7 @@ export default function MyActivityPage() {
           onChange={(e) => setBody(e.target.value)}
           rows={6}
           placeholder={tFeed("bodyPlaceholder")}
-          className="w-full rounded-xl border border-zinc-200 px-3 py-2 text-sm"
+          className="w-full rounded-xl border border-zinc-200 px-3 py-2 text-sm dark:border-hairline-dark"
         />
         {msg && (
           <p className={`text-sm font-medium ${msg.type === "ok" ? "text-emerald-700" : "text-red-600"}`}>
@@ -180,17 +180,17 @@ export default function MyActivityPage() {
       </div>
 
       <div>
-        <h2 className="text-sm font-bold text-zinc-900 mb-3">{t("myPosts")}</h2>
+        <h2 className="text-sm font-bold text-zinc-900 mb-3 dark:text-snow">{t("myPosts")}</h2>
         {mine.length === 0 ? (
-          <p className="text-sm text-zinc-500">{t("myPostsEmpty")}</p>
+          <p className="text-sm text-zinc-500 dark:text-snow-muted">{t("myPostsEmpty")}</p>
         ) : (
           <ul className="space-y-3">
             {mine.map((p) => (
-              <li key={p.id} className="rounded-xl border border-zinc-200 bg-white p-4">
-                <p className="text-xs text-zinc-500 mb-1">
+              <li key={p.id} className="rounded-xl border border-zinc-200 bg-white p-4 dark:bg-night-card dark:border-hairline-dark">
+                <p className="text-xs text-zinc-500 mb-1 dark:text-snow-muted">
                   {p.feedType === "freelancer" ? t("channelJobs") : t("channelCommunity")}
                 </p>
-                <p className="text-sm text-zinc-800 whitespace-pre-wrap">{p.body}</p>
+                <p className="text-sm text-zinc-800 whitespace-pre-wrap dark:text-snow">{p.body}</p>
               </li>
             ))}
           </ul>
@@ -200,26 +200,26 @@ export default function MyActivityPage() {
         </Link>
       </div>
 
-      <div id="group" className="rounded-2xl border border-zinc-200 bg-white p-5 space-y-3">
-        <h2 className="text-sm font-bold text-zinc-900">{tComm("createGroup")}</h2>
-        <p className="text-sm text-zinc-600">{t("groupHint")}</p>
+      <div id="group" className="rounded-2xl border border-zinc-200 bg-white p-5 space-y-3 dark:bg-night-card dark:border-hairline-dark">
+        <h2 className="text-sm font-bold text-zinc-900 dark:text-snow">{tComm("createGroup")}</h2>
+        <p className="text-sm text-zinc-600 dark:text-snow-muted">{t("groupHint")}</p>
         <input
           value={groupName}
           onChange={(e) => setGroupName(e.target.value)}
           placeholder={tComm("groupName")}
-          className="w-full rounded-xl border border-zinc-200 px-3 py-2 text-sm"
+          className="w-full rounded-xl border border-zinc-200 px-3 py-2 text-sm dark:border-hairline-dark"
         />
         <textarea
           value={groupDesc}
           onChange={(e) => setGroupDesc(e.target.value)}
           placeholder={tComm("groupDesc")}
           rows={2}
-          className="w-full rounded-xl border border-zinc-200 px-3 py-2 text-sm"
+          className="w-full rounded-xl border border-zinc-200 px-3 py-2 text-sm dark:border-hairline-dark"
         />
         <select
           value={groupCat}
           onChange={(e) => setGroupCat(e.target.value)}
-          className="w-full rounded-xl border border-zinc-200 px-3 py-2 text-sm"
+          className="w-full rounded-xl border border-zinc-200 px-3 py-2 text-sm dark:border-hairline-dark"
         >
           <option value="모임">{tComm("catMeetup")}</option>
           <option value="비자">{tComm("catVisa")}</option>
@@ -240,26 +240,26 @@ export default function MyActivityPage() {
           type="button"
           disabled={creating}
           onClick={() => void createGroup()}
-          className="rounded-xl bg-zinc-900 px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
+          className="rounded-xl bg-teal px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-60 dark:bg-teal-dark dark:text-night dark:hover:bg-primary-400"
         >
           {creating ? "…" : tComm("createGroup")}
         </button>
       </div>
 
       <div>
-        <h2 className="text-sm font-bold text-zinc-900 mb-3">{t("myGroups")}</h2>
+        <h2 className="text-sm font-bold text-zinc-900 mb-3 dark:text-snow">{t("myGroups")}</h2>
         {myGroups.length === 0 ? (
-          <p className="text-sm text-zinc-500">{t("myGroupsEmpty")}</p>
+          <p className="text-sm text-zinc-500 dark:text-snow-muted">{t("myGroupsEmpty")}</p>
         ) : (
           <ul className="space-y-2">
             {myGroups.map((g) => (
               <li key={g.id}>
                 <Link
                   href={`/${locale}/community/${g.id}`}
-                  className="block rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm font-semibold text-zinc-900 hover:border-primary-300"
+                  className="block rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm font-semibold text-zinc-900 hover:border-primary-300 dark:text-snow dark:bg-night-card dark:border-hairline-dark"
                 >
                   {g.name}
-                  <span className="ml-2 text-xs font-normal text-zinc-500">{g.category}</span>
+                  <span className="ml-2 text-xs font-normal text-zinc-500 dark:text-snow-muted">{g.category}</span>
                 </Link>
               </li>
             ))}

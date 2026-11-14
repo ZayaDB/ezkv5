@@ -383,22 +383,22 @@ export default function MySchedulePage() {
         : fd(anchor, { dateStyle: "full" });
 
   return (
-    <div className="w-full space-y-6">
+    <div className="w-full space-y-8">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-zinc-900 tracking-tight">{t("title")}</h1>
-          <p className="text-base text-zinc-600 mt-1">{t("subtitle")}</p>
+          <h1 className="text-2xl font-semibold leading-[1.2] text-ink dark:text-snow sm:text-[32px]">{t("title")}</h1>
+          <p className="mt-2 text-base leading-[1.55] text-ink-muted dark:text-snow-muted">{t("subtitle")}</p>
         </div>
         <ViewModeToggle view={view} onChange={setView} labels={{ month: t("viewMonth"), week: t("viewWeek"), day: t("viewDay") }} />
       </div>
 
       <PlatformCard padding="lg">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-          <h2 className="text-lg font-semibold text-zinc-900">{titleRange}</h2>
+          <h2 className="text-lg font-semibold text-zinc-900 dark:text-snow">{titleRange}</h2>
           <div className="flex items-center gap-2">
-            <button type="button" onClick={goPrev} className="rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50">{t("prev")}</button>
+            <button type="button" onClick={goPrev} className="rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:text-snow-muted dark:bg-night dark:border-hairline-dark">{t("prev")}</button>
             <button type="button" onClick={() => setAnchor(startOfDay(new Date()))} className="rounded-lg bg-primary-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-primary-700">{t("today")}</button>
-            <button type="button" onClick={goNext} className="rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50">{t("next")}</button>
+            <button type="button" onClick={goNext} className="rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:text-snow-muted dark:bg-night dark:border-hairline-dark">{t("next")}</button>
           </div>
         </div>
 
@@ -446,37 +446,37 @@ export default function MySchedulePage() {
               formatCurrency={(value) => fmt.number(value, { style: "currency", currency: "KRW", maximumFractionDigits: 0 })}
             />
 
-            <div className="overflow-x-auto max-h-64 overflow-y-auto rounded-xl border border-zinc-200">
+            <div className="overflow-x-auto max-h-64 overflow-y-auto rounded-xl border border-zinc-200 dark:border-hairline-dark">
               <table className="w-full text-sm border-collapse">
-                <thead className="sticky top-0 bg-zinc-100 text-left text-sm font-semibold text-zinc-600">
+                <thead className="sticky top-0 bg-zinc-100 text-left text-sm font-semibold text-zinc-600 dark:text-snow-muted dark:bg-night">
                   <tr>
-                    <th className="px-3 py-2 border-b border-zinc-200">{t("budgetTableKind")}</th>
-                    <th className="px-3 py-2 border-b border-zinc-200">{t("budgetTableLabel")}</th>
-                    <th className="px-3 py-2 border-b border-zinc-200">{t("eventDateLabel")}</th>
-                    <th className="px-3 py-2 border-b border-zinc-200 text-right">{t("budgetTableAmount")}</th>
-                    <th className="px-3 py-2 border-b border-zinc-200 text-right">{t("budgetTableActions")}</th>
+                    <th className="px-3 py-2 border-b border-zinc-200 dark:border-hairline-dark">{t("budgetTableKind")}</th>
+                    <th className="px-3 py-2 border-b border-zinc-200 dark:border-hairline-dark">{t("budgetTableLabel")}</th>
+                    <th className="px-3 py-2 border-b border-zinc-200 dark:border-hairline-dark">{t("eventDateLabel")}</th>
+                    <th className="px-3 py-2 border-b border-zinc-200 text-right dark:border-hairline-dark">{t("budgetTableAmount")}</th>
+                    <th className="px-3 py-2 border-b border-zinc-200 text-right dark:border-hairline-dark">{t("budgetTableActions")}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {budgetLines.length === 0 ? (
-                    <tr><td colSpan={5} className="px-3 py-6 text-center text-zinc-500 text-xs">—</td></tr>
+                    <tr><td colSpan={5} className="px-3 py-6 text-center text-zinc-500 text-xs dark:text-snow-muted">—</td></tr>
                   ) : (
                     budgetLines.map((line) => (
-                      <tr key={line.id} className="border-b border-zinc-100 last:border-0 bg-white">
+                      <tr key={line.id} className="border-b border-zinc-100 last:border-0 bg-white dark:bg-night-card dark:border-hairline-dark">
                         <td className="px-3 py-2">
                           <span className={line.kind === "income" ? "text-emerald-700 font-medium" : "text-rose-700 font-medium"}>
                             {line.kind === "income" ? t("budgetKindIncome") : t("budgetKindExpense")}
                           </span>
                         </td>
                         <td className="px-3 py-2">{line.label}</td>
-                        <td className="px-3 py-2 text-sm text-zinc-600">{budgetDateDisplay(line)}<br />{recurrenceLabel(line.recurrence?.type)}</td>
+                        <td className="px-3 py-2 text-sm text-zinc-600 dark:text-snow-muted">{budgetDateDisplay(line)}<br />{recurrenceLabel(line.recurrence?.type)}</td>
                         <td className="px-3 py-2 text-right">{fmt.number(line.amount, { style: "currency", currency: "KRW", maximumFractionDigits: 0 })}</td>
                         <td className="px-3 py-2">
                           <div className="flex items-center justify-end gap-2">
                             <button
                               type="button"
                               onClick={() => startEditBudget(line)}
-                              className="rounded p-1.5 text-zinc-600 hover:bg-zinc-100 hover:text-primary-700"
+                              className="rounded p-1.5 text-zinc-600 hover:bg-zinc-100 hover:text-primary-700 dark:text-snow-muted dark:bg-night"
                               aria-label={t("budgetEditBtn")}
                               title={t("budgetEditBtn")}
                             >
@@ -485,7 +485,7 @@ export default function MySchedulePage() {
                             <button
                               type="button"
                               onClick={() => void removeBudget(line.id)}
-                              className="rounded p-1.5 text-zinc-600 hover:bg-zinc-100 hover:text-red-600"
+                              className="rounded p-1.5 text-zinc-600 hover:bg-zinc-100 hover:text-red-600 dark:text-snow-muted dark:bg-night"
                               aria-label={t("deleteBtn")}
                               title={t("deleteBtn")}
                             >
@@ -500,13 +500,13 @@ export default function MySchedulePage() {
               </table>
             </div>
 
-            <div className="rounded-xl border border-dashed border-zinc-300 p-3 space-y-2">
+            <div className="rounded-xl border border-dashed border-zinc-300 p-3 space-y-2 dark:border-hairline-dark">
               <div className="flex flex-wrap gap-2">
-                <button type="button" onClick={() => setBudgetKind("expense")} className={`rounded-lg px-2.5 py-1.5 text-sm font-semibold ${budgetKind === "expense" ? "bg-rose-600 text-white" : "bg-zinc-100 text-zinc-700"}`}>{t("budgetKindExpense")}</button>
-                <button type="button" onClick={() => setBudgetKind("income")} className={`rounded-lg px-2.5 py-1.5 text-sm font-semibold ${budgetKind === "income" ? "bg-emerald-600 text-white" : "bg-zinc-100 text-zinc-700"}`}>{t("budgetKindIncome")}</button>
+                <button type="button" onClick={() => setBudgetKind("expense")} className={`rounded-lg px-2.5 py-1.5 text-sm font-semibold ${budgetKind === "expense" ? "bg-rose-600 text-white" : "bg-zinc-100 text-zinc-700 dark:text-snow-muted dark:bg-night"}`}>{t("budgetKindExpense")}</button>
+                <button type="button" onClick={() => setBudgetKind("income")} className={`rounded-lg px-2.5 py-1.5 text-sm font-semibold ${budgetKind === "income" ? "bg-emerald-600 text-white" : "bg-zinc-100 text-zinc-700 dark:text-snow-muted dark:bg-night"}`}>{t("budgetKindIncome")}</button>
               </div>
-              <input value={budgetLabel} onChange={(e) => setBudgetLabel(e.target.value)} placeholder={t("budgetLabelPh")} className="w-full rounded-lg border border-zinc-200 px-2 py-1.5 text-sm" />
-              <input value={budgetAmount} onChange={(e) => setBudgetAmount(e.target.value)} placeholder={t("budgetAmountPh")} inputMode="numeric" className="w-full rounded-lg border border-zinc-200 px-2 py-1.5 text-sm" />
+              <input value={budgetLabel} onChange={(e) => setBudgetLabel(e.target.value)} placeholder={t("budgetLabelPh")} className="w-full rounded-lg border border-zinc-200 px-2 py-1.5 text-sm dark:border-hairline-dark" />
+              <input value={budgetAmount} onChange={(e) => setBudgetAmount(e.target.value)} placeholder={t("budgetAmountPh")} inputMode="numeric" className="w-full rounded-lg border border-zinc-200 px-2 py-1.5 text-sm dark:border-hairline-dark" />
               <input
                 type="date"
                 value={budgetDate}
@@ -520,17 +520,17 @@ export default function MySchedulePage() {
                     setBudgetWeekday(String(d.getDay()));
                   }
                 }}
-                className="w-full rounded-lg border border-zinc-200 px-2 py-1.5 text-sm"
+                className="w-full rounded-lg border border-zinc-200 px-2 py-1.5 text-sm dark:border-hairline-dark"
               />
               {budgetRecurrence === "monthly" ? (
-                <select value={budgetMonthday} onChange={(e) => setBudgetMonthday(e.target.value)} className="w-full rounded-lg border border-zinc-200 px-2 py-1.5 text-sm">
+                <select value={budgetMonthday} onChange={(e) => setBudgetMonthday(e.target.value)} className="w-full rounded-lg border border-zinc-200 px-2 py-1.5 text-sm dark:border-hairline-dark">
                   {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
                     <option key={day} value={String(day)}>{t("recurMonthlyOn", { day })}</option>
                   ))}
                 </select>
               ) : null}
               {budgetRecurrence === "weekly" || budgetRecurrence === "biweekly" ? (
-                <select value={budgetWeekday} onChange={(e) => setBudgetWeekday(e.target.value)} className="w-full rounded-lg border border-zinc-200 px-2 py-1.5 text-sm">
+                <select value={budgetWeekday} onChange={(e) => setBudgetWeekday(e.target.value)} className="w-full rounded-lg border border-zinc-200 px-2 py-1.5 text-sm dark:border-hairline-dark">
                   {[0, 1, 2, 3, 4, 5, 6].map((day) => (
                     <option key={day} value={String(day)}>{budgetRecurrence === "weekly" ? t("recurWeeklyOn", { day: weekdayLabel(day) }) : t("recurBiweeklyOn", { day: weekdayLabel(day) })}</option>
                   ))}
@@ -545,11 +545,11 @@ export default function MySchedulePage() {
                   if (next === "monthly") setBudgetMonthday(String(d.getDate()));
                   if (next === "weekly" || next === "biweekly") setBudgetWeekday(String(d.getDay()));
                 }}
-                className="w-full rounded-lg border border-zinc-200 px-2 py-1.5 text-sm"
+                className="w-full rounded-lg border border-zinc-200 px-2 py-1.5 text-sm dark:border-hairline-dark"
               >
                 <option value="none">{t("recurNone")}</option><option value="weekly">{t("recurWeekly")}</option><option value="biweekly">{t("recurBiweekly")}</option><option value="monthly">{t("recurMonthly")}</option>
               </select>
-              <button type="button" disabled={savingBudget} onClick={() => void addBudget()} className="w-full rounded-lg bg-zinc-900 py-2.5 text-sm font-semibold text-white hover:bg-zinc-800 disabled:opacity-60">{savingBudget ? "…" : editingBudgetId ? t("saveEdit") : t("addBudgetBtn")}</button>
+              <button type="button" disabled={savingBudget} onClick={() => void addBudget()} className="w-full rounded-lg bg-teal py-2.5 text-sm font-semibold text-white hover:bg-primary-700 disabled:opacity-60 dark:bg-teal-dark dark:text-night dark:hover:bg-primary-400">{savingBudget ? "…" : editingBudgetId ? t("saveEdit") : t("addBudgetBtn")}</button>
             </div>
           </div>
         </div>
@@ -557,24 +557,24 @@ export default function MySchedulePage() {
 
       {sessions.length === 0 && enrollments.length === 0 && lifeEvents.length === 0 && budgetOccurrences.length === 0 ? (
         <PlatformCard>
-          <p className="text-sm text-zinc-600">{t("empty")}</p>
+          <p className="text-sm text-zinc-600 dark:text-snow-muted">{t("empty")}</p>
           <Link href={`/${locale}/mentors`} className="inline-block mt-4 text-sm font-semibold text-primary-600 hover:underline">{tDash("mentee.quick2Title")}</Link>
         </PlatformCard>
       ) : null}
 
       {dayModal ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40" onClick={() => setDayModal(null)} role="presentation">
-          <div className="w-full max-w-lg rounded-2xl bg-white shadow-xl border border-zinc-200 p-5 space-y-4 max-h-[85vh] overflow-y-auto" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
+          <div className="w-full max-w-lg rounded-2xl bg-white shadow-xl border border-zinc-200 p-5 space-y-4 max-h-[85vh] overflow-y-auto dark:bg-night-card dark:border-hairline-dark" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-start justify-between gap-3">
-              <h3 className="text-lg font-bold text-zinc-900">{fd(dayModal, { dateStyle: "full" })}</h3>
-              <button type="button" onClick={() => setDayModal(null)} className="shrink-0 rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-semibold text-zinc-700 hover:bg-zinc-50">{t("dayModalClose")}</button>
+              <h3 className="text-lg font-bold text-zinc-900 dark:text-snow">{fd(dayModal, { dateStyle: "full" })}</h3>
+              <button type="button" onClick={() => setDayModal(null)} className="shrink-0 rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-semibold text-zinc-700 hover:bg-zinc-50 dark:text-snow-muted dark:bg-night dark:border-hairline-dark">{t("dayModalClose")}</button>
             </div>
 
             <div className="space-y-2 text-sm">
               {lifeOnDay(dayModal).map((ev) => (
                 <div key={ev.id} className="rounded-lg border border-violet-100 bg-violet-50/60 px-3 py-2">
-                  <p className="font-medium text-zinc-900">{ev.title}</p>
-                  <p className="text-sm text-zinc-500">{fd(new Date(ev.startsAt), { timeStyle: "short" })} · {t.has(`eventCategory.${ev.category}`) ? t(`eventCategory.${ev.category}`) : ev.category} · {t.has(`eventStatus.${ev.status}`) ? t(`eventStatus.${ev.status}`) : ev.status}</p>
+                  <p className="font-medium text-zinc-900 dark:text-snow">{ev.title}</p>
+                  <p className="text-sm text-zinc-500 dark:text-snow-muted">{fd(new Date(ev.startsAt), { timeStyle: "short" })} · {t.has(`eventCategory.${ev.category}`) ? t(`eventCategory.${ev.category}`) : ev.category} · {t.has(`eventStatus.${ev.status}`) ? t(`eventStatus.${ev.status}`) : ev.status}</p>
                   <div className="mt-1 flex gap-3 text-sm">
                     <button type="button" className="font-semibold text-primary-700 hover:underline" onClick={() => startEditEvent(ev)}>{t("budgetEditBtn")}</button>
                     <button type="button" className="font-semibold text-red-600 hover:underline" onClick={() => void removeEvent(ev.sourceId || ev.id)}>{t("deleteBtn")}</button>
@@ -583,35 +583,35 @@ export default function MySchedulePage() {
               ))}
               {budgetOnDay(dayModal).map((b) => (
                 <div key={b.id} className="rounded-lg border border-rose-100 bg-rose-50/70 px-3 py-2">
-                  <p className="font-medium text-zinc-900">{b.kind === "income" ? t("budgetKindIncome") : t("budgetKindExpense")} · {b.label}</p>
-                  <p className="text-sm text-zinc-500">{fmt.number(b.amount, { style: "currency", currency: "KRW", maximumFractionDigits: 0 })} · {recurrenceLabel(b.recurrence?.type)}</p>
+                  <p className="font-medium text-zinc-900 dark:text-snow">{b.kind === "income" ? t("budgetKindIncome") : t("budgetKindExpense")} · {b.label}</p>
+                  <p className="text-sm text-zinc-500 dark:text-snow-muted">{fmt.number(b.amount, { style: "currency", currency: "KRW", maximumFractionDigits: 0 })} · {recurrenceLabel(b.recurrence?.type)}</p>
                 </div>
               ))}
             </div>
 
-            <div className="border-t border-zinc-200 pt-4 space-y-2">
-              <h4 className="text-sm font-bold text-zinc-900">{t("manualEntry")}</h4>
-              <input value={eventTitle} onChange={(e) => setEventTitle(e.target.value)} placeholder={t("eventTitlePh")} className="w-full rounded-lg border border-zinc-200 px-2 py-1.5 text-sm" />
+            <div className="border-t border-zinc-200 pt-4 space-y-2 dark:border-hairline-dark">
+              <h4 className="text-sm font-bold text-zinc-900 dark:text-snow">{t("manualEntry")}</h4>
+              <input value={eventTitle} onChange={(e) => setEventTitle(e.target.value)} placeholder={t("eventTitlePh")} className="w-full rounded-lg border border-zinc-200 px-2 py-1.5 text-sm dark:border-hairline-dark" />
               <div className="grid grid-cols-2 gap-2">
-                <input type="date" value={eventDate} onChange={(e) => setEventDate(e.target.value)} className="rounded-lg border border-zinc-200 px-2 py-1.5 text-sm" />
-                <input type="time" value={eventTime} onChange={(e) => setEventTime(e.target.value)} className="rounded-lg border border-zinc-200 px-2 py-1.5 text-sm" />
+                <input type="date" value={eventDate} onChange={(e) => setEventDate(e.target.value)} className="rounded-lg border border-zinc-200 px-2 py-1.5 text-sm dark:border-hairline-dark" />
+                <input type="time" value={eventTime} onChange={(e) => setEventTime(e.target.value)} className="rounded-lg border border-zinc-200 px-2 py-1.5 text-sm dark:border-hairline-dark" />
               </div>
               <div className="grid grid-cols-3 gap-2">
-                <select value={eventCategory} onChange={(e) => setEventCategory(e.target.value as LifeEventCategory)} className="rounded-lg border border-zinc-200 px-2 py-1.5 text-sm">
+                <select value={eventCategory} onChange={(e) => setEventCategory(e.target.value as LifeEventCategory)} className="rounded-lg border border-zinc-200 px-2 py-1.5 text-sm dark:border-hairline-dark">
                   {(["personal", "work", "health", "parttime", "other"] as const).map((c) => (
                     <option key={c} value={c}>{t(`eventCategory.${c}`)}</option>
                   ))}
                 </select>
-                <select value={eventStatus} onChange={(e) => setEventStatus(e.target.value as LifeEventStatus)} className="rounded-lg border border-zinc-200 px-2 py-1.5 text-sm">
+                <select value={eventStatus} onChange={(e) => setEventStatus(e.target.value as LifeEventStatus)} className="rounded-lg border border-zinc-200 px-2 py-1.5 text-sm dark:border-hairline-dark">
                   {(["planned", "completed", "cancelled"] as const).map((st) => (
                     <option key={st} value={st}>{t(`eventStatus.${st}`)}</option>
                   ))}
                 </select>
-                <select value={eventRecurrence} onChange={(e) => setEventRecurrence(e.target.value as LifeRecurrence["type"])} className="rounded-lg border border-zinc-200 px-2 py-1.5 text-sm">
+                <select value={eventRecurrence} onChange={(e) => setEventRecurrence(e.target.value as LifeRecurrence["type"])} className="rounded-lg border border-zinc-200 px-2 py-1.5 text-sm dark:border-hairline-dark">
                   <option value="none">{t("recurNone")}</option><option value="weekly">{t("recurWeekly")}</option><option value="biweekly">{t("recurBiweekly")}</option><option value="monthly">{t("recurMonthly")}</option>
                 </select>
               </div>
-              <textarea value={eventNotes} onChange={(e) => setEventNotes(e.target.value)} placeholder={t("eventNotesPh")} rows={2} className="w-full rounded-lg border border-zinc-200 px-2 py-1.5 text-sm" />
+              <textarea value={eventNotes} onChange={(e) => setEventNotes(e.target.value)} placeholder={t("eventNotesPh")} rows={2} className="w-full rounded-lg border border-zinc-200 px-2 py-1.5 text-sm dark:border-hairline-dark" />
               <button type="button" disabled={savingEvent} onClick={() => void addOrUpdateEvent()} className="w-full rounded-lg bg-violet-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-violet-800 disabled:opacity-60">
                 {savingEvent ? "…" : editingEventSourceId ? t("editEvent") : t("addEventBtn")}
               </button>

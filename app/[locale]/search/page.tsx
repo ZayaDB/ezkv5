@@ -127,7 +127,7 @@ export default async function SearchPage({
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {studyInfos.slice(0, 8).map((s) => (
-                <Link key={s.id} href={`/${locale}/study-in-korea#article-${s.id}`} className="ds-panel p-4 hover:ring-primary-300 transition-colors">
+                <Link key={s.id} href={`/${locale}/study-in-korea/${s.id}`} className="ds-panel p-4 hover:ring-primary-300 transition-colors">
                   <p className="font-semibold text-slate-900 dark:text-slate-100">{s.title}</p>
                   <p className="text-sm text-slate-600 dark:text-slate-400">{tStudy.has(s.category) ? tStudy(s.category) : s.category}</p>
                 </Link>

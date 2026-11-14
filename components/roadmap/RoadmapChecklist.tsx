@@ -57,7 +57,7 @@ export default function RoadmapChecklist({
           ))}
         </div>
         {emptyHint ? (
-          <p className="text-xs text-gray-400 mt-3">{emptyHint}</p>
+          <p className="text-xs text-gray-400 mt-3 dark:text-snow-muted">{emptyHint}</p>
         ) : null}
       </div>
     );
@@ -80,7 +80,7 @@ export default function RoadmapChecklist({
               onClick={() => setPickedId(r.id)}
               className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold ${
                 r.id === selected.id
-                  ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900"
+                  ? "bg-teal text-white dark:bg-teal-dark dark:text-night"
                   : "bg-zinc-100 text-zinc-500 dark:bg-slate-800"
               }`}
             >
@@ -128,7 +128,7 @@ export default function RoadmapChecklist({
                         ? "text-zinc-700 dark:text-slate-200"
                         : current
                           ? "text-zinc-900 dark:text-white font-semibold"
-                          : "text-gray-400"
+                          : "text-gray-400 dark:text-snow-muted"
                     }`}
                   >
                     {title}
@@ -158,7 +158,7 @@ export default function RoadmapChecklist({
             </Link>
             <Link
               href={learnHref}
-              className="rounded-full bg-zinc-900 dark:bg-white px-3 py-1.5 text-xs font-semibold text-white dark:text-zinc-900"
+              className="rounded-full bg-teal dark:bg-teal-dark px-3 py-1.5 text-xs font-semibold text-white dark:text-night hover:opacity-90"
             >
               {t("learn")}
             </Link>

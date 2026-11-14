@@ -48,8 +48,6 @@ export default async function HomePage({
   const t = await getTranslations({ locale, namespace: "homeV2" });
   const raw = <T,>(key: string) => t.raw(key) as T;
   const heroTitle = raw<string[]>("heroTitle");
-  const audience = raw<string[]>("audienceItems");
-  const value = raw<string[]>("valueItems");
   const courses = raw<{ topic: string; title: string; body: string; meta: string }[]>("courses");
   const guides = raw<{ title: string; body: string }[]>("guides");
   const stepTexts = raw<{ title: string; body: string }[]>("steps");
@@ -145,42 +143,6 @@ export default async function HomePage({
               <span>SEOUL, KR</span>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Audience and value */}
-      <section className="pb-14 lg:pb-20">
-        <div className={`${container} grid gap-6 lg:grid-cols-2`}>
-          {[
-            {
-              eyebrow: t("audienceEyebrow"),
-              title: t("audienceTitle"),
-              body: t("audienceBody"),
-              items: audience,
-            },
-            {
-              eyebrow: t("valueEyebrow"),
-              title: t("valueTitle"),
-              body: t("valueBody"),
-              items: value,
-            },
-          ].map((c, i) => (
-            <Reveal key={c.eyebrow} delay={i * 120}>
-              <div className={`${card} h-full p-6 sm:p-7`}>
-                <p className="mb-3 text-xs font-bold text-teal dark:text-teal-dark">{c.eyebrow}</p>
-                <h2 className="mb-3 text-2xl font-bold text-ink dark:text-snow">{c.title}</h2>
-                <p className={`${lead} mb-5 text-sm`}>{c.body}</p>
-                <ul className="space-y-3">
-                  {c.items.map((it) => (
-                    <li key={it} className="flex items-center gap-3 text-[15px] text-ink dark:text-snow">
-                      <span className="h-2 w-2 shrink-0 rounded-full bg-primary-500 dark:bg-primary-400" />
-                      {it}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </Reveal>
-          ))}
         </div>
       </section>
 

@@ -33,7 +33,23 @@ export function mapStudyInfo(row: Record<string, unknown>): StudyInfo {
     content: String(row.content || ""),
     image: row.image ? String(row.image) : undefined,
     tags: Array.isArray(row.tags) ? (row.tags as string[]) : [],
+    summary: String(row.summary || ""),
+    audience: String(row.audience || ""),
+    readMinutes: Number(row.read_minutes) || 0,
+    featured: Boolean(row.featured),
+    language: String(row.language || "ko"),
+    reviewedAt: row.reviewed_at ? String(row.reviewed_at) : null,
+    createdAt: row.created_at ? String(row.created_at) : null,
   };
+}
+
+const STUDY_INFO_SELECT =
+  "id, category, title, content, image, tags, summary, audience, read_minutes, featured, language, reviewed_at, created_at";
+
+export async function queryStudyInfoByIdWith(supabase: SupabaseClient, id: string) {
+  const { data, error } = await supabase.from("study_infos").select(STUDY_INFO_SELECT).eq("id", id).maybeSingle();
+  if (error) throw new Error(error.message);
+  return data ? mapStudyInfo(data as Record<string, unknown>) : null;
 }
 
 export async function queryCommunityGroupsWith(
@@ -94,8 +110,9 @@ export async function queryStudyInfosWith(
 ) {
   let q = supabase
     .from("study_infos")
-    .select("id, category, title, content, image, tags")
-    .order("created_at", { ascending: false });
+    .select(STUDY_INFO_SELECT)
+    .order("featured", { ascending: false })
+    .order("created_at", { ascending: true });
   if (options?.category) q = q.eq("category", options.category);
   const { data, error } = await q;
   if (error) throw new Error(error.message);

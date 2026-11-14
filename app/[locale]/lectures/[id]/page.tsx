@@ -3,33 +3,44 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
+import Link from 'next/link';
+import { ArrowRight, Heart, Info } from 'lucide-react';
 import { intlLocale } from '@/lib/i18n/config';
 import { contentApi, enrollmentApi, lectureWishlistApi } from '@/lib/api/client';
 import { useAuth } from '@/lib/contexts/AuthContext';
-import Link from 'next/link';
-import { Star, Users, Clock, PlayCircle, ArrowLeft, CheckCircle, Heart } from 'lucide-react';
 import type { Lecture } from '@/types';
-import Button from '@/components/ui/Button';
-import { lectureCategoryLabel } from "@/lib/lectures/categories";
+import { lectureCategoryLabel } from '@/lib/lectures/categories';
+import LectureCover from '@/components/lectures/LectureCover';
 
-function syllabusFromDescription(description: string, fallback: string[]): string[] {
-  const lines = description
-    .split(/\n|•|-\s+/)
-    .map((s) => s.trim())
-    .filter(Boolean);
-  if (lines.length >= 2) return lines.slice(0, 8);
-  return fallback;
+/* Figma "LNK • Course detail and enrollment" — 레이아웃은 Figma, 강조색은 LNK 틸, 상태는 실제 데이터 */
+const card = 'bg-white dark:bg-night-card border border-hairline dark:border-hairline-dark';
+const outlineBtn =
+  'inline-flex h-12 items-center justify-center gap-2 rounded-lg px-5 text-sm font-semibold transition-colors ' +
+  card +
+  ' text-ink dark:text-snow hover:border-teal dark:hover:border-teal-dark';
+const primaryBtn =
+  'inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-teal px-5 text-sm font-semibold text-white transition-colors hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-teal-dark dark:text-night dark:hover:bg-primary-400';
+
+const LANG_KEY: Record<string, string> = { ko: 'langKo', en: 'langEn', mn: 'langMn' };
+
+/** 강의 설명 끝의 데모 안내 줄은 본문과 분리해서 보여준다 */
+function splitDescription(text: string) {
+  const idx = text.lastIndexOf('\n\n※');
+  if (idx === -1) return { body: text.trim(), note: '' };
+  return { body: text.slice(0, idx).trim(), note: text.slice(idx).trim() };
 }
 
 export default function LectureDetailPage() {
   const params = useParams();
   const locale = useLocale();
   const tLec = useTranslations('lectures');
-  const t = useTranslations('lectureDetail');
-  const tCommon = useTranslations('common');
+  const tc = useTranslations('coursesPage');
+  const t = useTranslations('courseDetail');
+  const tOld = useTranslations('lectureDetail');
   const router = useRouter();
   const { isAuthenticated, user } = useAuth();
   const id = params.id as string;
+  const nf = new Intl.NumberFormat(intlLocale(locale));
 
   const [lecture, setLecture] = useState<Lecture | null | undefined>(undefined);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -84,26 +95,24 @@ export default function LectureDetailPage() {
 
   if (lecture === undefined) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin" />
+      <div className="flex min-h-screen items-center justify-center bg-surface dark:bg-night">
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-teal border-t-transparent dark:border-teal-dark" />
       </div>
     );
   }
 
   if (!lecture) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4">
+      <div className="flex min-h-screen items-center justify-center bg-surface px-4 dark:bg-night">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">{t("notFound")}</h1>
-          <Link href={`/${locale}/lectures`} className="text-primary-600 font-semibold hover:underline">
-            {t("backToList")}
+          <h1 className="mb-4 text-2xl font-semibold text-ink dark:text-snow">{tOld('notFound')}</h1>
+          <Link href={`/${locale}/lectures`} className="font-semibold text-teal hover:underline dark:text-teal-dark">
+            {tOld('backToList')}
           </Link>
         </div>
       </div>
     );
   }
-
-  const syllabus = syllabusFromDescription(lecture.description, t.raw("defaultCurriculum") as string[]);
 
   const enroll = async () => {
     if (isOwner) return;
@@ -139,212 +148,258 @@ export default function LectureDetailPage() {
     if (!res.error) setIsWishlisted(true);
   };
 
+  const categoryLabel = lectureCategoryLabel(lecture.category, tLec);
+  const levelLabel = lecture.difficulty ? tc(lecture.difficulty) : '';
+  const langLabel = LANG_KEY[lecture.language || 'ko'] ? tc(LANG_KEY[lecture.language || 'ko']) : lecture.language;
+  const formatLabel = lecture.type === 'online' ? tc('online') : tc('offline');
+  const priceLabel = lecture.price > 0 ? `₩${nf.format(lecture.price)}` : tc('free');
+  const { body, note } = splitDescription(lecture.description || '');
+  const learn = (lecture.whatYouWillLearn || []).filter(Boolean);
+  const curriculum = (lecture.curriculum || []).filter(Boolean);
+  const metaLine = [levelLabel, lecture.totalLessons ? tc('lessons', { n: lecture.totalLessons }) : '', langLabel]
+    .filter(Boolean)
+    .join(' · ');
+
+  const state = isOwner ? 'Owner' : isEnrolled ? 'Enrolled' : 'Open';
+
+  const details: { label: string; value: string }[] = [
+    { label: t('format'), value: formatLabel },
+    { label: t('level'), value: levelLabel },
+    { label: t('language'), value: langLabel || '' },
+    { label: t('duration'), value: lecture.duration || '' },
+    {
+      label: t('lessons'),
+      value:
+        lecture.totalLessons || lecture.totalHours
+          ? t('lessonsValue', { lessons: lecture.totalLessons || 0, hours: lecture.totalHours || 0 })
+          : '',
+    },
+    { label: t('instructor'), value: lecture.instructor || '' },
+    {
+      label: t('capacity'),
+      value: lecture.maxStudents ? t('capacityValue', { students: lecture.students || 0, max: lecture.maxStudents }) : '',
+    },
+    { label: t('price'), value: priceLabel },
+  ].filter((d) => d.value);
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
-      <div
-        className={`bg-gradient-to-br ${
-          lecture.type === 'online'
-            ? 'from-blue-600 via-blue-500 to-cyan-500'
-            : 'from-green-600 via-green-500 to-emerald-500'
-        } py-16`}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Link
-            href={`/${locale}/lectures`}
-            className="inline-flex items-center text-white/90 hover:text-white mb-6 transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5 mr-2" />
-            {tCommon("back")}
-          </Link>
+    <div className="min-h-screen bg-surface dark:bg-night">
+      <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-10 px-4 py-8 sm:px-8 lg:px-20 lg:py-12">
+        {/* Breadcrumb */}
+        <nav aria-label="Breadcrumb" className="text-[13px] text-ink-muted dark:text-snow-muted">
+          <ol className="flex flex-wrap items-center gap-1.5">
+            <li>
+              <Link href={`/${locale}/lectures`} className="hover:text-teal dark:hover:text-teal-dark">
+                {t('breadcrumbCourses')}
+              </Link>
+            </li>
+            <li aria-hidden="true">/</li>
+            <li>{categoryLabel}</li>
+            <li aria-hidden="true">/</li>
+            <li className="truncate text-ink dark:text-snow" aria-current="page">
+              {lecture.title}
+            </li>
+          </ol>
+        </nav>
 
-          <div className="flex flex-col md:flex-row items-start gap-8">
-            <div className="w-full md:w-96 h-64 bg-white/20 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden relative">
-              {lecture.image ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={lecture.image}
-                  alt={lecture.title}
-                  className="w-full h-full object-cover"
-                />
+        {/* Hero + enrollment panel */}
+        <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(0,1fr)_390px]">
+          <div className="flex min-w-0 flex-col gap-5">
+            <span className="w-fit rounded-md bg-primary-50 px-2.5 py-1.5 text-xs font-semibold text-primary-700 dark:bg-night-pill dark:text-primary-300">
+              {categoryLabel} · {formatLabel}
+            </span>
+            <h1 className="text-3xl font-semibold leading-[1.15] text-ink dark:text-snow sm:text-[44px]">{lecture.title}</h1>
+            {lecture.shortDescription && (
+              <p className="text-lg leading-[1.55] text-ink-muted dark:text-snow-muted">{lecture.shortDescription}</p>
+            )}
+            {metaLine && <p className="text-[13px] text-ink-muted dark:text-snow-muted">{metaLine}</p>}
+            <div className="aspect-[16/7] w-full overflow-hidden rounded-2xl">
+              <LectureCover image={lecture.image} category={lecture.category} alt={lecture.title} iconSize={36} />
+            </div>
+          </div>
+
+          <aside className={`flex flex-col gap-5 rounded-2xl p-7 lg:sticky lg:top-28 ${card}`}>
+            <span
+              className={`w-fit rounded-full px-2.5 py-1.5 text-xs font-semibold ${
+                state === 'Open'
+                  ? 'bg-primary-50 text-primary-700 dark:bg-night-pill dark:text-primary-300'
+                  : 'bg-surface text-ink-muted dark:bg-night dark:text-snow-muted'
+              }`}
+            >
+              {t(`panel${state}`)}
+            </span>
+            <div className="flex flex-col gap-3">
+              <h2 className="text-[22px] font-semibold leading-[1.4] text-ink dark:text-snow">{t(`panelTitle${state}`)}</h2>
+              <p className="text-sm leading-[1.6] text-ink-muted dark:text-snow-muted">{t(`panelBody${state}`)}</p>
+            </div>
+            <div className="h-px w-full bg-hairline dark:bg-hairline-dark" />
+            <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-[13px]">
+              {details.map((d) => (
+                <div key={d.label} className="contents">
+                  <dt className="text-ink-muted dark:text-snow-muted">{d.label}</dt>
+                  <dd className="text-right font-medium text-ink dark:text-snow">{d.value}</dd>
+                </div>
+              ))}
+            </dl>
+            <div className="flex flex-col gap-2.5">
+              {state === 'Owner' ? (
+                <Link href={`/${locale}/my/lectures`} className={primaryBtn}>
+                  {t('manage')}
+                </Link>
+              ) : state === 'Enrolled' ? (
+                <Link href={`/${locale}/my/courses`} className={primaryBtn}>
+                  {t('goMyLearning')}
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </Link>
               ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <PlayCircle className="w-24 h-24 text-white/90" />
-                </div>
+                <button type="button" onClick={enroll} disabled={isSubmitting} className={primaryBtn}>
+                  {isSubmitting ? t('enrolling') : t('enroll')}
+                </button>
+              )}
+              {state !== 'Owner' && (
+                <button type="button" onClick={toggleWishlist} aria-pressed={isWishlisted} className={outlineBtn}>
+                  <Heart
+                    className={`h-4 w-4 ${isWishlisted ? 'fill-current text-teal dark:text-teal-dark' : ''}`}
+                    aria-hidden="true"
+                  />
+                  {isWishlisted ? t('saved') : t('save')}
+                </button>
               )}
             </div>
+            {enrollMessage ? (
+              <p className="text-[13px] font-medium text-teal dark:text-teal-dark" role="status">
+                {enrollMessage}
+              </p>
+            ) : (
+              !isAuthenticated &&
+              state === 'Open' && <p className="text-xs text-ink-muted dark:text-snow-muted">{t('loginToEnroll')}</p>
+            )}
+          </aside>
+        </div>
 
-            <div className="flex-1 text-white">
-              <div className="flex items-center gap-3 mb-4 flex-wrap">
-                <span
-                  className={`px-4 py-2 rounded-xl font-semibold ${
-                    lecture.type === 'online'
-                      ? 'bg-blue-500/30 backdrop-blur-sm'
-                      : 'bg-green-500/30 backdrop-blur-sm'
-                  }`}
-                >
-                  {lecture.type === 'online' ? tLec('online') : tLec('offline')}
-                </span>
-                <span className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-xl font-semibold">
-                  {lectureCategoryLabel(lecture.category, tLec)}
-                </span>
-              </div>
-              <h1 className="text-4xl md:text-5xl font-extrabold mb-4">{lecture.title}</h1>
-              <p className="text-xl text-white/90 mb-6">{lecture.instructor}</p>
-
-              <div className="flex flex-wrap items-center gap-6 mb-6">
-                <div className="flex items-center gap-2">
-                  <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-                  <span className="font-bold">{lecture.rating}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Users className="w-5 h-5" />
-                  <span>{t("studentsEnrolled", { count: lecture.students.toLocaleString(intlLocale(locale)) })}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Clock className="w-5 h-5" />
-                  <span>{lecture.duration}</span>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4 flex-wrap">
-                <div className="text-4xl font-extrabold">₩{lecture.price.toLocaleString('ko-KR')}</div>
-                {isOwner ? (
-                  <Link
-                    href={`/${locale}/my/lectures`}
-                    className="inline-flex items-center rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 hover:bg-white/90"
-                  >
-                    {tLec('ownCourse')} · {tLec('manageOwn')}
-                  </Link>
-                ) : (
-                  <>
-                    <Button
-                      type="button"
-                      onClick={toggleWishlist}
-                      className={`${
-                        isWishlisted ? 'bg-red-50 text-red-600 border border-red-200' : 'bg-white/20 text-white border border-white/30'
-                      }`}
-                      variant="ghost"
-                    >
-                      <Heart className={`w-4 h-4 inline mr-2 ${isWishlisted ? 'fill-red-500' : ''}`} />
-                      {isWishlisted ? t('wishlisted') : t('wishlist')}
-                    </Button>
-                    <Button
-                      type="button"
-                      onClick={enroll}
-                      disabled={isSubmitting || isEnrolled}
-                      variant="secondary"
-                      size="lg"
-                    >
-                      {isSubmitting ? t('enrolling') : isEnrolled ? t('enrolled') : t('enrollNow')}
-                    </Button>
-                  </>
-                )}
-              </div>
-              {!isOwner && enrollMessage && (
-                <p className="text-sm font-semibold text-white/90 mt-3">{enrollMessage}</p>
-              )}
-            </div>
+        {/* Notice */}
+        <div className="flex items-start gap-3.5 rounded-lg bg-[#f8f0df] p-5 dark:bg-[#2a2418]">
+          <Info className="mt-0.5 h-5 w-5 shrink-0 text-[#75582b] dark:text-[#e2c48f]" aria-hidden="true" />
+          <div className="flex flex-col gap-1 leading-[1.55]">
+            <p className="text-sm font-semibold text-ink dark:text-snow">{t('noticeTitle')}</p>
+            <p className="text-[13px] text-ink-muted dark:text-snow-muted">
+              {t('noticeBody')}
+              {note && <span className="mt-1 block">{note}</span>}
+            </p>
           </div>
         </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-8">
-            <div className="ds-panel p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("about")}</h2>
-              <p className="text-gray-600 leading-relaxed whitespace-pre-line">{lecture.description}</p>
-            </div>
-            <div className="ds-panel p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("learningGuide")}</h2>
-              <div className="space-y-4 text-sm text-gray-700">
-                <div><p className="text-gray-500">{t("shortDescription")}</p><p className="font-medium">{lecture.shortDescription || tCommon('noInfo')}</p></div>
-                <div><p className="text-gray-500">{t("targetAudience")}</p><p className="whitespace-pre-line">{lecture.targetAudience || tCommon('noInfo')}</p></div>
-                <div><p className="text-gray-500">{t("prerequisites")}</p><p className="whitespace-pre-line">{lecture.prerequisites || tCommon('none')}</p></div>
-                {lecture.whatYouWillLearn && lecture.whatYouWillLearn.length > 0 && (
-                  <div>
-                    <p className="text-gray-500 mb-1">{t("whatYouLearn")}</p>
-                    <ul className="list-disc pl-5 space-y-1">{lecture.whatYouWillLearn.map((x, i) => <li key={i}>{x}</li>)}</ul>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="ds-panel p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("curriculumHighlights")}</h2>
-              <ul className="space-y-3">
-                {syllabus.map((line, i) => (
-                  <li key={i} className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-accent-500 mt-0.5 flex-shrink-0" />
-                    <span className="text-gray-600">{line}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+        {/* Content + side info */}
+        <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(0,1fr)_390px]">
+          <div className="flex min-w-0 flex-col gap-10">
+            {body && (
+              <section className="flex flex-col gap-4">
+                <h2 className="text-2xl font-semibold text-ink dark:text-snow">{t('about')}</h2>
+                <p className="whitespace-pre-line text-[15px] leading-[1.7] text-ink-muted dark:text-snow-muted">{body}</p>
+              </section>
+            )}
+            {learn.length > 0 && (
+              <section className="flex flex-col gap-4">
+                <h2 className="text-2xl font-semibold text-ink dark:text-snow">{t('covers')}</h2>
+                <ul className="flex list-disc flex-col gap-1.5 pl-5 text-[15px] leading-[1.6] text-ink-muted marker:text-teal dark:text-snow-muted dark:marker:text-teal-dark">
+                  {learn.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </section>
+            )}
+            {curriculum.length > 0 && (
+              <section className="flex flex-col gap-4">
+                <h2 className="text-2xl font-semibold text-ink dark:text-snow">{t('curriculum')}</h2>
+                <ol className="flex flex-col gap-4">
+                  {curriculum.map((item, i) => (
+                    <li key={`${i}-${item}`} className={`flex items-start gap-5 rounded-lg px-5 py-4 ${card}`}>
+                      <span className="pt-0.5 text-[13px] font-medium text-teal dark:text-teal-dark">
+                        {String(i + 1).padStart(2, '0')}
+                      </span>
+                      <p className="flex-1 text-[15px] font-semibold text-ink dark:text-snow">{item}</p>
+                      <span className="text-[11px] text-ink-muted dark:text-snow-muted">
+                        {t('lessonTag')} {i + 1}
+                      </span>
+                    </li>
+                  ))}
+                </ol>
+              </section>
+            )}
           </div>
 
-          <div className="space-y-6">
-            <div className="ds-panel p-6 sticky top-24">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">{t("info")}</h3>
-              <div className="space-y-4 text-sm">
-                <div>
-                  <div className="text-gray-600 mb-1">{t("instructor")}</div>
-                  <div className="font-semibold text-gray-900">{lecture.instructor}</div>
+          <aside className={`flex flex-col rounded-2xl p-6 ${card}`}>
+            {[
+              { title: t('audience'), body: lecture.targetAudience },
+              { title: t('prerequisites'), body: lecture.prerequisites },
+              { title: t('teaching'), body: lecture.instructor ? t('teachingBody', { name: lecture.instructor }) : '' },
+            ]
+              .filter((s) => s.body)
+              .map((s, i) => (
+                <div key={s.title} className={`flex flex-col gap-3 py-5 ${i > 0 ? 'border-t border-hairline dark:border-hairline-dark' : 'pt-0'}`}>
+                  <h3 className="text-lg font-semibold text-ink dark:text-snow">{s.title}</h3>
+                  <p className="whitespace-pre-line text-sm leading-[1.6] text-ink-muted dark:text-snow-muted">{s.body}</p>
                 </div>
-                <div>
-                  <div className="text-gray-600 mb-1">{t("duration")}</div>
-                  <div className="font-semibold text-gray-900">{lecture.duration}</div>
-                </div>
-                <div>
-                  <div className="text-gray-600 mb-1">{t("level")}</div>
-                  <div className="font-semibold text-gray-900">{lecture.difficulty || 'beginner'}</div>
-                </div>
-                <div>
-                  <div className="text-gray-600 mb-1">{t("lessonsHours")}</div>
-                  <div className="font-semibold text-gray-900">{t("lessonsHoursValue", { lessons: lecture.totalLessons || 0, hours: lecture.totalHours || 0 })}</div>
-                </div>
-                <div>
-                  <div className="text-gray-600 mb-1">{t("maxStudents")}</div>
-                  <div className="font-semibold text-gray-900">{tCommon("peopleCount", { count: lecture.maxStudents || 30 })}</div>
-                </div>
-                <div>
-                  <div className="text-gray-600 mb-1">{t("students")}</div>
-                  <div className="font-semibold text-gray-900">{tCommon("peopleCount", { count: lecture.students.toLocaleString(intlLocale(locale)) })}</div>
-                </div>
-                <div>
-                  <div className="text-gray-600 mb-1">{t("rating")}</div>
-                  <div className="flex items-center gap-2">
-                    <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-                    <span className="font-semibold text-gray-900">{lecture.rating}</span>
-                  </div>
-                </div>
-                {isOwner ? (
-                  <Link
-                    href={`/${locale}/my/lectures`}
-                    className="block w-full text-center rounded-xl bg-primary-600 px-4 py-3 text-sm font-semibold text-white hover:bg-primary-700"
-                  >
-                    {tLec('manageOwn')}
-                  </Link>
-                ) : (
-                  <>
-                    <Button
-                      type="button"
-                      onClick={enroll}
-                      disabled={isSubmitting || isEnrolled}
-                      fullWidth
-                      size="lg"
-                    >
-                      {isSubmitting ? t('enrolling') : isEnrolled ? t('enrolled') : t('enrollNow')}
-                    </Button>
-                    {enrollMessage && (
-                      <p className="text-xs text-primary-700 font-semibold">{enrollMessage}</p>
-                    )}
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
+              ))}
+            <Link
+              href={`/${locale}/mentors`}
+              className="mt-1 inline-flex items-center gap-1 text-sm font-semibold text-teal hover:underline dark:text-teal-dark"
+            >
+              {t('findMentors')}
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+          </aside>
         </div>
+
+        {/* Enrollment steps */}
+        <section className="flex flex-col gap-6 rounded-2xl bg-primary-50 p-6 dark:bg-night-pill sm:p-8">
+          <div className="flex flex-col gap-3">
+            <p className="text-xs font-semibold text-teal dark:text-teal-dark">{t('stepsTag')}</p>
+            <h2 className="text-[26px] font-semibold leading-[1.3] text-ink dark:text-snow">{t('stepsTitle')}</h2>
+            <p className="text-sm text-ink-muted dark:text-snow-muted">{t('stepsBody')}</p>
+          </div>
+          <ol className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            {[
+              { n: 1, href: '#top', cta: t('step1Cta') },
+              { n: 2, href: `/${locale}/login`, cta: t('step2Cta') },
+              { n: 3, href: `/${locale}/my/courses`, cta: t('step3Cta') },
+            ].map((s) => (
+              <li key={s.n} className={`flex flex-col gap-3 rounded-xl p-6 ${card}`}>
+                <p className="text-xs font-semibold uppercase text-teal dark:text-teal-dark">{t(`step${s.n}Tag`)}</p>
+                <h3 className="text-lg font-semibold text-ink dark:text-snow">{t(`step${s.n}Title`)}</h3>
+                <p className="flex-1 text-sm leading-[1.6] text-ink-muted dark:text-snow-muted">{t(`step${s.n}Body`)}</p>
+                <div className="h-px w-full bg-hairline dark:bg-hairline-dark" />
+                {s.n === 1 ? (
+                  <button
+                    type="button"
+                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                    className="inline-flex w-fit items-center gap-1 text-sm font-semibold text-ink hover:text-teal dark:text-snow dark:hover:text-teal-dark"
+                  >
+                    {s.cta}
+                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                  </button>
+                ) : (
+                  <Link
+                    href={s.href}
+                    className="inline-flex w-fit items-center gap-1 text-sm font-semibold text-ink hover:text-teal dark:text-snow dark:hover:text-teal-dark"
+                  >
+                    {s.cta}
+                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                  </Link>
+                )}
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        {/* Arrival guide */}
+        <section className="flex flex-col items-start gap-3">
+          <h2 className="text-[22px] font-semibold text-ink dark:text-snow">{t('arrivalTitle')}</h2>
+          <p className="text-sm text-ink-muted dark:text-snow-muted">{t('arrivalBody')}</p>
+          <Link href={`/${locale}/study-in-korea`} className={outlineBtn}>
+            {t('arrivalCta')}
+          </Link>
+        </section>
       </div>
     </div>
   );
