@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useFormatter, useLocale, useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { adminApi } from "@/lib/api";
@@ -22,6 +22,7 @@ import ModerationTabs, { type ModerationTab } from "@/components/admin/moderatio
 import MentorApplicationDetails from "@/components/admin/moderation/MentorApplicationDetails";
 import LectureApplicationDetails from "@/components/admin/moderation/LectureApplicationDetails";
 import ModerationReviewModal from "@/components/admin/moderation/ModerationReviewModal";
+import { useFormatDate } from "@/lib/i18n/useFormatDate";
 
 interface QueueItem {
   id: string;
@@ -47,7 +48,7 @@ const PAGE_SIZE = 8;
 
 export default function AdminModerationPage() {
   const locale = useLocale();
-  const fmt = useFormatter();
+  const fd = useFormatDate();
   const t = useTranslations("adminModeration");
   const tStatus = useTranslations("status");
   const tCommon = useTranslations("common");
@@ -358,7 +359,7 @@ export default function AdminModerationPage() {
                         {item.specialties.length ? item.specialties.join(", ") : "—"}
                       </p>
                       <p className="text-xs text-slate-400 mt-1">
-                        {fmt.dateTime(new Date(item.createdAt), {
+                        {fd(new Date(item.createdAt), {
                           dateStyle: "medium",
                           timeStyle: "short",
                         })}
@@ -420,7 +421,7 @@ export default function AdminModerationPage() {
                         {item.category} · {item.type === "offline" ? tl("offline") : tl("online")}
                       </p>
                       <p className="text-xs text-slate-400 mt-1">
-                        {fmt.dateTime(new Date(item.createdAt), {
+                        {fd(new Date(item.createdAt), {
                           dateStyle: "medium",
                           timeStyle: "short",
                         })}
@@ -472,7 +473,7 @@ export default function AdminModerationPage() {
                       </p>
                       <p className="text-xs text-slate-500 mt-1">
                         {item.user?.email} ·{" "}
-                        {fmt.dateTime(new Date(item.createdAt), {
+                        {fd(new Date(item.createdAt), {
                           dateStyle: "medium",
                           timeStyle: "short",
                         })}
@@ -541,7 +542,7 @@ export default function AdminModerationPage() {
                       </p>
                       <p className="text-xs text-slate-500 mt-1">
                         {item.user?.email} ·{" "}
-                        {fmt.dateTime(new Date(item.createdAt), {
+                        {fd(new Date(item.createdAt), {
                           dateStyle: "medium",
                           timeStyle: "short",
                         })}
@@ -616,7 +617,7 @@ export default function AdminModerationPage() {
                         · {p.groupName || "—"} · {p.author.name} ({p.author.email})
                       </p>
                       <p className="text-xs text-slate-400">
-                        {fmt.dateTime(new Date(p.createdAt), {
+                        {fd(new Date(p.createdAt), {
                           dateStyle: "medium",
                           timeStyle: "short",
                         })}

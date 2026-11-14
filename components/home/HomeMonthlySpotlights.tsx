@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import { ArrowRight, BookOpen, Star, Users } from 'lucide-react';
 import type { Lecture, Mentor } from '@/types';
+import { lectureCategoryLabel } from "@/lib/lectures/categories";
 
 function formatKrw(amount: number, locale: string) {
   const loc = locale === 'en' ? 'en-US' : locale === 'mn' ? 'mn-MN' : 'ko-KR';
@@ -32,6 +33,7 @@ export default async function HomeMonthlySpotlights({
   topMentors: Mentor[];
 }) {
   const t = await getTranslations('home');
+  const tLec = await getTranslations('lectures');
   const lectureTop = topLectures.slice(0, 3);
   const mentorTop = topMentors.slice(0, 3);
 
@@ -81,7 +83,7 @@ export default async function HomeMonthlySpotlights({
                         <span className="inline-flex items-center self-start rounded-full bg-teal/10 dark:bg-teal-dark/15 px-2.5 py-1 text-[11px] font-medium text-teal dark:text-teal-dark mb-2">
                           {rankLabel(idx + 1)} · {lecture.type === 'online' ? t('typeOnline') : t('typeOffline')}
                         </span>
-                        <p className="text-xs text-ink-muted dark:text-snow-muted mb-1">{lecture.category}</p>
+                        <p className="text-xs text-ink-muted dark:text-snow-muted mb-1">{lectureCategoryLabel(lecture.category, tLec)}</p>
                         <h3 className="text-base sm:text-lg font-bold text-ink dark:text-snow group-hover:text-teal dark:group-hover:text-teal-dark transition-colors line-clamp-2">
                           {lecture.title}
                         </h3>

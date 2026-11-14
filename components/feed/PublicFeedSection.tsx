@@ -2,11 +2,12 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { useFormatter, useLocale, useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { Heart, MessageCircle } from "lucide-react";
 import { publicFeedApi, type PublicFeedKind } from "@/lib/api/client";
 import { useAuth } from "@/lib/contexts/AuthContext";
+import { useFormatDate } from "@/lib/i18n/useFormatDate";
 
 type PostRow = {
   id: string;
@@ -40,7 +41,7 @@ export default function PublicFeedSection({
   hideAuthor?: boolean;
 }) {
   const t = useTranslations("publicFeed");
-  const fmt = useFormatter();
+  const fd = useFormatDate();
   const locale = useLocale();
   const { isAuthenticated } = useAuth();
   const [posts, setPosts] = useState<PostRow[]>([]);
@@ -169,7 +170,7 @@ export default function PublicFeedSection({
             <header className="flex items-start gap-3 mb-3">
               {hideAuthor ? (
                 <p className="text-xs text-zinc-500">
-                  {fmt.dateTime(new Date(p.createdAt), { dateStyle: "medium", timeStyle: "short" })}
+                  {fd(new Date(p.createdAt), { dateStyle: "medium", timeStyle: "short" })}
                 </p>
               ) : (
                 <>
@@ -187,7 +188,7 @@ export default function PublicFeedSection({
                       {p.author.name}
                     </Link>
                     <p className="text-xs text-zinc-500">
-                      {fmt.dateTime(new Date(p.createdAt), { dateStyle: "medium", timeStyle: "short" })}
+                      {fd(new Date(p.createdAt), { dateStyle: "medium", timeStyle: "short" })}
                     </p>
                   </div>
                 </>
@@ -241,7 +242,7 @@ export default function PublicFeedSection({
                       {c.author.name}
                     </Link>
                     <span className="text-zinc-400 text-xs ml-2">
-                      {fmt.dateTime(new Date(c.createdAt), { dateStyle: "short", timeStyle: "short" })}
+                      {fd(new Date(c.createdAt), { dateStyle: "short", timeStyle: "short" })}
                     </span>
                     <p className="text-zinc-700 dark:text-slate-300 mt-1 whitespace-pre-wrap">{c.body}</p>
                   </div>

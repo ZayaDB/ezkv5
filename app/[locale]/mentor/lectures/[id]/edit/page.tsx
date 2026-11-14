@@ -15,9 +15,11 @@ import FormError from "@/components/ui/FormError";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
 import Textarea from "@/components/ui/Textarea";
+import { LECTURE_CATEGORIES, normalizeLectureCategory } from "@/lib/lectures/categories";
 
 export default function MentorLectureEditPage() {
   const t = useTranslations("profilePage.lectureNew");
+  const tLec = useTranslations("lectures");
   const tCommon = useTranslations("common");
   const locale = useLocale();
   const router = useRouter();
@@ -65,7 +67,7 @@ export default function MentorLectureEditPage() {
       const d = res.data;
       setTitle(d.title || "");
       setType(d.type === "offline" ? "offline" : "online");
-      setCategory(d.category || "");
+      setCategory(normalizeLectureCategory(d.category) || "other");
       setPrice(String(d.price ?? 0));
       setDuration(d.duration || "");
       setDescription(d.description || "");
@@ -112,7 +114,7 @@ export default function MentorLectureEditPage() {
     const res = await lecturesApi.update(lectureId, {
       title: title.trim(),
       type,
-      category: category.trim() || "기타",
+      category: category || "other",
       price: parseInt(price, 10) || 0,
       duration: duration.trim() || "-",
       description: description.trim(),
@@ -198,7 +200,12 @@ export default function MentorLectureEditPage() {
                 </div>
               </Field>
               <Field label={t("category")} required>
-                <Input value={category} onChange={(e) => setCategory(e.target.value)} />
+                <Select required value={category} onChange={(e) => setCategory(e.target.value)}>
+                <option value="" disabled>{t("categoryPlaceholder")}</option>
+                {LECTURE_CATEGORIES.map((c) => (
+                  <option key={c} value={c}>{tLec(`categories.${c}`)}</option>
+                ))}
+              </Select>
               </Field>
               <Field label={t("price")} required>
                 <Input type="number" min={0} value={price} onChange={(e) => setPrice(e.target.value)} />

@@ -10,6 +10,7 @@ import { ArrowLeft } from "lucide-react";
 import type { CommunityGroup } from "@/types";
 import GroupPostFeed from "@/components/channel/GroupPostFeed";
 import CommunityGroupChat from "@/components/community/CommunityGroupChat";
+import { communityCategoryLabel } from "@/lib/lectures/categories";
 
 export default function CommunityDetailPage() {
   const params = useParams();
@@ -85,7 +86,7 @@ export default function CommunityDetailPage() {
             <ArrowLeft className="w-4 h-4 mr-1" />
             {t("backToList")}
           </Link>
-          <p className="text-xs font-semibold text-primary-600 mb-1">{group.category}</p>
+          <p className="text-xs font-semibold text-primary-600 mb-1">{communityCategoryLabel(group.category, t)}</p>
           <h1 className="text-2xl font-bold text-zinc-900">{group.name}</h1>
           <p className="text-sm text-zinc-600 mt-2">{group.description}</p>
           <div className="mt-4 flex items-center gap-3">

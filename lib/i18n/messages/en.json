@@ -162,7 +162,18 @@
     "emptyDescription": "No courses have been published yet.",
     "emptyAction": "Home",
     "viewDetails": "View details",
-    "studentsCount": "{count} students"
+    "studentsCount": "{count} students",
+    "categories": {
+      "visa": "Visa & stay",
+      "housing": "Housing",
+      "health": "Health & insurance",
+      "academic": "Academics",
+      "language": "Korean language",
+      "career": "Career & jobs",
+      "tech": "IT & development",
+      "life": "Life in Korea",
+      "other": "Other"
+    }
   },
   "community": {
     "title": "Community",
@@ -754,7 +765,8 @@
       "editSubtitle": "Update the course you published.",
       "editSubmit": "Save changes",
       "editSuccess": "Course updated.",
-      "loadError": "Could not load the course."
+      "loadError": "Could not load the course.",
+      "categoryPlaceholder": "Choose a category"
     },
     "errNameRequired": "Name is required.",
     "errNameLength": "Name must be 2–40 characters.",

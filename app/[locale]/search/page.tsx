@@ -17,6 +17,7 @@ export default async function SearchPage({
   const { locale } = await params;
   const sp = await searchParams;
   const t = await getTranslations("searchPage");
+  const tStudy = await getTranslations("studyInKorea");
   const q = (sp.q || "").trim();
 
   if (!q) {
@@ -128,7 +129,7 @@ export default async function SearchPage({
               {studyInfos.slice(0, 8).map((s) => (
                 <Link key={s.id} href={`/${locale}/study-in-korea#article-${s.id}`} className="ds-panel p-4 hover:ring-primary-300 transition-colors">
                   <p className="font-semibold text-slate-900 dark:text-slate-100">{s.title}</p>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">{s.category}</p>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">{tStudy.has(s.category) ? tStudy(s.category) : s.category}</p>
                 </Link>
               ))}
             </div>

@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { Star, Users, Clock, PlayCircle, ArrowLeft, CheckCircle, Heart } from 'lucide-react';
 import type { Lecture } from '@/types';
 import Button from '@/components/ui/Button';
+import { lectureCategoryLabel } from "@/lib/lectures/categories";
 
 function syllabusFromDescription(description: string, fallback: string[]): string[] {
   const lines = description
@@ -184,7 +185,7 @@ export default function LectureDetailPage() {
                   {lecture.type === 'online' ? tLec('online') : tLec('offline')}
                 </span>
                 <span className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-xl font-semibold">
-                  {lecture.category}
+                  {lectureCategoryLabel(lecture.category, tLec)}
                 </span>
               </div>
               <h1 className="text-4xl md:text-5xl font-extrabold mb-4">{lecture.title}</h1>

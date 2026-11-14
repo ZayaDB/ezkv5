@@ -8,12 +8,14 @@ import { useAuth } from "@/lib/contexts/AuthContext";
 import LoadingState from "@/components/ui/LoadingState";
 import EmptyState from "@/components/ui/EmptyState";
 import PlatformCard from "@/components/ui/PlatformCard";
+import { lectureCategoryLabel } from "@/lib/lectures/categories";
 
 const LOAD_TIMEOUT_MS = 5000;
 
 export default function MyWishlistPage() {
   const locale = useLocale();
   const t = useTranslations("myPages.wishlist");
+  const tLec = useTranslations("lectures");
   const { user, loading } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [items, setItems] = useState<{ id: string; lectureId: string; lecture: any }[]>([]);
@@ -61,7 +63,7 @@ export default function MyWishlistPage() {
                 <div>
                   <p className="font-semibold text-zinc-900">{item.lecture?.title || t("deleted")}</p>
                   <p className="text-xs text-zinc-500 mt-1">
-                    {item.lecture?.category || "-"} · {item.lecture?.duration || "-"} · ₩
+                    {lectureCategoryLabel(item.lecture?.category, tLec) || "-"} · {item.lecture?.duration || "-"} · ₩
                     {(item.lecture?.price || 0).toLocaleString("ko-KR")}
                   </p>
                 </div>

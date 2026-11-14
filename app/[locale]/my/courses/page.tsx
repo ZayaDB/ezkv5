@@ -13,6 +13,8 @@ import EmptyState from "@/components/ui/EmptyState";
 import PlatformCard from "@/components/ui/PlatformCard";
 import Toast from "@/components/ui/Toast";
 import { getCachedEnrollments, invalidateMyDataCache } from "@/lib/hooks/useMyDataCache";
+import { useFormatDate } from "@/lib/i18n/useFormatDate";
+import { lectureCategoryLabel } from "@/lib/lectures/categories";
 
 type Tab = "learn" | "status";
 
@@ -53,8 +55,10 @@ function CoursesInner() {
   const tMy = useTranslations("myPages");
   const tStatus = useTranslations("status");
   const tCommon = useTranslations("common");
+  const tLec = useTranslations("lectures");
   const locale = useLocale();
   const fmt = useFormatter();
+  const fd = useFormatDate();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, loading: authLoading } = useAuth();
@@ -207,7 +211,7 @@ function CoursesInner() {
                       {item.lecture?.title || tMy("deleted")}
                     </h2>
                     <p className="text-xs text-zinc-500 mt-1">
-                      {item.lecture?.category || "—"} · {item.lecture?.duration || "—"}
+                      {lectureCategoryLabel(item.lecture?.category, tLec) || "—"} · {item.lecture?.duration || "—"}
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -260,7 +264,7 @@ function CoursesInner() {
                     <div>
                       <p className="text-xs text-zinc-500 mb-1">
                         {tMy("appliedAt")}:{" "}
-                        {fmt.dateTime(new Date(item.enrolledAt), {
+                        {fd(new Date(item.enrolledAt), {
                           dateStyle: "medium",
                         })}
                       </p>
@@ -268,7 +272,7 @@ function CoursesInner() {
                         {item.lecture?.title || tMy("deleted")}
                       </h3>
                       <p className="text-sm text-zinc-600 mt-1">
-                        {item.lecture?.category || "—"} · {item.lecture?.duration || "—"}
+                        {lectureCategoryLabel(item.lecture?.category, tLec) || "—"} · {item.lecture?.duration || "—"}
                       </p>
                     </div>
                     <div className="flex flex-wrap items-center gap-2">

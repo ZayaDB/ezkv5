@@ -162,7 +162,18 @@
     "emptyDescription": "Одоогоор нийтлэгдсэн лекц алга.",
     "emptyAction": "Нүүр",
     "viewDetails": "Дэлгэрэнгүй",
-    "studentsCount": "{count} суралцагч"
+    "studentsCount": "{count} суралцагч",
+    "categories": {
+      "visa": "Виз, оршин суух",
+      "housing": "Орон байр",
+      "health": "Эрүүл мэнд, даатгал",
+      "academic": "Сурлага",
+      "language": "Солонгос хэл",
+      "career": "Карьер, ажил",
+      "tech": "IT, хөгжүүлэлт",
+      "life": "Солонгос дахь амьдрал",
+      "other": "Бусад"
+    }
   },
   "community": {
     "title": "Нийгэмлэг",
@@ -754,7 +765,8 @@
       "editSubtitle": "Нийтэлсэн лекцийн мэдээллээ шинэчилнэ.",
       "editSubmit": "Хадгалах",
       "editSuccess": "Лекцийг шинэчиллээ.",
-      "loadError": "Лекц ачаалж чадсангүй."
+      "loadError": "Лекц ачаалж чадсангүй.",
+      "categoryPlaceholder": "Ангилал сонгох"
     },
     "errNameRequired": "Нэр заавал шаардлагатай.",
     "errNameLength": "Нэр 2–40 тэмдэгт байх ёстой.",

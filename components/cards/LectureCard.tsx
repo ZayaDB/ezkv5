@@ -8,6 +8,7 @@ import { intlLocale } from '@/lib/i18n/config';
 import { useEffect, useState, type MouseEvent } from 'react';
 import { lectureWishlistApi } from '@/lib/api/client';
 import { useAuth } from '@/lib/contexts/AuthContext';
+import { lectureCategoryLabel } from "@/lib/lectures/categories";
 
 interface LectureCardProps {
   lecture: Lecture;
@@ -79,7 +80,7 @@ export default function LectureCard({ lecture }: LectureCardProps) {
               {lecture.type === 'online' ? t('online') : t('offline')}
             </span>
             <span className="px-3 py-1.5 bg-white/90 dark:bg-slate-900/85 backdrop-blur-sm text-gray-700 dark:text-slate-200 text-xs font-semibold rounded-lg">
-              {lecture.category}
+              {lectureCategoryLabel(lecture.category, t)}
             </span>
           </div>
           {!isOwner && (

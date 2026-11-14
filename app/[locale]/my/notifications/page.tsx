@@ -2,17 +2,18 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
-import { useFormatter, useLocale, useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { dismissAlert, listAlerts, markAlertsRead, type UserAlert } from "@/lib/supabase/alerts";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import LoadingState from "@/components/ui/LoadingState";
 import PlatformCard from "@/components/ui/PlatformCard";
+import { useFormatDate } from "@/lib/i18n/useFormatDate";
 
 export default function MyNotificationsPage() {
   const t = useTranslations("myPages.notifications");
   const locale = useLocale();
-  const fmt = useFormatter();
+  const fd = useFormatDate();
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(true);
@@ -102,7 +103,7 @@ export default function MyNotificationsPage() {
                 {n.body && <p className="text-sm text-zinc-800 whitespace-pre-wrap mt-1">{n.body}</p>}
                 {n.dueDate && (
                   <p className="text-xs text-zinc-500 mt-1">
-                    {t("dueDate", { date: fmt.dateTime(new Date(n.dueDate), { dateStyle: "medium" }) })}
+                    {t("dueDate", { date: fd(new Date(n.dueDate), { dateStyle: "medium" }) })}
                   </p>
                 )}
                 <div className="mt-2 flex flex-wrap gap-3">

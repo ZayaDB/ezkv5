@@ -3,9 +3,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { useFormatter } from "next-intl";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { adminApi } from "@/lib/api";
+import { useFormatDate } from "@/lib/i18n/useFormatDate";
 
 type InquiryRow = {
   id: string;
@@ -21,7 +21,7 @@ export default function AdminInquiriesPage() {
   const locale = useLocale();
   const t = useTranslations("admin");
   const router = useRouter();
-  const fmt = useFormatter();
+  const fd = useFormatDate();
   const { user: currentUser, loading: authLoading } = useAuth();
   const [items, setItems] = useState<InquiryRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -100,7 +100,7 @@ export default function AdminInquiriesPage() {
                       "—"
                     )}
                     {" · "}
-                    {fmt.dateTime(new Date(q.createdAt), { dateStyle: "medium", timeStyle: "short" })}
+                    {fd(new Date(q.createdAt), { dateStyle: "medium", timeStyle: "short" })}
                   </p>
                 </div>
               </div>

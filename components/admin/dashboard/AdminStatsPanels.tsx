@@ -12,7 +12,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import type { AdminStats, StatsPeriod } from "./types";
-import { intlLocale } from "@/lib/i18n/config";
+import { formatDate } from "@/lib/i18n/dateFormat";
 
 const PERIODS: StatsPeriod[] = ["all", "day", "month", "year"];
 const periodKey: Record<StatsPeriod, string> = {
@@ -137,7 +137,7 @@ export default function AdminStatsPanels({ locale, stats, period, onPeriodChange
             {stats.monthlySignups.map((item, index) => (
               <div key={`${item.year}-${item.month}-${index}`} className="flex items-center gap-4">
                 <div className="w-24 text-sm text-gray-600">
-                  {new Date(item.year, item.month - 1, 1).toLocaleDateString(intlLocale(locale), { year: "numeric", month: "short" })}
+                  {formatDate(new Date(item.year, item.month - 1, 1), locale, { year: "numeric", month: "short" })}
                 </div>
                 <div className="flex-1 bg-gray-100 rounded-full h-8 relative overflow-hidden">
                   <div

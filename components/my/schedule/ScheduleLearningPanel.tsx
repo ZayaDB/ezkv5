@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { intlLocale } from "@/lib/i18n/config";
+import { formatDate } from "@/lib/i18n/dateFormat";
 import { tr } from "@/lib/i18n/runtime";
 
 export default function ScheduleLearningPanel({
@@ -47,11 +47,11 @@ export default function ScheduleLearningPanel({
   onRemoveEvent: (id: string) => void;
 }) {
   const t = useTranslations("myPages.schedule");
-  const loc = intlLocale(useLocale());
-  const timeFmt = (d: string | Date) => new Date(d).toLocaleTimeString(loc, { hour: "2-digit", minute: "2-digit" });
+  const locale = useLocale();
+  const timeFmt = (d: string | Date) => formatDate(d, locale, { hour: "2-digit", minute: "2-digit" });
   // 2024-01-01 은 월요일 — 월요일 시작 요일 헤더
   const weekdayHeaders = Array.from({ length: 7 }, (_, i) =>
-    new Date(2024, 0, 1 + i).toLocaleDateString(loc, { weekday: "short" })
+    formatDate(new Date(2024, 0, 1 + i), locale, { weekday: "short" })
   );
   return (
     <div className="lg:col-span-2 space-y-2">

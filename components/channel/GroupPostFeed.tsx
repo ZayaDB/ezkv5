@@ -2,9 +2,10 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { useFormatter, useLocale, useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { channelFeedApi, type ChannelFeedKind } from "@/lib/api/client";
+import { useFormatDate } from "@/lib/i18n/useFormatDate";
 
 type PostRow = {
   id: string;
@@ -29,7 +30,7 @@ export default function GroupPostFeed({
   channelId: string;
 }) {
   const t = useTranslations("channelFeed");
-  const fmt = useFormatter();
+  const fd = useFormatDate();
   const locale = useLocale();
   const { isAuthenticated } = useAuth();
   const [posts, setPosts] = useState<PostRow[]>([]);
@@ -148,7 +149,7 @@ export default function GroupPostFeed({
             <div className="flex flex-wrap items-start justify-between gap-2 mb-2">
               <h3 className="font-semibold text-gray-900">{p.title}</h3>
               <span className="text-xs text-gray-500 whitespace-nowrap">
-                {fmt.dateTime(new Date(p.createdAt), { dateStyle: "medium", timeStyle: "short" })}
+                {fd(new Date(p.createdAt), { dateStyle: "medium", timeStyle: "short" })}
               </span>
             </div>
             <p className="text-sm text-gray-700 whitespace-pre-wrap mb-2">{p.body}</p>
@@ -182,7 +183,7 @@ export default function GroupPostFeed({
                         {c.author.name}
                       </Link>
                       <span className="font-normal text-gray-400 ml-2 text-xs">
-                        {fmt.dateTime(new Date(c.createdAt), { dateStyle: "short", timeStyle: "short" })}
+                        {fd(new Date(c.createdAt), { dateStyle: "short", timeStyle: "short" })}
                       </span>
                       <p className="text-sm text-gray-700 whitespace-pre-wrap mt-1">{c.body}</p>
                     </div>

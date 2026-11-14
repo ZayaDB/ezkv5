@@ -2,7 +2,7 @@
 
 import { Calendar, Mail } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { intlLocale } from "@/lib/i18n/config";
+import { formatDate } from "@/lib/i18n/dateFormat";
 
 type UserRow = {
   id: string;
@@ -60,7 +60,7 @@ export default function AdminUserTable({
                 <td className="py-3 text-slate-600">
                   <span className="inline-flex items-center gap-1">
                     <Calendar className="w-3.5 h-3.5" />
-                    {new Date(u.createdAt).toLocaleDateString(intlLocale(locale))}
+                    {formatDate(u.createdAt, locale, { dateStyle: "short" })}
                   </span>
                 </td>
                 <td className="py-3">

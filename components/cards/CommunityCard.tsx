@@ -5,6 +5,7 @@ import { CommunityGroup } from "@/types";
 import { Users, ArrowRight, Hash } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { intlLocale } from '@/lib/i18n/config';
+import { communityCategoryLabel } from "@/lib/lectures/categories";
 
 interface CommunityCardProps {
   group: CommunityGroup;
@@ -22,7 +23,7 @@ export default function CommunityCard({ group }: CommunityCardProps) {
           <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors"></div>
           <div className="absolute top-4 left-4">
             <span className="px-3 py-1.5 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm text-gray-700 dark:text-slate-200 text-xs font-semibold rounded-lg">
-              {group.category}
+              {communityCategoryLabel(group.category, t)}
             </span>
           </div>
           <div className="absolute bottom-4 right-4">

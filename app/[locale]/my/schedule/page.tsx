@@ -22,6 +22,7 @@ import { getCachedEnrollments, getCachedSessions } from "@/lib/hooks/useMyDataCa
 import ViewModeToggle from "@/components/my/schedule/ViewModeToggle";
 import BudgetSummaryCard from "@/components/my/schedule/BudgetSummaryCard";
 import ScheduleLearningPanel from "@/components/my/schedule/ScheduleLearningPanel";
+import { useFormatDate } from "@/lib/i18n/useFormatDate";
 
 type ViewMode = "month" | "week" | "day";
 
@@ -109,6 +110,7 @@ export default function MySchedulePage() {
   const tDash = useTranslations("dashboardV2");
   const locale = useLocale();
   const fmt = useFormatter();
+  const fd = useFormatDate();
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
 
@@ -217,7 +219,7 @@ export default function MySchedulePage() {
 
   // 2024-01-07 은 일요일 — day(0=일)를 더해 로케일별 요일 이름을 만든다
   const weekdayLabel = (day: number) =>
-    day >= 0 && day <= 6 ? fmt.dateTime(new Date(2024, 0, 7 + day), { weekday: "short" }) : "-";
+    day >= 0 && day <= 6 ? fd(new Date(2024, 0, 7 + day), { weekday: "short" }) : "-";
 
   const buildBudgetIsoDate = () => {
     const base = parseSafeDate(`${budgetDate}T09:00:00`) || new Date();
@@ -371,14 +373,14 @@ export default function MySchedulePage() {
   const week = weekDays(anchor);
   const titleRange =
     view === "month"
-      ? fmt.dateTime(anchor, { month: "long", year: "numeric" })
+      ? fd(anchor, { month: "long", year: "numeric" })
       : view === "week"
-        ? `${fmt.dateTime(week[0], { month: "short", day: "numeric" })} – ${fmt.dateTime(week[6], {
+        ? `${fd(week[0], { month: "short", day: "numeric" })} – ${fd(week[6], {
             month: "short",
             day: "numeric",
             year: "numeric",
           })}`
-        : fmt.dateTime(anchor, { dateStyle: "full" });
+        : fd(anchor, { dateStyle: "full" });
 
   return (
     <div className="w-full space-y-6">
@@ -425,7 +427,7 @@ export default function MySchedulePage() {
             grid={grid}
             week={week}
             anchor={anchor}
-            formatDayLabel={(day) => fmt.dateTime(day, { weekday: "short", day: "numeric", month: "short" })}
+            formatDayLabel={(day) => fd(day, { weekday: "short", day: "numeric", month: "short" })}
             isTodayDate={(day) => sameDay(day, startOfDay(new Date()))}
             sessionsOnDay={sessionsOnDay}
             enrollmentsOnDay={enrollmentsOnDay}
@@ -564,7 +566,7 @@ export default function MySchedulePage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40" onClick={() => setDayModal(null)} role="presentation">
           <div className="w-full max-w-lg rounded-2xl bg-white shadow-xl border border-zinc-200 p-5 space-y-4 max-h-[85vh] overflow-y-auto" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-start justify-between gap-3">
-              <h3 className="text-lg font-bold text-zinc-900">{fmt.dateTime(dayModal, { dateStyle: "full" })}</h3>
+              <h3 className="text-lg font-bold text-zinc-900">{fd(dayModal, { dateStyle: "full" })}</h3>
               <button type="button" onClick={() => setDayModal(null)} className="shrink-0 rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-semibold text-zinc-700 hover:bg-zinc-50">{t("dayModalClose")}</button>
             </div>
 
@@ -572,7 +574,7 @@ export default function MySchedulePage() {
               {lifeOnDay(dayModal).map((ev) => (
                 <div key={ev.id} className="rounded-lg border border-violet-100 bg-violet-50/60 px-3 py-2">
                   <p className="font-medium text-zinc-900">{ev.title}</p>
-                  <p className="text-sm text-zinc-500">{fmt.dateTime(new Date(ev.startsAt), { timeStyle: "short" })} · {t.has(`eventCategory.${ev.category}`) ? t(`eventCategory.${ev.category}`) : ev.category} · {t.has(`eventStatus.${ev.status}`) ? t(`eventStatus.${ev.status}`) : ev.status}</p>
+                  <p className="text-sm text-zinc-500">{fd(new Date(ev.startsAt), { timeStyle: "short" })} · {t.has(`eventCategory.${ev.category}`) ? t(`eventCategory.${ev.category}`) : ev.category} · {t.has(`eventStatus.${ev.status}`) ? t(`eventStatus.${ev.status}`) : ev.status}</p>
                   <div className="mt-1 flex gap-3 text-sm">
                     <button type="button" className="font-semibold text-primary-700 hover:underline" onClick={() => startEditEvent(ev)}>{t("budgetEditBtn")}</button>
                     <button type="button" className="font-semibold text-red-600 hover:underline" onClick={() => void removeEvent(ev.sourceId || ev.id)}>{t("deleteBtn")}</button>

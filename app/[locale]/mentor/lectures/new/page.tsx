@@ -16,9 +16,11 @@ import Input from "@/components/ui/Input";
 import SectionTitle from "@/components/ui/SectionTitle";
 import Select from "@/components/ui/Select";
 import Textarea from "@/components/ui/Textarea";
+import { LECTURE_CATEGORIES } from "@/lib/lectures/categories";
 
 export default function MentorLectureNewPage() {
   const t = useTranslations("profilePage.lectureNew");
+  const tLec = useTranslations("lectures");
   const tCommon = useTranslations("common");
   const locale = useLocale();
   const router = useRouter();
@@ -68,7 +70,7 @@ export default function MentorLectureNewPage() {
     const res = await lecturesApi.create({
       title: title.trim(),
       type,
-      category: category.trim() || "기타",
+      category: category || "other",
       price: parseInt(price, 10) || 0,
       duration: duration.trim() || "-",
       description: description.trim(),
@@ -160,10 +162,12 @@ export default function MentorLectureNewPage() {
               </div>
             </Field>
             <Field label={t("category")} required>
-              <Input
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-              />
+<Select required value={category} onChange={(e) => setCategory(e.target.value)}>
+                <option value="" disabled>{t("categoryPlaceholder")}</option>
+                {LECTURE_CATEGORIES.map((c) => (
+                  <option key={c} value={c}>{tLec(`categories.${c}`)}</option>
+                ))}
+              </Select>
             </Field>
             <Field label={t("price")} required>
               <Input

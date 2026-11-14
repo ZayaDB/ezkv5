@@ -162,7 +162,18 @@
     "emptyDescription": "아직 등록된 강의가 없습니다.",
     "emptyAction": "홈으로",
     "viewDetails": "자세히 보기",
-    "studentsCount": "{count}명"
+    "studentsCount": "{count}명",
+    "categories": {
+      "visa": "비자·체류",
+      "housing": "주거",
+      "health": "의료·보험",
+      "academic": "학업",
+      "language": "한국어",
+      "career": "커리어·취업",
+      "tech": "IT·개발",
+      "life": "한국 생활",
+      "other": "기타"
+    }
   },
   "community": {
     "title": "커뮤니티",
@@ -752,7 +763,8 @@
       "editSubtitle": "개설한 강의 정보를 업데이트합니다.",
       "editSubmit": "수정 완료",
       "editSuccess": "강의가 수정되었습니다.",
-      "loadError": "강의를 불러오지 못했습니다."
+      "loadError": "강의를 불러오지 못했습니다.",
+      "categoryPlaceholder": "카테고리 선택"
     },
     "errNameRequired": "이름은 필수입니다.",
     "errNameLength": "이름은 2~40자로 입력해 주세요.",
