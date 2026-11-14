@@ -44,7 +44,7 @@ export default function MentorStatusPanel({
   if (mentorStatus === "pending") {
     return (
       <PlatformCard>
-        <p className="text-sm text-slate-700">{tp("mentor.pending")}</p>
+        <p className="text-sm text-slate-700 dark:text-snow-muted">{tp("mentor.pending")}</p>
       </PlatformCard>
     );
   }
@@ -54,62 +54,62 @@ export default function MentorStatusPanel({
   return (
     <PlatformCard>
       <p className="text-sm text-red-700 mb-4">{tp("mentor.rejected")}</p>
-      <h3 className="font-semibold text-slate-900 mb-4">{tp("mentor.formTitle")}</h3>
+      <h3 className="font-semibold text-slate-900 mb-4 dark:text-snow">{tp("mentor.formTitle")}</h3>
       <div className="space-y-3">
         <div>
-          <label className="text-sm font-medium text-slate-700">{tp("mentor.mentorTitleLabel")}</label>
+          <label className="text-sm font-medium text-slate-700 dark:text-snow-muted">{tp("mentor.mentorTitleLabel")}</label>
           <input
-            className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+            className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm dark:border-hairline-dark"
             value={mentorTitle}
             onChange={(e) => setMentorTitle(e.target.value)}
           />
         </div>
         <div>
-          <label className="text-sm font-medium text-slate-700">{tp("mentor.locationLabel")}</label>
+          <label className="text-sm font-medium text-slate-700 dark:text-snow-muted">{tp("mentor.locationLabel")}</label>
           <input
-            className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+            className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm dark:border-hairline-dark"
             value={mentorLocation}
             onChange={(e) => setMentorLocation(e.target.value)}
           />
         </div>
         <div>
-          <label className="text-sm font-medium text-slate-700">{tp("mentor.bioLabel")}</label>
+          <label className="text-sm font-medium text-slate-700 dark:text-snow-muted">{tp("mentor.bioLabel")}</label>
           <textarea
             rows={4}
-            className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+            className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm dark:border-hairline-dark"
             value={mentorBio}
             onChange={(e) => setMentorBio(e.target.value)}
           />
         </div>
         <div>
-          <label className="text-sm font-medium text-slate-700">{tp("mentor.languagesLabel")}</label>
+          <label className="text-sm font-medium text-slate-700 dark:text-snow-muted">{tp("mentor.languagesLabel")}</label>
           <input
-            className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+            className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm dark:border-hairline-dark"
             value={mentorLangs}
             onChange={(e) => setMentorLangs(e.target.value)}
           />
         </div>
         <div>
-          <label className="text-sm font-medium text-slate-700">{tp("mentor.specialtiesLabel")}</label>
+          <label className="text-sm font-medium text-slate-700 dark:text-snow-muted">{tp("mentor.specialtiesLabel")}</label>
           <input
-            className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+            className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm dark:border-hairline-dark"
             value={mentorSpecs}
             onChange={(e) => setMentorSpecs(e.target.value)}
           />
         </div>
         <div>
-          <label className="text-sm font-medium text-slate-700">{tp("mentor.priceLabel")}</label>
+          <label className="text-sm font-medium text-slate-700 dark:text-snow-muted">{tp("mentor.priceLabel")}</label>
           <input
             type="number"
-            className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+            className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm dark:border-hairline-dark"
             value={mentorPrice}
             onChange={(e) => setMentorPrice(e.target.value)}
           />
         </div>
         <div>
-          <label className="text-sm font-medium text-slate-700">{tp("mentor.avail")}</label>
+          <label className="text-sm font-medium text-slate-700 dark:text-snow-muted">{tp("mentor.avail")}</label>
           <select
-            className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+            className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm dark:border-hairline-dark"
             value={mentorAvail}
             onChange={(e) => setMentorAvail(e.target.value as "available" | "limited" | "unavailable")}
           >

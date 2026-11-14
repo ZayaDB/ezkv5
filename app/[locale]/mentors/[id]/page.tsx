@@ -3,32 +3,32 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
+import Link from 'next/link';
+import { ArrowRight, Heart, MapPin } from 'lucide-react';
 import { mentorsApi, sessionApi } from '@/lib/api/client';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import { storage } from '@/lib/storage';
-import Link from 'next/link';
-import {
-  Star,
-  MapPin,
-  CheckCircle,
-  MessageCircle,
-  Clock,
-  ArrowLeft,
-  Heart,
-} from 'lucide-react';
 import { formatMentorHourlyPrice } from '@/lib/format/price';
+import { mentorMatchesCategoryKey, MENTOR_CATEGORY_KEYS } from '@/lib/mentors/categoryFilter';
 import type { Mentor } from '@/types';
-import Button from '@/components/ui/Button';
+import { Notice, ui } from '@/components/lnk/ui';
 
 type MentorDetail = Mentor & { email?: string };
 
+/** 소개 끝의 데모 안내 줄은 본문과 분리 */
+function splitBio(text: string) {
+  const idx = text.lastIndexOf('\n\n※');
+  return idx === -1 ? { body: text.trim(), note: '' } : { body: text.slice(0, idx).trim(), note: text.slice(idx).trim() };
+}
+
+/* Figma 상세 패턴(강의 상세와 동일): 헤더 + 오른쪽 예약 패널 + 본문 섹션 */
 export default function MentorDetailPage() {
   const params = useParams();
   const router = useRouter();
   const locale = useLocale();
-  const tMentors = useTranslations("mentors");
-  const t = useTranslations("mentorDetail");
-  const tCommon = useTranslations("common");
+  const tM = useTranslations('mentors');
+  const t = useTranslations('mentorDetail');
+  const tp = useTranslations('mentorsPage');
   const { user, isAuthenticated } = useAuth();
   const id = params.id as string;
 
@@ -54,53 +54,46 @@ export default function MentorDetailPage() {
 
   if (mentor === undefined) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-50 to-white">
-        <div className="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin" />
+      <div className="flex min-h-screen items-center justify-center bg-surface dark:bg-night">
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-teal border-t-transparent dark:border-teal-dark" />
       </div>
     );
   }
 
   if (!mentor) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4">
-        <div className="text-center max-w-md">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">{t("notFound")}</h1>
-          <Link href={`/${locale}/mentors`} className="text-primary-600 font-semibold hover:underline">
-            {t("backToList")}
+      <div className="flex min-h-screen items-center justify-center bg-surface px-4 dark:bg-night">
+        <div className="max-w-md text-center">
+          <h1 className="mb-4 text-2xl font-semibold text-ink dark:text-snow">{t('notFound')}</h1>
+          <Link href={`/${locale}/mentors`} className={ui.btnGhost}>
+            {t('backToList')}
           </Link>
         </div>
       </div>
     );
   }
 
-  const priceDisplay = formatMentorHourlyPrice(mentor.price);
+  const price = formatMentorHourlyPrice(mentor.price);
+  const isSelf = Boolean(user?.id && mentor.userId === user.id);
+  const { body, note } = splitBio(mentor.bio || '');
+  const cats = MENTOR_CATEGORY_KEYS.filter((k) => mentorMatchesCategoryKey(mentor, k));
+  const formatLabel =
+    mentor.sessionFormat === 'offline' ? t('formatOffline') : mentor.sessionFormat === 'both' ? t('formatHybrid') : t('formatOnline');
 
   const handleBookSession = async () => {
     if (!isAuthenticated) {
       router.push(`/${locale}/login`);
       return;
     }
-    if (isBooking) return;
+    if (isBooking || isSelf) return;
     setIsBooking(true);
     setBookingMessage('');
-
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     tomorrow.setHours(14, 0, 0, 0);
-
-    const result = await sessionApi.create({
-      mentorId: mentor.id,
-      date: tomorrow.toISOString(),
-      duration: 60,
-      type: 'online',
-    });
-
+    const result = await sessionApi.create({ mentorId: mentor.id, date: tomorrow.toISOString(), duration: 60, type: 'online' });
     setIsBooking(false);
-    if (result.error) {
-      setBookingMessage(result.error);
-      return;
-    }
-    setBookingMessage(t('bookingRequested'));
+    setBookingMessage(result.error ? result.error : t('bookingRequested'));
   };
 
   const toggleFavorite = () => {
@@ -111,188 +104,175 @@ export default function MentorDetailPage() {
     setIsFavorite(storage.toggleFavorite(mentor.id));
   };
 
+  const details = [
+    { label: t('sessionLength'), value: t('minutes', { n: mentor.sessionDuration || 60 }) },
+    { label: t('sessionFormat'), value: formatLabel },
+    { label: t('experience'), value: t('years', { n: mentor.yearsOfExperience || 0 }) },
+    { label: t('languages'), value: (mentor.languages || []).join(', ') },
+    { label: t('timezone'), value: mentor.timezone || 'Asia/Seoul' },
+  ].filter((d) => d.value);
+
+  const textBlocks = [
+    { title: t('careerSummary'), body: mentor.careerSummary },
+    { title: t('education'), body: mentor.education },
+    { title: t('mentoringStyle'), body: mentor.mentoringStyle },
+  ].filter((b) => b.body);
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50">
-      <div className="bg-gradient-to-br from-primary-600 via-primary-500 to-accent-500 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Link
-            href={`/${locale}/mentors`}
-            className="inline-flex items-center text-white/90 hover:text-white mb-6 transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5 mr-2" />
-            {tCommon("back")}
-          </Link>
+    <div className="min-h-screen bg-surface dark:bg-night">
+      <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-10 px-4 py-8 sm:px-8 lg:px-20 lg:py-12">
+        <nav aria-label="Breadcrumb" className="text-[13px] text-ink-muted dark:text-snow-muted">
+          <ol className="flex flex-wrap items-center gap-1.5">
+            <li>
+              <Link href={`/${locale}/mentors`} className="hover:text-teal dark:hover:text-teal-dark">
+                {tp('eyebrow')}
+              </Link>
+            </li>
+            <li aria-hidden="true">/</li>
+            <li className="text-ink dark:text-snow" aria-current="page">
+              {mentor.name}
+            </li>
+          </ol>
+        </nav>
 
-          <div className="flex flex-col md:flex-row items-start md:items-center gap-8">
-            <div className="relative">
-              <div className="w-32 h-32 bg-white rounded-2xl flex items-center justify-center shadow-2xl overflow-hidden">
-                {mentor.photo ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={mentor.photo}
-                    alt={mentor.name}
-                    className="w-full h-full object-cover object-top"
-                  />
-                ) : (
-                  <span className="text-5xl font-bold text-primary-600">{mentor.name.charAt(0)}</span>
-                )}
-              </div>
-              {mentor.verified && (
-                <div className="absolute -bottom-2 -right-2 bg-white rounded-full p-2 shadow-lg">
-                  <CheckCircle className="w-6 h-6 text-primary-500 fill-primary-500" />
-                </div>
+        <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(0,1fr)_380px]">
+          <div className="flex min-w-0 flex-col gap-10">
+            {/* Header */}
+            <header className="flex flex-col gap-5 sm:flex-row sm:items-start">
+              {mentor.photo ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={mentor.photo} alt="" className="h-24 w-24 shrink-0 rounded-full object-cover" />
+              ) : (
+                <span className="flex h-24 w-24 shrink-0 items-center justify-center rounded-full bg-primary-50 text-4xl font-semibold text-primary-700 dark:bg-night-pill dark:text-primary-300" aria-hidden="true">
+                  {mentor.name.trim().charAt(0).toUpperCase()}
+                </span>
               )}
-            </div>
-
-            <div className="flex-1 text-white">
-              <h1 className="text-4xl md:text-5xl font-extrabold mb-3">{mentor.name}</h1>
-              <p className="text-xl text-white/90 mb-4">{mentor.title}</p>
-              <div className="flex flex-wrap items-center gap-6">
-                <div className="flex items-center gap-2">
-                  <MapPin className="w-5 h-5" />
-                  <span>{mentor.location}</span>
+              <div className="flex min-w-0 flex-col gap-3">
+                <div className="flex flex-wrap gap-1.5">
+                  {cats.slice(0, 3).map((k) => (
+                    <span key={k} className={ui.pillTeal}>
+                      {tM(`categories.${k}`)}
+                    </span>
+                  ))}
+                  {mentor.verified ? <span className={ui.pillMuted}>{tM('verified')}</span> : null}
                 </div>
-                <div className="flex items-center gap-2">
-                  <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-                  <span className="font-bold">{mentor.rating}</span>
-                  <span className="text-white/80">({mentor.reviewCount} reviews)</span>
+                <h1 className="text-3xl font-semibold leading-[1.15] text-ink dark:text-snow sm:text-[40px]">{mentor.name}</h1>
+                <p className="text-lg leading-[1.5] text-ink-muted dark:text-snow-muted">{mentor.title}</p>
+                {mentor.location ? (
+                  <p className={`flex items-center gap-1.5 text-[13px] ${ui.muted}`}>
+                    <MapPin className="h-3.5 w-3.5" aria-hidden="true" />
+                    {mentor.location}
+                  </p>
+                ) : null}
+              </div>
+            </header>
+
+            {body ? (
+              <section className="flex flex-col gap-4">
+                <h2 className={ui.h2}>{t('about')}</h2>
+                <p className="whitespace-pre-line text-[15px] leading-[1.75] text-ink-muted dark:text-snow-muted">{body}</p>
+              </section>
+            ) : null}
+
+            {mentor.specialties?.length ? (
+              <section className="flex flex-col gap-4">
+                <h2 className={ui.h2}>{t('specialties')}</h2>
+                <ul className="flex flex-wrap gap-2">
+                  {mentor.specialties.map((s) => (
+                    <li key={s} className={`${ui.card} rounded-full px-3.5 py-1.5 text-sm text-ink dark:text-snow`}>
+                      {s}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ) : null}
+
+            {textBlocks.length ? (
+              <section className="flex flex-col gap-4">
+                <h2 className={ui.h2}>{t('mentoringInfo')}</h2>
+                <div className="flex flex-col gap-4">
+                  {textBlocks.map((b) => (
+                    <div key={b.title} className={`${ui.card} p-5`}>
+                      <h3 className="mb-2 text-sm font-semibold text-ink dark:text-snow">{b.title}</h3>
+                      <p className="whitespace-pre-line text-sm leading-[1.65] text-ink-muted dark:text-snow-muted">{b.body}</p>
+                    </div>
+                  ))}
                 </div>
-              </div>
-            </div>
+              </section>
+            ) : null}
 
-            <div className="flex gap-3">
-              <button
-                type="button"
-                onClick={toggleFavorite}
-                className={`p-4 rounded-xl transition-all ${
-                  isFavorite ? 'bg-white text-red-500' : 'bg-white/20 backdrop-blur-sm text-white hover:bg-white/30'
-                }`}
-              >
-                <Heart className={`w-6 h-6 ${isFavorite ? 'fill-red-500' : ''}`} />
-              </button>
-              <button
-                type="button"
-                onClick={handleBookSession}
-                disabled={isBooking}
-                className="px-8 py-4 bg-white text-primary-600 rounded-xl font-bold hover:bg-gray-50 transition-all shadow-lg hover:scale-105 disabled:opacity-70 disabled:cursor-not-allowed"
-              >
-                {isBooking ? t('booking') : t('bookSession')}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+            {(mentor.recommendedFor || mentor.notRecommendedFor) && (
+              <section className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                {mentor.recommendedFor ? (
+                  <div className="rounded-2xl bg-primary-50 p-6 dark:bg-night-pill">
+                    <h3 className="mb-2 text-base font-semibold text-ink dark:text-snow">{t('recommendedFor')}</h3>
+                    <p className="whitespace-pre-line text-sm leading-[1.6] text-ink-muted dark:text-snow-muted">{mentor.recommendedFor}</p>
+                  </div>
+                ) : null}
+                {mentor.notRecommendedFor ? (
+                  <div className="rounded-2xl bg-[#f8f0df] p-6 dark:bg-[#2a2418]">
+                    <h3 className="mb-2 text-base font-semibold text-ink dark:text-snow">{t('notRecommendedFor')}</h3>
+                    <p className="whitespace-pre-line text-sm leading-[1.6] text-ink-muted dark:text-snow-muted">{mentor.notRecommendedFor}</p>
+                  </div>
+                ) : null}
+              </section>
+            )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-8">
-            <div className="ds-panel p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("about")}</h2>
-              <p className="text-gray-600 leading-relaxed whitespace-pre-line">{mentor.bio}</p>
-            </div>
-            <div className="ds-panel p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("mentoringInfo")}</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <div><span className="text-gray-500">{t("experience")}</span><p className="font-semibold text-gray-900">{t("years", { n: mentor.yearsOfExperience || 0 })}</p></div>
-                <div><span className="text-gray-500">{t("sessionLength")}</span><p className="font-semibold text-gray-900">{t("minutes", { n: mentor.sessionDuration || 60 })}</p></div>
-                <div><span className="text-gray-500">{t("sessionFormat")}</span><p className="font-semibold text-gray-900">{mentor.sessionFormat === 'offline' ? t('formatOffline') : mentor.sessionFormat === 'both' ? t('formatHybrid') : t('formatOnline')}</p></div>
-                <div><span className="text-gray-500">{t("timezone")}</span><p className="font-semibold text-gray-900">{mentor.timezone || 'Asia/Seoul'}</p></div>
-                <div className="md:col-span-2"><span className="text-gray-500">{t("education")}</span><p className="font-semibold text-gray-900">{mentor.education || tCommon('noInfo')}</p></div>
-                <div className="md:col-span-2"><span className="text-gray-500">{t("careerSummary")}</span><p className="text-gray-700 whitespace-pre-line">{mentor.careerSummary || tCommon('noInfo')}</p></div>
-                <div className="md:col-span-2"><span className="text-gray-500">{t("mentoringStyle")}</span><p className="text-gray-700 whitespace-pre-line">{mentor.mentoringStyle || tCommon('noInfo')}</p></div>
-                <div className="md:col-span-2"><span className="text-gray-500">{t("recommendedFor")}</span><p className="text-gray-700 whitespace-pre-line">{mentor.recommendedFor || tCommon('noInfo')}</p></div>
-                <div className="md:col-span-2"><span className="text-gray-500">{t("notRecommendedFor")}</span><p className="text-gray-700 whitespace-pre-line">{mentor.notRecommendedFor || tCommon('noInfo')}</p></div>
-              </div>
-            </div>
-
-            <div className="ds-panel p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("specialties")}</h2>
-              <div className="flex flex-wrap gap-3">
-                {mentor.specialties.map((specialty) => (
-                  <span
-                    key={specialty}
-                    className="px-4 py-2 bg-gradient-to-r from-primary-50 to-accent-50 text-primary-700 rounded-xl font-semibold border border-primary-200"
-                  >
-                    {specialty}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div className="ds-panel p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("languages")}</h2>
-              <div className="flex flex-wrap gap-3">
-                {mentor.languages.map((lang) => (
-                  <span key={lang} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-xl font-semibold">
-                    {lang}
-                  </span>
-                ))}
-              </div>
-            </div>
+            <Notice tone="caution" title={tp('detailNoticeTitle')}>
+              {tp('detailNoticeBody')}
+              {note ? <span className="mt-1 block">{note}</span> : null}
+            </Notice>
           </div>
 
-          <div className="space-y-6">
-            <div className="ds-panel p-6 sticky top-24">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">{t("bookingTitle")}</h3>
-              <div className="space-y-4">
-                <div>
-                  <div className="text-3xl font-extrabold text-gray-900 mb-1">
-                    {priceDisplay.free ? tMentors("free") : priceDisplay.label}
-                  </div>
-                  {priceDisplay.perHour ? (
-                    <div className="text-sm text-gray-600">{tMentors("perHour")}</div>
-                  ) : null}
+          {/* Booking panel */}
+          <aside className={`${ui.card} flex flex-col gap-5 p-7 lg:sticky lg:top-28`}>
+            <span className={`w-fit ${mentor.availability === 'available' ? ui.pillTeal : ui.pillMuted}`}>
+              {mentor.availability === 'available' ? t('inquiryAvailable') : tp('limited')}
+            </span>
+            <div>
+              <p className="text-[28px] font-semibold text-ink dark:text-snow">{price.free ? tM('free') : price.label}</p>
+              {!price.free && price.perHour ? <p className={`text-sm ${ui.muted}`}>{tM('perHour')}</p> : null}
+            </div>
+            <div className="h-px w-full bg-hairline dark:bg-hairline-dark" />
+            <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-[13px]">
+              {details.map((d) => (
+                <div key={d.label} className="contents">
+                  <dt className={ui.muted}>{d.label}</dt>
+                  <dd className="text-right font-medium text-ink dark:text-snow">{d.value}</dd>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <Clock className="w-4 h-4" />
-                  <span>{t('avgResponse', { time: mentor.responseTime || t('defaultResponse') })}</span>
-                </div>
-                {mentor.availability === 'available' && (
-                  <div className="px-4 py-2 bg-accent-50 text-accent-700 rounded-xl text-sm font-semibold text-center">
-                    {t("inquiryAvailable")}
-                  </div>
-                )}
-                <Button
-                  type="button"
-                  onClick={handleBookSession}
-                  disabled={isBooking}
-                  fullWidth
-                  size="lg"
-                >
+              ))}
+            </dl>
+            <p className={`text-xs ${ui.muted}`}>{t('avgResponse', { time: mentor.responseTime || t('defaultResponse') })}</p>
+            {isSelf ? (
+              <Link href={`/${locale}/my/profile?tab=mentor`} className={ui.btnPrimary}>
+                {tp('editProfile')}
+              </Link>
+            ) : (
+              <div className="flex flex-col gap-2.5">
+                <button type="button" onClick={handleBookSession} disabled={isBooking} className={`${ui.btnPrimary} w-full`}>
                   {isBooking ? t('booking') : t('bookSession')}
-                </Button>
-                <Button
-                  type="button"
-                  onClick={handleBookSession}
-                  variant="secondary"
-                  fullWidth
-                >
-                  <MessageCircle className="w-5 h-5 inline mr-2" />
-                  {t("sendMessage")}
-                </Button>
-                {bookingMessage && (
-                  <p className="text-xs text-primary-700 font-semibold">{bookingMessage}</p>
-                )}
+                </button>
+                <button type="button" onClick={toggleFavorite} aria-pressed={isFavorite} className={`${ui.btnOutline} w-full`}>
+                  <Heart className={`h-4 w-4 ${isFavorite ? 'fill-current text-teal dark:text-teal-dark' : ''}`} aria-hidden="true" />
+                  {isFavorite ? tp('saved') : tp('save')}
+                </button>
               </div>
-            </div>
-
-            <div className="ds-panel p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">{t("stats")}</h3>
-              <div className="space-y-3 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">{t("reviewCount")}</span>
-                  <span className="font-bold text-gray-900">{mentor.reviewCount}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">{t("avgRating")}</span>
-                  <span className="font-bold text-gray-900">{mentor.rating} ⭐</span>
-                </div>
-                {mentor.email && user?.role === 'admin' && (
-                  <div className="pt-2 border-t border-gray-100 text-xs text-gray-500">{t("adminOnly", { email: mentor.email })}</div>
-                )}
-              </div>
-            </div>
-          </div>
+            )}
+            {bookingMessage ? (
+              <p className="text-[13px] font-medium text-teal dark:text-teal-dark" role="status">
+                {bookingMessage}
+              </p>
+            ) : !isAuthenticated ? (
+              <p className={`text-xs ${ui.muted}`}>{tp('loginToBook')}</p>
+            ) : null}
+            {mentor.email && user?.role === 'admin' ? (
+              <p className={`border-t border-hairline pt-3 text-xs dark:border-hairline-dark ${ui.muted}`}>{t('adminOnly', { email: mentor.email })}</p>
+            ) : null}
+            <Link href={`/${locale}/my/schedule`} className={`${ui.btnGhost} text-xs`}>
+              {tp('seeSchedule')}
+              <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+            </Link>
+          </aside>
         </div>
       </div>
     </div>

@@ -27,7 +27,7 @@ export default function CommunityCard({ group }: CommunityCardProps) {
             </span>
           </div>
           <div className="absolute bottom-4 right-4">
-            <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center dark:bg-night-card">
               <Hash className="w-6 h-6 text-white" />
             </div>
           </div>

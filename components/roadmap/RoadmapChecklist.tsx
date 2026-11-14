@@ -57,7 +57,7 @@ export default function RoadmapChecklist({
           ))}
         </div>
         {emptyHint ? (
-          <p className="text-xs text-gray-400 mt-3">{emptyHint}</p>
+          <p className="text-xs text-gray-400 mt-3 dark:text-snow-muted">{emptyHint}</p>
         ) : null}
       </div>
     );
@@ -128,7 +128,7 @@ export default function RoadmapChecklist({
                         ? "text-zinc-700 dark:text-slate-200"
                         : current
                           ? "text-zinc-900 dark:text-white font-semibold"
-                          : "text-gray-400"
+                          : "text-gray-400 dark:text-snow-muted"
                     }`}
                   >
                     {title}

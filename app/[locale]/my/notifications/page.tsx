@@ -58,25 +58,25 @@ export default function MyNotificationsPage() {
   }
 
   return (
-    <div className="w-full space-y-6">
+    <div className="w-full space-y-8">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-zinc-900 tracking-tight">{t("title")}</h1>
-          <p className="text-sm text-zinc-600 mt-1">{t("subtitle")}</p>
+          <h1 className="text-2xl font-semibold leading-[1.2] text-ink dark:text-snow sm:text-[32px]">{t("title")}</h1>
+          <p className="mt-2 text-base leading-[1.55] text-ink-muted dark:text-snow-muted">{t("subtitle")}</p>
         </div>
         <div className="flex flex-wrap gap-2">
           {items.length > 0 && (
             <button
               type="button"
               onClick={() => void dismissAll()}
-              className="rounded-lg bg-zinc-900 px-3 py-2 text-xs font-semibold text-white hover:bg-zinc-800"
+              className="rounded-lg bg-teal px-3 py-2 text-xs font-semibold text-white hover:bg-primary-700 dark:bg-teal-dark dark:text-night dark:hover:bg-primary-400"
             >
               {t("dismissAll")}
             </button>
           )}
           <Link
             href={`/${locale}/my/dashboard`}
-            className="rounded-lg px-3 py-2 text-xs font-semibold text-zinc-700 ring-1 ring-zinc-200 hover:bg-zinc-50"
+            className="rounded-lg px-3 py-2 text-xs font-semibold text-zinc-700 ring-1 ring-zinc-200 hover:bg-zinc-50 dark:text-snow-muted dark:bg-night"
           >
             ←
           </Link>
@@ -85,7 +85,7 @@ export default function MyNotificationsPage() {
 
       <PlatformCard padding="lg">
         {items.length === 0 ? (
-          <p className="text-sm text-zinc-600">{t("empty")}</p>
+          <p className="text-sm text-zinc-600 dark:text-snow-muted">{t("empty")}</p>
         ) : (
           <ul className="space-y-4">
             {items.map((n) => (
@@ -99,10 +99,10 @@ export default function MyNotificationsPage() {
                       : "border-primary-100 bg-primary-50/40"
                 }`}
               >
-                <p className="text-sm font-semibold text-zinc-900">{n.title}</p>
-                {n.body && <p className="text-sm text-zinc-800 whitespace-pre-wrap mt-1">{n.body}</p>}
+                <p className="text-sm font-semibold text-zinc-900 dark:text-snow">{n.title}</p>
+                {n.body && <p className="text-sm text-zinc-800 whitespace-pre-wrap mt-1 dark:text-snow">{n.body}</p>}
                 {n.dueDate && (
-                  <p className="text-xs text-zinc-500 mt-1">
+                  <p className="text-xs text-zinc-500 mt-1 dark:text-snow-muted">
                     {t("dueDate", { date: fd(new Date(n.dueDate), { dateStyle: "medium" }) })}
                   </p>
                 )}
@@ -118,7 +118,7 @@ export default function MyNotificationsPage() {
                   <button
                     type="button"
                     onClick={() => void dismissOne(n.id)}
-                    className="text-xs font-semibold text-zinc-500 hover:text-zinc-800"
+                    className="text-xs font-semibold text-zinc-500 hover:text-zinc-800 dark:text-snow-muted"
                   >
                     {t("dismiss")}
                   </button>

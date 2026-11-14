@@ -45,8 +45,8 @@ export default function MyLecturesHubPage() {
     <div className="w-full space-y-8">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-zinc-900 tracking-tight">{t("title")}</h1>
-          <p className="text-sm text-zinc-600 mt-1">{t("subtitle")}</p>
+          <h1 className="text-2xl font-semibold leading-[1.2] text-ink dark:text-snow sm:text-[32px]">{t("title")}</h1>
+          <p className="mt-2 text-base leading-[1.55] text-ink-muted dark:text-snow-muted">{t("subtitle")}</p>
         </div>
         <Link
           href={`/${locale}/mentor/lectures/new`}
@@ -62,18 +62,18 @@ export default function MyLecturesHubPage() {
       ) : (
         <div className="grid gap-8">
           <PlatformCard padding="lg">
-            <h2 className="text-lg font-semibold text-zinc-900 mb-4">{t("teaching")}</h2>
+            <h2 className="text-lg font-semibold text-zinc-900 mb-4 dark:text-snow">{t("teaching")}</h2>
             {teaching.length === 0 ? (
-              <p className="text-sm text-zinc-500">{t("emptyTeaching")}</p>
+              <p className="text-sm text-zinc-500 dark:text-snow-muted">{t("emptyTeaching")}</p>
             ) : (
               <ul className="space-y-3">
                 {teaching.map((lec: { id: string; title?: string; approvalStatus?: string }) => (
                   <li
                     key={lec.id}
-                    className="rounded-xl border border-zinc-100 bg-zinc-50/60 px-3 py-3 text-sm"
+                    className="rounded-xl border border-zinc-100 bg-zinc-50/60 px-3 py-3 text-sm dark:bg-night dark:border-hairline-dark"
                   >
                     <div className="flex items-center gap-2 flex-wrap">
-                      <p className="font-medium text-zinc-900">{lec.title || "—"}</p>
+                      <p className="font-medium text-zinc-900 dark:text-snow">{lec.title || "—"}</p>
                       {lec.approvalStatus === "pending" && (
                         <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">
                           {t("pendingBadge")}
@@ -94,7 +94,7 @@ export default function MyLecturesHubPage() {
                       </Link>
                       <Link
                         href={`/${locale}/mentor/lectures/${lec.id}/edit`}
-                        className="inline-block text-xs font-semibold text-slate-700 hover:text-slate-900 underline underline-offset-2"
+                        className="inline-block text-xs font-semibold text-slate-700 hover:text-slate-900 underline underline-offset-2 dark:text-snow-muted"
                       >
                         {t("edit")}
                       </Link>

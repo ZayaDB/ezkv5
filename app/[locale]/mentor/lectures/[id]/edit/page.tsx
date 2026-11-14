@@ -96,8 +96,8 @@ export default function MentorLectureEditPage() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <div className="w-10 h-10 border-2 border-slate-300 border-t-primary-600 rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-night">
+        <div className="w-10 h-10 border-2 border-slate-300 border-t-primary-600 rounded-full animate-spin dark:border-hairline-dark" />
       </div>
     );
   }
@@ -156,7 +156,7 @@ export default function MentorLectureEditPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 py-10 px-4">
+    <div className="min-h-screen bg-slate-50 py-10 px-4 dark:bg-night">
       {toast && (
         <Toast
           message={toast.message}
@@ -168,19 +168,19 @@ export default function MentorLectureEditPage() {
       <div className="max-w-lg mx-auto space-y-6">
         <Link
           href={`/${locale}/my/lectures`}
-          className="inline-flex items-center text-sm font-medium text-slate-600 hover:text-slate-900"
+          className="inline-flex items-center text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-snow-muted"
         >
           <ArrowLeft className="w-4 h-4 mr-1" />
           {t("back")}
         </Link>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">{t("editTitle")}</h1>
-          <p className="text-sm text-slate-600 mt-1">{t("editSubtitle")}</p>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-snow">{t("editTitle")}</h1>
+          <p className="text-sm text-slate-600 mt-1 dark:text-snow-muted">{t("editSubtitle")}</p>
         </div>
         <PlatformCard>
           {loading ? (
             <div className="py-10 flex justify-center">
-              <div className="w-8 h-8 border-2 border-slate-300 border-t-primary-600 rounded-full animate-spin" />
+              <div className="w-8 h-8 border-2 border-slate-300 border-t-primary-600 rounded-full animate-spin dark:border-hairline-dark" />
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -233,17 +233,17 @@ export default function MentorLectureEditPage() {
               </Field>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">{t("totalLessons")}</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1 dark:text-snow-muted">{t("totalLessons")}</label>
                   <Input type="number" min={0} value={totalLessons} onChange={(e) => setTotalLessons(e.target.value)} />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">{t("totalHours")}</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1 dark:text-snow-muted">{t("totalHours")}</label>
                   <Input type="number" min={0} step="0.5" value={totalHours} onChange={(e) => setTotalHours(e.target.value)} />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">{t("difficulty")}</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1 dark:text-snow-muted">{t("difficulty")}</label>
                   <Select value={difficulty} onChange={(e) => setDifficulty(e.target.value as typeof difficulty)}>
                     <option value="beginner">{t("beginner")}</option>
                     <option value="intermediate">{t("intermediate")}</option>
@@ -251,33 +251,33 @@ export default function MentorLectureEditPage() {
                   </Select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">{t("maxStudents")}</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1 dark:text-snow-muted">{t("maxStudents")}</label>
                   <Input type="number" min={1} value={maxStudents} onChange={(e) => setMaxStudents(e.target.value)} />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">{t("language")}</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1 dark:text-snow-muted">{t("language")}</label>
                   <Input value={language} onChange={(e) => setLanguage(e.target.value)} />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">{t("previewVideoUrl")}</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1 dark:text-snow-muted">{t("previewVideoUrl")}</label>
                   <Input value={previewVideoUrl} onChange={(e) => setPreviewVideoUrl(e.target.value)} />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">{t("materialsIncluded")}</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1 dark:text-snow-muted">{t("materialsIncluded")}</label>
                 <Textarea rows={3} value={materialsIncluded} onChange={(e) => setMaterialsIncluded(e.target.value)} />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">{t("faq")}</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1 dark:text-snow-muted">{t("faq")}</label>
                 <Textarea rows={3} value={faq} onChange={(e) => setFaq(e.target.value)} />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">{t("imageUrl")}</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1 dark:text-snow-muted">{t("imageUrl")}</label>
                 <Input value={image} onChange={(e) => setImage(e.target.value)} />
                 <div className="mt-2 flex items-center gap-3">
-                  <label className="inline-flex cursor-pointer items-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">
+                  <label className="inline-flex cursor-pointer items-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:text-snow-muted dark:bg-night-card dark:bg-night dark:border-hairline-dark">
                     {uploadingImage ? t("imageUploading") : t("imageUpload")}
                     <input
                       type="file"
@@ -287,10 +287,10 @@ export default function MentorLectureEditPage() {
                       onChange={(e) => void handleImageUpload(e.target.files?.[0])}
                     />
                   </label>
-                  <span className="text-xs text-slate-500">{t("imageHint")}</span>
+                  <span className="text-xs text-slate-500 dark:text-snow-muted">{t("imageHint")}</span>
                 </div>
                 {image && (
-                  <div className="mt-3 overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
+                  <div className="mt-3 overflow-hidden rounded-lg border border-slate-200 bg-slate-100 dark:bg-night dark:border-hairline-dark">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={image} alt={t("imagePreviewAlt")} className="h-36 w-full object-cover" />
                   </div>

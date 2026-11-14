@@ -48,10 +48,10 @@ export default function MyWishlistPage() {
   if ((loading && !user) || isLoading) return <LoadingState message={t("loading")} />;
 
   return (
-    <div className="space-y-4">
+    <div className="w-full space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-zinc-900">{t("title")}</h1>
-        <p className="text-sm text-zinc-600 mt-1">{t("subtitle")}</p>
+        <h1 className="text-2xl font-semibold leading-[1.2] text-ink dark:text-snow sm:text-[32px]">{t("title")}</h1>
+        <p className="mt-2 text-base leading-[1.55] text-ink-muted dark:text-snow-muted">{t("subtitle")}</p>
       </div>
       {items.length === 0 ? (
         <EmptyState title={t("empty")} actionLabel={t("browse")} actionHref={`/${locale}/lectures`} />
@@ -61,8 +61,8 @@ export default function MyWishlistPage() {
             <PlatformCard key={item.id}>
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="font-semibold text-zinc-900">{item.lecture?.title || t("deleted")}</p>
-                  <p className="text-xs text-zinc-500 mt-1">
+                  <p className="font-semibold text-zinc-900 dark:text-snow">{item.lecture?.title || t("deleted")}</p>
+                  <p className="text-xs text-zinc-500 mt-1 dark:text-snow-muted">
                     {lectureCategoryLabel(item.lecture?.category, tLec) || "-"} · {item.lecture?.duration || "-"} · ₩
                     {(item.lecture?.price || 0).toLocaleString("ko-KR")}
                   </p>

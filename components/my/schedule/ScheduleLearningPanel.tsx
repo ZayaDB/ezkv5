@@ -55,10 +55,10 @@ export default function ScheduleLearningPanel({
   );
   return (
     <div className="lg:col-span-2 space-y-2">
-      {labels.title ? <h3 className="text-sm font-semibold text-zinc-800">{labels.title}</h3> : null}
+      {labels.title ? <h3 className="text-sm font-semibold text-zinc-800 dark:text-snow">{labels.title}</h3> : null}
       {view === "month" && (
         <div>
-          <div className="grid grid-cols-7 gap-1 text-center text-xs font-semibold uppercase text-zinc-500 mb-2">
+          <div className="grid grid-cols-7 gap-1 text-center text-xs font-semibold uppercase text-zinc-500 mb-2 dark:text-snow-muted">
             {weekdayHeaders.map((d) => (
               <div key={d}>{d}</div>
             ))}
@@ -101,10 +101,10 @@ export default function ScheduleLearningPanel({
                   type="button"
                   onClick={() => onOpenDay(date)}
                   className={`min-h-[108px] rounded-lg border p-1.5 text-left transition hover:bg-zinc-50/80 ${
-                    inMonth ? "bg-white border-zinc-200" : "bg-zinc-50 border-zinc-100 text-zinc-400"
+                    inMonth ? "bg-white border-zinc-200 dark:bg-night-card dark:border-hairline-dark" : "bg-zinc-50 border-zinc-100 text-zinc-400 dark:text-snow-muted dark:bg-night dark:border-hairline-dark"
                   } ${isTodayDate(date) ? "ring-2 ring-primary-400" : ""}`}
                 >
-                  <div className="text-sm font-semibold text-zinc-800">{date.getDate()}</div>
+                  <div className="text-sm font-semibold text-zinc-800 dark:text-snow">{date.getDate()}</div>
                   <div className="mt-1 space-y-1 min-h-[3.5rem]">
                     {visibleBars.map((bar) => (
                       <p
@@ -115,8 +115,8 @@ export default function ScheduleLearningPanel({
                         {bar.text}
                       </p>
                     ))}
-                    {hiddenCount > 0 && <p className="text-[11px] text-zinc-500 font-medium">+{hiddenCount}</p>}
-                    {!hasAny && <p className="text-xs text-zinc-400"> </p>}
+                    {hiddenCount > 0 && <p className="text-[11px] text-zinc-500 font-medium dark:text-snow-muted">+{hiddenCount}</p>}
+                    {!hasAny && <p className="text-xs text-zinc-400 dark:text-snow-muted"> </p>}
                   </div>
                   <div className="mt-1 flex flex-wrap gap-0.5">
                     {ll.length > 0 && <span className="h-1.5 w-1.5 rounded-full bg-violet-600" title={labels.legendLife} />}
@@ -128,7 +128,7 @@ export default function ScheduleLearningPanel({
               );
             })}
           </div>
-          <div className="mt-3 flex flex-wrap gap-3 text-sm text-zinc-600">
+          <div className="mt-3 flex flex-wrap gap-3 text-sm text-zinc-600 dark:text-snow-muted">
             <span className="inline-flex items-center gap-1">
               <span className="h-2 w-2 rounded-full bg-violet-600" /> {labels.legendLife}
             </span>
@@ -153,11 +153,11 @@ export default function ScheduleLearningPanel({
             const ll = lifeOnDay(day);
             const bb = budgetOnDay(day);
             return (
-              <div key={day.toISOString()} className="rounded-xl border border-zinc-200 bg-zinc-50/80 p-3 min-h-[140px]">
+              <div key={day.toISOString()} className="rounded-xl border border-zinc-200 bg-zinc-50/80 p-3 min-h-[140px] dark:bg-night dark:border-hairline-dark">
                 <button
                   type="button"
                   onClick={() => onOpenDay(day)}
-                  className="text-sm font-semibold text-zinc-700 mb-2 w-full text-left hover:text-primary-700"
+                  className="text-sm font-semibold text-zinc-700 mb-2 w-full text-left hover:text-primary-700 dark:text-snow-muted"
                 >
                   {formatDayLabel(day)}
                 </button>
@@ -190,9 +190,9 @@ export default function ScheduleLearningPanel({
       {view === "day" && (
         <div className="space-y-4">
           <div>
-            <h4 className="text-sm font-semibold text-zinc-800 mb-2">{labels.dayLifeTitle}</h4>
+            <h4 className="text-sm font-semibold text-zinc-800 mb-2 dark:text-snow">{labels.dayLifeTitle}</h4>
             {lifeOnDay(anchor).length === 0 ? (
-              <p className="text-sm text-zinc-500">—</p>
+              <p className="text-sm text-zinc-500 dark:text-snow-muted">—</p>
             ) : (
               <ul className="space-y-2">
                 {lifeOnDay(anchor).map((ev) => (
@@ -214,13 +214,13 @@ export default function ScheduleLearningPanel({
             )}
           </div>
           <div>
-            <h4 className="text-sm font-semibold text-zinc-800 mb-2">{labels.sessionsTitle}</h4>
+            <h4 className="text-sm font-semibold text-zinc-800 mb-2 dark:text-snow">{labels.sessionsTitle}</h4>
             {sessionsOnDay(anchor).length === 0 ? (
-              <p className="text-sm text-zinc-500">—</p>
+              <p className="text-sm text-zinc-500 dark:text-snow-muted">—</p>
             ) : (
               <ul className="space-y-2">
                 {sessionsOnDay(anchor).map((s) => (
-                  <li key={s.id} className="rounded-xl border border-zinc-100 bg-zinc-50 px-3 py-2 text-sm">
+                  <li key={s.id} className="rounded-xl border border-zinc-100 bg-zinc-50 px-3 py-2 text-sm dark:bg-night dark:border-hairline-dark">
                     {s.date ? timeFmt(s.date) : "—"} ·{" "}
                     {labels.sessionWith(s.mentorName || s.menteeName || "—")}
                   </li>
@@ -229,9 +229,9 @@ export default function ScheduleLearningPanel({
             )}
           </div>
           <div>
-            <h4 className="text-sm font-semibold text-zinc-800 mb-2">{labels.enrollTitle}</h4>
+            <h4 className="text-sm font-semibold text-zinc-800 mb-2 dark:text-snow">{labels.enrollTitle}</h4>
             {enrollmentsOnDay(anchor).length === 0 ? (
-              <p className="text-sm text-zinc-500">—</p>
+              <p className="text-sm text-zinc-500 dark:text-snow-muted">—</p>
             ) : (
               <ul className="space-y-2">
                 {enrollmentsOnDay(anchor).map((e) => (
@@ -243,9 +243,9 @@ export default function ScheduleLearningPanel({
             )}
           </div>
           <div>
-            <h4 className="text-sm font-semibold text-zinc-800 mb-2">{labels.budgetTitle}</h4>
+            <h4 className="text-sm font-semibold text-zinc-800 mb-2 dark:text-snow">{labels.budgetTitle}</h4>
             {budgetOnDay(anchor).length === 0 ? (
-              <p className="text-sm text-zinc-500">—</p>
+              <p className="text-sm text-zinc-500 dark:text-snow-muted">—</p>
             ) : (
               <ul className="space-y-2">
                 {budgetOnDay(anchor).map((b) => (
