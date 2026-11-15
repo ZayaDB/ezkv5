@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { ArrowRight, Heart, MapPin } from 'lucide-react';
-import { mentorsApi, sessionApi } from '@/lib/api/client';
+import { mentorsApi } from '@/lib/api/client';
 import { useAuth } from '@/lib/contexts/AuthContext';
 import { storage } from '@/lib/storage';
 import { formatMentorHourlyPrice } from '@/lib/format/price';
@@ -37,8 +37,6 @@ export default function MentorDetailPage() {
 
   const [mentor, setMentor] = useState<MentorDetail | null | undefined>(undefined);
   const [isFavorite, setIsFavorite] = useState(false);
-  const [isBooking, setIsBooking] = useState(false);
-  const [bookingMessage, setBookingMessage] = useState('');
 
   const load = useCallback(async () => {
     const res = await mentorsApi.getById(id);
@@ -83,20 +81,13 @@ export default function MentorDetailPage() {
   const formatLabel =
     mentor.sessionFormat === 'offline' ? t('formatOffline') : mentor.sessionFormat === 'both' ? t('formatHybrid') : t('formatOnline');
 
-  const handleBookSession = async () => {
+  const handleBookSession = () => {
     if (!isAuthenticated) {
       router.push(`/${locale}/login`);
       return;
     }
-    if (isBooking || isSelf) return;
-    setIsBooking(true);
-    setBookingMessage('');
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    tomorrow.setHours(14, 0, 0, 0);
-    const result = await sessionApi.create({ mentorId: mentor.id, date: tomorrow.toISOString(), duration: 60, type: 'online' });
-    setIsBooking(false);
-    setBookingMessage(result.error ? result.error : t('bookingRequested'));
+    if (isSelf) return;
+    router.push(`/${locale}/mentors/${mentor.id}/book`);
   };
 
   const toggleFavorite = () => {
@@ -252,8 +243,8 @@ export default function MentorDetailPage() {
               </Link>
             ) : (
               <div className="flex flex-col gap-2.5">
-                <button type="button" onClick={handleBookSession} disabled={isBooking} className={`${ui.btnPrimary} w-full`}>
-                  {isBooking ? t('booking') : t('bookSession')}
+                <button type="button" onClick={handleBookSession} className={`${ui.btnPrimary} w-full`}>
+                  {t('bookSession')}
                 </button>
                 <button type="button" onClick={toggleFavorite} aria-pressed={isFavorite} className={`${ui.btnOutline} w-full`}>
                   <Heart className={`h-4 w-4 ${isFavorite ? 'fill-current text-teal dark:text-teal-dark' : ''}`} aria-hidden="true" />
@@ -261,11 +252,7 @@ export default function MentorDetailPage() {
                 </button>
               </div>
             )}
-            {bookingMessage ? (
-              <p className="text-[13px] font-medium text-teal dark:text-teal-dark" role="status">
-                {bookingMessage}
-              </p>
-            ) : !isAuthenticated ? (
+            {!isAuthenticated ? (
               <p className={`text-xs ${ui.muted}`}>{tp('loginToBook')}</p>
             ) : null}
             {mentor.email && user?.role === 'admin' ? (

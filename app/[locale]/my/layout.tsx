@@ -12,6 +12,7 @@ import {
   BookMarked,
   PenLine,
   Bell,
+  Receipt,
 } from "lucide-react";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import MyWorkspaceShell, { type WorkspaceGroup, type WorkspaceItem } from "@/components/layout/MyWorkspaceShell";
@@ -110,6 +111,7 @@ export default function MySpaceLayout({ children }: { children: React.ReactNode 
       label: t("groupAccount"),
       items: [
         { href: `${base}/profile?tab=info`, label: t("navProfile"), icon: UserRound, active: (p) => p.includes("/my/profile") },
+        { href: `${base}/payments`, label: t("navPayments"), icon: Receipt, active: (p) => p.includes("/my/payments") },
         { href: `${base}/inquiries`, label: t("navInquiries"), icon: LifeBuoy, active: (p) => p.includes("/my/inquiries") },
       ],
     },

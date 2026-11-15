@@ -18,6 +18,15 @@
 # 선택:
 #   OPENAI_API_KEY=...                    # AI 챗봇
 #
+# 결제 (포트원 V2 · 토스페이먼츠) — 값이 없으면 결제 수단이 숨겨지고 무료 멘토만 예약됩니다:
+#   NEXT_PUBLIC_PORTONE_STORE_ID=store-...
+#   NEXT_PUBLIC_PORTONE_CHANNEL_KEY=channel-key-...         # 국내 카드·간편결제 채널
+#   NEXT_PUBLIC_PORTONE_CHANNEL_KEY_GLOBAL=channel-key-...  # (선택) 해외 발급 카드 채널
+#   NEXT_PUBLIC_PORTONE_TEST_MODE=1                         # 테스트 채널일 때 "테스트 결제" 배지 표시
+#   PORTONE_API_SECRET=...                                  # 포트원 콘솔 → 연동 정보 → V2 API Secret
+#   PORTONE_WEBHOOK_SECRET=whsec_...                        # 포트원 콘솔 → 웹훅 (URL: /api/payments/webhook)
+#   PAYMENT_HOOK_SECRET=...                                 # Supabase private.app_config 의 payment_hook_secret 값
+#
 # ── Supabase Dashboard → Authentication → URL Configuration ──
 #   Site URL:        https://ezkv5.netlify.app
 #   Redirect URLs:   https://ezkv5.netlify.app/**
