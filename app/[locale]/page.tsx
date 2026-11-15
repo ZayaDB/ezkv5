@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import {
   ArrowUpRight,
   Briefcase,
@@ -44,6 +44,7 @@ export default async function HomePage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  setRequestLocale(locale);
   const href = (path: string) => `/${locale}${path}`;
   const t = await getTranslations({ locale, namespace: "homeV2" });
   const raw = <T,>(key: string) => t.raw(key) as T;

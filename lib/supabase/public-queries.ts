@@ -1,4 +1,4 @@
-import { createServerSupabase } from "@/lib/supabase/server";
+import { createPublicSupabase } from "@/lib/supabase/public";
 import { listApprovedLectures } from "@/lib/supabase/lectures";
 import { listApprovedMentors } from "@/lib/supabase/mentors";
 import type { Lecture, Mentor } from "@/types";
@@ -8,7 +8,7 @@ export async function queryMentorsSupabase(options?: {
   page?: number;
 }): Promise<{ mentors: Mentor[]; total: number }> {
   try {
-    const supabase = await createServerSupabase();
+    const supabase = createPublicSupabase();
     const r = await listApprovedMentors(supabase, options);
     return { mentors: r.mentors, total: r.total };
   } catch {
@@ -23,7 +23,7 @@ export async function queryLecturesSupabase(options?: {
   category?: string;
 }): Promise<{ lectures: Lecture[]; total: number }> {
   try {
-    const supabase = await createServerSupabase();
+    const supabase = createPublicSupabase();
     const r = await listApprovedLectures(supabase, options);
     return { lectures: r.lectures, total: r.total };
   } catch {

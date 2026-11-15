@@ -1,12 +1,12 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { ArrowUpRight, Briefcase, GraduationCap, HeartPulse, Home, MapPin, Search, ShieldCheck, Stamp } from 'lucide-react';
 import type { Mentor } from '@/types';
-import { mentorMatchesCategoryKey, MENTOR_CATEGORY_KEYS, type MentorCategoryKey } from '@/lib/mentors/categoryFilter';
+import { parseMentorCategory, mentorMatchesCategoryKey, MENTOR_CATEGORY_KEYS, type MentorCategoryKey } from '@/lib/mentors/categoryFilter';
 import { formatMentorHourlyPrice } from '@/lib/format/price';
 import { Notice, PageShell, PageIntro, ui } from '@/components/lnk/ui';
 
@@ -23,7 +23,6 @@ const ICONS: Record<MentorCategoryKey, typeof Stamp> = {
 interface Props {
   initialMentors: Mentor[];
   locale: string;
-  initialCategory: MentorCategoryKey | null;
 }
 
 function Avatar({ mentor, size = 48 }: { mentor: Mentor; size?: number }) {
@@ -42,11 +41,15 @@ function Avatar({ mentor, size = 48 }: { mentor: Mentor; size?: number }) {
   );
 }
 
-export default function MentorsPageClient({ initialMentors, locale, initialCategory }: Props) {
+export default function MentorsPageClient({ initialMentors, locale }: Props) {
   const t = useTranslations('mentorsPage');
   const tM = useTranslations('mentors');
   const router = useRouter();
-  const [category, setCategory] = useState<MentorCategoryKey | ''>(initialCategory ?? '');
+  const [category, setCategory] = useState<MentorCategoryKey | ''>('');
+  useEffect(() => {
+    const c = parseMentorCategory(new URLSearchParams(window.location.search).get('category'));
+    if (c) setCategory(c);
+  }, []);
   const [query, setQuery] = useState('');
   const [language, setLanguage] = useState('');
   const [format, setFormat] = useState<'' | 'online' | 'offline'>('');

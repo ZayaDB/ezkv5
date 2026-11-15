@@ -76,7 +76,7 @@ export function mapMentorRow(row: MentorProfileRow): Mentor {
     specialties: row.specialties || [],
     price: Number(row.price) || 0,
     availability: (row.availability as Mentor["availability"]) || "available",
-    photo: row.photo || row.profiles?.avatar_url || undefined,
+    photo: publicImage(row.photo) || publicImage(row.profiles?.avatar_url) || undefined,
     verified: row.verified,
     bio: row.bio,
     yearsOfExperience: row.years_of_experience,
@@ -327,4 +327,11 @@ export async function userCanManageLectures(userId: string, role: string) {
     .eq("user_id", userId)
     .maybeSingle();
   return data?.approval_status === "approved";
+}
+
+/** Inline base64 images bloat every page that lists mentors; only keep small ones. */
+function publicImage(src: string | null | undefined): string | undefined {
+  if (!src) return undefined;
+  if (src.startsWith("data:") && src.length > 60_000) return undefined;
+  return src;
 }

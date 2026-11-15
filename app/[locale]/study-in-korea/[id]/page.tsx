@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ArrowUpRight, Info } from 'lucide-react';
 import { queryStudyInfoById, queryStudyInfos } from '@/lib/data/queries';
 import { estimateReadMinutes, parseGuide } from '@/lib/guides/content';
@@ -12,13 +12,20 @@ import type { StudyInfo } from '@/types';
 const card = 'bg-white dark:bg-night-card border border-hairline dark:border-hairline-dark';
 const LANG_KEY: Record<string, string> = { ko: 'langKo', en: 'langEn', mn: 'langMn' };
 
+export const revalidate = 300;
+/** Render each guide on first request, then serve it from cache. */
+export function generateStaticParams() {
+  return [];
+}
+
 export default async function GuideDetailPage({
   params,
 }: {
   params: Promise<{ locale: string; id: string }>;
 }) {
   const { locale, id } = await params;
-  const t = await getTranslations('guides');
+  setRequestLocale(locale);
+  const t = await getTranslations({ locale, namespace: 'guides' });
 
   let guide: StudyInfo | null = null;
   let all: StudyInfo[] = [];

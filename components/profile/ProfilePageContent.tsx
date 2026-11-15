@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useCallback, useEffect, useState, type ReactNode } from "react";
+import { uploadPublicImage } from "@/lib/supabase/storage";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { GraduationCap, Save, User as UserIcon } from "lucide-react";
@@ -186,7 +187,7 @@ function ProfilePageContent() {
     setSaving(false);
   };
 
-  const handleAvatarUpload = (file: File) => {
+  const handleAvatarUpload = async (file: File) => {
     if (!file.type.startsWith("image/")) {
       setSaveError(tp("info.avatarImageOnly"));
       return;
@@ -195,11 +196,15 @@ function ProfilePageContent() {
       setSaveError(tp("info.avatarTooLarge"));
       return;
     }
-    const reader = new FileReader();
-    reader.onload = () => {
-      setFormData((prev) => ({ ...prev, avatar: String(reader.result || "") }));
-    };
-    reader.readAsDataURL(file);
+    setSaveError("");
+    // Shrink to a 512px square-ish WebP and store it in Storage (not as base64 in the DB).
+    const resized = await resizeImage(file, 512).catch(() => file);
+    const result = await uploadPublicImage(resized);
+    if ("error" in result) {
+      setSaveError(result.error);
+      return;
+    }
+    setFormData((prev) => ({ ...prev, avatar: result.data.url }));
   };
 
   if (authLoading || !user || !hasLoaded) {
@@ -467,4 +472,26 @@ export default function ProfilePage() {
       <ProfilePageContent />
     </Suspense>
   );
+}
+
+async function resizeImage(file: File, max: number): Promise<File> {
+  const url = URL.createObjectURL(file);
+  try {
+    const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const el = new Image();
+      el.onload = () => resolve(el);
+      el.onerror = reject;
+      el.src = url;
+    });
+    const scale = Math.min(1, max / Math.max(img.width, img.height));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(img.width * scale);
+    canvas.height = Math.round(img.height * scale);
+    canvas.getContext("2d")?.drawImage(img, 0, 0, canvas.width, canvas.height);
+    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/webp", 0.85));
+    if (!blob) return file;
+    return new File([blob], file.name.replace(/\.[^.]+$/, "") + ".webp", { type: "image/webp" });
+  } finally {
+    URL.revokeObjectURL(url);
+  }
 }
