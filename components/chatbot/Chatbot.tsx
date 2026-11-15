@@ -159,7 +159,7 @@ export default function Chatbot() {
 
   const runAction = async (action: AssistantAction) => {
     if (action.type === 'open_calendar') {
-      router.push(`/${locale}/calendar`);
+      router.push(`/${locale}/my/schedule`);
       setIsOpen(false);
       return;
     }

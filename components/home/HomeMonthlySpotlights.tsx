@@ -75,8 +75,14 @@ export default async function HomeMonthlySpotlights({
                           </div>
                         )}
                         <div className="absolute top-2 right-2 inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-night/70 text-[11px] font-medium text-white">
-                          <Star className="w-3 h-3 fill-teal-dark text-teal-dark" />
-                          {lecture.rating.toFixed(1)}
+                          {lecture.rating > 0 ? (
+                            <>
+                              <Star className="w-3 h-3 fill-teal-dark text-teal-dark" />
+                              {lecture.rating.toFixed(1)}
+                            </>
+                          ) : (
+                            t('newBadge')
+                          )}
                         </div>
                       </div>
                       <div className="p-5 flex flex-col flex-1">
@@ -151,8 +157,14 @@ export default async function HomeMonthlySpotlights({
                           </div>
                         )}
                         <div className="absolute top-2 right-2 inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-night/70 text-[11px] font-medium text-white">
-                          <Star className="w-3 h-3 fill-teal-dark text-teal-dark" />
-                          {mentor.rating.toFixed(1)}
+                          {mentor.rating > 0 ? (
+                            <>
+                              <Star className="w-3 h-3 fill-teal-dark text-teal-dark" />
+                              {mentor.rating.toFixed(1)}
+                            </>
+                          ) : (
+                            t('newBadge')
+                          )}
                         </div>
                       </div>
                       <div className="p-5 flex flex-col flex-1">
@@ -176,7 +188,7 @@ export default async function HomeMonthlySpotlights({
                         </p>
                         <div className="mt-4 pt-4 border-t border-hairline dark:border-hairline-dark flex items-center justify-between gap-2">
                           <span className="text-xs text-ink-muted dark:text-snow-muted">
-                            {mentor.reviewCount} {t('reviews')}
+                            {mentor.reviewCount > 0 ? `${mentor.reviewCount} ${t('reviews')}` : t('noReviewsYet')}
                           </span>
                           <span className="inline-flex items-center text-xs font-semibold text-teal dark:text-teal-dark">
                             {t('viewDetail')}

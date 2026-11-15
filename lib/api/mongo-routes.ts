@@ -1,5 +1,5 @@
 import { currentLocale, trError } from "@/lib/i18n/runtime";
-/** Supabase로 이전된 기능 제외 — 어시스턴트 API만 유지 */
+/** 이름은 예전 Mongo 시절 그대로지만 지금은 전부 Supabase 기반 (피드·커뮤니티·생활계획·로드맵) + 어시스턴트 API */
 import { apiRequest } from "./core";
 import type {
   LifeBudgetKind,

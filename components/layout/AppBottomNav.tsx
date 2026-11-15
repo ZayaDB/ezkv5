@@ -15,10 +15,13 @@ export default function AppBottomNav() {
 
   if (!isAuthenticated || user?.role === "admin") return null;
 
-  const calendarHref = `/${locale}/calendar`;
-  const myHref = `/${locale}/my`;
+  // 일정은 내 공간(/my) 안에 있으므로 일정 탭이 활성일 때는 "내 공간" 탭을 끔
+  const calendarHref = `/${locale}/my/schedule`;
+  const myHref = `/${locale}/my/dashboard`;
+  const myBase = `/${locale}/my`;
   const calendarActive = pathname === calendarHref || pathname?.startsWith(`${calendarHref}/`);
-  const myActive = pathname === myHref || pathname?.startsWith(`${myHref}/`);
+  const myActive =
+    !calendarActive && (pathname === myBase || pathname?.startsWith(`${myBase}/`));
 
   const tabClass = (active: boolean) =>
     `flex flex-col items-center justify-center gap-0.5 text-[10px] font-semibold transition-colors ${

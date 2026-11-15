@@ -114,7 +114,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         ok: true,
         eventId: event.id,
-        redirectUrl: `/calendar`,
+        redirectUrl: `/my/schedule`,
       });
     }
 

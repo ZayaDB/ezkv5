@@ -7,7 +7,7 @@ import type { User } from "@/lib/contexts/AuthContext";
 const RECOMMENDED_ACTION_DEFS = [
   { id: "arc", actionUrl: "/assistant" },
   { id: "visa", actionUrl: "/assistant" },
-  { id: "insurance", actionUrl: "/calendar" },
+  { id: "insurance", actionUrl: "/my/schedule" },
 ] as const;
 
 function buildRecommendedActions() {
