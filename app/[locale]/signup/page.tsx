@@ -29,6 +29,7 @@ export default function SignupPage() {
     visaType: "",
     visaExpireDate: "",
   });
+  const [agreed, setAgreed] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -75,6 +76,10 @@ export default function SignupPage() {
       }
       if (formData.password.length < 6) {
         setError(t("passwordTooShort"));
+        return;
+      }
+      if (!agreed) {
+        setError(t("consentRequired"));
         return;
       }
       await submitSignup();
@@ -232,6 +237,28 @@ export default function SignupPage() {
             <AuthField label={t("university")} icon={GraduationCap}>
               <input type="text" value={formData.university} onChange={set("university")} required className={authInput} placeholder={t("universityPlaceholder")} />
             </AuthField>
+            <label className="flex items-start gap-2.5 rounded-xl border border-hairline p-3.5 text-[13px] leading-[1.55] text-ink-muted dark:border-hairline-dark dark:text-snow-muted">
+              <input
+                type="checkbox"
+                checked={agreed}
+                onChange={(e) => setAgreed(e.target.checked)}
+                className="mt-0.5 h-4 w-4 shrink-0 accent-teal"
+              />
+              <span>
+                {t.rich("consentLabel", {
+                  terms: (chunks) => (
+                    <Link href={`/${locale}/legal/terms`} target="_blank" className="font-semibold text-teal underline-offset-2 hover:underline dark:text-teal-dark">
+                      {chunks}
+                    </Link>
+                  ),
+                  privacy: (chunks) => (
+                    <Link href={`/${locale}/legal/privacy`} target="_blank" className="font-semibold text-teal underline-offset-2 hover:underline dark:text-teal-dark">
+                      {chunks}
+                    </Link>
+                  ),
+                })}
+              </span>
+            </label>
           </>
         )}
 

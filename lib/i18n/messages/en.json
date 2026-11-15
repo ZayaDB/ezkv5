@@ -385,7 +385,9 @@
       "error": "We could not update your password. Please try again.",
       "samePassword": "Please choose a password different from your current one.",
       "doneLogin": "Your password was updated. Sign in with your new password."
-    }
+    },
+    "consentLabel": "(Required) I am 14 or older and agree to the <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy> (including storage on servers abroad).",
+    "consentRequired": "Please agree to the Terms of Service and Privacy Policy."
   },
   "controlCenter": {
     "badge": "Control Center",
@@ -1833,7 +1835,9 @@
     "errPayCancelled": "The payment was not completed. You can try again.",
     "back": "Back to profile",
     "errPayWindow": "We could not open the payment window. Please try again shortly or pick another method.",
-    "payCourseButton": "Pay {amount} and enroll"
+    "payCourseButton": "Pay {amount} and enroll",
+    "refundPolicyLink": "Read the full refund policy",
+    "courseRefundNote": "Full refund within 7 days of payment if you haven't attended a class."
   },
   "payments": {
     "checking": "Confirming your payment…",
@@ -1951,5 +1955,23 @@
     "rejoin": "Rejoin",
     "replayTitle": "Replay",
     "resumeFrom": "Resume from {time}"
+  },
+  "legal": {
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy",
+    "refund": "Refund Policy",
+    "effective": "Effective {date}",
+    "contactInquiry": "Contact: My page › Contact us (after signing in)",
+    "contactEmail": "Email: {email}",
+    "officer": "Privacy officer: {name}",
+    "officerPending": "Privacy officer: to be appointed after business registration (until then the operator handles requests directly)",
+    "onThisPage": "On this page",
+    "bizName": "Company",
+    "bizOwner": "CEO",
+    "bizRegNo": "Business reg. no.",
+    "bizEcommerceNo": "E-commerce reg.",
+    "bizAddress": "Address",
+    "bizEmail": "Email",
+    "bizPhone": "Phone"
   }
 }

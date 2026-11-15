@@ -406,6 +406,9 @@ export default function BookSessionPage() {
                 <div>
                   <p className="font-semibold text-ink dark:text-snow">{t('policyTitle')}</p>
                   <p className="mt-1 leading-relaxed">{t('policyBody')}</p>
+                  <Link href={`/${locale}/legal/refund`} target="_blank" className="mt-1 inline-block font-semibold text-teal underline-offset-2 hover:underline dark:text-teal-dark">
+                    {t('refundPolicyLink')}
+                  </Link>
                 </div>
               </div>
             </div>

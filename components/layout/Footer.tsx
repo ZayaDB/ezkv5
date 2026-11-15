@@ -2,11 +2,23 @@
 
 import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
+import { business, businessOrder } from "@/lib/legal/business";
 
 /* Figma 푸터: 짙은 배경 · 브랜드 약속 · 링크 묶음 · 하단 고지 */
 export default function Footer() {
   const t = useTranslations("common");
   const tf = useTranslations("footer");
+  const tl = useTranslations("legal");
+  const bizLabel = {
+    name: tl("bizName"),
+    owner: tl("bizOwner"),
+    regNo: tl("bizRegNo"),
+    ecommerceNo: tl("bizEcommerceNo"),
+    address: tl("bizAddress"),
+    email: tl("bizEmail"),
+    phone: tl("bizPhone"),
+  } as const;
+  const bizItems = businessOrder.filter((k) => k !== "privacyOfficer" && business[k]);
   const locale = useLocale();
   const href = (path: string) => `/${locale}${path}`;
   const link = "hover:text-white transition-colors";
@@ -39,7 +51,25 @@ export default function Footer() {
           </nav>
         </div>
         <div className="h-px w-full bg-white/15" />
-        <p className="text-xs leading-[1.55] text-snow-muted">{t("copyright")} · {tf("note")}</p>
+        <div className="flex flex-col gap-3 text-xs leading-[1.55] text-snow-muted">
+          <p className="flex flex-wrap gap-x-4 gap-y-1">
+            <Link href={href("/legal/terms")} className={link}>{tl("terms")}</Link>
+            <span aria-hidden="true">·</span>
+            <Link href={href("/legal/privacy")} className={`${link} font-semibold text-white`}>{tl("privacy")}</Link>
+            <span aria-hidden="true">·</span>
+            <Link href={href("/legal/refund")} className={link}>{tl("refund")}</Link>
+          </p>
+          {bizItems.length > 0 && (
+            <p className="flex flex-wrap gap-x-3 gap-y-1">
+              {bizItems.map((k) => (
+                <span key={k}>
+                  {bizLabel[k as keyof typeof bizLabel]} {business[k]}
+                </span>
+              ))}
+            </p>
+          )}
+          <p>{t("copyright")} · {tf("note")}</p>
+        </div>
       </div>
     </footer>
   );

@@ -39,3 +39,8 @@
 #
 # ── Supabase SQL (아직 안 했다면 Dashboard → SQL → New query) ──
 #   supabase/schema.sql 전체 실행
+
+# 사업자 정보 (사업자등록 후 채우면 푸터·약관에 자동 표시, 비어 있으면 숨김)
+#   NEXT_PUBLIC_BIZ_NAME, NEXT_PUBLIC_BIZ_OWNER, NEXT_PUBLIC_BIZ_REG_NO,
+#   NEXT_PUBLIC_BIZ_ECOMMERCE_NO, NEXT_PUBLIC_BIZ_ADDRESS, NEXT_PUBLIC_BIZ_EMAIL,
+#   NEXT_PUBLIC_BIZ_PHONE, NEXT_PUBLIC_BIZ_PRIVACY_OFFICER
