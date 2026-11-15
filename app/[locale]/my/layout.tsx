@@ -13,11 +13,13 @@ import {
   PenLine,
   Bell,
   Receipt,
+  MessageCircle,
 } from "lucide-react";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import MyWorkspaceShell, { type WorkspaceGroup, type WorkspaceItem } from "@/components/layout/MyWorkspaceShell";
 import DashboardModeToggle from "@/components/dashboard/DashboardModeToggle";
 import { useUnreadNotifications } from "@/lib/hooks/useUnreadNotifications";
+import { useUnreadMessages } from "@/lib/hooks/useUnreadMessages";
 import { useRouteGuard } from "@/lib/hooks/useRouteGuard";
 
 export default function MySpaceLayout({ children }: { children: React.ReactNode }) {
@@ -30,6 +32,7 @@ export default function MySpaceLayout({ children }: { children: React.ReactNode 
 
   useRouteGuard({ loading, userRole: user?.role, locale, requireAuth: true });
   const { unread } = useUnreadNotifications(Boolean(user));
+  const { unread: unreadMessages } = useUnreadMessages(Boolean(user));
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -93,6 +96,13 @@ export default function MySpaceLayout({ children }: { children: React.ReactNode 
           active: (p) => p.includes("/my/courses") || p.includes("/my/wishlist"),
         },
     { href: `${base}/schedule`, label: t("navSchedule"), icon: CalendarDays, active: (p) => p.includes("/my/schedule") },
+    {
+      href: `${base}/messages`,
+      label: t("navMessages"),
+      icon: MessageCircle,
+      active: (p) => p.includes("/my/messages"),
+      badge: unreadMessages,
+    },
     {
       href: `${base}/notifications`,
       label: t("navNotifications"),

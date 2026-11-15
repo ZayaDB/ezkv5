@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { Video } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { formatDate } from "@/lib/i18n/dateFormat";
 import { tr } from "@/lib/i18n/runtime";
@@ -48,6 +50,7 @@ export default function ScheduleLearningPanel({
 }) {
   const t = useTranslations("myPages.schedule");
   const locale = useLocale();
+  const tRoom = useTranslations("sessionRoom");
   const timeFmt = (d: string | Date) => formatDate(d, locale, { hour: "2-digit", minute: "2-digit" });
   // 2024-01-01 은 월요일 — 월요일 시작 요일 헤더
   const weekdayHeaders = Array.from({ length: 7 }, (_, i) =>
@@ -220,9 +223,20 @@ export default function ScheduleLearningPanel({
             ) : (
               <ul className="space-y-2">
                 {sessionsOnDay(anchor).map((s) => (
-                  <li key={s.id} className="rounded-xl border border-zinc-100 bg-zinc-50 px-3 py-2 text-sm dark:bg-night dark:border-hairline-dark">
-                    {s.date ? timeFmt(s.date) : "—"} ·{" "}
-                    {labels.sessionWith(s.mentorName || s.menteeName || "—")}
+                  <li key={s.id} className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-zinc-100 bg-zinc-50 px-3 py-2 text-sm dark:bg-night dark:border-hairline-dark">
+                    <span>
+                      {s.date ? timeFmt(s.date) : "—"} ·{" "}
+                      {labels.sessionWith(s.mentorName || s.menteeName || "—")}
+                    </span>
+                    {s.status === "upcoming" && (
+                      <Link
+                        href={`/${locale}/sessions/${s.id}`}
+                        className="inline-flex items-center gap-1 text-xs font-semibold text-teal hover:underline dark:text-teal-dark"
+                      >
+                        <Video className="h-3.5 w-3.5" />
+                        {tRoom("openRoom")}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>

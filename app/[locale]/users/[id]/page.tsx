@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import MessageButton from "@/components/messages/MessageButton";
 import { useParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { ArrowLeft, GraduationCap } from "lucide-react";
@@ -121,7 +122,9 @@ export default function PublicUserPage() {
                 >
                   {t("editMine")}
                 </Link>
-              ) : null}
+              ) : (
+                <MessageButton userId={id} variant="primary" className="mt-3 w-full max-w-[220px]" />
+              )}
             </div>
           </div>
 

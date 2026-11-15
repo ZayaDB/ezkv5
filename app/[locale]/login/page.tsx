@@ -21,10 +21,14 @@ export default function LoginPage() {
   const [signupSuccess, setSignupSuccess] = useState(false);
   const [remember, setRemember] = useState(true);
   const [resetDone, setResetDone] = useState(false);
+  const [redirectTo, setRedirectTo] = useState<string | null>(null);
 
   // URL 파라미터에서 signup 성공 여부 확인
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
+    // ?redirect=/kr/... : only same-site paths in the current locale
+    const r = params.get("redirect");
+    if (r && r.startsWith(`/${locale}/`) && !r.startsWith("//") && !r.includes("://")) setRedirectTo(r);
     if (params.get("reset") === "success") {
       setResetDone(true);
       window.history.replaceState({}, "", window.location.pathname);
@@ -37,6 +41,7 @@ export default function LoginPage() {
       }
       window.history.replaceState({}, "", window.location.pathname);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // 이미 로그인되어 있으면 프로필로 리다이렉트
@@ -45,10 +50,10 @@ export default function LoginPage() {
       if (user.role === "admin") {
         router.push(`/${locale}/admin/dashboard`);
       } else {
-        router.push(`/${locale}`);
+        router.push(redirectTo || `/${locale}`);
       }
     }
-  }, [user, router, locale]);
+  }, [user, router, locale, redirectTo]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,7 +73,7 @@ export default function LoginPage() {
       if (result.user?.role === "admin") {
         router.replace(`/${locale}/admin/dashboard`);
       } else {
-        router.replace(`/${locale}/my/dashboard`);
+        router.replace(redirectTo || `/${locale}/my/dashboard`);
       }
       setLoading(false);
     } catch (err: any) {

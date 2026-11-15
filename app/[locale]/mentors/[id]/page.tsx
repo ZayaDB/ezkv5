@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import Link from 'next/link';
+import MessageButton from '@/components/messages/MessageButton';
 import { ArrowRight, Heart, MapPin } from 'lucide-react';
 import { mentorsApi } from '@/lib/api/client';
 import { useAuth } from '@/lib/contexts/AuthContext';
@@ -246,6 +247,7 @@ export default function MentorDetailPage() {
                 <button type="button" onClick={handleBookSession} className={`${ui.btnPrimary} w-full`}>
                   {t('bookSession')}
                 </button>
+                {mentor.userId && <MessageButton userId={mentor.userId} />}
                 <button type="button" onClick={toggleFavorite} aria-pressed={isFavorite} className={`${ui.btnOutline} w-full`}>
                   <Heart className={`h-4 w-4 ${isFavorite ? 'fill-current text-teal dark:text-teal-dark' : ''}`} aria-hidden="true" />
                   {isFavorite ? tp('saved') : tp('save')}
