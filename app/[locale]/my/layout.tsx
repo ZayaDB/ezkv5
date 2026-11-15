@@ -14,7 +14,6 @@ import {
   Bell,
   Receipt,
   MessageCircle,
-  Briefcase,
 } from "lucide-react";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import MyWorkspaceShell, { type WorkspaceGroup, type WorkspaceItem } from "@/components/layout/MyWorkspaceShell";
@@ -88,9 +87,6 @@ export default function MySpaceLayout({ children }: { children: React.ReactNode 
 
   const workspace: WorkspaceItem[] = [
     { href: `${base}/dashboard`, label: t("navHome"), icon: LayoutDashboard, active: (p) => p.includes("/my/dashboard") },
-    ...(user?.role === "mentor" || user?.role === "admin"
-      ? [{ href: `${base}/mentor`, label: t("navMentorCenter"), icon: Briefcase, active: (p: string) => p.includes("/my/mentor") }]
-      : []),
     isMentorMode
       ? { href: `${base}/lectures`, label: t("navLectures"), icon: GraduationCap, active: (p) => p.includes("/my/lectures") }
       : {
