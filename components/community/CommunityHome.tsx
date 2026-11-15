@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { ArrowUpRight, PenLine, ShieldCheck, Users } from "lucide-react";
@@ -26,6 +26,10 @@ export default function CommunityHome({
   const locale = useLocale();
   const { isAuthenticated } = useAuth();
   const [tab, setTab] = useState<Tab>(initialTab);
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search).get("tab");
+    if (q === "jobs" || q === "groups") setTab(q);
+  }, []);
 
   const tabs: { id: Tab; label: string }[] = [
     { id: "feed", label: t("tabFeed") },

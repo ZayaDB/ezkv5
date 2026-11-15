@@ -342,7 +342,48 @@
     "universityPlaceholder": "e.g. Seoul National University",
     "regionPlaceholder": "e.g. Seoul",
     "mentorLabel": "Mentor",
-    "signupCompleteLogin": "Sign-up complete! Please log in."
+    "signupCompleteLogin": "Sign-up complete! Please log in.",
+    "shell": {
+      "eyebrow": "LNK · Learn · Network · Keep",
+      "title": "Life in Korea, with people who walked it first.",
+      "body": "From visas and study to everyday life and mentors — the paths international students need, in one place.",
+      "learnTitle": "Learn",
+      "learnDesc": "Learn from reviewed guides and courses",
+      "networkTitle": "Network",
+      "networkDesc": "Connect with seniors and mentors who settled first",
+      "keepTitle": "Keep",
+      "keepDesc": "Pass what you received on to the next student",
+      "note": "Always confirm visa, legal and medical details with official sources."
+    },
+    "loginSubtitle": "Welcome back. Sign in with your email.",
+    "signupSubtitle": "Tell us a few things and we will tailor your guidance.",
+    "stepOf": "Step {current} of {total}",
+    "forgot": {
+      "title": "Reset your password",
+      "subtitle": "Enter the email you signed up with and we will send you a reset link.",
+      "submit": "Send reset link",
+      "sending": "Sending…",
+      "sentTitle": "Check your inbox",
+      "sentBody": "We sent a reset link to {email}. If it does not arrive in a few minutes, check your spam folder. Please open the link in this browser.",
+      "resend": "Use a different email",
+      "error": "We could not send the email. Please try again shortly.",
+      "backToLogin": "Back to sign in"
+    },
+    "reset": {
+      "title": "Set a new password",
+      "subtitle": "Choose the password you will use to sign in from now on.",
+      "newPassword": "New password",
+      "confirm": "Confirm new password",
+      "submit": "Update password",
+      "saving": "Updating…",
+      "checking": "Checking your link…",
+      "invalidTitle": "This link is invalid or has expired",
+      "invalidBody": "Reset links work once, in the browser where you requested them. Please request a new one.",
+      "requestAgain": "Request a new link",
+      "error": "We could not update your password. Please try again.",
+      "samePassword": "Please choose a password different from your current one.",
+      "doneLogin": "Your password was updated. Sign in with your new password."
+    }
   },
   "controlCenter": {
     "badge": "Control Center",
@@ -1429,7 +1470,8 @@
     "stats": "Stats",
     "reviewCount": "Reviews",
     "avgRating": "Average rating",
-    "adminOnly": "Admin only: {email}"
+    "adminOnly": "Admin only: {email}",
+    "responseHours": "Within {hours} hours"
   },
   "lectureDetail": {
     "defaultCurriculum": [
