@@ -36,6 +36,8 @@ const app = () => env("REALTIMEKIT_APP_ID");
 
 export const PRESET_HOST = "lnk_host";
 export const PRESET_STUDENT = "lnk_student";
+/** 1:1 mentor session: both sides talk, share screen; never recorded */
+export const PRESET_PAIR = "lnk_pair";
 
 /** Key appended to the webhook URL so random callers can't trigger syncs. */
 export function webhookKey() {
@@ -105,7 +107,7 @@ const LNK_THEME = {
   },
 };
 
-function presetBody(name: string, host: boolean) {
+function presetBody(name: string, host: boolean, pair = false) {
   const can = (v: boolean) => (v ? ("ALLOWED" as const) : ("CAN_REQUEST" as const));
   return {
     account_id: account(),
@@ -125,7 +127,7 @@ function presetBody(name: string, host: boolean) {
       can_change_participant_permissions: host,
       can_edit_display_name: false,
       can_livestream: false,
-      can_record: host,
+      can_record: host && !pair,
       can_spotlight: host,
       chat: {
         public: { can_send: true, text: true, files: host },
@@ -140,7 +142,7 @@ function presetBody(name: string, host: boolean) {
       disable_participant_screensharing: host,
       disable_participant_video: host,
       hidden_participant: false,
-      kick_participant: host,
+      kick_participant: host && !pair,
       media: {
         audio: { can_produce: can(host) },
         video: { can_produce: can(host) },
@@ -164,6 +166,7 @@ async function ensurePresets() {
   const names = new Set((existing.data || []).map((p) => (p as { name?: string }).name));
   if (!names.has(PRESET_HOST)) await client().realtimeKit.presets.create(app(), presetBody(PRESET_HOST, true));
   if (!names.has(PRESET_STUDENT)) await client().realtimeKit.presets.create(app(), presetBody(PRESET_STUDENT, false));
+  if (!names.has(PRESET_PAIR)) await client().realtimeKit.presets.create(app(), presetBody(PRESET_PAIR, true, true));
   presetsReady = true;
 }
 
@@ -202,6 +205,29 @@ export async function ensureMeeting(lessonId: string, title: string): Promise<st
   if (!meetingId) throw new Error("RealtimeKit did not return a meeting id");
   await updateMedia(lessonId, { meeting_id: meetingId });
   return meetingId;
+}
+
+/** Creates (once) the private meeting for a booked 1:1 mentor session. Not recorded. */
+export async function ensureSessionMeeting(sessionId: string, title: string): Promise<string> {
+  const db = createPublicSupabase();
+  const secret = env("PAYMENT_HOOK_SECRET");
+  const { data: existing, error } = await db.rpc("session_room_get", { p_secret: secret, p_session_id: sessionId });
+  if (error) throw new Error(`session_room_get: ${error.message}`);
+  if (existing) return existing as string;
+  await ensurePresets();
+  const created = await client().realtimeKit.meetings.create(app(), {
+    account_id: account(),
+    title: title.slice(0, 250),
+    record_on_start: false,
+    persist_chat: false,
+  });
+  const meetingId = created.data?.id;
+  if (!meetingId) throw new Error("RealtimeKit did not return a meeting id");
+  const { error: setErr } = await db.rpc("session_room_set", { p_secret: secret, p_session_id: sessionId, p_meeting_id: meetingId });
+  if (setErr) throw new Error(`session_room_set: ${setErr.message}`);
+  // a concurrent request may have won the insert; always use the stored one
+  const { data: stored } = await db.rpc("session_room_get", { p_secret: secret, p_session_id: sessionId });
+  return (stored as string) || meetingId;
 }
 
 export async function participantToken(meetingId: string, user: { id: string; name: string }, preset: string) {

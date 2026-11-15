@@ -18,7 +18,7 @@ type Props = { params: Promise<{ locale: string; kind: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, kind } = await params;
   if (!KINDS.includes(kind as LegalKind)) return {};
-  return { title: `${getLegalDoc(locale, kind as LegalKind).title} · LNK` };
+  return { title: getLegalDoc(locale, kind as LegalKind).title };
 }
 
 export default async function LegalPage({ params }: Props) {
