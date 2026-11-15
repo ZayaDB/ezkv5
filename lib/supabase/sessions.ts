@@ -16,6 +16,8 @@ export async function listMySessions() {
     .select(
       "id, scheduled_at, duration, type, status, mentee_id, mentor_profile_id, mentor_profiles(id, title, user_id)"
     )
+    // unpaid checkouts are not real bookings yet
+    .neq("status", "pending_payment")
     .order("scheduled_at", { ascending: true });
 
   if (myMentor?.id) {
@@ -54,6 +56,11 @@ export async function listMySessions() {
   });
 }
 
+/**
+ * Books a session through the server-side checkout function.
+ * Free mentors are confirmed immediately; paid mentors need the payment flow
+ * (/mentors/[id]/book), so this throws for them.
+ */
 export async function bookMentorSession(payload: {
   mentorId: string;
   date: string;
@@ -61,50 +68,29 @@ export async function bookMentorSession(payload: {
   type?: "online" | "offline";
   notes?: string;
 }) {
-  const { supabase, userId } = await requireUserId();
-
-  const { data: mentor, error: mErr } = await supabase
-    .from("mentor_profiles")
-    .select("id, user_id, approval_status")
-    .eq("id", payload.mentorId)
-    .maybeSingle();
-
-  if (mErr) throw new Error(mErr.message);
-  if (!mentor || mentor.approval_status !== "approved") {
-    throw new Error(trError("mentorNotFound"));
-  }
-  if (mentor.user_id === userId) throw new Error(trError("cannotBookSelf"));
-
+  const { supabase } = await requireUserId();
   const bookingDate = new Date(payload.date);
   if (Number.isNaN(bookingDate.getTime())) throw new Error(trError("invalidDate"));
 
-  const { data: created, error } = await supabase
-    .from("mentor_sessions")
-    .insert({
-      mentor_profile_id: payload.mentorId,
-      mentee_id: userId,
-      scheduled_at: bookingDate.toISOString(),
-      duration: typeof payload.duration === "number" ? payload.duration : 60,
-      type: payload.type === "offline" ? "offline" : "online",
-      status: "upcoming",
-      notes: typeof payload.notes === "string" ? payload.notes : null,
-    })
-    .select("id, scheduled_at, duration, type, status, mentor_profile_id")
-    .single();
-
+  const { data, error } = await supabase.rpc("create_session_checkout", {
+    p_mentor_id: payload.mentorId,
+    p_scheduled_at: bookingDate.toISOString(),
+    p_duration: typeof payload.duration === "number" ? payload.duration : null,
+    p_type: payload.type === "offline" ? "offline" : "online",
+    p_notes: typeof payload.notes === "string" ? payload.notes : null,
+  });
   if (error) throw new Error(error.message);
-
-  const profileMap = await fetchPublicProfiles(supabase, [String(mentor.user_id)]);
-  const mentorName = profileMap.get(String(mentor.user_id))?.name || tr("names.mentor");
+  const result = data as { session_id: string; free: boolean };
+  if (!result.free) throw new Error(trError("sessionBookFailed"));
 
   return {
-    id: String(created.id),
-    mentorId: String(created.mentor_profile_id),
-    mentorName,
-    date: created.scheduled_at,
-    duration: created.duration,
-    type: created.type,
-    status: created.status,
+    id: String(result.session_id),
+    mentorId: payload.mentorId,
+    mentorName: tr("names.mentor"),
+    date: bookingDate.toISOString(),
+    duration: payload.duration ?? 60,
+    type: payload.type === "offline" ? "offline" : "online",
+    status: "upcoming",
   };
 }
 
