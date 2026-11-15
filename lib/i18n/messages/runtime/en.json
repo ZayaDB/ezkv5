@@ -112,7 +112,8 @@
     "signupComplete": "Sign-up complete. Please log in.",
     "emailNotConfirmed": "Please verify your email. Check your inbox for the confirmation link.",
     "invalidCredentials": "Incorrect email or password.",
-    "profileMissing": "You're signed in, but your profile couldn't be found. Please contact support."
+    "profileMissing": "You're signed in, but your profile couldn't be found. Please contact support.",
+    "paymentRequired": "Paid courses are enrolled through payment on the course page."
   },
   "names": {
     "mentor": "Mentor",

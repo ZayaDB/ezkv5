@@ -11,10 +11,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@cloudflare/realtimekit-react": "^2.0.4",
+    "@cloudflare/realtimekit-react-ui": "^2.0.3",
     "@portone/browser-sdk": "^0.1.13",
     "@portone/server-sdk": "^0.19.0",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.116.0",
+    "cloudflare": "^7.3.0",
     "clsx": "^2.0.0",
     "lucide-react": "^0.294.0",
     "next": "^14.0.4",

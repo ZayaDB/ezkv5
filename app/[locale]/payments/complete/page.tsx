@@ -7,13 +7,14 @@ import { AlertTriangle, CheckCircle2, Clock3, RotateCcw, XCircle } from 'lucide-
 import { confirmPayment } from '@/lib/payments/client';
 import { PageShell, ui } from '@/components/lnk/ui';
 
-type View = 'checking' | 'paid' | 'free' | 'conflict' | 'failed' | 'pending' | 'error';
+type View = 'checking' | 'paid' | 'course' | 'free' | 'conflict' | 'failed' | 'pending' | 'error';
 
 export default function PaymentCompletePage() {
   const t = useTranslations('payments');
   const locale = useLocale();
   const [view, setView] = useState<View>('checking');
   const [paymentId, setPaymentId] = useState('');
+  const [lectureId, setLectureId] = useState<string | null>(null);
 
   const check = useCallback(async (id: string) => {
     setView('checking');
@@ -23,6 +24,10 @@ export default function PaymentCompletePage() {
       if ('error' in r) {
         if (r.error === 'auth_required' || r.error === 'not_found') return setView('error');
       } else if (r.status === 'paid') {
+        if ('lectureId' in r && r.lectureId) {
+          setLectureId(r.lectureId);
+          return setView('course');
+        }
         return setView('refundedForConflict' in r && r.refundedForConflict ? 'conflict' : 'paid');
       } else if (r.status === 'failed' || r.status === 'cancelled') {
         return setView('failed');
@@ -45,6 +50,7 @@ export default function PaymentCompletePage() {
 
   const content: Record<Exclude<View, 'checking'>, { icon: typeof CheckCircle2; tone: string; title: string; body: string }> = {
     paid: { icon: CheckCircle2, tone: 'text-teal dark:text-teal-dark bg-primary-50 dark:bg-primary-950/40', title: t('paidTitle'), body: t('paidBody') },
+    course: { icon: CheckCircle2, tone: 'text-teal dark:text-teal-dark bg-primary-50 dark:bg-primary-950/40', title: t('courseTitle'), body: t('courseBody') },
     free: { icon: CheckCircle2, tone: 'text-teal dark:text-teal-dark bg-primary-50 dark:bg-primary-950/40', title: t('freeTitle'), body: t('paidBody') },
     conflict: { icon: RotateCcw, tone: 'text-[#75582b] bg-[#f8f0df] dark:text-[#e2c48f] dark:bg-[#2a2418]', title: t('conflictTitle'), body: t('conflictBody') },
     failed: { icon: XCircle, tone: 'text-red-600 bg-red-50 dark:text-red-300 dark:bg-red-950/40', title: t('failedTitle'), body: t('failedBody') },
@@ -75,6 +81,12 @@ export default function PaymentCompletePage() {
                     <p className={`text-sm leading-relaxed ${ui.muted}`}>{c.body}</p>
                   </div>
                   <div className="flex flex-col gap-2 sm:flex-row sm:justify-center">
+                    {view === 'course' && lectureId && (
+                      <>
+                        <Link href={`/${locale}/lectures/${lectureId}`} className={ui.btnPrimary}>{t('toCourse')}</Link>
+                        <Link href={`/${locale}/my/payments`} className={ui.btnOutline}>{t('toPayments')}</Link>
+                      </>
+                    )}
                     {(view === 'paid' || view === 'free') && (
                       <>
                         <Link href={`/${locale}/my/schedule`} className={ui.btnPrimary}>{t('toSchedule')}</Link>

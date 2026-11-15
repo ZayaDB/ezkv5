@@ -20,12 +20,18 @@ export function availablePayOptions(): PayOption[] {
   return opts;
 }
 
+/** What the PortOne window needs — shared by session bookings and course purchases. */
+export type PaymentCheckout = { free: false; payment_id: string; amount: number; currency: "KRW"; order_name: string };
+
 export type Checkout =
   | { free: true; session_id: string; amount: 0 }
-  | { free: false; session_id: string; payment_id: string; amount: number; currency: "KRW"; order_name: string };
+  | (PaymentCheckout & { session_id: string });
+
+export type LectureCheckout = { free: true; lecture_id: string; amount: 0 } | (PaymentCheckout & { lecture_id: string });
 
 export type CheckoutErrorCode =
   | "auth"
+  | "enrolled"
   | "tooSoon"
   | "tooFar"
   | "taken"
@@ -74,6 +80,24 @@ export async function createCheckout(input: {
   return data as Checkout;
 }
 
+export async function createLectureCheckout(lectureId: string): Promise<LectureCheckout> {
+  const { data, error } = await createClient().rpc("create_lecture_checkout", { p_lecture_id: lectureId });
+  if (error) {
+    const m = error.message || "";
+    const code: CheckoutErrorCode = /login/.test(m)
+      ? "auth"
+      : /already enrolled/.test(m)
+        ? "enrolled"
+        : /own lecture/.test(m)
+          ? "self"
+          : /not found/.test(m)
+            ? "notFound"
+            : "unknown";
+    throw new CheckoutError(code, m);
+  }
+  return data as LectureCheckout;
+}
+
 export async function getBusySlots(mentorId: string, from: Date, to: Date) {
   const supabase = createClient();
   const { data } = await supabase.rpc("get_mentor_busy_slots", {
@@ -93,7 +117,7 @@ export type PayResult = { ok: true; paymentId: string } | { ok: false; code?: st
 
 /** Opens the PortOne payment window. On mobile it redirects to `redirectUrl` instead of resolving. */
 export async function requestPortOnePayment(input: {
-  checkout: Extract<Checkout, { free: false }>;
+  checkout: PaymentCheckout;
   option: PayOption;
   locale: string;
   customer: { fullName?: string; email?: string };
@@ -142,7 +166,7 @@ export async function confirmPayment(paymentId: string) {
   });
   const json = await res.json().catch(() => ({}));
   return json as
-    | { status: "paid"; sessionId: string | null; refundedForConflict?: boolean }
+    | { status: "paid"; sessionId: string | null; lectureId?: string | null; refundedForConflict?: boolean }
     | { status: "failed" | "cancelled" | "pending"; sessionId?: string | null }
     | { error: string };
 }
