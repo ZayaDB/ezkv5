@@ -357,7 +357,33 @@
     },
     "loginSubtitle": "Welcome back. Sign in with your email.",
     "signupSubtitle": "Tell us a few things and we will tailor your guidance.",
-    "stepOf": "Step {current} of {total}"
+    "stepOf": "Step {current} of {total}",
+    "forgot": {
+      "title": "Reset your password",
+      "subtitle": "Enter the email you signed up with and we will send you a reset link.",
+      "submit": "Send reset link",
+      "sending": "Sending…",
+      "sentTitle": "Check your inbox",
+      "sentBody": "We sent a reset link to {email}. If it does not arrive in a few minutes, check your spam folder. Please open the link in this browser.",
+      "resend": "Use a different email",
+      "error": "We could not send the email. Please try again shortly.",
+      "backToLogin": "Back to sign in"
+    },
+    "reset": {
+      "title": "Set a new password",
+      "subtitle": "Choose the password you will use to sign in from now on.",
+      "newPassword": "New password",
+      "confirm": "Confirm new password",
+      "submit": "Update password",
+      "saving": "Updating…",
+      "checking": "Checking your link…",
+      "invalidTitle": "This link is invalid or has expired",
+      "invalidBody": "Reset links work once, in the browser where you requested them. Please request a new one.",
+      "requestAgain": "Request a new link",
+      "error": "We could not update your password. Please try again.",
+      "samePassword": "Please choose a password different from your current one.",
+      "doneLogin": "Your password was updated. Sign in with your new password."
+    }
   },
   "controlCenter": {
     "badge": "Control Center",

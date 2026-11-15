@@ -5,6 +5,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 import { createClient } from '@/lib/supabase/client';
 import { supabaseAuth } from '@/lib/auth/supabaseAuth';
 import type { AppUserRole } from '@/lib/auth/userRole';
+import { markSessionPersistence, isExpiredEphemeralSession, clearSessionPersistence } from '@/lib/auth/rememberSession';
 
 export interface User {
   id: string;
@@ -31,7 +32,7 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   loading: boolean;
-  login: (email: string, password: string) => Promise<{ success: boolean; error?: string; user?: User }>;
+  login: (email: string, password: string, remember?: boolean) => Promise<{ success: boolean; error?: string; user?: User }>;
   signup: (userData: {
     email: string;
     password: string;
@@ -100,17 +101,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const supabase = createClient();
-    const cached = readCachedUser();
-    if (cached) {
-      setUser(cached);
-      setLoading(false);
-    }
 
-    void refreshUser({ background: cached !== null });
+    // "Remember me" was off and the browser has been closed since → sign out first.
+    const expired = isExpiredEphemeralSession();
+    if (expired) {
+      clearSessionPersistence();
+      localStorage.removeItem(AUTH_USER_CACHE_KEY);
+      setUser(null);
+      void supabase.auth.signOut().finally(() => setLoading(false));
+    } else {
+      const cached = readCachedUser();
+      if (cached) {
+        setUser(cached);
+        setLoading(false);
+      }
+      void refreshUser({ background: cached !== null });
+    }
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY" && typeof window !== 'undefined') {
+        // Recovery links may land on the Site URL; always continue on the reset page.
+        const seg = window.location.pathname.split('/')[1];
+        const loc = ['kr', 'en', 'mn'].includes(seg) ? seg : 'kr';
+        if (!window.location.pathname.endsWith('/reset-password')) {
+          window.location.replace(`/${loc}/reset-password`);
+        }
+        return;
+      }
       if (event === "SIGNED_IN" || event === "SIGNED_OUT" || event === "USER_UPDATED") {
         void refreshUser({ background: true });
       }
@@ -119,12 +138,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string, remember = true) => {
     try {
       const result = await supabaseAuth.login(email, password);
       if (!result.success) {
         return { success: false, error: result.error };
       }
+      markSessionPersistence(remember);
       setUser(result.user);
       if (typeof window !== 'undefined') {
         localStorage.setItem(AUTH_USER_CACHE_KEY, JSON.stringify(result.user));
@@ -166,6 +186,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = () => {
+    clearSessionPersistence();
     void supabaseAuth.logout();
     setUser(null);
     if (typeof window !== 'undefined') {

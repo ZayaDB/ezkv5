@@ -19,10 +19,16 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [signupSuccess, setSignupSuccess] = useState(false);
+  const [remember, setRemember] = useState(true);
+  const [resetDone, setResetDone] = useState(false);
 
   // URL 파라미터에서 signup 성공 여부 확인
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
+    if (params.get("reset") === "success") {
+      setResetDone(true);
+      window.history.replaceState({}, "", window.location.pathname);
+    }
     if (params.get("signup") === "success") {
       setSignupSuccess(true);
       const signedUpEmail = params.get("email");
@@ -50,7 +56,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const result = await login(email, password);
+      const result = await login(email, password, remember);
 
       if (!result.success) {
         setError(result.error || t("loginError"));
@@ -87,6 +93,7 @@ export default function LoginPage() {
     >
       <form onSubmit={handleSubmit} className="space-y-5">
         {signupSuccess && <AuthAlert tone="success">{t("signupCompleteLogin")}</AuthAlert>}
+        {resetDone && <AuthAlert tone="success">{t("reset.doneLogin")}</AuthAlert>}
         {error && <AuthAlert tone="error">{error}</AuthAlert>}
 
         <AuthField label={t("email")} icon={Mail}>
@@ -112,6 +119,21 @@ export default function LoginPage() {
             placeholder={t("passwordPlaceholder")}
           />
         </AuthField>
+
+        <div className="flex items-center justify-between gap-3 text-sm">
+          <label className="inline-flex cursor-pointer items-center gap-2 text-ink-muted dark:text-snow-muted">
+            <input
+              type="checkbox"
+              checked={remember}
+              onChange={(e) => setRemember(e.target.checked)}
+              className="h-4 w-4 rounded border-hairline text-teal focus:ring-teal dark:border-hairline-dark"
+            />
+            {t("rememberMe")}
+          </label>
+          <Link href={`/${locale}/forgot-password`} className="font-medium text-teal hover:underline dark:text-teal-dark">
+            {t("forgotPassword")}
+          </Link>
+        </div>
 
         <button type="submit" disabled={loading} className={`${ui.btnPrimary} w-full`}>
           {loading ? (
