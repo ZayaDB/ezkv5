@@ -15,6 +15,7 @@ import {
   createCheckout,
   CheckoutError,
   getBusySlots,
+  releaseCheckout,
   requestPortOnePayment,
   type PayOption,
 } from '@/lib/payments/client';
@@ -160,7 +161,8 @@ export default function BookSessionPage() {
         customer: { fullName: user?.name, email: user?.email },
       });
       if (!result.ok) {
-        setError(t('errPayCancelled'));
+        await releaseCheckout(checkout.session_id);
+        setError(result.code === 'WINDOW_FAILED' ? t('errPayWindow') : t('errPayCancelled'));
         setSubmitting(false);
         loadBusy();
         return;

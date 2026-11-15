@@ -1865,7 +1865,8 @@
     "errTaken": "Someone just booked this time. Please pick another.",
     "errUnknown": "We could not create the booking. Please try again.",
     "errPayCancelled": "The payment was not completed. You can try again.",
-    "back": "Back to profile"
+    "back": "Back to profile",
+    "errPayWindow": "We could not open the payment window. Please try again shortly or pick another method."
   },
   "payments": {
     "checking": "Confirming your payment…",

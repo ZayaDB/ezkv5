@@ -106,7 +106,9 @@ export async function requestPortOnePayment(input: {
 
   const redirectUrl = `${window.location.origin}/${input.locale}/payments/complete`;
 
-  const response = await PortOne.requestPayment({
+  let response: Awaited<ReturnType<typeof PortOne.requestPayment>>;
+  try {
+    response = await PortOne.requestPayment({
     storeId,
     channelKey,
     paymentId: input.checkout.payment_id,
@@ -120,7 +122,12 @@ export async function requestPortOnePayment(input: {
       fullName: input.customer.fullName || undefined,
       email: input.customer.email || undefined,
     },
-  });
+    });
+  } catch (e) {
+    // The payment window could not open (channel/config problem) — never a booking problem.
+    console.error("PortOne.requestPayment failed", e);
+    return { ok: false, code: "WINDOW_FAILED", message: e instanceof Error ? e.message : String(e) };
+  }
 
   if (!response) return { ok: false };
   if (response.code) return { ok: false, code: response.code, message: response.message };
@@ -147,4 +154,10 @@ export async function cancelPayment(paymentId: string) {
     body: JSON.stringify({ paymentId }),
   });
   return (await res.json().catch(() => ({}))) as { status?: string; error?: string; hours?: number };
+}
+
+/** Frees the time slot right away when the buyer did not finish paying. */
+export async function releaseCheckout(sessionId: string) {
+  const supabase = createClient();
+  await supabase.from("mentor_sessions").update({ status: "cancelled" }).eq("id", sessionId).eq("status", "pending_payment");
 }
