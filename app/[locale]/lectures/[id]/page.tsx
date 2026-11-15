@@ -11,6 +11,7 @@ import { useAuth } from '@/lib/contexts/AuthContext';
 import type { Lecture } from '@/types';
 import { lectureCategoryLabel } from '@/lib/lectures/categories';
 import LectureCover from '@/components/lectures/LectureCover';
+import LessonList from '@/components/live/LessonList';
 
 /* Figma "LNK • Course detail and enrollment" — 레이아웃은 Figma, 강조색은 LNK 틸, 상태는 실제 데이터 */
 const card = 'bg-white dark:bg-night-card border border-hairline dark:border-hairline-dark';
@@ -308,6 +309,7 @@ export default function LectureDetailPage() {
                 </ul>
               </section>
             )}
+            <LessonList lectureId={lecture.id} canAccess={isEnrolled} isOwner={isOwner} />
             {curriculum.length > 0 && (
               <section className="flex flex-col gap-4">
                 <h2 className="text-2xl font-semibold text-ink dark:text-snow">{t('curriculum')}</h2>

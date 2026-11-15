@@ -98,6 +98,12 @@ export default function MyLecturesHubPage() {
                       >
                         {t("edit")}
                       </Link>
+                      <Link
+                        href={`/${locale}/mentor/lectures/${lec.id}/lessons`}
+                        className="inline-block text-xs font-semibold text-teal hover:underline dark:text-teal-dark"
+                      >
+                        {t("manageClasses")}
+                      </Link>
                     </div>
                   </li>
                 ))}

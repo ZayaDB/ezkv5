@@ -27,6 +27,11 @@
 #   PORTONE_WEBHOOK_SECRET=whsec_...                        # 포트원 콘솔 → 웹훅 (URL: /api/payments/webhook)
 #   PAYMENT_HOOK_SECRET=...                                 # Supabase private.app_config 의 payment_hook_secret 값
 #
+# 라이브 수업 (Cloudflare RealtimeKit + Stream) — 값이 없으면 "수업 시작" 시 준비 중 안내:
+#   CLOUDFLARE_ACCOUNT_ID=...      # Cloudflare 대시보드 오른쪽의 Account ID
+#   REALTIMEKIT_APP_ID=...         # Realtime → RealtimeKit → App ID
+#   CLOUDFLARE_API_TOKEN=...       # 권한: Realtime Admin + Stream Edit (비밀값)
+#
 # ── Supabase Dashboard → Authentication → URL Configuration ──
 #   Site URL:        https://ezkv5.netlify.app
 #   Redirect URLs:   https://ezkv5.netlify.app/**
