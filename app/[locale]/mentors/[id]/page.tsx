@@ -106,7 +106,7 @@ export default function MentorDetailPage() {
   const details = [
     { label: t('sessionLength'), value: t('minutes', { n: mentor.sessionDuration || 60 }) },
     { label: t('sessionFormat'), value: formatLabel },
-    { label: t('experience'), value: t('years', { n: mentor.yearsOfExperience || 0 }) },
+    { label: t('experience'), value: mentor.yearsOfExperience ? t('years', { n: mentor.yearsOfExperience }) : '' },
     { label: t('languages'), value: (mentor.languages || []).join(', ') },
     { label: t('timezone'), value: mentor.timezone || 'Asia/Seoul' },
   ].filter((d) => d.value);
