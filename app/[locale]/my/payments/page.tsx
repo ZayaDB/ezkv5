@@ -148,6 +148,12 @@ export default function MyPaymentsPage() {
                   )}
                 </dl>
 
+                {!canCancel && r.status === 'paid' && isBuyer && !isMentor && hoursLeft > 0 && (
+                  <p className={`mt-4 border-t border-hairline pt-4 text-xs dark:border-hairline-dark ${ui.muted}`}>
+                    {t('cancelTooLate', { hours: FREE_CANCEL_HOURS })}
+                  </p>
+                )}
+
                 {canCancel && (
                   <div className="mt-4 border-t border-hairline pt-4 dark:border-hairline-dark">
                     {confirming === r.payment_id ? (
