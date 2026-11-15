@@ -5,6 +5,8 @@ import { useParams, useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import Link from 'next/link';
 import MessageButton from '@/components/messages/MessageButton';
+import { ReviewList } from '@/components/reviews/Reviews';
+import { listMentorReviews, type Review } from '@/lib/supabase/reviews';
 import { ArrowRight, Heart, MapPin } from 'lucide-react';
 import { mentorsApi } from '@/lib/api/client';
 import { useAuth } from '@/lib/contexts/AuthContext';
@@ -38,6 +40,7 @@ export default function MentorDetailPage() {
 
   const [mentor, setMentor] = useState<MentorDetail | null | undefined>(undefined);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [reviews, setReviews] = useState<Review[]>([]);
 
   const load = useCallback(async () => {
     const res = await mentorsApi.getById(id);
@@ -48,6 +51,7 @@ export default function MentorDetailPage() {
     const m = res.data as MentorDetail;
     setMentor(m);
     setIsFavorite(storage.isFavorite(m.id));
+    setReviews(await listMentorReviews(m.id));
   }, [id]);
 
   useEffect(() => {
@@ -212,6 +216,8 @@ export default function MentorDetailPage() {
                 ) : null}
               </section>
             )}
+
+            <ReviewList reviews={reviews} average={mentor.rating || 0} count={mentor.reviewCount || 0} />
 
             <Notice tone="caution" title={tp('detailNoticeTitle')}>
               {tp('detailNoticeBody')}

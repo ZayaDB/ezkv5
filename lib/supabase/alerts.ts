@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/client";
-import { tr } from "@/lib/i18n/runtime";
+import { currentLocale, tr } from "@/lib/i18n/runtime";
 
 export const ALERTS_CHANGED_EVENT = "alerts:changed";
 
@@ -106,7 +106,7 @@ export function buildVisaAlertsFromProfile(
 }
 
 const ALERT_SELECT_READ =
-  "id, kind, severity, title, message, due_date, action_url, read, created_at";
+  "id, kind, severity, title, message, due_date, action_url, read, created_at, params";
 const ALERT_SELECT_FALLBACK = "id, kind, severity, title, message, due_date, action_url, created_at";
 
 type AlertRow = {
@@ -119,6 +119,7 @@ type AlertRow = {
   action_url: string | null;
   read?: boolean | null;
   created_at?: string | null;
+  params?: Record<string, string | number> | null;
 };
 
 /** DB에 저장된 시스템 알림은 kind 기준으로 현재 언어로 다시 표시한다 */
@@ -130,7 +131,45 @@ const LOCALIZED_KINDS = new Set([
   "channel_post_removed",
 ]);
 
-function localizeStoredAlert(kind: string | null, title: string, message: string | null) {
+/** 예약·상담·리뷰 알림: DB에는 kind + params만 저장, 문구는 지금 언어로 만든다 */
+const PARAM_KINDS = new Set([
+  "booking_new",
+  "booking_paid",
+  "booking_cancelled",
+  "session_soon",
+  "lesson_soon",
+  "review_request",
+  "review_new",
+]);
+
+function formatAlertTime(iso: string) {
+  const l = currentLocale();
+  try {
+    return new Intl.DateTimeFormat(l === "kr" ? "ko-KR" : l === "mn" ? "mn-MN" : "en-US", {
+      month: "short",
+      day: "numeric",
+      weekday: "short",
+      hour: "numeric",
+      minute: "2-digit",
+      timeZone: "Asia/Seoul",
+    }).format(new Date(iso));
+  } catch {
+    return iso;
+  }
+}
+
+function localizeStoredAlert(
+  kind: string | null,
+  title: string,
+  message: string | null,
+  params?: Record<string, string | number> | null
+) {
+  if (kind && PARAM_KINDS.has(kind)) {
+    const vars: Record<string, string | number> = { ...(params || {}) };
+    if (typeof vars.at === "string") vars.at = formatAlertTime(vars.at);
+    if (!vars.name) vars.name = tr("alerts.someone");
+    return { title: tr(`alerts.${kind}Title`, vars), body: tr(`alerts.${kind}Body`, vars) };
+  }
   if (!kind || !LOCALIZED_KINDS.has(kind)) return { title, body: message };
   const localizedTitle = tr(`alerts.${kind}Title`);
   // 게시글 삭제 알림의 본문은 관리자가 입력한 사유이므로 그대로 둔다
@@ -152,7 +191,7 @@ function mapAlert(a: AlertRow, userId: string, hasReadCol: boolean): UserAlert {
     id: a.id,
     kind: a.kind,
     severity: a.severity,
-    ...localizeStoredAlert(a.kind, a.title, a.message),
+    ...localizeStoredAlert(a.kind, a.title, a.message, a.params),
     dueDate: a.due_date,
     actionUrl: a.action_url,
     read: hasReadCol ? Boolean(a.read) || locallyRead : locallyRead,

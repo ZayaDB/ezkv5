@@ -136,7 +136,22 @@
     "lecture_approvedBody": "강의가 공개 목록에 표시됩니다.",
     "lecture_rejectedTitle": "강의 승인이 반려되었습니다",
     "lecture_rejectedBody": "강의 내용을 수정한 뒤 다시 등록해 주세요.",
-    "channel_post_removedTitle": "게시글이 관리자에 의해 삭제되었습니다"
+    "channel_post_removedTitle": "게시글이 관리자에 의해 삭제되었습니다",
+    "someone": "상대방",
+    "booking_newTitle": "새 상담 예약이 들어왔어요",
+    "booking_newBody": "{name}님 · {at}",
+    "booking_paidTitle": "상담 예약이 확정됐어요",
+    "booking_paidBody": "{name} 멘토 · {at}. 시작 10분 전부터 상담방에 들어갈 수 있어요.",
+    "booking_cancelledTitle": "상담이 취소됐어요",
+    "booking_cancelledBody": "{name}님과의 {at} 상담이 취소되고 환불됐어요.",
+    "session_soonTitle": "곧 상담이 시작돼요",
+    "session_soonBody": "{name}님과의 상담 · {at}. 상담방이 열려 있어요.",
+    "lesson_soonTitle": "곧 라이브 수업이 시작돼요",
+    "lesson_soonBody": "{title} · {at}",
+    "review_requestTitle": "상담은 어떠셨나요?",
+    "review_requestBody": "{name} 멘토에게 별점과 후기를 남겨 주세요.",
+    "review_newTitle": "새 리뷰가 등록됐어요",
+    "review_newBody": "별점 {rating}점"
   },
   "recommended": {
     "arc": "외국인등록증 갱신 확인",
