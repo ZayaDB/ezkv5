@@ -12,13 +12,7 @@ import {
 import type { Lecture, Mentor } from "@/types";
 import { queryLecturesSupabase, queryMentorsSupabase } from "@/lib/supabase/public-queries";
 import HomeMonthlySpotlights from "@/components/home/HomeMonthlySpotlights";
-import {
-  CampusCover,
-  HeroIllustration,
-  KoreanCover,
-  PathDivider,
-  SettleCover,
-} from "@/components/home/illustrations";
+import { HeroIllustration, PathDivider } from "@/components/home/illustrations";
 import { FaqList, Parallax, Reveal, ScrollProgress, StepsTimeline } from "@/components/home/motion";
 
 export const revalidate = 3600;
@@ -35,7 +29,6 @@ const pill =
 const container = "mx-auto w-full max-w-[1360px] px-5 sm:px-8 lg:px-20";
 
 const guideIcons = [Plane, GraduationCap, Home, HeartPulse, TrainFront, Briefcase];
-const covers = [CampusCover, KoreanCover, SettleCover];
 const plannedHrefs = ["/mentors", "/community"];
 
 export default async function HomePage({
@@ -49,7 +42,6 @@ export default async function HomePage({
   const t = await getTranslations({ locale, namespace: "homeV2" });
   const raw = <T,>(key: string) => t.raw(key) as T;
   const heroTitle = raw<string[]>("heroTitle");
-  const courses = raw<{ topic: string; title: string; body: string; meta: string }[]>("courses");
   const guides = raw<{ title: string; body: string }[]>("guides");
   const stepTexts = raw<{ title: string; body: string }[]>("steps");
   const steps = stepTexts.map((x, i) => ({ marker: String(i + 1).padStart(2, "0"), ...x }));
@@ -147,55 +139,6 @@ export default async function HomePage({
         </div>
       </section>
 
-      {/* Course discovery */}
-      <section className="py-14 lg:py-16">
-        <div className={container}>
-          <Reveal>
-            <p className={`${eyebrow} mb-3`}>{t("coursesEyebrow")}</p>
-            <h2 className={`${h2} mb-3`}>{t("coursesTitle")}</h2>
-            <p className={`${lead} mb-8 max-w-3xl`}>{t("coursesBody")}</p>
-          </Reveal>
-          <div className="grid gap-6 md:grid-cols-3">
-            {courses.map((c, i) => (
-              <Reveal key={c.title} delay={i * 110}>
-                <Link
-                  href={href("/lectures")}
-                  className={`${card} group flex h-full flex-col overflow-hidden transition duration-300 hover:-translate-y-1 hover:border-primary-500 dark:hover:border-primary-400`}
-                >
-                  <div className="h-[184px] overflow-hidden">
-                    <div className="h-full w-full transition-transform duration-500 group-hover:scale-105">{(() => {
-                      const Cover = covers[i];
-                      return <Cover className="h-full w-full" />;
-                    })()}</div>
-                  </div>
-                  <div className="flex flex-1 flex-col gap-3 p-6">
-                    <span className={`${pill} self-start`}>{t("sampleBadge")}</span>
-                    <p className="text-xs font-semibold text-teal dark:text-teal-dark">{c.topic}</p>
-                    <h3 className="text-[22px] font-semibold leading-snug text-ink dark:text-snow">{c.title}</h3>
-                    <p className="text-sm leading-[1.55] text-ink-muted dark:text-snow-muted">{c.body}</p>
-                    <div className="mt-auto border-t border-hairline pt-3 dark:border-hairline-dark">
-                      <p className="mb-3 text-xs text-ink-muted dark:text-snow-muted">{c.meta}</p>
-                      <span className="inline-flex items-center gap-1 text-sm font-semibold text-teal dark:text-teal-dark">
-                        {t("coursePreview")}
-                        <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-              </Reveal>
-            ))}
-          </div>
-          <Reveal className="mt-8">
-            <Link
-              href={href("/lectures")}
-              className="inline-flex h-12 items-center rounded-lg border border-hairline px-5 text-sm font-semibold text-ink transition hover:border-primary-500 dark:border-hairline-dark dark:bg-night-card dark:text-snow dark:hover:border-primary-400"
-            >
-              {t("coursesAll")}
-            </Link>
-          </Reveal>
-        </div>
-      </section>
-
       {/* Live data, only when there is something to show */}
       <HomeMonthlySpotlights locale={locale} topLectures={topLectures} topMentors={topMentors} />
 
@@ -252,7 +195,7 @@ export default async function HomePage({
         </div>
       </section>
 
-      {/* Connections roadmap */}
+      {/* People: mentors + community */}
       <section className="bg-surface-card py-14 dark:bg-night-card lg:py-16">
         <div className={container}>
           <Reveal>
@@ -265,7 +208,7 @@ export default async function HomePage({
               <Reveal key={p.name} delay={i * 120}>
                 <div className="relative h-full overflow-hidden rounded-2xl border border-hairline bg-surface p-8 dark:border-hairline-dark dark:bg-night">
                   <div className="pointer-events-none absolute -right-16 -top-16 h-44 w-44 rounded-full bg-primary-500/10 blur-2xl" aria-hidden="true" />
-                  <span className={pill}>{t("comingSoon")}</span>
+                  <span className={pill}>{t("availableNow")}</span>
                   <h3 className="mb-3 mt-5 text-3xl font-semibold text-ink dark:text-snow">{p.name}</h3>
                   <p className="mb-3 text-lg font-medium text-ink dark:text-snow">{p.purpose}</p>
                   <p className={`${lead} mb-6 text-[15px]`}>{p.body}</p>
@@ -273,7 +216,7 @@ export default async function HomePage({
                     href={href(plannedHrefs[i])}
                     className="inline-flex items-center gap-1 text-sm font-semibold text-teal dark:text-teal-dark"
                   >
-                    {t("viewPlan")}
+                    {t("explore")}
                     <ArrowUpRight className="h-4 w-4" />
                   </Link>
                 </div>

@@ -17,6 +17,25 @@ const supabaseHost = supabaseHostname();
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
+  // 예전 주소 호환 (페이지 파일 대신 여기서 한 번에 처리)
+  async redirects() {
+    const loc = ':locale(kr|en|mn)';
+    const map = [
+      ['home', 'my/dashboard'],
+      ['dashboard', 'my/dashboard'],
+      ['profile', 'my/profile'],
+      ['roadmap', 'my/dashboard'],
+      ['calendar', 'my/schedule'],
+      ['my', 'my/dashboard'],
+      ['my/roadmap', 'my/dashboard'],
+      ['my/enrollments', 'my/courses?tab=status'],
+    ];
+    return map.map(([from, to]) => ({
+      source: `/${loc}/${from}`,
+      destination: `/:locale/${to}`,
+      permanent: false,
+    }));
+  },
   experimental: {
     serverComponentsExternalPackages: ['@formatjs/intl'],
   },

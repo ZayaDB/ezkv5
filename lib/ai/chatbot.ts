@@ -34,7 +34,7 @@ Available pages:
 - Lectures (/lectures): online and offline courses
 - Community (/community): posts, comments, groups, jobs
 - Study in Korea (/study-in-korea): visa, housing, hospitals, life tips
-- Calendar (/calendar), Assistant (/assistant): talk to the assistant to create step-by-step tasks shown on the dashboard
+- Calendar (/my/schedule), Assistant (/assistant): talk to the assistant to create step-by-step tasks shown on the dashboard
 
 Current language: ${localeNames[context.locale] || 'Korean'}
 
