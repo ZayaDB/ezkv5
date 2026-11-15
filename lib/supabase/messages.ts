@@ -147,11 +147,15 @@ export async function listPairSessions(otherUserId: string): Promise<PairSession
     }));
 }
 
+/** Supabase returns the same channel object for the same name, and a subscribed channel
+ * can't take new listeners — so every subscription gets its own name. */
+const channelName = (base: string) => `${base}:${Math.random().toString(36).slice(2, 10)}`;
+
 /** Live delivery of new messages in one conversation. Returns an unsubscribe function. */
 export function subscribeToConversation(conversationId: string, onMessage: (m: DirectMessage) => void) {
   const supabase = createClient();
   const channel = supabase
-    .channel(`dm:${conversationId}`)
+    .channel(channelName(`dm:${conversationId}`))
     .on(
       "postgres_changes",
       { event: "INSERT", schema: "public", table: "direct_messages", filter: `conversation_id=eq.${conversationId}` },
@@ -167,7 +171,7 @@ export function subscribeToConversation(conversationId: string, onMessage: (m: D
 export function subscribeToMyMessages(onAny: () => void) {
   const supabase = createClient();
   const channel = supabase
-    .channel("dm:inbox")
+    .channel(channelName("dm:inbox"))
     .on("postgres_changes", { event: "*", schema: "public", table: "direct_messages" }, () => onAny())
     .subscribe();
   return () => {
