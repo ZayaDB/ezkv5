@@ -41,48 +41,28 @@ export async function listMyEnrollments() {
     });
 }
 
+/**
+ * Enrolls through the server-side checkout. Free courses enroll immediately; paid courses
+ * must go through the payment flow on the course page, so this throws for them.
+ */
 export async function enrollInLecture(lectureId: string) {
-  const { supabase, userId } = await requireUserId();
-
-  const { data: lecture, error: lecErr } = await supabase
-    .from("lectures")
-    .select("id, instructor_id, approval_status")
-    .eq("id", lectureId)
-    .maybeSingle();
-
-  if (lecErr) throw new Error(lecErr.message);
-  if (!lecture) throw new Error(trError("lectureNotFound"));
-  if (lecture.approval_status !== "approved") throw new Error(trError("onlyApprovedLectureEnroll"));
-  if (lecture.instructor_id === userId) throw new Error(trError("cannotEnrollOwnLecture"));
-
-  const { data: existing } = await supabase
-    .from("lecture_enrollments")
-    .select("id")
-    .eq("user_id", userId)
-    .eq("lecture_id", lectureId)
-    .maybeSingle();
-
-  if (existing) throw new Error(trError("alreadyEnrolled"));
-
-  const { data: created, error } = await supabase
-    .from("lecture_enrollments")
-    .insert({
-      user_id: userId,
-      lecture_id: lectureId,
-      status: "active",
-      payment_status: "paid",
-    })
-    .select("id, status, payment_status, enrolled_at, lecture_id")
-    .single();
-
-  if (error) throw new Error(error.message);
+  const { supabase } = await requireUserId();
+  const { data, error } = await supabase.rpc("create_lecture_checkout", { p_lecture_id: lectureId });
+  if (error) {
+    if (/already enrolled/.test(error.message)) throw new Error(trError("alreadyEnrolled"));
+    if (/own lecture/.test(error.message)) throw new Error(trError("cannotEnrollOwnLecture"));
+    if (/not found/.test(error.message)) throw new Error(trError("lectureNotFound"));
+    throw new Error(error.message);
+  }
+  const result = data as { free: boolean };
+  if (!result.free) throw new Error(trError("paymentRequired"));
 
   return {
-    id: String(created.id),
+    id: lectureId,
     lectureId,
-    status: created.status,
-    paymentStatus: created.payment_status,
-    enrolledAt: created.enrolled_at,
+    status: "active",
+    paymentStatus: "paid",
+    enrolledAt: new Date().toISOString(),
   };
 }
 

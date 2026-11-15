@@ -1868,7 +1868,8 @@
     "errUnknown": "We could not create the booking. Please try again.",
     "errPayCancelled": "The payment was not completed. You can try again.",
     "back": "Back to profile",
-    "errPayWindow": "We could not open the payment window. Please try again shortly or pick another method."
+    "errPayWindow": "We could not open the payment window. Please try again shortly or pick another method.",
+    "payCourseButton": "Pay {amount} and enroll"
   },
   "payments": {
     "checking": "Confirming your payment…",
@@ -1907,7 +1908,15 @@
     "cancelDone": "Cancelled. Your refund is on its way — it may take 3–7 days depending on your card.",
     "cancelTooLate": "You can no longer cancel within {hours} hours of the session. Please contact your mentor.",
     "cancelFailed": "We could not cancel. Please try again shortly.",
-    "asMentor": "Received"
+    "asMentor": "Received",
+    "courseTitle": "You are enrolled",
+    "courseBody": "Payment complete. You can now join live classes and watch replays.",
+    "toCourse": "Go to course",
+    "courseCancelConfirm": "Cancel the course for a full refund? You lose access right away.",
+    "courseNotRefundable": "It has been over {days} days or you have started watching, so self-refund is not available. Please contact us.",
+    "courseRefundNote": "Self-refund is available within {days} days if you have not started watching.",
+    "course": "Course",
+    "session": "Mentoring"
   },
   "live": {
     "sectionTitle": "Live classes & replays",

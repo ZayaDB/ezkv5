@@ -26,7 +26,7 @@ function portone(): PaymentClient {
 }
 
 export type SyncResult =
-  | { status: "paid"; sessionId: string | null; refundedForConflict?: boolean }
+  | { status: "paid"; sessionId: string | null; lectureId?: string | null; refundedForConflict?: boolean }
   | { status: "failed" | "cancelled"; sessionId: string | null }
   | { status: "pending" };
 
@@ -67,7 +67,7 @@ export async function syncPayment(paymentId: string): Promise<SyncResult> {
     const method = payment.method && "type" in payment.method ? String(payment.method.type) : null;
     const pgProvider = payment.channel?.pgProvider ? String(payment.channel.pgProvider) : null;
 
-    let r: { session_id: string | null; conflict?: boolean };
+    let r: { session_id: string | null; lecture_id?: string | null; conflict?: boolean };
     try {
       r = await rpc("payment_mark_paid", {
         p_payment_id: paymentId,
@@ -96,7 +96,7 @@ export async function syncPayment(paymentId: string): Promise<SyncResult> {
       });
       return { status: "paid", sessionId: r.session_id, refundedForConflict: true };
     }
-    return { status: "paid", sessionId: r.session_id };
+    return { status: "paid", sessionId: r.session_id ?? null, lectureId: r.lecture_id ?? null };
   }
 
   if (payment.status === "CANCELLED" || payment.status === "PARTIAL_CANCELLED") {

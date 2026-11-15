@@ -12,6 +12,13 @@ import type { Lecture } from '@/types';
 import { lectureCategoryLabel } from '@/lib/lectures/categories';
 import LectureCover from '@/components/lectures/LectureCover';
 import LessonList from '@/components/live/LessonList';
+import {
+  availablePayOptions,
+  createLectureCheckout,
+  CheckoutError,
+  requestPortOnePayment,
+  type PayOption,
+} from '@/lib/payments/client';
 
 /* Figma "LNK • Course detail and enrollment" — 레이아웃은 Figma, 강조색은 LNK 틸, 상태는 실제 데이터 */
 const card = 'bg-white dark:bg-night-card border border-hairline dark:border-hairline-dark';
@@ -38,6 +45,7 @@ export default function LectureDetailPage() {
   const tc = useTranslations('coursesPage');
   const t = useTranslations('courseDetail');
   const tOld = useTranslations('lectureDetail');
+  const tPay = useTranslations('booking');
   const router = useRouter();
   const { isAuthenticated, user } = useAuth();
   const id = params.id as string;
@@ -48,6 +56,8 @@ export default function LectureDetailPage() {
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [enrollMessage, setEnrollMessage] = useState('');
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const payOptions = availablePayOptions();
+  const [payOption, setPayOption] = useState<PayOption>('card');
 
   const load = useCallback(async () => {
     const res = await contentApi.getLecture(id);
@@ -71,7 +81,7 @@ export default function LectureDetailPage() {
       const res = await enrollmentApi.getMine();
       const list = res.data?.enrollments || [];
       if (!active) return;
-      setIsEnrolled(list.some((e: any) => e?.lecture?.id === id));
+      setIsEnrolled(list.some((e: any) => e?.lecture?.id === id && e?.status !== 'cancelled'));
     };
     checkEnrollment();
     return () => {
@@ -124,14 +134,32 @@ export default function LectureDetailPage() {
     if (isEnrolled || isSubmitting) return;
     setIsSubmitting(true);
     setEnrollMessage('');
-    const res = await enrollmentApi.create(id);
-    setIsSubmitting(false);
-    if (res.error) {
-      setEnrollMessage(res.error);
-      return;
+    try {
+      const checkout = await createLectureCheckout(id);
+      if (checkout.free) {
+        setIsEnrolled(true);
+        setEnrollMessage(t('enrolledMsg'));
+        setIsSubmitting(false);
+        return;
+      }
+      const result = await requestPortOnePayment({
+        checkout,
+        option: payOption,
+        locale,
+        customer: { fullName: user?.name, email: user?.email },
+      });
+      if (!result.ok) {
+        setEnrollMessage(result.code === 'WINDOW_FAILED' ? tPay('errPayWindow') : tPay('errPayCancelled'));
+        setIsSubmitting(false);
+        return;
+      }
+      router.push(`/${locale}/payments/complete?paymentId=${encodeURIComponent(result.paymentId)}`);
+    } catch (e) {
+      const code = e instanceof CheckoutError ? e.code : 'unknown';
+      if (code === 'enrolled') setIsEnrolled(true);
+      setEnrollMessage(code === 'enrolled' ? t('enrolledMsg') : tPay('errUnknown'));
+      setIsSubmitting(false);
     }
-    setIsEnrolled(true);
-    setEnrollMessage(t('enrolledMsg'));
   };
 
   const toggleWishlist = async () => {
@@ -253,9 +281,47 @@ export default function LectureDetailPage() {
                   <ArrowRight className="h-4 w-4" aria-hidden="true" />
                 </Link>
               ) : (
-                <button type="button" onClick={enroll} disabled={isSubmitting} className={primaryBtn}>
-                  {isSubmitting ? t('enrolling') : t('enroll')}
-                </button>
+                <>
+                  {lecture.price > 0 && payOptions.length > 0 && (
+                    <div className="grid grid-cols-1 gap-2" role="radiogroup" aria-label={tPay('stepPayment')}>
+                      {(['card', 'easyPay', 'globalCard'] as PayOption[])
+                        .filter((o) => payOptions.includes(o))
+                        .map((o) => (
+                          <button
+                            key={o}
+                            type="button"
+                            role="radio"
+                            aria-checked={payOption === o}
+                            onClick={() => setPayOption(o)}
+                            className={`flex items-center justify-between rounded-lg border px-3 py-2 text-left text-[13px] transition-colors ${
+                              payOption === o
+                                ? 'border-teal bg-primary-50 text-ink dark:border-teal-dark dark:bg-primary-950/40 dark:text-snow'
+                                : 'border-hairline text-ink-muted hover:border-teal/60 dark:border-hairline-dark dark:text-snow-muted'
+                            }`}
+                          >
+                            <span className="font-semibold">{tPay(o === 'card' ? 'payCard' : o === 'easyPay' ? 'payEasy' : 'payGlobal')}</span>
+                            <span className="text-[11px] opacity-80">{tPay(o === 'card' ? 'payCardDesc' : o === 'easyPay' ? 'payEasyDesc' : 'payGlobalDesc')}</span>
+                          </button>
+                        ))}
+                    </div>
+                  )}
+                  <button
+                    type="button"
+                    onClick={enroll}
+                    disabled={isSubmitting || (lecture.price > 0 && payOptions.length === 0)}
+                    className={primaryBtn}
+                  >
+                    {isSubmitting ? t('enrolling') : lecture.price > 0 ? tPay('payCourseButton', { amount: priceLabel }) : t('enroll')}
+                  </button>
+                  {lecture.price > 0 && payOptions.length === 0 && (
+                    <p className="text-xs text-ink-muted dark:text-snow-muted">{tPay('paymentsUnavailable')}</p>
+                  )}
+                  {lecture.price > 0 && process.env.NEXT_PUBLIC_PORTONE_TEST_MODE === '1' && (
+                    <p className="rounded-lg bg-[#f8f0df] px-3 py-1.5 text-center text-[11px] font-medium text-[#75582b] dark:bg-[#2a2418] dark:text-[#e2c48f]">
+                      {tPay('testMode')}
+                    </p>
+                  )}
+                </>
               )}
               {state !== 'Owner' && (
                 <button type="button" onClick={toggleWishlist} aria-pressed={isWishlisted} className={outlineBtn}>

@@ -1866,7 +1866,8 @@
     "errUnknown": "예약을 만들지 못했어요. 다시 시도해 주세요.",
     "errPayCancelled": "결제가 완료되지 않았어요. 다시 시도할 수 있어요.",
     "back": "멘토 프로필로",
-    "errPayWindow": "결제창을 열지 못했어요. 잠시 후 다시 시도하거나 다른 결제 수단을 골라 주세요."
+    "errPayWindow": "결제창을 열지 못했어요. 잠시 후 다시 시도하거나 다른 결제 수단을 골라 주세요.",
+    "payCourseButton": "{amount} 결제하고 수강하기"
   },
   "payments": {
     "checking": "결제를 확인하고 있어요…",
@@ -1905,7 +1906,15 @@
     "cancelDone": "취소되었고 환불을 요청했어요. 카드사에 따라 3~7일 걸릴 수 있어요.",
     "cancelTooLate": "세션 {hours}시간 전부터는 직접 취소할 수 없어요. 멘토에게 문의해 주세요.",
     "cancelFailed": "취소하지 못했어요. 잠시 후 다시 시도해 주세요.",
-    "asMentor": "받은 결제"
+    "asMentor": "받은 결제",
+    "courseTitle": "수강 신청이 완료됐어요",
+    "courseBody": "결제가 완료됐어요. 이제 라이브 수업에 입장하고 다시보기를 볼 수 있어요.",
+    "toCourse": "강의 보러 가기",
+    "courseCancelConfirm": "수강을 취소하고 전액 환불받을까요? 수강 권한이 바로 사라져요.",
+    "courseNotRefundable": "결제 후 {days}일이 지났거나 이미 수업을 시청해서 직접 환불할 수 없어요. 문의하기로 연락해 주세요.",
+    "courseRefundNote": "결제 후 {days}일 이내, 수업을 보기 전이면 직접 환불할 수 있어요.",
+    "course": "강의",
+    "session": "멘토링"
   },
   "live": {
     "sectionTitle": "라이브 수업 · 다시보기",

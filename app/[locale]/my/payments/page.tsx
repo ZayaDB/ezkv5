@@ -19,11 +19,14 @@ type Row = {
   created_at: string;
   refunded_amount: number;
   user_id: string;
+  lecture_id: string | null;
   mentor_sessions: { scheduled_at: string; status: string } | null;
   mentor_profiles: { user_id: string } | null;
+  lectures: { title: string; instructor_id: string } | null;
 };
 
 const FREE_CANCEL_HOURS = 24;
+const COURSE_REFUND_DAYS = 7;
 
 const statusTone: Record<Row['status'], string> = {
   paid: 'bg-primary-50 text-teal dark:bg-primary-950/40 dark:text-teal-dark',
@@ -46,7 +49,7 @@ export default function MyPaymentsPage() {
     const supabase = createClient();
     const { data } = await supabase
       .from('payments')
-      .select('payment_id, order_name, amount, status, paid_at, created_at, refunded_amount, user_id, mentor_sessions(scheduled_at, status), mentor_profiles(user_id)')
+      .select('payment_id, order_name, amount, status, paid_at, created_at, refunded_amount, user_id, lecture_id, mentor_sessions(scheduled_at, status), mentor_profiles(user_id), lectures(title, instructor_id)')
       .in('status', ['paid', 'cancelled', 'pending'])
       .order('created_at', { ascending: false })
       .limit(100);
@@ -66,6 +69,7 @@ export default function MyPaymentsPage() {
     setBusy(false);
     setConfirming(null);
     if (r.error === 'too_late') setMessage({ tone: 'err', text: t('cancelTooLate', { hours: r.hours ?? FREE_CANCEL_HOURS }) });
+    else if (r.error === 'course_not_refundable') setMessage({ tone: 'err', text: t('courseNotRefundable', { days: COURSE_REFUND_DAYS }) });
     else if (r.error) setMessage({ tone: 'err', text: t('cancelFailed') });
     else setMessage({ tone: 'ok', text: t('cancelDone') });
     load();
@@ -113,20 +117,33 @@ export default function MyPaymentsPage() {
           {rows.map((r) => {
             const sessionAt = r.mentor_sessions?.scheduled_at;
             const isBuyer = r.user_id === user?.id;
-            const isMentor = r.mentor_profiles?.user_id === user?.id;
+            const isCourse = Boolean(r.lecture_id);
+            const isMentor = (r.mentor_profiles?.user_id || r.lectures?.instructor_id) === user?.id;
             const hoursLeft = sessionAt ? (new Date(sessionAt).getTime() - Date.now()) / 3_600_000 : -1;
-            const canCancel = r.status === 'paid' && hoursLeft > 0 && (isMentor || (isBuyer && hoursLeft >= FREE_CANCEL_HOURS));
+            const daysSincePaid = r.paid_at ? (Date.now() - new Date(r.paid_at).getTime()) / 86_400_000 : 999;
+            const canCancel =
+              r.status === 'paid' &&
+              (isCourse
+                ? isMentor || (isBuyer && daysSincePaid <= COURSE_REFUND_DAYS)
+                : hoursLeft > 0 && (isMentor || (isBuyer && hoursLeft >= FREE_CANCEL_HOURS)));
             return (
               <li key={r.payment_id} className={`${ui.card} p-5`}>
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="min-w-0 space-y-1">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusTone[r.status]}`}>{t(`status_${r.status}`)}</span>
+                      <span className={`text-xs ${ui.muted}`}>{isCourse ? t('course') : t('session')}</span>
                       {isMentor && !isBuyer && (
                         <span className="rounded-full border border-hairline px-2.5 py-0.5 text-xs text-ink-muted dark:border-hairline-dark dark:text-snow-muted">{t('asMentor')}</span>
                       )}
                     </div>
-                    <p className="truncate font-semibold text-ink dark:text-snow">{r.order_name}</p>
+                    {isCourse && r.lecture_id ? (
+                      <Link href={`/${locale}/lectures/${r.lecture_id}`} className="block truncate font-semibold text-ink hover:text-teal dark:text-snow dark:hover:text-teal-dark">
+                        {r.lectures?.title || r.order_name}
+                      </Link>
+                    ) : (
+                      <p className="truncate font-semibold text-ink dark:text-snow">{r.order_name}</p>
+                    )}
                   </div>
                   <div className="text-right">
                     <p className="text-lg font-semibold text-ink dark:text-snow">{won(r.amount)}</p>
@@ -148,7 +165,10 @@ export default function MyPaymentsPage() {
                   )}
                 </dl>
 
-                {!canCancel && r.status === 'paid' && isBuyer && !isMentor && hoursLeft > 0 && (
+                {isCourse && canCancel && isBuyer && !isMentor && (
+                  <p className={`mt-3 text-xs ${ui.muted}`}>{t('courseRefundNote', { days: COURSE_REFUND_DAYS })}</p>
+                )}
+                {!isCourse && !canCancel && r.status === 'paid' && isBuyer && !isMentor && hoursLeft > 0 && (
                   <p className={`mt-4 border-t border-hairline pt-4 text-xs dark:border-hairline-dark ${ui.muted}`}>
                     {t('cancelTooLate', { hours: FREE_CANCEL_HOURS })}
                   </p>
@@ -158,7 +178,7 @@ export default function MyPaymentsPage() {
                   <div className="mt-4 border-t border-hairline pt-4 dark:border-hairline-dark">
                     {confirming === r.payment_id ? (
                       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                        <p className="text-sm text-ink dark:text-snow">{t('cancelConfirm')}</p>
+                        <p className="text-sm text-ink dark:text-snow">{isCourse ? t('courseCancelConfirm') : t('cancelConfirm')}</p>
                         <div className="flex gap-2">
                           <button type="button" disabled={busy} onClick={() => doCancel(r.payment_id)} className="inline-flex h-10 items-center rounded-lg bg-red-600 px-4 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-60">
                             {t('cancelYes')}
