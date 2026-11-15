@@ -385,7 +385,9 @@
       "error": "비밀번호를 바꾸지 못했어요. 다시 시도해 주세요.",
       "samePassword": "이전과 다른 비밀번호를 입력해 주세요.",
       "doneLogin": "비밀번호가 변경됐어요. 새 비밀번호로 로그인하세요."
-    }
+    },
+    "consentLabel": "(필수) 만 14세 이상이며, <terms>이용약관</terms>과 <privacy>개인정보처리방침</privacy>(해외 서버 저장 포함)에 동의합니다.",
+    "consentRequired": "이용약관과 개인정보처리방침에 동의해 주세요."
   },
   "controlCenter": {
     "badge": "컨트롤 센터",
@@ -1831,7 +1833,9 @@
     "errPayCancelled": "결제가 완료되지 않았어요. 다시 시도할 수 있어요.",
     "back": "멘토 프로필로",
     "errPayWindow": "결제창을 열지 못했어요. 잠시 후 다시 시도하거나 다른 결제 수단을 골라 주세요.",
-    "payCourseButton": "{amount} 결제하고 수강하기"
+    "payCourseButton": "{amount} 결제하고 수강하기",
+    "refundPolicyLink": "환불정책 전체 보기",
+    "courseRefundNote": "결제 후 7일 이내, 수업을 듣기 전이면 전액 환불돼요."
   },
   "payments": {
     "checking": "결제를 확인하고 있어요…",
@@ -1949,5 +1953,23 @@
     "rejoin": "다시 입장",
     "replayTitle": "다시보기",
     "resumeFrom": "{time}부터 이어보기"
+  },
+  "legal": {
+    "terms": "이용약관",
+    "privacy": "개인정보처리방침",
+    "refund": "환불정책",
+    "effective": "시행일 {date}",
+    "contactInquiry": "문의하기: 로그인 후 마이페이지 › 문의하기",
+    "contactEmail": "이메일: {email}",
+    "officer": "개인정보 보호책임자: {name}",
+    "officerPending": "개인정보 보호책임자: 사업자 등록 후 지정 예정 (그 전까지 운영자가 직접 처리합니다)",
+    "onThisPage": "목차",
+    "bizName": "상호",
+    "bizOwner": "대표",
+    "bizRegNo": "사업자등록번호",
+    "bizEcommerceNo": "통신판매업 신고",
+    "bizAddress": "주소",
+    "bizEmail": "이메일",
+    "bizPhone": "전화"
   }
 }

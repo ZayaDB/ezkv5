@@ -316,6 +316,14 @@ export default function LectureDetailPage() {
                   {lecture.price > 0 && payOptions.length === 0 && (
                     <p className="text-xs text-ink-muted dark:text-snow-muted">{tPay('paymentsUnavailable')}</p>
                   )}
+                  {lecture.price > 0 && (
+                    <p className="text-[11px] leading-relaxed text-ink-muted dark:text-snow-muted">
+                      {tPay('courseRefundNote')}{' '}
+                      <Link href={`/${locale}/legal/refund`} target="_blank" className="font-semibold text-teal underline-offset-2 hover:underline dark:text-teal-dark">
+                        {tPay('refundPolicyLink')}
+                      </Link>
+                    </p>
+                  )}
                   {lecture.price > 0 && process.env.NEXT_PUBLIC_PORTONE_TEST_MODE === '1' && (
                     <p className="rounded-lg bg-[#f8f0df] px-3 py-1.5 text-center text-[11px] font-medium text-[#75582b] dark:bg-[#2a2418] dark:text-[#e2c48f]">
                       {tPay('testMode')}
