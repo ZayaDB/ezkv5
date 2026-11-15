@@ -136,7 +136,22 @@
     "lecture_approvedBody": "Таны лекц нийтийн жагсаалтад харагдана.",
     "lecture_rejectedTitle": "Таны лекц баталгаажсангүй",
     "lecture_rejectedBody": "Лекцээ засаад дахин илгээнэ үү.",
-    "channel_post_removedTitle": "Таны нийтлэлийг админ устгасан"
+    "channel_post_removedTitle": "Таны нийтлэлийг админ устгасан",
+    "someone": "Нэгэн хэрэглэгч",
+    "booking_newTitle": "Шинэ зөвлөгөө захиалагдлаа",
+    "booking_newBody": "{name} · {at}",
+    "booking_paidTitle": "Зөвлөгөө баталгаажлаа",
+    "booking_paidBody": "{name} ментортой · {at}. 10 минутын өмнөөс өрөөнд орж болно.",
+    "booking_cancelledTitle": "Зөвлөгөө цуцлагдлаа",
+    "booking_cancelledBody": "{name}-тэй {at}-ийн зөвлөгөө цуцлагдаж, буцаагдлаа.",
+    "session_soonTitle": "Зөвлөгөө удахгүй эхэлнэ",
+    "session_soonBody": "{name}-тэй · {at}. Өрөө нээлттэй.",
+    "lesson_soonTitle": "Шууд хичээл удахгүй эхэлнэ",
+    "lesson_soonBody": "{title} · {at}",
+    "review_requestTitle": "Зөвлөгөө ямар байсан бэ?",
+    "review_requestBody": "{name} менторт үнэлгээ, сэтгэгдэл үлдээгээрэй.",
+    "review_newTitle": "Шинэ сэтгэгдэл ирлээ",
+    "review_newBody": "{rating} од"
   },
   "recommended": {
     "arc": "Гадаадын иргэний үнэмлэхний сунгалтыг шалгах",

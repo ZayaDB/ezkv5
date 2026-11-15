@@ -2031,7 +2031,8 @@
     "ended": "The session time has passed.",
     "notConfigured": "Video isn't set up yet.",
     "joinFailed": "Couldn't join. Please try again shortly.",
-    "privacyNote": "This session is not recorded. Don't record the screen without the other person's consent."
+    "privacyNote": "This session is not recorded. Don't record the screen without the other person's consent.",
+    "reviewPrompt": "How was your session with {name}?"
   },
   "mentorCenter": {
     "eyebrow": "Mentor center",
@@ -2080,5 +2081,19 @@
     "refundedShort": "(refunded {amount})",
     "settlementTitle": "About payouts",
     "settlementBody": "These figures are sales minus refunds. The platform fee and payout schedule will be announced after business registration; no payouts are made until then."
+  },
+  "reviews": {
+    "title": "Reviews",
+    "count": "{count, plural, one {# review} other {# reviews}}",
+    "empty": "No reviews yet.",
+    "anonymous": "Anonymous",
+    "ratingLabel": "Rating",
+    "starsN": "{n, plural, one {# star} other {# stars}}",
+    "commentPlaceholder": "What went well, what could be better? (optional)",
+    "submit": "Submit review",
+    "update": "Update review",
+    "saved": "Saved. Thank you!",
+    "failed": "Couldn't save. Please try again.",
+    "lecturePrompt": "How was this course?"
   }
 }

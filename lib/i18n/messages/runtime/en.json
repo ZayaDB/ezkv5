@@ -136,7 +136,22 @@
     "lecture_approvedBody": "Your lecture is now listed publicly.",
     "lecture_rejectedTitle": "Your lecture was not approved",
     "lecture_rejectedBody": "Please edit your lecture and submit it again.",
-    "channel_post_removedTitle": "Your post was removed by an administrator"
+    "channel_post_removedTitle": "Your post was removed by an administrator",
+    "someone": "Someone",
+    "booking_newTitle": "New session booked",
+    "booking_newBody": "{name} · {at}",
+    "booking_paidTitle": "Your session is confirmed",
+    "booking_paidBody": "With {name} · {at}. You can enter the room 10 minutes before.",
+    "booking_cancelledTitle": "A session was cancelled",
+    "booking_cancelledBody": "Your {at} session with {name} was cancelled and refunded.",
+    "session_soonTitle": "Your session starts soon",
+    "session_soonBody": "With {name} · {at}. The room is open.",
+    "lesson_soonTitle": "Your live class starts soon",
+    "lesson_soonBody": "{title} · {at}",
+    "review_requestTitle": "How was your session?",
+    "review_requestBody": "Leave {name} a rating and review.",
+    "review_newTitle": "You got a new review",
+    "review_newBody": "{rating} stars"
   },
   "recommended": {
     "arc": "Check your residence card renewal",

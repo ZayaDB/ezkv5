@@ -2029,7 +2029,8 @@
     "ended": "상담 시간이 지났어요.",
     "notConfigured": "화상 기능이 아직 설정되지 않았어요.",
     "joinFailed": "입장하지 못했어요. 잠시 후 다시 시도해 주세요.",
-    "privacyNote": "이 상담은 녹화되지 않아요. 상대방 동의 없이 화면을 녹화하지 마세요."
+    "privacyNote": "이 상담은 녹화되지 않아요. 상대방 동의 없이 화면을 녹화하지 마세요.",
+    "reviewPrompt": "{name} 멘토와의 상담은 어떠셨나요?"
   },
   "mentorCenter": {
     "eyebrow": "멘토 센터",
@@ -2078,5 +2079,19 @@
     "refundedShort": "(환불 {amount})",
     "settlementTitle": "정산 안내",
     "settlementBody": "위 금액은 결제 금액에서 환불을 뺀 매출이에요. 플랫폼 수수료와 정산 일정은 사업자 등록 후 확정해 안내할 예정이고, 그 전까지는 실제 정산이 이뤄지지 않아요."
+  },
+  "reviews": {
+    "title": "리뷰",
+    "count": "리뷰 {count}개",
+    "empty": "아직 리뷰가 없어요.",
+    "anonymous": "익명",
+    "ratingLabel": "별점",
+    "starsN": "{n}점",
+    "commentPlaceholder": "어떤 점이 좋았는지, 아쉬웠는지 남겨 주세요 (선택)",
+    "submit": "리뷰 남기기",
+    "update": "리뷰 수정",
+    "saved": "저장했어요. 감사합니다!",
+    "failed": "저장하지 못했어요. 다시 시도해 주세요.",
+    "lecturePrompt": "이 강의는 어떠셨나요?"
   }
 }

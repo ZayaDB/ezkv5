@@ -4,6 +4,8 @@ import { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import Link from 'next/link';
+import { ReviewForm, ReviewList } from '@/components/reviews/Reviews';
+import { getMyLectureReview, listLectureReviews, submitLectureReview, type Review } from '@/lib/supabase/reviews';
 import { ArrowRight, Heart, Info } from 'lucide-react';
 import { intlLocale } from '@/lib/i18n/config';
 import { contentApi, enrollmentApi, lectureWishlistApi } from '@/lib/api/client';
@@ -56,6 +58,9 @@ export default function LectureDetailPage() {
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [enrollMessage, setEnrollMessage] = useState('');
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [myReview, setMyReview] = useState<{ rating: number; comment: string } | null | undefined>(undefined);
+  const tRev = useTranslations('reviews');
   const payOptions = availablePayOptions();
   const [payOption, setPayOption] = useState<PayOption>('card');
 
@@ -66,6 +71,7 @@ export default function LectureDetailPage() {
       return;
     }
     setLecture(res.data as Lecture);
+    setReviews(await listLectureReviews(id));
   }, [id]);
 
   useEffect(() => {
@@ -81,7 +87,12 @@ export default function LectureDetailPage() {
       const res = await enrollmentApi.getMine();
       const list = res.data?.enrollments || [];
       if (!active) return;
-      setIsEnrolled(list.some((e: any) => e?.lecture?.id === id && e?.status !== 'cancelled'));
+      const enrolled = list.some((e: any) => e?.lecture?.id === id && e?.status !== 'cancelled');
+      setIsEnrolled(enrolled);
+      if (enrolled) {
+        const mine = await getMyLectureReview(id).catch(() => null);
+        if (active) setMyReview(mine);
+      }
     };
     checkEnrollment();
     return () => {
@@ -402,6 +413,21 @@ export default function LectureDetailPage() {
                 </ol>
               </section>
             )}
+            {isEnrolled && !isOwner && myReview !== undefined && (
+              <ReviewForm
+                initial={myReview}
+                title={tRev('lecturePrompt')}
+                onSubmit={async (rating, comment) => {
+                  await submitLectureReview(lecture.id, rating, comment);
+                  setReviews(await listLectureReviews(lecture.id));
+                }}
+              />
+            )}
+            <ReviewList
+              reviews={reviews}
+              average={reviews.length ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length : 0}
+              count={reviews.length}
+            />
           </div>
 
           <aside className={`flex flex-col rounded-2xl p-6 ${card}`}>

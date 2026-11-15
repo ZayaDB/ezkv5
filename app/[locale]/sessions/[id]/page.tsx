@@ -12,6 +12,8 @@ import { fetchPublicProfiles } from '@/lib/supabase/publicProfiles';
 import { startConversation } from '@/lib/supabase/messages';
 import { sessionRoomWindow } from '@/lib/live/sessionRoom';
 import { PageShell, ui } from '@/components/lnk/ui';
+import { ReviewForm } from '@/components/reviews/Reviews';
+import { getMySessionReview, submitMentorReview } from '@/lib/supabase/reviews';
 
 const LiveClassroom = dynamic(() => import('@/components/live/LiveClassroom'), {
   ssr: false,
@@ -39,6 +41,7 @@ export default function SessionRoomPage() {
   const [error, setError] = useState('');
   const [left, setLeft] = useState(false);
   const [now, setNow] = useState(() => Date.now());
+  const [myReview, setMyReview] = useState<{ rating: number; comment: string } | null | undefined>(undefined);
 
   useEffect(() => {
     const timer = window.setInterval(() => setNow(Date.now()), 15_000);
@@ -70,6 +73,7 @@ export default function SessionRoomPage() {
       otherName: names.get(otherId)?.name || '',
       iAmMentor,
     });
+    if (!iAmMentor && data.status === 'completed') setMyReview(await getMySessionReview(data.id as string));
   }, [id, user]);
 
   useEffect(() => {
@@ -199,7 +203,20 @@ export default function SessionRoomPage() {
       {cancelled
         ? notice(<AlertTriangle className="h-6 w-6" />, t('cancelledTitle'), t('cancelledBody'))
         : ended
-          ? notice(<CalendarClock className="h-6 w-6" />, t('endedTitle'), t('endedBody'))
+          ? (
+              <div className="space-y-6">
+                {notice(<CalendarClock className="h-6 w-6" />, t('endedTitle'), t('endedBody'))}
+                {info.status === 'completed' && !info.iAmMentor && myReview !== undefined && (
+                  <div className="mx-auto w-full max-w-lg">
+                    <ReviewForm
+                      initial={myReview}
+                      title={t('reviewPrompt', { name: info.otherName || t('unknownUser') })}
+                      onSubmit={(rating, comment) => submitMentorReview(info.id, rating, comment)}
+                    />
+                  </div>
+                )}
+              </div>
+            )
           : notice(
               <Video className="h-6 w-6" />,
               left ? t('leftTitle') : early ? t('waitTitle') : t('readyTitle'),
