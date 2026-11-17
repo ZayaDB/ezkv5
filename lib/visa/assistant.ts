@@ -58,6 +58,7 @@ const COPY: Record<string, Record<string, string>> = {
     more: "자세히 보기",
     unknown: "질문과 딱 맞는 안내를 찾지 못했어요. 비자 로드맵을 만들어 보거나 비자 전문 멘토(행정사)에게 물어보세요.",
     note: "참고용 안내예요. 최종 판단은 출입국·외국인청이 해요.",
+    loginRequired: "비자 비서는 회원 전용이에요. 로그인하면 비자 질문에 답해 드려요.",
   },
   en: {
     offTopic: "I can only help with visa and stay questions. For example: \"What do I need to change from D-2 to E-7?\" or \"How many hours can international students work part-time?\"",
@@ -65,6 +66,7 @@ const COPY: Record<string, Record<string, string>> = {
     more: "Details",
     unknown: "I couldn't find a guide that matches your question. Try the visa roadmap, or ask a visa mentor (administrative agent).",
     note: "This is a guide only. The immigration office makes the final decision.",
+    loginRequired: "The visa assistant is for members. Log in to ask your visa questions.",
   },
   mn: {
     offTopic: "Би зөвхөн виз, оршин суухтай холбоотой асуултад тусална. Жишээ нь: «D-2-оос E-7 рүү шилжихэд юу хэрэгтэй вэ?», «Оюутан долоо хоногт хэдэн цаг цагийн ажил хийж болох вэ?»",
@@ -72,6 +74,7 @@ const COPY: Record<string, Record<string, string>> = {
     more: "Дэлгэрэнгүй",
     unknown: "Таны асуултад яг тохирох мэдээлэл олдсонгүй. Визийн замын зураг гаргаж үзэх эсвэл визийн ментороос (захиргааны төлөөлөгч) асуугаарай.",
     note: "Энэ бол лавлах мэдээлэл. Эцсийн шийдвэрийг цагаачлалын алба гаргана.",
+    loginRequired: "Визийн туслах зөвхөн гишүүдэд зориулагдсан. Нэвтэрвэл визийн асуултад тань хариулна.",
   },
 };
 
@@ -88,7 +91,7 @@ export function ruleBasedVisaAnswer(text: string, locale: string): string {
   const parts = codes.map((code) => {
     const g = c.guides[code];
     const rules = g.rules.slice(0, 3).map((r) => `• ${r}`).join("\n");
-    return `**${code} ${g.name}**\n${g.short}\n${rules}\n${visaCopy(locale, "more")}: /visa/${visaSlug(code)}`;
+    return `**${code} ${g.name}**\n${g.short}\n${rules}\n${visaCopy(locale, "more")}: /my/visa/${visaSlug(code)}`;
   });
   return `${visaCopy(locale, "intro")}\n\n${parts.join("\n\n")}\n\n${visaCopy(locale, "note")}`;
 }

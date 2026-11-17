@@ -48,10 +48,13 @@ export default function RoadmapChecklist({
   roadmaps,
   onToggle,
   emptyHint,
+  onEditVisa,
 }: {
   roadmaps: RoadmapView[];
   onToggle: (roadmapId: string, stepId: string, nextCompleted: boolean) => void;
   emptyHint?: string;
+  /** 비자 로드맵 다시 만들기 */
+  onEditVisa?: () => void;
 }) {
   const t = useTranslations("roadmap");
   const tv = useTranslations("visa");
@@ -215,10 +218,10 @@ export default function RoadmapChecklist({
             </button>
             {focusVisa ? (
               <Link
-                href={`/${locale}/visa/${visaSlug(focusVisa)}`}
+                href={`/${locale}/my/visa/${visaSlug(focusVisa)}`}
                 className="rounded-full border border-zinc-200 dark:border-slate-700 px-3 py-1.5 text-xs font-semibold text-zinc-700 dark:text-slate-200 hover:border-primary-400"
               >
-                {tv("stepOpenGuide")}
+                {tv("more")}
               </Link>
             ) : null}
             <Link
@@ -241,10 +244,10 @@ export default function RoadmapChecklist({
 
       {currentIndex < 0 ? <p className="mt-3 text-xs text-emerald-600 font-semibold">{t("allDone")}</p> : null}
 
-      {isVisa ? (
-        <Link href={`/${locale}/visa`} className="mt-3 inline-block text-xs font-semibold text-teal hover:underline dark:text-teal-dark">
+      {isVisa && onEditVisa ? (
+        <button type="button" onClick={onEditVisa} className="mt-3 inline-block text-xs font-semibold text-teal hover:underline dark:text-teal-dark">
           {tv("edit")}
-        </Link>
+        </button>
       ) : null}
     </div>
   );

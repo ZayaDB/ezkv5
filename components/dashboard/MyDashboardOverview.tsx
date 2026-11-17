@@ -10,6 +10,7 @@ import { getCachedEnrollments, getCachedSessions } from "@/lib/hooks/useMyDataCa
 import { useUnreadMessages } from "@/lib/hooks/useUnreadMessages";
 import MentorOverview from "@/components/mentor/MentorOverview";
 import RoadmapChecklist, { type RoadmapView } from "@/components/roadmap/RoadmapChecklist";
+import VisaRoadmapBuilder from "@/components/visa/VisaRoadmapBuilder";
 import { roadmapsApi } from "@/lib/api/client";
 import { openAssistant } from "@/components/chatbot/Chatbot";
 import { PageIntro, SectionHeader, StatTile, ui } from "@/components/lnk/ui";
@@ -23,7 +24,7 @@ type HomeData = Awaited<ReturnType<typeof getControlCenter>>;
  */
 export default function MyDashboardOverview() {
   const t = useTranslations("myPages.overview");
-  const tv = useTranslations("visa");
+  const [buildingRoadmap, setBuildingRoadmap] = useState(false);
   const locale = useLocale();
   const { user } = useAuth();
   const [data, setData] = useState<HomeData | null>(null);
@@ -125,22 +126,29 @@ export default function MyDashboardOverview() {
   const roadmapsSection = (
       <section id="roadmaps" className="flex scroll-mt-28 flex-col gap-4">
         <SectionHeader title={t("roadmapsTitle")} description={t("roadmapsBody")} />
-        <div className={`${ui.card} p-5 sm:p-6`}>
-          <RoadmapChecklist
-            roadmaps={roadmapViews}
-            onToggle={async (roadmapId, stepId, next) => {
-              await roadmapsApi.completeStep(roadmapId, stepId, next);
-              await load(false);
-            }}
-            emptyHint={t("roadmapsEmpty")}
-          />
-          {roadmaps.length === 0 && (
-            <Link href={`/${locale}/visa`} className={`mt-4 ${ui.btnPrimary}`}>
-              <Compass className="h-4 w-4" aria-hidden="true" />
-              {tv("startCta")}
-            </Link>
-          )}
-        </div>
+        {roadmaps.length === 0 || buildingRoadmap ? (
+          <>
+            {roadmaps.length === 0 ? <p className={`text-sm ${ui.muted}`}>{t("roadmapsEmpty")}</p> : null}
+            <VisaRoadmapBuilder
+              onSaved={() => {
+                setBuildingRoadmap(false);
+                void load(false);
+              }}
+              onCancel={roadmaps.length ? () => setBuildingRoadmap(false) : undefined}
+            />
+          </>
+        ) : (
+          <div className={`${ui.card} p-5 sm:p-6`}>
+            <RoadmapChecklist
+              roadmaps={roadmapViews}
+              onToggle={async (roadmapId, stepId, next) => {
+                await roadmapsApi.completeStep(roadmapId, stepId, next);
+                await load(false);
+              }}
+              onEditVisa={() => setBuildingRoadmap(true)}
+            />
+          </div>
+        )}
       </section>
   );
 

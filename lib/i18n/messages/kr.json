@@ -58,8 +58,7 @@
     "prev": "이전",
     "next": "다음",
     "scrollTop": "맨 위로 이동",
-    "peopleCount": "{count}명",
-    "navVisa": "비자"
+    "peopleCount": "{count}명"
   },
   "home": {
     "heroBadge": "유학생 생활 비서",
@@ -2141,7 +2140,7 @@
     "docsExtend": "연장할 때 서류",
     "cautions": "주의할 점",
     "section": "매뉴얼에서 찾을 곳",
-    "back": "비자 안내 전체",
+    "back": "내 로드맵으로",
     "consult": "행정사 상담받기",
     "consultBody": "내 상황에 맞는지 확실하지 않으면 비자 전문 멘토(행정사)에게 물어보세요.",
     "makeRoadmap": "이 비자로 로드맵 만들기",
@@ -2151,6 +2150,7 @@
     "stepOpenGuide": "비자 안내 보기",
     "startCta": "비자 로드맵 만들기",
     "edit": "로드맵 다시 만들기",
-    "noExpiry": "만료일을 넣으면 날짜까지 계산해 드려요."
+    "noExpiry": "만료일을 넣으면 날짜까지 계산해 드려요.",
+    "cancel": "취소"
   }
 }

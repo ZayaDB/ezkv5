@@ -44,10 +44,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ response: visaCopy(locale, "offTopic"), actions: [], links: [], mode: "guide" });
     }
 
+    // 비자 정보는 회원 전용
+    const user = await getApiUser();
+    if (!user) {
+      return NextResponse.json({ response: visaCopy(locale, "loginRequired"), actions: [], links: [], mode: "guide" });
+    }
+
     const apiKey = process.env.OPENAI_API_KEY?.trim() || "";
     const looksInvalidKey = !/^sk-[A-Za-z0-9._-]{20,}$/.test(apiKey);
-    const user = await getApiUser();
-    if (!user || looksInvalidKey) return NextResponse.json(guideJson(messageText, locale));
+    if (looksInvalidKey) return NextResponse.json(guideJson(messageText, locale));
 
     const supabase = await createServerSupabase();
     const { data: allowed, error: quotaError } = await supabase.rpc("consume_chat_quota", { p_limit: 30 });
@@ -68,6 +73,6 @@ export async function POST(request: NextRequest) {
     }
   } catch (error) {
     console.error("Chat API error:", error);
-    return NextResponse.json(guideJson(messageText || "visa", locale));
+    return NextResponse.json({ response: visaCopy(locale, "offTopic"), actions: [], links: [], mode: "guide" });
   }
 }

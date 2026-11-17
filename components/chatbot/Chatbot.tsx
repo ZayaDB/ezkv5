@@ -153,8 +153,8 @@ export default function Chatbot() {
   };
 
   const runAction = (action: AssistantAction) => {
-    if (action.type === 'open_visa_roadmap') router.push(`/${locale}/visa`);
-    else if (action.type === 'open_visa_guide') router.push(`/${locale}/visa/${action.code.toLowerCase()}`);
+    if (action.type === 'open_visa_roadmap') router.push(`/${locale}/my/dashboard#roadmaps`);
+    else if (action.type === 'open_visa_guide') router.push(`/${locale}/my/visa/${action.code.toLowerCase()}`);
     else if (action.type === 'open_mentors') router.push(`/${locale}/mentors?category=visa`);
     setIsOpen(false);
   };

@@ -155,12 +155,6 @@ export default function Header() {
                 {t("community")}
               </Link>
               <Link
-                href={getLocalizedPath("/visa")}
-                className="text-[16px] font-bold text-gray-600 dark:text-slate-200 hover:text-primary-500 transition-colors"
-              >
-                {t("navVisa")}
-              </Link>
-              <Link
                 href={getLocalizedPath("/study-in-korea")}
                 className="text-[16px] font-bold text-gray-600 dark:text-slate-200 hover:text-primary-500 transition-colors"
               >
@@ -473,13 +467,6 @@ export default function Header() {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {t("community")}
-              </Link>
-              <Link
-                href={getLocalizedPath("/visa")}
-                className="text-gray-600 hover:text-primary-500 transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {t("navVisa")}
               </Link>
               <Link
                 href={getLocalizedPath("/study-in-korea")}

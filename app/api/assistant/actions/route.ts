@@ -17,6 +17,9 @@ export async function POST(request: NextRequest) {
     }
 
     if (!executeAction) {
+      const supa = await createServerSupabase();
+      const { data: auth } = await supa.auth.getUser();
+      if (!auth.user) return NextResponse.json({ error: trError("authRequired", locale) }, { status: 401 });
       const text = String(message);
       return NextResponse.json({ response: ruleBasedVisaAnswer(text, locale), actions: buildVisaActions(text, locale), links: [] });
     }

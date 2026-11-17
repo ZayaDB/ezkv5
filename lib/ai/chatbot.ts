@@ -32,7 +32,7 @@ Rules:
 - Write in ${lang}. Use short sentences and simple words; many users are still learning the language.
 - Keep it short: at most about 8 lines. Use a short bullet list for documents or conditions.
 - End with one line naming the source, e.g. "${MANUAL_SOURCE} — <section name>", translated naturally into ${lang}.
-- When useful, point to the LNK pages: /visa (build a visa roadmap) or /visa/<code in lowercase, e.g. d-2, e-7, f-2-7> (visa guide).
+- When useful, point to the LNK pages: /my/dashboard (the user's visa roadmap) or /my/visa/<code in lowercase, e.g. d-2, e-7, f-2-7> (visa guide).
 - Remind that the immigration office makes the final decision only if the answer is about eligibility.`;
 
   const user = `Question:\n${message}\n\n=== LNK visa guide (already in ${lang}) ===\n${guideContext(locale, codes) || "(none)"}\n\n=== Manual excerpts (Korean, ${MANUAL_SOURCE}) ===\n${excerpts}`;

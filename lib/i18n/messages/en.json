@@ -58,8 +58,7 @@
     "prev": "Previous",
     "next": "Next",
     "scrollTop": "Back to top",
-    "peopleCount": "{count}",
-    "navVisa": "Visa"
+    "peopleCount": "{count}"
   },
   "home": {
     "heroBadge": "Life assistant for international students",
@@ -2143,7 +2142,7 @@
     "docsExtend": "Documents to extend",
     "cautions": "Cautions",
     "section": "Where to find it in the manual",
-    "back": "All visa guides",
+    "back": "Back to my roadmap",
     "consult": "Talk to a visa expert",
     "consultBody": "If you're not sure this fits your case, ask a visa mentor (administrative agent).",
     "makeRoadmap": "Make a roadmap to this visa",
@@ -2153,6 +2152,7 @@
     "stepOpenGuide": "Open visa guide",
     "startCta": "Create a visa roadmap",
     "edit": "Rebuild roadmap",
-    "noExpiry": "Add the expiry date to get exact dates."
+    "noExpiry": "Add the expiry date to get exact dates.",
+    "cancel": "Cancel"
   }
 }

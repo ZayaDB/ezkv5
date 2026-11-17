@@ -2,10 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { ArrowRight, Check } from "lucide-react";
-import { PageShell, PageIntro, Notice, SectionHeader, ui } from "@/components/lnk/ui";
+import { Notice, ui } from "@/components/lnk/ui";
 import { DueLabel, StepBody } from "@/components/visa/VisaSteps";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { describeStep, visaContent, VISA_SOURCE_DATE } from "@/lib/visa/content";
@@ -16,7 +15,6 @@ import {
   EMPTY_FACTS,
   isVisaCode,
   TARGET_VISAS,
-  VISA_CODES,
   visaSlug,
   type VisaCode,
   type VisaFacts,
@@ -25,10 +23,11 @@ import {
 const label = "flex flex-col gap-1.5 text-sm font-semibold text-ink dark:text-snow";
 const check = "flex items-center gap-2 text-sm text-ink dark:text-snow";
 
-export default function VisaHubClient({ locale }: { locale: string }) {
+/** 대시보드 안에서 쓰는 비자 로드맵 만들기 (가입 때 넣은 비자·만료일을 먼저 채움) */
+export default function VisaRoadmapBuilder({ onSaved, onCancel }: { onSaved: () => void; onCancel?: () => void }) {
+  const locale = useLocale();
   const t = useTranslations("visa");
-  const params = useSearchParams();
-  const { user, isAuthenticated } = useAuth();
+  const { user } = useAuth();
   const content = visaContent(locale);
 
   const [from, setFrom] = useState<VisaCode>("D-2");
@@ -49,10 +48,6 @@ export default function VisaHubClient({ locale }: { locale: string }) {
     else if (visa?.startsWith("E-7")) setFrom("E-7");
     if (user?.visaExpireDate) setExpiry(String(user.visaExpireDate).slice(0, 10));
   }, [user?.visaType, user?.visaExpireDate]);
-  useEffect(() => {
-    const q = params.get("to")?.toUpperCase();
-    if (q && isVisaCode(q) && TARGET_VISAS.includes(q)) setTo(q);
-  }, [params]);
 
   const set = <K extends keyof VisaFacts>(k: K, v: VisaFacts[K]) => {
     setSaved(false);
@@ -77,6 +72,7 @@ export default function VisaHubClient({ locale }: { locale: string }) {
       if (!res.ok) throw new Error();
       setSaved(true);
       window.dispatchEvent(new Event("roadmap-updated"));
+      onSaved();
     } catch {
       setError(t("saveError"));
     } finally {
@@ -91,8 +87,7 @@ export default function VisaHubClient({ locale }: { locale: string }) {
   );
 
   return (
-    <PageShell>
-      <PageIntro eyebrow={t("eyebrow")} title={t("title")} subtitle={t("subtitle")} />
+    <div className="flex flex-col gap-5">
       <Notice tone="caution">{t("sourceNote", { date: VISA_SOURCE_DATE })}</Notice>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
@@ -214,7 +209,7 @@ export default function VisaHubClient({ locale }: { locale: string }) {
                 <div className="flex flex-wrap items-center gap-2">
                   {plan.route.map((code, i) => (
                     <span key={code} className="flex items-center gap-2">
-                      <Link href={`/${locale}/visa/${visaSlug(code)}`} className={ui.pillTeal}>
+                      <Link href={`/${locale}/my/visa/${visaSlug(code)}`} className={ui.pillTeal}>
                         {code}
                       </Link>
                       {i < plan.route.length - 1 ? <ArrowRight className="h-4 w-4 text-ink-muted" aria-hidden="true" /> : null}
@@ -266,55 +261,26 @@ export default function VisaHubClient({ locale }: { locale: string }) {
               </ol>
 
               <div className="flex flex-col gap-3 border-t border-hairline pt-4 dark:border-hairline-dark">
-                {isAuthenticated ? (
-                  <>
-                    <p className={`text-xs ${ui.muted}`}>{t("replaceNote")}</p>
-                    <div className="flex flex-wrap gap-2">
-                      <button type="button" className={ui.btnPrimary} disabled={saving} onClick={save}>
-                        {saved ? <Check className="h-4 w-4" aria-hidden="true" /> : null}
-                        {saving ? t("saving") : t("save")}
-                      </button>
-                      {saved ? (
-                        <Link href={`/${locale}/my/dashboard#roadmaps`} className={ui.btnOutline}>
-                          {t("goDashboard")}
-                        </Link>
-                      ) : null}
-                    </div>
-                    {saved ? <p className="text-sm text-emerald-600 dark:text-emerald-400">{t("saved")}</p> : null}
-                    {error ? <p className="text-sm text-rose-600">{error}</p> : null}
-                  </>
-                ) : (
-                  <div className="flex flex-wrap items-center gap-3">
-                    <p className={`text-sm ${ui.muted}`}>{t("loginToSave")}</p>
-                    <Link href={`/${locale}/login?redirect=${encodeURIComponent(`/${locale}/visa`)}`} className={ui.btnPrimary}>
-                      {t("login")}
-                    </Link>
-                  </div>
-                )}
+                <p className={`text-xs ${ui.muted}`}>{t("replaceNote")}</p>
+                <div className="flex flex-wrap gap-2">
+                  <button type="button" className={ui.btnPrimary} disabled={saving} onClick={save}>
+                    {saved ? <Check className="h-4 w-4" aria-hidden="true" /> : null}
+                    {saving ? t("saving") : t("save")}
+                  </button>
+                  {onCancel ? (
+                    <button type="button" className={ui.btnOutline} onClick={onCancel}>
+                      {t("cancel")}
+                    </button>
+                  ) : null}
+                </div>
+                {error ? <p className="text-sm text-rose-600">{error}</p> : null}
               </div>
             </>
           )}
         </section>
       </div>
 
-      {/* 비자별 안내 */}
-      <section className="flex flex-col gap-4">
-        <SectionHeader title={t("guidesTitle")} description={t("guidesBody")} />
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {VISA_CODES.map((code) => {
-            const g = content.guides[code];
-            return (
-              <Link key={code} href={`/${locale}/visa/${visaSlug(code)}`} className={`${ui.card} ${ui.cardHover} flex flex-col gap-2 p-5`}>
-                <span className={`w-fit ${ui.pillTeal}`}>{code}</span>
-                <p className="font-semibold text-ink dark:text-snow">{g.name}</p>
-                <p className={`text-sm leading-[1.5] ${ui.muted}`}>{g.short}</p>
-                <span className={`mt-auto pt-1 ${ui.btnGhost}`}>{t("more")}</span>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
-    </PageShell>
+    </div>
   );
 }
 

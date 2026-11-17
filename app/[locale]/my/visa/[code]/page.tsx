@@ -1,15 +1,14 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ArrowLeft } from "lucide-react";
-import { Notice, PageIntro, PageShell, ui } from "@/components/lnk/ui";
+import { Notice, PageIntro, ui } from "@/components/lnk/ui";
 import { visaContent, VISA_SOURCE_DATE } from "@/lib/visa/content";
-import { TARGET_VISAS, VISA_CODES, visaFromSlug, visaSlug } from "@/lib/visa/types";
-import { locales } from "@/lib/i18n/config";
+import { visaFromSlug } from "@/lib/visa/types";
+import { createServerSupabase } from "@/lib/supabase/server";
 
-export function generateStaticParams() {
-  return locales.flatMap((locale) => VISA_CODES.map((code) => ({ locale, code: visaSlug(code) })));
-}
+// 회원 전용: 미리 만들어 두지 않고 요청 때마다 로그인 확인
+export const dynamic = "force-dynamic";
 
 function Block({ title, items }: { title: string; items: string[] }) {
   if (!items.length) return null;
@@ -30,26 +29,25 @@ export default async function VisaDetailPage({ params }: { params: Promise<{ loc
   setRequestLocale(locale);
   const code = visaFromSlug(slug);
   if (!code) notFound();
+  const supabase = await createServerSupabase();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect(`/${locale}/login?redirect=${encodeURIComponent(`/${locale}/my/visa/${slug}`)}`);
   const t = await getTranslations("visa");
   const g = visaContent(locale).guides[code];
 
   return (
-    <PageShell>
-      <Link href={`/${locale}/visa`} className={`w-fit ${ui.btnGhost}`}>
+    <div className="flex flex-col gap-7">
+      <Link href={`/${locale}/my/dashboard#roadmaps`} className={`w-fit ${ui.btnGhost}`}>
         <ArrowLeft className="h-4 w-4" aria-hidden="true" />
         {t("back")}
       </Link>
       <PageIntro
+        size="md"
         status={code}
         title={g.name}
         subtitle={g.short}
-        actions={
-          TARGET_VISAS.includes(code) ? (
-            <Link href={`/${locale}/visa?to=${code}`} className={ui.btnPrimary}>
-              {t("makeRoadmap")}
-            </Link>
-          ) : null
-        }
       />
       <Notice tone="caution">{t("sourceNote", { date: VISA_SOURCE_DATE })}</Notice>
 
@@ -75,6 +73,6 @@ export default async function VisaDetailPage({ params }: { params: Promise<{ loc
           {t("consult")} →
         </Link>
       </Notice>
-    </PageShell>
+    </div>
   );
 }
