@@ -6,12 +6,9 @@ import { useRouter } from 'next/navigation';
 import { MessageCircle, X, Send, Loader2, ChevronUp } from 'lucide-react';
 import { ChatMessage } from '@/types';
 import { SearchResult } from '@/lib/search';
-import { useAuth } from '@/lib/contexts/AuthContext';
-import { assistantApi } from '@/lib/api/client';
 import type { AssistantAction } from '@/lib/ai/assistantActions';
 
 const OPEN_EVENT = 'open-assistant';
-const ROADMAP_EVENT = 'roadmap-updated';
 
 export function openAssistant() {
   if (typeof window === 'undefined') return;
@@ -22,10 +19,8 @@ type Bubble = ChatMessage & { actions?: AssistantAction[] };
 
 export default function Chatbot() {
   const t = useTranslations('chatbot');
-  const tAsst = useTranslations('assistant');
   const locale = useLocale();
   const router = useRouter();
-  const { isAuthenticated } = useAuth();
   const localeChoices = [
     { value: 'kr', label: '한국어' },
     { value: 'en', label: 'English' },
@@ -157,55 +152,11 @@ export default function Chatbot() {
     }
   };
 
-  const runAction = async (action: AssistantAction) => {
-    if (action.type === 'open_calendar') {
-      router.push(`/${locale}/my/schedule`);
-      setIsOpen(false);
-      return;
-    }
-    if (action.type === 'open_mentors') {
-      router.push(`/${locale}/mentors`);
-      setIsOpen(false);
-      return;
-    }
-    if (action.type === 'open_study_guide') {
-      router.push(`/${locale}/study-in-korea`);
-      setIsOpen(false);
-      return;
-    }
-    if (action.type === 'create_roadmap') {
-      if (!isAuthenticated) {
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: `${Date.now()}-login`,
-            role: 'assistant',
-            content: tAsst('needLogin'),
-            timestamp: new Date(),
-          },
-        ]);
-        return;
-      }
-      setIsLoading(true);
-      try {
-        await assistantApi.execute({
-          type: 'create_roadmap',
-          templateKey: action.templateKey,
-        });
-        window.dispatchEvent(new Event(ROADMAP_EVENT));
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: `${Date.now()}-rm`,
-            role: 'assistant',
-            content: tAsst('roadmapCreated'),
-            timestamp: new Date(),
-          },
-        ]);
-      } finally {
-        setIsLoading(false);
-      }
-    }
+  const runAction = (action: AssistantAction) => {
+    if (action.type === 'open_visa_roadmap') router.push(`/${locale}/visa`);
+    else if (action.type === 'open_visa_guide') router.push(`/${locale}/visa/${action.code.toLowerCase()}`);
+    else if (action.type === 'open_mentors') router.push(`/${locale}/mentors?category=visa`);
+    setIsOpen(false);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -221,22 +172,22 @@ export default function Chatbot() {
 
   const quickPrompts: Record<string, string[]> = {
     kr: [
-      '비자 연장해야 해',
-      '이사 준비 도와줘',
-      '오늘 일정 정리',
-      '멘토 찾고 싶어',
+      'D-2에서 E-7로 바꾸려면 뭐가 필요해?',
+      '유학생 아르바이트는 몇 시간까지 돼?',
+      '비자 연장 서류 알려줘',
+      '영주권(F-5)까지 어떻게 가?',
     ],
     en: [
-      'I need to extend my visa',
-      'Help me prepare to move',
-      'Plan my day',
-      'I want to find a mentor',
+      'What do I need to change from D-2 to E-7?',
+      'How many hours can students work part-time?',
+      'Which documents do I need to extend my visa?',
+      'How do I get permanent residence (F-5)?',
     ],
     mn: [
-      'Виз сунгах хэрэгтэй',
-      'Нүүхэд туслаач',
-      'Өнөөдрийн хуваарь',
-      'Ментор хайж байна',
+      'D-2-оос E-7 рүү шилжихэд юу хэрэгтэй вэ?',
+      'Оюутан хэдэн цаг цагийн ажил хийж болох вэ?',
+      'Виз сунгахад ямар бичиг баримт хэрэгтэй вэ?',
+      'Байнгын оршин суух (F-5) эрх яаж авах вэ?',
     ],
   };
 

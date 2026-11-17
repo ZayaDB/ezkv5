@@ -23,6 +23,7 @@ type HomeData = Awaited<ReturnType<typeof getControlCenter>>;
  */
 export default function MyDashboardOverview() {
   const t = useTranslations("myPages.overview");
+  const tv = useTranslations("visa");
   const locale = useLocale();
   const { user } = useAuth();
   const [data, setData] = useState<HomeData | null>(null);
@@ -102,8 +103,15 @@ export default function MyDashboardOverview() {
     id: r.id,
     title: r.title,
     templateKey: r.templateKey,
+    meta: r.meta,
     progress: r.progress,
-    steps: (r.steps || []).map((s) => ({ id: s.id, title: s.title, description: s.description, completed: s.completed })),
+    steps: (r.steps || []).map((s) => ({
+      id: s.id,
+      title: s.title,
+      description: s.description,
+      completed: s.completed,
+      dueDate: s.dueDate,
+    })),
   }));
   const avgProgress = roadmaps.length
     ? Math.round(roadmaps.reduce((sum, r) => sum + (r.progress || 0), 0) / roadmaps.length)
@@ -127,10 +135,10 @@ export default function MyDashboardOverview() {
             emptyHint={t("roadmapsEmpty")}
           />
           {roadmaps.length === 0 && (
-            <button type="button" onClick={() => openAssistant()} className={`mt-4 ${ui.btnPrimary}`}>
-              <Bot className="h-4 w-4" aria-hidden="true" />
-              {t("startRoadmap")}
-            </button>
+            <Link href={`/${locale}/visa`} className={`mt-4 ${ui.btnPrimary}`}>
+              <Compass className="h-4 w-4" aria-hidden="true" />
+              {tv("startCta")}
+            </Link>
           )}
         </div>
       </section>

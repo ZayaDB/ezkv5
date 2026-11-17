@@ -1,16 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getChatbotResponse } from "@/lib/ai/chatbot";
-import { buildActionAssistantResponse } from "@/lib/ai/assistantActions";
-import { resolveTemplateKey } from "@/lib/roadmap/templates";
-import { searchContent, type SearchResult } from "@/lib/search";
+import { getVisaAnswer } from "@/lib/ai/chatbot";
+import { buildVisaActions } from "@/lib/ai/assistantActions";
+import { isVisaTopic, ruleBasedVisaAnswer, visaCopy } from "@/lib/visa/assistant";
 import { getApiUser } from "@/lib/middleware/supabaseApiAuth";
 import { createServerSupabase } from "@/lib/supabase/server";
-
-const errorMessages: Record<string, string> = {
-  kr: "죄송합니다. 일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
-  en: "Sorry, a temporary error occurred. Please try again later.",
-  mn: "Уучлаарай, түр алдаа гарлаа. Дараа дахин оролдоно уу.",
-};
 
 const quotaMessages: Record<string, string> = {
   kr: "오늘의 AI 대화 이용 한도(30회)에 도달했습니다. 내일 다시 이용해주세요.",
@@ -18,143 +11,63 @@ const quotaMessages: Record<string, string> = {
   mn: "Өнөөдрийн AI чатын хязгаар (30 удаа) хүрлээ. Маргааш дахин оролдоно уу.",
 };
 
-function buildLocalGuideResponse(
-  message: string,
-  locale: string,
-  links: SearchResult[]
-): { response: string; links: SearchResult[] } {
-  const m = message.toLowerCase();
-  const isVisa = /비자|체류|visa|immigration|d-2|виз/.test(m);
-  const isHousing = /주거|집|원룸|기숙사|housing|room|байр|орон сууц/.test(m);
-  const isHealth = /병원|보험|health|hospital|clinic|эмнэлэг|даатгал/.test(m);
-  const isMentor = /멘토|mentor|ментор/.test(m);
-  const isLecture = /강의|수강|lecture|course|лекц/.test(m);
-  const isCommunity = /커뮤니티|모임|community|group|нийгэмлэг/.test(m);
-
-  const msg: Record<string, string> = {
-    kr: "필요한 정보를 빠르게 찾을 수 있도록 도와드릴게요.",
-    en: "I can help you quickly find the right page.",
-    mn: "Танд хэрэгтэй мэдээллийг хурдан олоход тусалъя.",
+/** AI 없이 답하기 (비로그인, 키 없음, AI 오류일 때) */
+function guideJson(message: string, locale: string, mode: "guide" | "limited" = "guide") {
+  const visa = isVisaTopic(message);
+  return {
+    response: ruleBasedVisaAnswer(message, locale),
+    actions: visa ? buildVisaActions(message, locale) : [],
+    links: [],
+    mode,
   };
-  const tips: Record<string, string[]> = {
-    kr: [
-      "비자/체류: `/study-in-korea` 또는 비자 멘토 `/mentors`",
-      "주거/생활: `/study-in-korea`",
-      "멘토 상담: `/mentors`",
-      "강의 탐색: `/lectures`",
-      "커뮤니티: `/community`",
-    ],
-    en: [
-      "Visa/Stay: `/study-in-korea` or visa mentors `/mentors`",
-      "Housing/Life: `/study-in-korea`",
-      "Mentor consultation: `/mentors`",
-      "Lectures: `/lectures`",
-      "Community: `/community`",
-    ],
-    mn: [
-      "Виз/оршин суух: `/study-in-korea` эсвэл визийн ментор `/mentors`",
-      "Байр/амьдрал: `/study-in-korea`",
-      "Ментор зөвлөгөө: `/mentors`",
-      "Лекц хайх: `/lectures`",
-      "Нийгэмлэг: `/community`",
-    ],
-  };
-
-  let first: string;
-  if (isVisa) first = tips[locale]?.[0] || tips.kr[0];
-  else if (isHousing || isHealth) first = tips[locale]?.[1] || tips.kr[1];
-  else if (isMentor) first = tips[locale]?.[2] || tips.kr[2];
-  else if (isLecture) first = tips[locale]?.[3] || tips.kr[3];
-  else if (isCommunity) first = tips[locale]?.[4] || tips.kr[4];
-  else first = tips[locale]?.[0] || tips.kr[0];
-
-  const response = `${msg[locale] || msg.kr}\n\n${first}`;
-  return { response, links: links.slice(0, 4) };
 }
 
-async function ruleBasedJson(messageText: string, locale: string, actionIntent: boolean) {
-  if (actionIntent) {
-    const actionResult = buildActionAssistantResponse(messageText, locale);
-    const links = await searchContent(messageText, locale);
-    return NextResponse.json({
-      ...actionResult,
-      links: links.slice(0, 4),
-      mode: "assistant",
-    });
-  }
-  const links = await searchContent(messageText, locale);
-  return NextResponse.json({
-    ...buildLocalGuideResponse(messageText, locale, links),
-    mode: "guide",
-  });
-}
-
+/**
+ * 비서 = 비자 전용
+ * - 비자·체류와 관계없는 질문은 AI를 부르지 않고 정중히 안내
+ * - 로그인 + 유효한 키가 있으면 매뉴얼 검색 결과를 근거로 AI가 답함
+ */
 export async function POST(request: NextRequest) {
   let locale = "kr";
   let messageText = "";
   try {
     const body = await request.json();
-    const { message, locale: loc } = body;
-    locale = typeof loc === "string" ? loc : "kr";
-    messageText = typeof message === "string" ? message : "";
+    locale = typeof body.locale === "string" && ["kr", "en", "mn"].includes(body.locale) ? body.locale : "kr";
+    messageText = typeof body.message === "string" ? body.message.trim() : "";
 
-    if (!messageText) {
-      return NextResponse.json(
-        { error: "Message is required" },
-        { status: 400 }
-      );
+    if (!messageText) return NextResponse.json({ error: "Message is required" }, { status: 400 });
+    if (messageText.length > 500) {
+      return NextResponse.json({ error: "Message must be 500 characters or fewer" }, { status: 400 });
     }
 
-    if (messageText.length > 500) {
-      return NextResponse.json(
-        { error: "Message must be 500 characters or fewer" },
-        { status: 400 }
-      );
+    if (!isVisaTopic(messageText)) {
+      return NextResponse.json({ response: visaCopy(locale, "offTopic"), actions: [], links: [], mode: "guide" });
     }
 
     const apiKey = process.env.OPENAI_API_KEY?.trim() || "";
     const looksInvalidKey = !/^sk-[A-Za-z0-9._-]{20,}$/.test(apiKey);
-
-    const actionIntent = Boolean(
-      resolveTemplateKey(messageText) ||
-        /이사|일정|캘린더|멘토|비자|연장|calendar|moving|visa|mentor/i.test(messageText)
-    );
-
     const user = await getApiUser();
-
-    // 비로그인·액션 의도·유효하지 않은 키: OpenAI 호출 없이 규칙 기반 응답만
-    if (!user || actionIntent || looksInvalidKey) {
-      return await ruleBasedJson(messageText, locale, actionIntent);
-    }
+    if (!user || looksInvalidKey) return NextResponse.json(guideJson(messageText, locale));
 
     const supabase = await createServerSupabase();
-    const { data: allowed, error: quotaError } = await supabase.rpc("consume_chat_quota", {
-      p_limit: 30,
-    });
-
+    const { data: allowed, error: quotaError } = await supabase.rpc("consume_chat_quota", { p_limit: 30 });
     if (quotaError || allowed !== true) {
       return NextResponse.json(
-        {
-          response: quotaMessages[locale] || quotaMessages.kr,
-          links: [],
-          mode: "limited",
-        },
+        { response: quotaMessages[locale] || quotaMessages.kr, actions: [], links: [], mode: "limited" },
         { status: 429 }
       );
     }
 
-    const result = await getChatbotResponse(messageText, {
-      locale,
-    });
-
-    return NextResponse.json({ ...result, mode: "chat" });
+    try {
+      const { response } = await getVisaAnswer(messageText, locale);
+      return NextResponse.json({ response, actions: buildVisaActions(messageText, locale), links: [], mode: "chat" });
+    } catch (err) {
+      // 크레딧 부족·네트워크 오류 등: 정리된 비자 안내로 대신 답함
+      console.error("Visa AI error:", err);
+      return NextResponse.json(guideJson(messageText, locale));
+    }
   } catch (error) {
     console.error("Chat API error:", error);
-    const links = messageText ? await searchContent(messageText, locale) : [];
-    if (messageText) return NextResponse.json(buildLocalGuideResponse(messageText, locale, links));
-    return NextResponse.json({
-      response: errorMessages[locale] || errorMessages.kr,
-      links: [],
-    });
+    return NextResponse.json(guideJson(messageText || "visa", locale));
   }
 }
