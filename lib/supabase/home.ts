@@ -80,7 +80,7 @@ export async function getControlCenter(profileUser: User) {
     supabase
       .from("roadmaps")
       .select(
-        "id, title, progress, due_date, template_key, roadmap_steps(id, title, description, completed, active, sort_order)"
+        "id, title, description, progress, due_date, template_key, roadmap_steps(id, title, description, completed, active, sort_order, due_date)"
       )
       .eq("user_id", userId)
       .eq("status", "active")
@@ -102,7 +102,11 @@ export async function getControlCenter(profileUser: User) {
   const visaAlerts = buildVisaAlertsFromProfile(userId, profileFields);
   const alerts = mergeAlerts(visaAlerts, dbAlerts);
 
-  const activeRoadmaps = (roadmapsResult.data || []).map((r) => {
+  // 로드맵은 비자 전용: 예전 이사·정착·취업 템플릿은 화면에서 숨김 (데이터는 그대로 둠)
+  const HIDDEN_TEMPLATES = new Set(["moving", "settling_korea", "job_prep"]);
+  const activeRoadmaps = (roadmapsResult.data || [])
+    .filter((r) => !HIDDEN_TEMPLATES.has(String(r.template_key ?? "")))
+    .map((r) => {
     const nested = r.roadmap_steps as
       | Array<{
           id: string;
@@ -111,6 +115,7 @@ export async function getControlCenter(profileUser: User) {
           completed: boolean;
           active: boolean;
           sort_order: number;
+          due_date: string | null;
         }>
       | null;
     const rSteps = (nested || [])
@@ -122,11 +127,13 @@ export async function getControlCenter(profileUser: User) {
         description: s.description || undefined,
         completed: s.completed,
         active: s.active,
+        dueDate: s.due_date,
       }));
     return {
       id: r.id,
       title: r.title,
       templateKey: r.template_key as string | null,
+      meta: String(r.template_key ?? "").startsWith("visa:") ? (r.description as string | null) : null,
       progress: r.progress,
       nextStep: getNextStepTitle(rSteps),
       dueDate: r.due_date,

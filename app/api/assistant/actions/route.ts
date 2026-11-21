@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { buildActionAssistantResponse } from "@/lib/ai/assistantActions";
+import { buildVisaActions } from "@/lib/ai/assistantActions";
+import { ruleBasedVisaAnswer } from "@/lib/visa/assistant";
 import { getRoadmapTemplate } from "@/lib/roadmap/templates";
 import { localeFromRequest, trError } from "@/lib/i18n/runtime";
 import { createServerSupabase } from "@/lib/supabase/server";
@@ -16,8 +17,11 @@ export async function POST(request: NextRequest) {
     }
 
     if (!executeAction) {
-      const result = buildActionAssistantResponse(String(message), locale);
-      return NextResponse.json(result);
+      const supa = await createServerSupabase();
+      const { data: auth } = await supa.auth.getUser();
+      if (!auth.user) return NextResponse.json({ error: trError("authRequired", locale) }, { status: 401 });
+      const text = String(message);
+      return NextResponse.json({ response: ruleBasedVisaAnswer(text, locale), actions: buildVisaActions(text, locale), links: [] });
     }
 
     const supabase = await createServerSupabase();

@@ -14,6 +14,8 @@ import {
   Bell,
   Receipt,
   MessageCircle,
+  Languages,
+  School,
 } from "lucide-react";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import MyWorkspaceShell, { type WorkspaceGroup, type WorkspaceItem } from "@/components/layout/MyWorkspaceShell";
@@ -95,6 +97,13 @@ export default function MySpaceLayout({ children }: { children: React.ReactNode 
           icon: BookMarked,
           active: (p) => p.includes("/my/courses") || p.includes("/my/wishlist"),
         },
+    // 학생 모드 전용: 한국어 연습 · 대학 입시
+    ...(isMentorMode
+      ? []
+      : [
+          { href: `${base}/korean`, label: t("navKorean"), icon: Languages, active: (p: string) => p.includes("/my/korean") },
+          { href: `${base}/admission`, label: t("navAdmission"), icon: School, active: (p: string) => p.includes("/my/admission") },
+        ]),
     { href: `${base}/schedule`, label: t("navSchedule"), icon: CalendarDays, active: (p) => p.includes("/my/schedule") },
     {
       href: `${base}/messages`,

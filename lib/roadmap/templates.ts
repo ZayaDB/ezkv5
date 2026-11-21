@@ -13,11 +13,9 @@ export type RoadmapTemplate = {
   steps: RoadmapTemplateStep[];
 };
 
+/** 로드맵은 비자 전용 — 예전 비자 템플릿만 남김 (새 비자 로드맵은 lib/visa/plan.ts) */
 const TEMPLATE_PRIORITIES: Record<string, RoadmapTemplate["priority"]> = {
   visa_extension: "high",
-  settling_korea: "medium",
-  moving: "medium",
-  job_prep: "medium",
   d10_prep: "high",
 };
 
@@ -40,9 +38,6 @@ export function listRoadmapTemplates(locale: Locale = currentLocale()): RoadmapT
 export function resolveTemplateKey(message: string): string | null {
   const m = message.toLowerCase();
   if (/비자.*연장|연장.*비자|visa.*extend|виз.*сунгах/.test(m)) return "visa_extension";
-  if (/이사|moving|move|шилжих|орон сууц/.test(m)) return "moving";
-  if (/정착|입국|외국인등록|settle|arrival/.test(m)) return "settling_korea";
   if (/d-?10|구직비자/.test(m)) return "d10_prep";
-  if (/취업|알바|job|career|ажил/.test(m)) return "job_prep";
   return null;
 }

@@ -10,6 +10,8 @@ import { getCachedEnrollments, getCachedSessions } from "@/lib/hooks/useMyDataCa
 import { useUnreadMessages } from "@/lib/hooks/useUnreadMessages";
 import MentorOverview from "@/components/mentor/MentorOverview";
 import RoadmapChecklist, { type RoadmapView } from "@/components/roadmap/RoadmapChecklist";
+import VisaRoadmapPanel from "@/components/visa/VisaRoadmapPanel";
+import { parseVisaTemplateKey } from "@/lib/visa/plan";
 import { roadmapsApi } from "@/lib/api/client";
 import { openAssistant } from "@/components/chatbot/Chatbot";
 import { PageIntro, SectionHeader, StatTile, ui } from "@/components/lnk/ui";
@@ -102,8 +104,15 @@ export default function MyDashboardOverview() {
     id: r.id,
     title: r.title,
     templateKey: r.templateKey,
+    meta: r.meta,
     progress: r.progress,
-    steps: (r.steps || []).map((s) => ({ id: s.id, title: s.title, description: s.description, completed: s.completed })),
+    steps: (r.steps || []).map((s) => ({
+      id: s.id,
+      title: s.title,
+      description: s.description,
+      completed: s.completed,
+      dueDate: s.dueDate,
+    })),
   }));
   const avgProgress = roadmaps.length
     ? Math.round(roadmaps.reduce((sum, r) => sum + (r.progress || 0), 0) / roadmaps.length)
@@ -114,25 +123,27 @@ export default function MyDashboardOverview() {
     { icon: Users, title: t("helpMentorsTitle"), body: t("helpMentorsBody"), href: `/${locale}/mentors`, cta: t("helpMentorsCta") },
   ];
 
+  // 비자 로드맵은 하나만 (가장 최근 것), 나머지는 예전 템플릿 로드맵
+  const visaRoadmap = roadmapViews.find((r) => parseVisaTemplateKey(r.templateKey)) ?? null;
+  const otherRoadmaps = roadmapViews.filter((r) => !parseVisaTemplateKey(r.templateKey));
+  const toggleStep = async (roadmapId: string, stepId: string, next: boolean) => {
+    await roadmapsApi.completeStep(roadmapId, stepId, next);
+    await load(false);
+  };
+
   const roadmapsSection = (
       <section id="roadmaps" className="flex scroll-mt-28 flex-col gap-4">
         <SectionHeader title={t("roadmapsTitle")} description={t("roadmapsBody")} />
-        <div className={`${ui.card} p-5 sm:p-6`}>
-          <RoadmapChecklist
-            roadmaps={roadmapViews}
-            onToggle={async (roadmapId, stepId, next) => {
-              await roadmapsApi.completeStep(roadmapId, stepId, next);
-              await load(false);
-            }}
-            emptyHint={t("roadmapsEmpty")}
-          />
-          {roadmaps.length === 0 && (
-            <button type="button" onClick={() => openAssistant()} className={`mt-4 ${ui.btnPrimary}`}>
-              <Bot className="h-4 w-4" aria-hidden="true" />
-              {t("startRoadmap")}
-            </button>
-          )}
-        </div>
+        <VisaRoadmapPanel
+          roadmap={visaRoadmap}
+          onToggle={toggleStep}
+          onChanged={() => void load(false)}
+        />
+        {otherRoadmaps.length ? (
+          <div className={`${ui.card} p-5 sm:p-6`}>
+            <RoadmapChecklist roadmaps={otherRoadmaps} onToggle={toggleStep} />
+          </div>
+        ) : null}
       </section>
   );
 
