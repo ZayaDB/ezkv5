@@ -2151,6 +2151,17 @@
     "startCta": "비자 로드맵 만들기",
     "edit": "로드맵 다시 만들기",
     "noExpiry": "만료일을 넣으면 날짜까지 계산해 드려요.",
-    "cancel": "취소"
+    "cancel": "취소",
+    "nowVisa": "지금 비자",
+    "nextVisa": "다음 단계",
+    "laterVisa": "그다음",
+    "tapVisaHint": "비자 이름을 누르면 자세한 설명을 볼 수 있어요.",
+    "nextTodo": "지금 할 일",
+    "building": "내 비자로 로드맵을 만드는 중이에요...",
+    "allSteps": "전체 단계 보기 ({done}/{total} 완료)",
+    "refine": "지금 비자·만료일·내 상황 고치기",
+    "noCurrentVisa": "가입할 때 넣은 비자 정보가 없어요. 지금 비자를 골라 주세요.",
+    "visaGuideOf": "{visa} 안내 보기",
+    "allDone": "모든 단계를 끝냈어요!"
   }
 }

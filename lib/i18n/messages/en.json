@@ -2153,6 +2153,17 @@
     "startCta": "Create a visa roadmap",
     "edit": "Rebuild roadmap",
     "noExpiry": "Add the expiry date to get exact dates.",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "nowVisa": "Current visa",
+    "nextVisa": "Next step",
+    "laterVisa": "After that",
+    "tapVisaHint": "Tap a visa name to see the full guide.",
+    "nextTodo": "What to do now",
+    "building": "Building a roadmap from your visa...",
+    "allSteps": "See all steps ({done}/{total} done)",
+    "refine": "Edit current visa, expiry date and your details",
+    "noCurrentVisa": "We don't have your visa from sign-up. Please choose your current visa.",
+    "visaGuideOf": "See {visa} guide",
+    "allDone": "You've finished every step!"
   }
 }

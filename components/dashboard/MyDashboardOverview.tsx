@@ -10,7 +10,8 @@ import { getCachedEnrollments, getCachedSessions } from "@/lib/hooks/useMyDataCa
 import { useUnreadMessages } from "@/lib/hooks/useUnreadMessages";
 import MentorOverview from "@/components/mentor/MentorOverview";
 import RoadmapChecklist, { type RoadmapView } from "@/components/roadmap/RoadmapChecklist";
-import VisaRoadmapBuilder from "@/components/visa/VisaRoadmapBuilder";
+import VisaRoadmapPanel from "@/components/visa/VisaRoadmapPanel";
+import { parseVisaTemplateKey } from "@/lib/visa/plan";
 import { roadmapsApi } from "@/lib/api/client";
 import { openAssistant } from "@/components/chatbot/Chatbot";
 import { PageIntro, SectionHeader, StatTile, ui } from "@/components/lnk/ui";
@@ -24,7 +25,6 @@ type HomeData = Awaited<ReturnType<typeof getControlCenter>>;
  */
 export default function MyDashboardOverview() {
   const t = useTranslations("myPages.overview");
-  const [buildingRoadmap, setBuildingRoadmap] = useState(false);
   const locale = useLocale();
   const { user } = useAuth();
   const [data, setData] = useState<HomeData | null>(null);
@@ -123,32 +123,27 @@ export default function MyDashboardOverview() {
     { icon: Users, title: t("helpMentorsTitle"), body: t("helpMentorsBody"), href: `/${locale}/mentors`, cta: t("helpMentorsCta") },
   ];
 
+  // 비자 로드맵은 하나만 (가장 최근 것), 나머지는 예전 템플릿 로드맵
+  const visaRoadmap = roadmapViews.find((r) => parseVisaTemplateKey(r.templateKey)) ?? null;
+  const otherRoadmaps = roadmapViews.filter((r) => !parseVisaTemplateKey(r.templateKey));
+  const toggleStep = async (roadmapId: string, stepId: string, next: boolean) => {
+    await roadmapsApi.completeStep(roadmapId, stepId, next);
+    await load(false);
+  };
+
   const roadmapsSection = (
       <section id="roadmaps" className="flex scroll-mt-28 flex-col gap-4">
         <SectionHeader title={t("roadmapsTitle")} description={t("roadmapsBody")} />
-        {roadmaps.length === 0 || buildingRoadmap ? (
-          <>
-            {roadmaps.length === 0 ? <p className={`text-sm ${ui.muted}`}>{t("roadmapsEmpty")}</p> : null}
-            <VisaRoadmapBuilder
-              onSaved={() => {
-                setBuildingRoadmap(false);
-                void load(false);
-              }}
-              onCancel={roadmaps.length ? () => setBuildingRoadmap(false) : undefined}
-            />
-          </>
-        ) : (
+        <VisaRoadmapPanel
+          roadmap={visaRoadmap}
+          onToggle={toggleStep}
+          onChanged={() => void load(false)}
+        />
+        {otherRoadmaps.length ? (
           <div className={`${ui.card} p-5 sm:p-6`}>
-            <RoadmapChecklist
-              roadmaps={roadmapViews}
-              onToggle={async (roadmapId, stepId, next) => {
-                await roadmapsApi.completeStep(roadmapId, stepId, next);
-                await load(false);
-              }}
-              onEditVisa={() => setBuildingRoadmap(true)}
-            />
+            <RoadmapChecklist roadmaps={otherRoadmaps} onToggle={toggleStep} />
           </div>
-        )}
+        ) : null}
       </section>
   );
 
