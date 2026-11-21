@@ -2164,7 +2164,8 @@
     "refine": "지금 비자·만료일·내 상황 고치기",
     "noCurrentVisa": "가입할 때 넣은 비자 정보가 없어요. 지금 비자를 골라 주세요.",
     "visaGuideOf": "{visa} 안내 보기",
-    "allDone": "모든 단계를 끝냈어요!"
+    "allDone": "모든 단계를 끝냈어요!",
+    "unsupportedVisa": "지금 비자({visa})는 아직 로드맵을 지원하지 않아요. 지금은 {list} 비자를 지원해요. 아래에서 가장 가까운 비자를 골라 주세요."
   },
   "korean": {
     "eyebrow": "한국어 연습",

@@ -245,7 +245,13 @@ export default function KoreanPractice() {
     const pool = KOREAN_QUESTIONS.filter((q) => (cat === "all" || q.cat === cat) && Math.abs(q.level - level) <= 1);
     const mine = shuffle(pool.filter((q) => q.level === level));
     const near = shuffle(pool.filter((q) => q.level !== level));
-    setView({ kind: "quiz", mode: "practice", questions: [...mine, ...near].slice(0, ROUND_SIZE) });
+    let picked = [...mine, ...near].slice(0, ROUND_SIZE);
+    // 고른 분야 문제가 모자라면 같은 분야의 다른 수준 문제로 채움
+    if (picked.length < ROUND_SIZE) {
+      const rest = shuffle(KOREAN_QUESTIONS.filter((q) => (cat === "all" || q.cat === cat) && !picked.includes(q)));
+      picked = [...picked, ...rest].slice(0, ROUND_SIZE);
+    }
+    setView({ kind: "quiz", mode: "practice", questions: picked });
   }
 
   function startReview() {

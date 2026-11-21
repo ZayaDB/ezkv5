@@ -7,13 +7,13 @@ import { ArrowRight, Check } from "lucide-react";
 import { Notice, ui } from "@/components/lnk/ui";
 import { DueLabel, StepBody } from "@/components/visa/VisaSteps";
 import { useAuth } from "@/lib/contexts/AuthContext";
+import { normalizeVisa } from "@/lib/visa/normalize";
 import { describeStep, visaContent, VISA_SOURCE_DATE } from "@/lib/visa/content";
 import { buildVisaPlan, computeF27Points } from "@/lib/visa/plan";
 import {
   CURRENT_VISAS,
   DEGREE_LEVELS,
   EMPTY_FACTS,
-  isVisaCode,
   TARGET_VISAS,
   visaSlug,
   type VisaCode,
@@ -40,12 +40,8 @@ export default function VisaRoadmapBuilder({ onSaved, onCancel }: { onSaved: () 
 
   // 프로필에 저장된 지금 비자·만료일, 주소의 ?to= 로 처음 값 채우기
   useEffect(() => {
-    const visa = user?.visaType?.toUpperCase();
-    if (visa && isVisaCode(visa) && CURRENT_VISAS.includes(visa)) setFrom(visa);
-    else if (visa?.startsWith("D-4")) setFrom("D-4");
-    else if (visa?.startsWith("D-2")) setFrom("D-2");
-    else if (visa?.startsWith("D-10")) setFrom("D-10");
-    else if (visa?.startsWith("E-7")) setFrom("E-7");
+    const visa = normalizeVisa(user?.visaType);
+    if (visa) setFrom(visa);
     if (user?.visaExpireDate) setExpiry(String(user.visaExpireDate).slice(0, 10));
   }, [user?.visaType, user?.visaExpireDate]);
 
