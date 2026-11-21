@@ -158,7 +158,7 @@ export default function AdmissionGuide() {
         <h2 className={ui.h2}>{t("mentorTitle")}</h2>
         <p className={ui.lead}>{t("mentorBody")}</p>
         <div className="flex flex-wrap gap-2">
-          <Link href={`/${locale}/mentors`} className={ui.btnPrimary}>
+          <Link href={`/${locale}/mentors?category=academic`} className={ui.btnPrimary}>
             {t("mentorCta")}
           </Link>
           <Link href={`/${locale}/my/korean`} className={ui.btnOutline}>

@@ -103,9 +103,9 @@ export async function getControlCenter(profileUser: User) {
   const alerts = mergeAlerts(visaAlerts, dbAlerts);
 
   // 로드맵은 비자 전용: 예전 이사·정착·취업 템플릿은 화면에서 숨김 (데이터는 그대로 둠)
-  const HIDDEN_TEMPLATES = new Set(["moving", "settling_korea", "job_prep"]);
+  // 로드맵은 비자 전용: 예전 템플릿 로드맵(이사·정착·취업·예전 비자연장)은 보여주지 않음
   const activeRoadmaps = (roadmapsResult.data || [])
-    .filter((r) => !HIDDEN_TEMPLATES.has(String(r.template_key ?? "")))
+    .filter((r) => String(r.template_key ?? "").startsWith("visa:"))
     .map((r) => {
     const nested = r.roadmap_steps as
       | Array<{

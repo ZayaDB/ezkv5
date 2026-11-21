@@ -10,6 +10,7 @@ import VisaRoadmapBuilder from "@/components/visa/VisaRoadmapBuilder";
 import type { RoadmapView } from "@/components/roadmap/RoadmapChecklist";
 import { helpHref } from "@/lib/roadmap/stepLinks";
 import { useAuth } from "@/lib/contexts/AuthContext";
+import { normalizeVisa } from "@/lib/visa/normalize";
 import { describeStep, visaContent } from "@/lib/visa/content";
 import { buildVisaPlan, findRoute, parseVisaTemplateKey } from "@/lib/visa/plan";
 import {
@@ -31,18 +32,6 @@ const NEXT_VISA: Partial<Record<VisaCode, VisaCode>> = {
   "E-7": "F-2-7",
   "F-2-7": "F-5-16",
 };
-
-/** 프로필의 비자 문자열(D-2-1 등)을 로드맵 코드로 */
-export function normalizeVisa(raw: string | null | undefined): VisaCode | null {
-  const v = raw?.trim().toUpperCase();
-  if (!v) return null;
-  if (isVisaCode(v) && CURRENT_VISAS.includes(v)) return v;
-  if (v.startsWith("F-2-7")) return "F-2-7";
-  for (const code of ["D-10", "D-4", "D-2", "E-7"] as VisaCode[]) {
-    if (v === code || v.startsWith(`${code}-`)) return code;
-  }
-  return null;
-}
 
 /** 경로가 있는지만 볼 때는 학력 조건을 넓게 잡음 (석사 전용 길도 보이게) */
 const OPEN_FACTS: VisaFacts = { ...EMPTY_FACTS, degree: "doctor", domesticDegree: true };
@@ -145,7 +134,13 @@ export default function VisaRoadmapPanel({
   if (!from || editing) {
     return (
       <div className="flex flex-col gap-3">
-        {!from ? <p className={`text-sm ${ui.muted}`}>{t("noCurrentVisa")}</p> : null}
+        {!from ? (
+          <p className={`text-sm ${ui.muted}`}>
+            {user?.visaType
+              ? t("unsupportedVisa", { visa: String(user.visaType), list: CURRENT_VISAS.join(", ") })
+              : t("noCurrentVisa")}
+          </p>
+        ) : null}
         <VisaRoadmapBuilder
           onSaved={() => {
             setEditing(false);
