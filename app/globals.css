@@ -28,7 +28,9 @@
 html,
 body {
   max-width: 100vw;
+  /* clip: 가로 넘침은 자르되 스크롤 박스를 만들지 않음 (hidden이면 position: sticky가 안 됨) */
   overflow-x: hidden;
+  overflow-x: clip;
   font-family:
     "Pretendard Variable",
     Pretendard,
