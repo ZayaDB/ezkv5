@@ -13,6 +13,7 @@
   "dependencies": {
     "@cloudflare/realtimekit-react": "^2.0.4",
     "@cloudflare/realtimekit-react-ui": "^2.0.3",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
     "@portone/browser-sdk": "^0.1.13",
     "@portone/server-sdk": "^0.19.0",
     "@supabase/ssr": "^0.12.7",

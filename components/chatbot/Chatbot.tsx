@@ -255,11 +255,10 @@ export default function Chatbot() {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className={`fixed ${dock} bg-gradient-to-br from-primary-500 to-accent-500 text-white p-5 rounded-2xl shadow-2xl hover:shadow-primary-500/50 transition-all hover:scale-110 z-50 group`}
+          className={`fixed ${dock} bg-primary-700 text-white p-5 rounded-2xl shadow-[0_10px_24px_-12px_rgba(14,38,35,0.6)] transition-colors hover:bg-primary-800 z-50 group`}
           aria-label={t('ariaOpen')}
         >
           <MessageCircle className="w-6 h-6 group-hover:rotate-12 transition-transform" />
-          <div className="absolute -top-1 -right-1 w-4 h-4 bg-accent-300 rounded-full animate-pulse"></div>
         </button>
       )}
 
