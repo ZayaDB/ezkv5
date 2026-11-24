@@ -1,23 +1,27 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { usePathname, useRouter } from "next/navigation";
+import { useDashboardMode, type DashboardMode } from "@/lib/hooks/useDashboardMode";
 
 export default function DashboardModeToggle({ canUseMentorMode }: { canUseMentorMode: boolean }) {
   const t = useTranslations("dashboardV2");
-  const [mode, setMode] = useState<"mentee" | "mentor">("mentee");
-
-  useEffect(() => {
-    const raw = localStorage.getItem("dashboard_mode");
-    if (raw === "mentor" || raw === "mentee") setMode(raw);
-  }, []);
+  const [mode, setMode] = useDashboardMode();
+  const pathname = usePathname();
+  const router = useRouter();
+  const locale = useLocale();
 
   if (!canUseMentorMode) return null;
 
-  const setDashboardMode = (next: "mentee" | "mentor") => {
+  // 모드를 바꾸면 반대 모드 전용 페이지에 머물지 않게 홈으로 이동
+  const setDashboardMode = (next: DashboardMode) => {
+    if (next === mode) return;
     setMode(next);
-    localStorage.setItem("dashboard_mode", next);
-    window.dispatchEvent(new Event("dashboard-mode-changed"));
+    const mentorOnly = ["/my/lectures", "/my/mentor"].some((p) => pathname.includes(p));
+    const menteeOnly = ["/my/courses", "/my/wishlist", "/my/korean", "/my/admission"].some((p) => pathname.includes(p));
+    if ((next === "mentee" && mentorOnly) || (next === "mentor" && menteeOnly)) {
+      router.push(`/${locale}/my/dashboard`);
+    }
   };
 
   return (

@@ -29,7 +29,7 @@ export function matchGuides(text: string): VisaCode[] {
     const c = raw.toUpperCase();
     const hit =
       (VISA_CODES as readonly string[]).find((v) => v === c) ??
-      (c.startsWith("E-7") ? "E-7" : c.startsWith("D-10") ? "D-10" : c.startsWith("D-4") ? "D-4" : c.startsWith("D-2") ? "D-2" : c === "F-2" ? "F-2-7" : c.startsWith("F-5") ? "F-5-16" : undefined);
+      (c.startsWith("E-7") ? "E-7" : c.startsWith("D-10") ? "D-10" : c.startsWith("D-4") ? "D-4" : c.startsWith("D-2") ? "D-2" : c === "F-2" || /^F-2-(?!7)/.test(c) ? "F-2" : c.startsWith("F-5") ? "F-5-16" : undefined);
     if (hit && !out.includes(hit as VisaCode)) out.push(hit as VisaCode);
   }
   if (!out.length) {

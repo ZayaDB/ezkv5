@@ -86,10 +86,10 @@ export default function VisaRoadmapBuilder({ onSaved, onCancel }: { onSaved: () 
     <div className="flex flex-col gap-5">
       <Notice tone="caution">{t("sourceNote", { date: VISA_SOURCE_DATE })}</Notice>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
         {/* 입력 */}
         <section className={`${ui.card} flex flex-col gap-5 p-5 sm:p-6`}>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2">
             <label className={label}>
               {t("formCurrent")}
               <select className={ui.input} value={from} onChange={(e) => { setSaved(false); setFrom(e.target.value as VisaCode); }}>
@@ -137,7 +137,7 @@ export default function VisaRoadmapBuilder({ onSaved, onCancel }: { onSaved: () 
             {t("gradDate")}
             <input type="date" className={ui.input} value={facts.gradDate ?? ""} onChange={(e) => set("gradDate", e.target.value || null)} />
           </label>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2">
             <label className={label}>
               {t("topik")}
               <select className={ui.input} value={facts.topik} onChange={(e) => set("topik", Number(e.target.value))}>
@@ -163,7 +163,7 @@ export default function VisaRoadmapBuilder({ onSaved, onCancel }: { onSaved: () 
             <input type="checkbox" checked={facts.jobOffer} onChange={(e) => set("jobOffer", e.target.checked)} />
             {t("jobOffer")}
           </label>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2">
             <label className={label}>
               {t("income")}
               <input

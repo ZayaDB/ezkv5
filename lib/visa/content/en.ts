@@ -149,6 +149,38 @@ const en: VisaContent = {
       ],
       section: "Special Occupation (E-7)",
     },
+    "F-2": {
+      name: "Residence (general)",
+      short: "A residence visa other than the points-based F-2-7. It's given to family of permanent residents, long-term residents and others. After 5 years you can apply for general permanent residence (F-5-1).",
+      who: [
+        "Minor children of Korean citizens (F-2-2)",
+        "Spouses and minor children of permanent residents (F-2-3)",
+        "Recognized refugees (F-2-4), large investors (F-2-5)",
+        "Long-term residents who have lived in Korea for 5+ years with their life based here (F-2-99)",
+      ],
+      stay: "Up to 5 years per grant",
+      rules: [
+        "Extension documents and allowed work depend on the sub-code on your residence card (F-2-3, F-2-99, etc.).",
+        "Other long-term residents (F-2-99) may need permission for activities outside their status to work in a field different from the one before F-2.",
+        "If you're on the points-based residence visa (F-2-7), choose 'F-2-7' instead. Permanent residence then takes only 3 years.",
+      ],
+      docsChange: [
+        "Application form, passport, residence card, fee",
+        "Proof for your sub-code (family relationship, investment, long-term stay, etc.)",
+        "Proof of residence",
+      ],
+      docsExtend: [
+        "Application form, passport, residence card, fee",
+        "Letter of guarantee (other long-term residents)",
+        "Proof of annual income, economic activity and basic knowledge (if applicable)",
+        "Proof of residence (lease contract, etc.)",
+      ],
+      cautions: [
+        "For spouses of permanent residents (F-2-3), family documents matter most; for other long-term residents (F-2-99), income and work documents matter most.",
+        "If you're on a marriage-migrant visa (F-6), there's a separate route to permanent residence as a spouse of a Korean (F-5-2, 2 years). Ask immigration first.",
+      ],
+      section: "Residence (F-2)",
+    },
     "F-2-7": {
       name: "Points-based Talent (Residence)",
       short: "Long-term residence visa based on points (80+ of 170). After 3 years you can apply for permanent residence (F-5-16).",
@@ -279,6 +311,10 @@ const en: VisaContent = {
     "E-7>F-5-1": {
       note: "After 5+ years on work visas such as E-7 you can apply for general permanent residence (F-5-1).",
       wait: "Stay on E-7 for 5 years without fully leaving Korea. Prepare for the income standard (2× GNI) and KIIP level 5.",
+    },
+    "F-2>F-5-1": {
+      note: "After living in Korea for 5+ years on a residence visa (F-2), you can apply for general permanent residence (F-5-1).",
+      wait: "Stay on F-2 continuously for 5 years without leaving Korea for good. Prepare the income (2× last year's GNI per capita) or assets (1.5× average net assets) and Social Integration Program level 5.",
     },
   },
   conds: {
