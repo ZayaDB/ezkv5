@@ -20,6 +20,7 @@ import {
 import { useAuth } from "@/lib/contexts/AuthContext";
 import MyWorkspaceShell, { type WorkspaceGroup, type WorkspaceItem } from "@/components/layout/MyWorkspaceShell";
 import DashboardModeToggle from "@/components/dashboard/DashboardModeToggle";
+import { useDashboardMode } from "@/lib/hooks/useDashboardMode";
 import { useUnreadNotifications } from "@/lib/hooks/useUnreadNotifications";
 import { useUnreadMessages } from "@/lib/hooks/useUnreadMessages";
 import { useRouteGuard } from "@/lib/hooks/useRouteGuard";
@@ -30,56 +31,22 @@ export default function MySpaceLayout({ children }: { children: React.ReactNode 
   const pathname = usePathname();
   const locale = useLocale();
   const t = useTranslations("myPages.shell");
-  const [dashboardMode, setDashboardMode] = useState<"mentee" | "mentor">("mentee");
+  const [dashboardMode] = useDashboardMode();
 
   useRouteGuard({ loading, userRole: user?.role, locale, requireAuth: true });
   const { unread } = useUnreadNotifications(Boolean(user));
   const { unread: unreadMessages } = useUnreadMessages(Boolean(user));
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const syncDashboardMode = () => {
-      const raw = localStorage.getItem("dashboard_mode");
-      if (raw === "mentor" || raw === "mentee") {
-        setDashboardMode(raw);
-      }
-    };
-
-    syncDashboardMode();
-    window.addEventListener("focus", syncDashboardMode);
-    window.addEventListener("dashboard-mode-changed", syncDashboardMode as EventListener);
-    return () => {
-      window.removeEventListener("focus", syncDashboardMode);
-      window.removeEventListener("dashboard-mode-changed", syncDashboardMode as EventListener);
-    };
-  }, []);
-
+  // 직접 주소로 들어온 경우: 지금 모드에 없는 페이지면 홈으로 (모드를 몰래 바꾸지 않음)
   useEffect(() => {
     if (!user) return;
-    if (
-      pathname.includes("/my/lectures") &&
-      (user.role === "mentor" || user.role === "admin") &&
-      dashboardMode !== "mentor"
-    ) {
-      setDashboardMode("mentor");
-      if (typeof window !== "undefined") {
-        localStorage.setItem("dashboard_mode", "mentor");
-      }
-      return;
-    }
-    if (
-      dashboardMode === "mentee" &&
-      pathname.includes("/my/lectures") &&
-      (user.role === "mentor" || user.role === "admin")
-    ) {
+    const canMentorRole = user.role === "mentor" || user.role === "admin";
+    const mentorPage = pathname.includes("/my/lectures");
+    const menteePage = ["/my/courses", "/my/wishlist", "/my/korean", "/my/admission"].some((p) => pathname.includes(p));
+    if (mentorPage && (!canMentorRole || dashboardMode !== "mentor")) {
       router.replace(`/${locale}/my/dashboard`);
-    }
-    if (
-      dashboardMode === "mentor" &&
-      (pathname.includes("/my/courses") || pathname.includes("/my/wishlist")) &&
-      (user.role === "mentor" || user.role === "admin")
-    ) {
-      router.replace(`/${locale}/my/lectures`);
+    } else if (menteePage && canMentorRole && dashboardMode === "mentor") {
+      router.replace(`/${locale}/my/dashboard`);
     }
   }, [dashboardMode, pathname, router, locale, user]);
 

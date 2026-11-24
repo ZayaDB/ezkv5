@@ -3,11 +3,11 @@
  * 기준 자료: 법무부 「외국인체류 안내매뉴얼」 (2026. 11.)
  */
 
-export const VISA_CODES = ["D-4", "D-2", "D-10", "E-7", "F-2-7", "F-5-10", "F-5-16", "F-5-1"] as const;
+export const VISA_CODES = ["D-4", "D-2", "D-10", "E-7", "F-2", "F-2-7", "F-5-10", "F-5-16", "F-5-1"] as const;
 export type VisaCode = (typeof VISA_CODES)[number];
 
 /** 로드맵에서 "지금 비자"로 고를 수 있는 것 */
-export const CURRENT_VISAS: VisaCode[] = ["D-4", "D-2", "D-10", "E-7", "F-2-7"];
+export const CURRENT_VISAS: VisaCode[] = ["D-4", "D-2", "D-10", "E-7", "F-2-7", "F-2"];
 /** 로드맵에서 "받고 싶은 비자"로 고를 수 있는 것 */
 export const TARGET_VISAS: VisaCode[] = ["D-2", "D-10", "E-7", "F-2-7", "F-5-16", "F-5-10", "F-5-1"];
 
@@ -93,7 +93,8 @@ export type HopKey =
   | "E-7>F-2-7"
   | "F-2-7>F-5-16"
   | "E-7>F-5-10"
-  | "E-7>F-5-1";
+  | "E-7>F-5-1"
+  | "F-2>F-5-1";
 
 /** 로드맵 한 단계 (DB roadmap_steps 한 줄) */
 export type PlanStepKind = "extend" | "wait" | "check" | "docs" | "apply";

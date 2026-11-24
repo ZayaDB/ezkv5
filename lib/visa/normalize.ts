@@ -15,6 +15,8 @@ export function normalizeVisa(raw: string | null | undefined): VisaCode | null {
   }
   if (isVisaCode(v) && CURRENT_VISAS.includes(v)) return v;
   if (v.startsWith("F-2-7")) return "F-2-7";
+  // 점수제가 아닌 거주(F-2-3, F-2-99 등)는 일반 거주로
+  if (v === "F-2" || v.startsWith("F-2-")) return "F-2";
   for (const code of ["D-10", "D-4", "D-2", "E-7"] as VisaCode[]) {
     if (v === code || v.startsWith(`${code}-`)) return code;
   }

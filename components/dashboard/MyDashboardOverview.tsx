@@ -10,6 +10,7 @@ import { getCachedEnrollments, getCachedSessions } from "@/lib/hooks/useMyDataCa
 import { useUnreadMessages } from "@/lib/hooks/useUnreadMessages";
 import MentorOverview from "@/components/mentor/MentorOverview";
 import RoadmapChecklist, { type RoadmapView } from "@/components/roadmap/RoadmapChecklist";
+import { useDashboardMode } from "@/lib/hooks/useDashboardMode";
 import VisaRoadmapPanel from "@/components/visa/VisaRoadmapPanel";
 import { parseVisaTemplateKey } from "@/lib/visa/plan";
 import { roadmapsApi } from "@/lib/api/client";
@@ -30,7 +31,7 @@ export default function MyDashboardOverview() {
   const [data, setData] = useState<HomeData | null>(null);
   const [courseCount, setCourseCount] = useState(0);
   const [sessionCount, setSessionCount] = useState(0);
-  const [mode, setMode] = useState<"mentee" | "mentor">("mentee");
+  const [mode] = useDashboardMode();
   const { unread: unreadMessages } = useUnreadMessages(Boolean(user));
   const canMentor = user?.role === "mentor" || user?.role === "admin";
   const isMentorMode = canMentor && mode === "mentor";
@@ -60,19 +61,6 @@ export default function MyDashboardOverview() {
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => {
-    const sync = () => {
-      try {
-        const raw = localStorage.getItem("dashboard_mode");
-        if (raw === "mentor" || raw === "mentee") setMode(raw);
-      } catch {
-        /* ignore */
-      }
-    };
-    sync();
-    window.addEventListener("dashboard-mode-changed", sync);
-    return () => window.removeEventListener("dashboard-mode-changed", sync);
-  }, []);
 
   useEffect(() => {
     void load();

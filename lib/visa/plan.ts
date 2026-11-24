@@ -50,6 +50,8 @@ export const HOPS: Record<HopKey, HopDef> = {
   "E-7>F-5-10": { from: "E-7", to: "F-5-10", trigger: "years", years: 3, conds: ["degreeF510", "work3y", "incomeGni", "kiip5", "conduct"] },
   // 영주(F-5-1) — D-7~E-7 / F-2로 5년 이상
   "E-7>F-5-1": { from: "E-7", to: "F-5-1", trigger: "years", years: 5, conds: ["years5", "bachelor", "income2Gni", "kiip5", "conduct"] },
+  // 영주(F-5-1) — 거주(F-2)로 5년 이상 (영주(F-5) 해당자 1호: D-7~E-7 또는 F-2로 5년 이상 체류한 성년)
+  "F-2>F-5-1": { from: "F-2", to: "F-5-1", trigger: "years", years: 5, conds: ["years5", "income2Gni", "kiip5", "conduct"] },
 };
 
 const HOP_KEYS = Object.keys(HOPS) as HopKey[];

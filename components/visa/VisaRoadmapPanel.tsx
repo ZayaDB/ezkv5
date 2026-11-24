@@ -31,6 +31,7 @@ const NEXT_VISA: Partial<Record<VisaCode, VisaCode>> = {
   "D-10": "E-7",
   "E-7": "F-2-7",
   "F-2-7": "F-5-16",
+  "F-2": "F-5-1",
 };
 
 /** 경로가 있는지만 볼 때는 학력 조건을 넓게 잡음 (석사 전용 길도 보이게) */
