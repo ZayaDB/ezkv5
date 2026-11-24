@@ -2238,5 +2238,156 @@
     "mentorBody": "Ask senior mentors who've already been admitted, and our immigration specialist, for document feedback and application strategy.",
     "mentorCta": "Find a mentor",
     "koreanCta": "Practice for TOPIK"
+  },
+  "homeB": {
+    "heroTitle": "Study in Korea — together, not alone.",
+    "heroSub": "Visa, Korean and admissions. Prepare with seniors who went first, experts, and friends on the same path.",
+    "heroCta": "See how it works",
+    "heroCta2": "Start free",
+    "heroCta2Mine": "My dashboard",
+    "heroCardLabel": "Start with your visa",
+    "heroCardNote": "Pick your visa and it is filled in on the sign-up form.",
+    "tour": "Show the tour again",
+    "learn": "Korean",
+    "network": "Seniors · Admissions",
+    "keep": "Visa",
+    "howTitle": "LNK in four steps.",
+    "steps": [
+      {
+        "title": "Enter your visa",
+        "body": "Just your current visa, expiry date and goal. It takes a minute.",
+        "tag": "Keep"
+      },
+      {
+        "title": "See your route",
+        "body": "The path toward permanent residency, and what to do right now.",
+        "tag": "Keep"
+      },
+      {
+        "title": "Practice Korean",
+        "body": "Solve TOPIK-style questions with explanations in Mongolian.",
+        "tag": "Learn"
+      },
+      {
+        "title": "Meet seniors and experts",
+        "body": "Ask a licensed administrative agent about visas, and seniors about admissions and life.",
+        "tag": "Network"
+      }
+    ],
+    "m1Title": "My visa",
+    "m1Visa": "Current visa",
+    "m1Exp": "Expiry",
+    "m1Goal": "Goal",
+    "m1GoalVal": "Work after graduation",
+    "m1Btn": "See my route",
+    "m2Title": "My visa route",
+    "rNow": "Now",
+    "rNext": "Next",
+    "rPoints": "Points-based",
+    "rPr": "Permanent",
+    "m2Now": "Do now",
+    "m2Todo": "Check your graduation date and browse E-7 eligible jobs",
+    "m3Title": "Today's question",
+    "m3Q": "저는 몽골에서 온 유학생( ).",
+    "m3Right": "Correct! After a final consonant like ‘생’, use ‘이에요’.",
+    "m3Wrong": "‘생’ ends in a consonant (ㅇ), so it takes ‘이에요’.",
+    "m3Pick": "Pick an answer.",
+    "m4Title": "Book a consultation",
+    "m4Role": "Administrative agent · Visas & residency",
+    "m4Btn": "Book",
+    "m4Date": "Date",
+    "m4Time": "Time",
+    "stepCta": "Do this step",
+    "svcTitle": "Start with what you need",
+    "svcSub": "Everything in LNK at a glance. Sign up and use it right away.",
+    "fAll": "All",
+    "fKeep": "Keep · Visa",
+    "fLearn": "Learn · Korean",
+    "fNetwork": "Network · Seniors",
+    "svc": {
+      "visa": [
+        "Visa roadmap",
+        "Enter your expiry and goal to see each step to your next visa, in order.",
+        "Visa"
+      ],
+      "life": [
+        "Life in Korea",
+        "Housing, hospitals, banks, part-time work — the first things that get confusing.",
+        "Life"
+      ],
+      "korean": [
+        "Korean practice",
+        "TOPIK-style questions with Mongolian explanations of every mistake.",
+        "Korean"
+      ],
+      "lectures": [
+        "Lectures",
+        "Classes made by seniors and experts.",
+        "Lectures"
+      ],
+      "mentors": [
+        "Find a mentor",
+        "Book time with seniors who went first, or an administrative agent.",
+        "Mentors"
+      ],
+      "admission": [
+        "Admissions guide",
+        "Undergraduate and graduate application steps and documents as a checklist.",
+        "Admissions"
+      ]
+    },
+    "open": "Open",
+    "askTitle": "Ask in Mongolian. Find answers in Korea.",
+    "askSub": "Ask anything in Mongolian. The AI assistant answers right away, and important matters like visas lead to an expert consultation.",
+    "askCta": "Ask the AI assistant",
+    "askCta2": "Go to community",
+    "askLabel": "Things you can ask",
+    "askBadge": "Tap to ask",
+    "askQs": [
+      "Can I work part-time during the D-2 graduation grace period?",
+      "What documents does my company prepare for an E-7 change?",
+      "Магистрт өргөдөл гаргахад хэдэн зөвлөмж хэрэгтэй вэ?",
+      "When do I have to update the address on my residence card?"
+    ],
+    "whyTitle": "Evidence, not guesses.",
+    "why": [
+      {
+        "title": "Based on official guidance",
+        "body": "Visa steps follow the stay manual of Korea's Immigration and Foreign Policy Office."
+      },
+      {
+        "title": "Checked by an agent",
+        "body": "Administrative agent Lim Hyosun reviews the visa guidance and takes consultations herself."
+      },
+      {
+        "title": "In Mongolian",
+        "body": "Menus, explanations and questions in Mongolian. No jumping between translators."
+      }
+    ],
+    "closeTitle": "Start now with the visa you have.",
+    "closeSub": "Signing up is free. Pick your visa and it is filled in for you.",
+    "gLabel": "First time here?",
+    "gClose": "Close",
+    "gSkip": "Skip",
+    "gNext": "Next",
+    "gDone": "Get started",
+    "guide": [
+      [
+        "Welcome to LNK",
+        "Visa, Korean and admissions in one place. A quick four-step tour."
+      ],
+      [
+        "Start with your visa",
+        "Scroll the steps and the preview follows. You can tap a step too."
+      ],
+      [
+        "Pick a service",
+        "Filter by Keep, Learn or Network."
+      ],
+      [
+        "Ask in Mongolian",
+        "Tap an example to open the AI assistant. Important visa questions go to an expert."
+      ]
+    ]
   }
 }

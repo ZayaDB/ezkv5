@@ -17,7 +17,7 @@ export default function CommunityCard({ group }: CommunityCardProps) {
 
   return (
     <Link href={`/${locale}/community/${group.id}`}>
-      <div className="group bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-700 overflow-hidden hover:shadow-2xl transition-all duration-300 cursor-pointer hover:-translate-y-1 relative">
+      <div className="group bg-white dark:bg-slate-900 rounded-[24px] border border-brand-line dark:border-slate-700 overflow-hidden hover:shadow-2xl transition-all duration-300 cursor-pointer hover:-translate-y-1 relative">
         {/* Gradient Image Header */}
         <div className="relative h-40 bg-gradient-to-br from-primary-700 via-primary-600 to-accent-500 overflow-hidden">
           <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors"></div>

@@ -25,7 +25,8 @@ const LANGS = ['ko', 'en', 'mn'] as const;
 const LANG_KEY: Record<(typeof LANGS)[number], string> = { ko: 'langKo', en: 'langEn', mn: 'langMn' };
 
 /* Figma "LNK • Course discovery" — 레이아웃·간격·타이포는 Figma, 강조색은 LNK 틸 */
-const card = 'bg-white dark:bg-night-card border border-hairline dark:border-hairline-dark';
+const card = 'bg-white dark:bg-night-card border border-brand-line dark:border-hairline-dark';
+const lift = 'transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(.22,1,.36,1)] hover:-translate-y-1 hover:border-brand hover:shadow-[0_24px_48px_-30px_rgba(17,26,25,.45)] motion-reduce:transform-none';
 const button =
   'inline-flex h-12 items-center justify-center rounded-lg px-5 text-sm font-semibold transition-colors ' +
   card +
@@ -246,9 +247,9 @@ export default function LecturesPageClient({ initialLectures, locale }: Props) {
                     l.instructor || null,
                   ].filter(Boolean);
                   return (
-                    <li key={l.id} className={`flex flex-col overflow-hidden rounded-2xl ${card}`}>
+                    <li key={l.id} className={`flex flex-col overflow-hidden rounded-[24px] ${card} ${lift}`}>
                       <Link href={`/${locale}/lectures/${l.id}`} className="group flex h-full flex-col">
-                        <div className="h-[184px] w-full shrink-0">
+                        <div className="h-[184px] w-full shrink-0 overflow-hidden">
                           <LectureCover image={l.image} category={l.category} alt={l.title} />
                         </div>
                         <div className="flex flex-1 flex-col gap-3 p-6">

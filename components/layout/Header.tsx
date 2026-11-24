@@ -175,7 +175,7 @@ export default function Header() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={t("search")}
-                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-200 dark:focus:ring-primary-500/30"
+                  className="placeholder:text-slate-600 dark:placeholder:text-slate-400 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-200 dark:focus:ring-primary-500/30"
                 />
               </label>
             </form>
@@ -383,7 +383,7 @@ export default function Header() {
                 </Link>
                 <Link
                   href={getLocalizedPath("/signup")}
-                  className="bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors"
+                  className="bg-primary-700 text-white px-4 py-2 rounded-lg hover:bg-primary-800 transition-colors"
                 >
                   {t("signup")}
                 </Link>
@@ -415,7 +415,7 @@ export default function Header() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder={t("search")}
-                    className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-200 dark:focus:ring-primary-500/30"
+                    className="placeholder:text-slate-600 dark:placeholder:text-slate-400 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-200 dark:focus:ring-primary-500/30"
                   />
                 </label>
               </form>
@@ -565,7 +565,7 @@ export default function Header() {
                   </Link>
                   <Link
                     href={getLocalizedPath("/signup")}
-                    className="bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors text-center"
+                    className="bg-primary-700 text-white px-4 py-2 rounded-lg hover:bg-primary-800 transition-colors text-center"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     {t("signup")}
@@ -584,7 +584,7 @@ export default function Header() {
                     }}
                     className={`px-3 py-1 rounded ${
                       locale === loc
-                        ? "bg-primary-500 text-white"
+                        ? "bg-primary-700 text-white"
                         : "text-gray-600 hover:bg-gray-100"
                     }`}
                   >

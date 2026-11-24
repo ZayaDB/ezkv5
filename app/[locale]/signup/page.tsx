@@ -30,6 +30,21 @@ export default function SignupPage() {
     visaExpireDate: "",
   });
   const [agreed, setAgreed] = useState(false);
+
+  // 홈의 "내 로드맵 만들기"에서 고른 비자를 미리 채움 (?visa=D-2)
+  useEffect(() => {
+    const sp = new URLSearchParams(window.location.search);
+    const v = sp.get("visa");
+    const exp = sp.get("expiry");
+    if (v && /^[A-Z]-\d{1,2}(-\d{1,2})?$/.test(v)) {
+      setResidingInKorea(true);
+      setFormData((f) => ({
+        ...f,
+        visaType: f.visaType || v,
+        visaExpireDate: f.visaExpireDate || (exp && /^\d{4}-\d{2}-\d{2}$/.test(exp) ? exp : ""),
+      }));
+    }
+  }, []);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -202,7 +217,12 @@ export default function SignupPage() {
         {isVisaStep && (
           <>
             <AuthField label={t("visaType")}>
-              <input type="text" value={formData.visaType} onChange={set("visaType")} required className={authInputPlain} placeholder={t("visaTypePlaceholder")} />
+              <input type="text" list="lnk-visa-codes" value={formData.visaType} onChange={set("visaType")} required className={authInputPlain} placeholder={t("visaTypePlaceholder")} />
+              <datalist id="lnk-visa-codes">
+                {["D-4", "D-2", "D-10", "E-7", "F-2", "F-2-7", "F-5", "F-6", "H-2", "C-3"].map((v) => (
+                  <option key={v} value={v} />
+                ))}
+              </datalist>
             </AuthField>
             <AuthField label={t("visaExpireDate")}>
               <input type="date" value={formData.visaExpireDate} onChange={set("visaExpireDate")} required className={authInputPlain} />

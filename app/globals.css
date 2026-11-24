@@ -1,4 +1,13 @@
-@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
+/* Pretendard: 한글·라틴은 패키지의 dynamic-subset(layout.tsx에서 import),
+   키릴(몽골어 Ө·Ү 포함)은 같은 가변 폰트에서 잘라낸 서브셋을 자체 호스팅. */
+@font-face {
+  font-family: "Pretendard Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 45 920;
+  src: url("/fonts/PretendardVariable-cyrillic.woff2") format("woff2-variations");
+  unicode-range: U+0400-052F, U+2116;
+}
 
 @tailwind base;
 @tailwind components;
@@ -19,10 +28,12 @@
 html,
 body {
   max-width: 100vw;
+  /* clip: 가로 넘침은 자르되 스크롤 박스를 만들지 않음 (hidden이면 position: sticky가 안 됨) */
   overflow-x: hidden;
+  overflow-x: clip;
   font-family:
-    Pretendard,
     "Pretendard Variable",
+    Pretendard,
     -apple-system,
     BlinkMacSystemFont,
     system-ui,
@@ -39,6 +50,22 @@ body {
 a {
   color: inherit;
   text-decoration: none;
+}
+
+/* 한국어는 어절 단위로 줄바꿈, 긴 단어(URL 등)는 넘치지 않게 */
+html[lang="kr"] body {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+/* 키보드 포커스: 브랜드 노랑 (헤더는 그대로) */
+:where(main, footer) :where(a, button, [role="tab"]):focus-visible {
+  outline: 3px solid #ffcf3f;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
 }
 
 /* Custom animations */

@@ -1,288 +1,163 @@
 import Link from "next/link";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import {
-  ArrowUpRight,
-  Briefcase,
-  GraduationCap,
-  HeartPulse,
-  Home,
-  Plane,
-  TrainFront,
-} from "lucide-react";
-import type { Lecture, Mentor } from "@/types";
-import { queryLecturesSupabase, queryMentorsSupabase } from "@/lib/supabase/public-queries";
-import HomeMonthlySpotlights from "@/components/home/HomeMonthlySpotlights";
-import { HeroIllustration, PathDivider } from "@/components/home/illustrations";
-import { FaqList, Parallax, Reveal, ScrollProgress, StepsTimeline } from "@/components/home/motion";
+import { ArrowRight } from "lucide-react";
+import type { Mentor } from "@/types";
+import { queryMentorsSupabase } from "@/lib/supabase/public-queries";
+import { CURRENT_VISAS } from "@/lib/visa/types";
+import RevealRoot from "@/components/home/b3/RevealRoot";
+import HowSplit from "@/components/home/b3/HowSplit";
+import ServiceGrid from "@/components/home/b3/ServiceGrid";
+import AskList, { AskButton } from "@/components/home/b3/AskList";
+import { HeroStart, TourButton } from "@/components/home/b3/HeroStart";
+import FirstVisitGuide from "@/components/home/b3/FirstVisitGuide";
+import "./home.css";
 
 export const revalidate = 3600;
 
-/* Copy and structure follow the "LNK • Homepage" frame in Figma. */
-
-const eyebrow = "text-[13px] font-bold text-teal dark:text-teal-dark";
-const h2 = "break-keep text-3xl font-semibold leading-[1.15] text-ink dark:text-snow sm:text-4xl lg:text-[40px]";
-const lead = "break-keep text-base leading-[1.55] text-ink-muted dark:text-snow-muted";
-const card =
-  "rounded-2xl border border-hairline bg-surface-card dark:border-hairline-dark dark:bg-night-card";
-const pill =
-  "inline-flex items-center rounded-full bg-primary-100 px-2.5 py-1.5 text-xs font-semibold text-primary-700 dark:bg-night-pill dark:text-snow-muted";
-const container = "mx-auto w-full max-w-[1360px] px-5 sm:px-8 lg:px-20";
-
-const guideIcons = [Plane, GraduationCap, Home, HeartPulse, TrainFront, Briefcase];
-const plannedHrefs = ["/mentors", "/community"];
-
-export default async function HomePage({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
+/**
+ * 홈 — B3 시안 (캔버스 "LNK 홈 시안 3종"에서 확정).
+ * 청록 면 · 노랑 강조 · 큰 L·N·K, Skola식 분할 스크롤, HUR식 첫 방문 안내.
+ * 보여주는 건 실제로 있는 것만: 비자 규칙, 한국어 문제, 실제 서비스 6개, 검증된 실제 전문가.
+ */
+export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const href = (path: string) => `/${locale}${path}`;
-  const t = await getTranslations({ locale, namespace: "homeV2" });
-  const raw = <T,>(key: string) => t.raw(key) as T;
-  const heroTitle = raw<string[]>("heroTitle");
-  const guides = raw<{ title: string; body: string }[]>("guides");
-  const stepTexts = raw<{ title: string; body: string }[]>("steps");
-  const steps = stepTexts.map((x, i) => ({ marker: String(i + 1).padStart(2, "0"), ...x }));
-  const planned = raw<{ name: string; purpose: string; body: string }[]>("planned");
-  const principles = raw<string[]>("principles");
-  const faqs = raw<{ q: string; a: string }[]>("faqs");
+  const t = await getTranslations({ locale, namespace: "homeB" });
 
-  let topLectures: Lecture[] = [];
-  let topMentors: Mentor[] = [];
+  let expert: { name: string; photo: string | null; href: string } | null = null;
   try {
-    const [lecR, menR] = await Promise.all([
-      queryLecturesSupabase({ limit: 3 }),
-      queryMentorsSupabase({ limit: 3 }),
-    ]);
-    topLectures = lecR.lectures;
-    topMentors = menR.mentors;
+    const { mentors } = await queryMentorsSupabase({ limit: 30 });
+    const m: Mentor | undefined = mentors.find((x) => x.verified && x.photo);
+    if (m) expert = { name: m.name, photo: m.photo ?? null, href: `/${locale}/mentors/${m.id}` };
   } catch {
-    topLectures = [];
-    topMentors = [];
+    expert = null;
   }
 
+  const why = t.raw("why") as { title: string; body: string }[];
+  const lang = locale === "kr" ? "ko" : locale;
+
   return (
-    <div className="bg-surface dark:bg-night">
-      <ScrollProgress />
-
-      {/* Hero */}
-      <section className="relative overflow-hidden">
-        <div
-          className="pointer-events-none absolute -right-40 -top-40 h-[560px] w-[560px] rounded-full bg-primary-500/10 blur-3xl dark:bg-primary-400/10"
-          aria-hidden="true"
-        />
-        <div className={`${container} relative grid items-center gap-10 py-14 lg:grid-cols-[1fr_1.05fr] lg:gap-14 lg:py-20`}>
-          <div className="flex flex-col">
-            <span className={`${pill} lnk-hero-in self-start`} style={{ animationDelay: "0s" }}>
-              {t("heroPill")}
-            </span>
-            <h1
-              className="lnk-hero-in mb-5 mt-5 break-keep text-[2rem] font-bold leading-[1.22] text-ink dark:text-snow sm:text-[2.6rem] lg:text-[2.7rem] xl:text-[3.1rem]"
-              style={{ animationDelay: "0.08s" }}
-            >
-              {heroTitle.map((line, i) => (
-                <span key={i} className="block">
-                  {line}
-                </span>
-              ))}
-            </h1>
-            <p
-              className={`${lead} lnk-hero-in mb-8 max-w-[34rem] text-[17px]`}
-              style={{ animationDelay: "0.16s" }}
-            >
-              {t("heroBody")}
-            </p>
-
-            <div className="lnk-hero-in mb-8 flex flex-wrap gap-3" style={{ animationDelay: "0.24s" }}>
-              <Link
-                href={href("/lectures")}
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-primary-600 px-5 text-sm font-semibold text-white transition hover:bg-primary-700 dark:bg-primary-500 dark:text-night dark:hover:bg-primary-400"
-              >
-                {t("ctaCourses")}
-                <ArrowUpRight className="h-4 w-4" />
-              </Link>
-              <Link
-                href={href("/study-in-korea")}
-                className="inline-flex h-12 items-center justify-center rounded-lg border border-hairline px-5 text-sm font-semibold text-ink transition hover:border-primary-500 dark:border-hairline-dark dark:bg-night-card dark:text-snow dark:hover:border-primary-400"
-              >
-                {t("ctaGuide")}
-              </Link>
-            </div>
-
-            <div className="lnk-hero-in flex flex-col items-start gap-2 text-xs" style={{ animationDelay: "0.32s" }}>
-              {[
-                [t("metaTargetLabel"), t("metaTarget")],
-                [t("metaFeaturesLabel"), t("metaFeatures")],
-              ].map(([k, v]) => (
-                <span
-                  key={k}
-                  className="inline-flex items-center gap-2 rounded-full border border-hairline px-3 py-2 text-ink-muted dark:border-hairline-dark dark:text-snow-muted"
-                >
-                  <span className="font-bold text-ink dark:text-snow">{k}</span>
-                  {v}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <div className="lnk-hero-in" style={{ animationDelay: "0.2s" }}>
-            <Parallax>
-              <HeroIllustration label={t("heroAlt")} className="h-auto w-full drop-shadow-[0_30px_60px_rgba(0,0,0,0.35)]" />
-            </Parallax>
-            <div className="mt-3 flex items-center justify-between text-xs text-ink-muted dark:text-snow-muted">
-              <span>{t("heroCaption")}</span>
-              <span>SEOUL, KR</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Live data, only when there is something to show */}
-      <HomeMonthlySpotlights locale={locale} topLectures={topLectures} topMentors={topMentors} />
-
-      {/* Life guide categories */}
-      <section className="bg-surface-card py-14 dark:bg-night-card lg:py-16">
-        <div className={container}>
-          <Reveal>
-            <p className={`${eyebrow} mb-3`}>{t("guideEyebrow")}</p>
-            <h2 className={`${h2} mb-3`}>{t("guideTitle")}</h2>
-            <p className={`${lead} mb-8 max-w-3xl`}>{t("guideBody")}</p>
-          </Reveal>
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {guides.map(({ title, body }, i) => {
-              const Icon = guideIcons[i];
-              return (
-              <Reveal key={title} delay={(i % 3) * 90}>
-                <Link
-                  href={href("/study-in-korea")}
-                  className="group flex h-full items-start gap-4 rounded-2xl border border-hairline bg-surface p-[22px] transition duration-300 hover:-translate-y-0.5 hover:border-primary-500 dark:border-hairline-dark dark:bg-night dark:hover:border-primary-400"
-                >
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-100 text-primary-700 dark:bg-night-pill dark:text-primary-400">
-                    <Icon className="h-[22px] w-[22px]" strokeWidth={1.8} />
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block text-base font-semibold text-ink dark:text-snow">{title}</span>
-                    <span className="mt-1 block text-[13px] text-ink-muted dark:text-snow-muted">{body}</span>
-                  </span>
-                  <ArrowUpRight className="h-5 w-5 shrink-0 text-teal transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 dark:text-teal-dark" />
-                </Link>
-              </Reveal>
-              );
-            })}
-          </div>
-          <Reveal className="mt-6">
-            <div className="flex flex-wrap items-center gap-4">
-              <span className={pill}>{t("guideBadge")}</span>
-              <p className="text-[13px] text-ink-muted dark:text-snow-muted">{t("guideNote")}</p>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* Getting started */}
-      <section className="py-14 lg:py-16">
-        <div className={`${container} grid gap-10 lg:grid-cols-[320px_1fr] lg:gap-16`}>
-          <Reveal>
-            <p className={`${eyebrow} mb-3`}>{t("stepsEyebrow")}</p>
-            <h2 className="text-[28px] font-semibold leading-[1.2] text-ink dark:text-snow sm:text-[32px]">
-              {t("stepsTitle")}
-            </h2>
-            <PathDivider className="mt-5 h-3 w-32" />
-          </Reveal>
-          <StepsTimeline steps={steps} />
-        </div>
-      </section>
-
-      {/* People: mentors + community */}
-      <section className="bg-surface-card py-14 dark:bg-night-card lg:py-16">
-        <div className={container}>
-          <Reveal>
-            <p className={`${eyebrow} mb-3`}>{t("plannedEyebrow")}</p>
-            <h2 className={`${h2} mb-3`}>{t("plannedTitle")}</h2>
-            <p className={`${lead} mb-8 max-w-3xl`}>{t("plannedBody")}</p>
-          </Reveal>
-          <div className="grid gap-6 lg:grid-cols-2">
-            {planned.map((p, i) => (
-              <Reveal key={p.name} delay={i * 120}>
-                <div className="relative h-full overflow-hidden rounded-2xl border border-hairline bg-surface p-8 dark:border-hairline-dark dark:bg-night">
-                  <div className="pointer-events-none absolute -right-16 -top-16 h-44 w-44 rounded-full bg-primary-500/10 blur-2xl" aria-hidden="true" />
-                  <span className={pill}>{t("availableNow")}</span>
-                  <h3 className="mb-3 mt-5 text-3xl font-semibold text-ink dark:text-snow">{p.name}</h3>
-                  <p className="mb-3 text-lg font-medium text-ink dark:text-snow">{p.purpose}</p>
-                  <p className={`${lead} mb-6 text-[15px]`}>{p.body}</p>
-                  <Link
-                    href={href(plannedHrefs[i])}
-                    className="inline-flex items-center gap-1 text-sm font-semibold text-teal dark:text-teal-dark"
-                  >
-                    {t("explore")}
-                    <ArrowUpRight className="h-4 w-4" />
-                  </Link>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Service principles */}
-      <section className="py-14 lg:py-16">
-        <div className={`${container} grid gap-6 lg:grid-cols-[1fr_1fr] lg:gap-12`}>
-          <Reveal>
-            <h2 className="text-3xl font-semibold leading-[1.2] text-ink dark:text-snow sm:text-4xl">
-              {t("principlesTitle")}
-            </h2>
-          </Reveal>
-          <Reveal delay={120}>
-            <div className="space-y-3 text-base leading-[1.6] text-ink-muted dark:text-snow-muted">
-              {principles.map((x) => (
-                <p key={x}>{x}</p>
-              ))}
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* Common questions */}
-      <section className="pb-14 lg:pb-16">
-        <div className={container}>
-          <Reveal>
-            <p className={`${eyebrow} mb-3`}>{t("faqEyebrow")}</p>
-            <h2 className={`${h2} mb-8`}>{t("faqTitle")}</h2>
-          </Reveal>
-          <Reveal delay={80}>
-            <FaqList items={faqs} />
-          </Reveal>
-        </div>
-      </section>
-
-      {/* Final invitation */}
-      <section className="pb-16 lg:pb-24">
-        <div className={container}>
-          <Reveal>
-            <div className="relative overflow-hidden rounded-3xl border border-hairline bg-primary-50 px-6 py-10 dark:border-hairline-dark dark:bg-night-card sm:px-10 lg:flex lg:items-center lg:justify-between lg:gap-10">
-              <div
-                className="pointer-events-none absolute -left-20 -bottom-24 h-64 w-64 rounded-full bg-primary-500/15 blur-3xl"
-                aria-hidden="true"
-              />
-              <div className="relative">
-                <h2 className="mb-2 text-3xl font-semibold text-ink dark:text-snow sm:text-4xl">
-                  {t("finalTitle")}
-                </h2>
-                <p className={`${lead} text-lg`}>{t("finalBody")}</p>
+    <RevealRoot lang={lang}>
+      {/* 히어로 */}
+      <section id="top" className="b3-hero">
+        <div className="b3-hero-field" data-tour-ring>
+          <div className="flex flex-wrap items-end justify-between gap-10">
+            <div className="flex min-w-0 flex-[999_1_520px] flex-col gap-6 animate-fade-up">
+              <h1 className="b3-hero-title">{t("heroTitle")}</h1>
+              <p className="b3-hero-sub">{t("heroSub")}</p>
+              <div className="flex flex-wrap items-center gap-3">
+                <a href="#how" className="b3-btn b3-btn-sun">
+                  {t("heroCta")}
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </a>
+                <HeroStart />
               </div>
-              <Link
-                href={href("/lectures")}
-                className="relative mt-6 inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-lg bg-primary-600 px-5 text-sm font-semibold text-white transition hover:bg-primary-700 dark:bg-primary-500 dark:text-night dark:hover:bg-primary-400 lg:mt-0"
-              >
-                {t("ctaCourses")}
-                <ArrowUpRight className="h-4 w-4" />
-              </Link>
+              <TourButton />
             </div>
-          </Reveal>
+            <div className="b3-hero-card flex min-w-0 max-w-[360px] flex-[1_1_280px] flex-col gap-3 animate-fade-up [animation-delay:.12s]">
+              <p className="text-[14px] font-extrabold text-[#1f6f62]">{t("heroCardLabel")}</p>
+              <ul className="flex flex-wrap gap-2">
+                {CURRENT_VISAS.map((v) => (
+                  <li key={v}>
+                    <Link href={`/${locale}/signup?visa=${encodeURIComponent(v)}`} className="b3-chip">
+                      {v}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+              <p className="text-[13px] leading-[1.5] text-[#47605b]">{t("heroCardNote")}</p>
+            </div>
+          </div>
+          <div className="b3-mono" aria-hidden="true">
+            <span>L</span>
+            <span>N</span>
+            <span>K</span>
+          </div>
+        </div>
+        <div className="b3-letters">
+          <span>L · Learn — {t("learn")}</span>
+          <span>N · Network — {t("network")}</span>
+          <span>K · Keep — {t("keep")}</span>
         </div>
       </section>
-    </div>
+
+      {/* 이용 방법: 분할 스크롤 */}
+      <section id="how" className="b3-wrap pb-16 pt-24 md:pb-20 md:pt-32">
+        <h2 className="b3-h2 mb-10 max-w-[760px] md:mb-14" data-reveal>
+          {t("howTitle")}
+        </h2>
+        <div data-tour-ring>
+          <HowSplit expert={expert} />
+        </div>
+      </section>
+
+      {/* 서비스 */}
+      <section id="services" className="b3-wrap pb-24 pt-16 md:pb-28 md:pt-20">
+        <div className="mb-8 flex flex-wrap items-end justify-between gap-6" data-reveal>
+          <div className="max-w-[660px]">
+            <h2 className="b3-h2">{t("svcTitle")}</h2>
+            <p className="b3-lead">{t("svcSub")}</p>
+          </div>
+        </div>
+        <div data-tour-ring data-reveal style={{ ["--d" as string]: ".08s" }}>
+          <ServiceGrid />
+        </div>
+      </section>
+
+      {/* 질문 */}
+      <section id="ask" className="b3-ask py-20 md:py-28">
+        <div className="b3-wrap flex flex-wrap gap-12" data-tour-ring>
+          <div className="flex min-w-0 flex-[1_1_420px] flex-col gap-5" data-reveal>
+            <h2 className="b3-h2">{t("askTitle")}</h2>
+            <p className="text-[17px] leading-[1.65] text-[#2d2a12]">{t("askSub")}</p>
+            <div className="flex flex-wrap gap-3">
+              <AskButton label={t("askCta")} />
+              <Link href={`/${locale}/community`} className="b3-btn b3-btn-ghost">
+                {t("askCta2")}
+              </Link>
+            </div>
+          </div>
+          <div className="min-w-0 flex-[999_1_520px]" data-reveal style={{ ["--d" as string]: ".1s" }}>
+            <AskList />
+          </div>
+        </div>
+      </section>
+
+      {/* 근거 */}
+      <section className="b3-wrap py-24 md:py-28">
+        <h2 className="b3-h2 mb-10 max-w-[760px]" data-reveal>
+          {t("whyTitle")}
+        </h2>
+        <div className="b3-why">
+          {why.map((w, i) => (
+            <div key={w.title} data-reveal style={{ ["--d" as string]: `${i * 0.1}s` }}>
+              <h3 className="text-[20px] font-extrabold tracking-[-0.02em]">{w.title}</h3>
+              <p className="mt-2.5 text-[15px] leading-[1.75] text-[#47605b]">{w.body}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 마무리 */}
+      <section className="b3-close">
+        <div className="b3-close-box" data-reveal>
+          <div className="relative z-[1] flex max-w-[820px] flex-col gap-6">
+            <h2 className="text-[clamp(32px,5vw,64px)] font-extrabold leading-[1.08] tracking-[-0.035em]">{t("closeTitle")}</h2>
+            <p className="text-[17px] text-[#c4d3cf]">{t("closeSub")}</p>
+            <ul className="flex flex-wrap gap-2.5">
+              {CURRENT_VISAS.map((v) => (
+                <li key={v}>
+                  <Link href={`/${locale}/signup?visa=${encodeURIComponent(v)}`} className="b3-visa-chip">
+                    {v}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <FirstVisitGuide />
+    </RevealRoot>
   );
 }

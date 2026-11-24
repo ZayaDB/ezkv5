@@ -8,6 +8,7 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import AppBottomNav from '@/components/layout/AppBottomNav';
 import Chatbot from '@/components/chatbot/Chatbot';
+import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css';
 import '../globals.css';
 
 export function generateStaticParams() {

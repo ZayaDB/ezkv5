@@ -43,22 +43,22 @@ export default function MyWorkspaceShell({
         aria-current={on ? "page" : undefined}
         className={
           mobile
-            ? `flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-[13px] font-medium ${
+            ? `flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-[13px] font-semibold transition-colors ${
                 on
-                  ? "bg-primary-50 text-primary-700 dark:bg-night-pill dark:text-primary-300"
+                  ? "bg-brand-ink text-white dark:bg-night-pill dark:text-primary-300"
                   : "text-ink-muted dark:text-snow-muted"
               }`
-            : `flex items-center gap-3 rounded-lg px-3.5 py-2.5 text-sm transition-colors ${
+            : `flex items-center gap-3 rounded-full px-4 py-2.5 text-sm transition-[background-color,color,transform] duration-300 ${
                 on
-                  ? "bg-primary-50 font-semibold text-primary-700 dark:bg-night-pill dark:text-primary-300"
-                  : "text-ink-muted hover:bg-white hover:text-ink dark:text-snow-muted dark:hover:bg-night-card dark:hover:text-snow"
+                  ? "bg-brand font-bold text-white dark:bg-night-pill dark:text-primary-300"
+                  : "text-brand-soft hover:translate-x-0.5 hover:bg-white hover:text-brand-ink dark:text-snow-muted dark:hover:bg-night-card dark:hover:text-snow"
               }`
         }
       >
         <Icon className="h-4 w-4 shrink-0" />
         <span className="min-w-0 flex-1 truncate">{item.label}</span>
         {item.badge ? (
-          <span className="min-w-[1.25rem] rounded-full bg-teal px-1.5 py-0.5 text-center text-[10px] font-bold text-white dark:bg-teal-dark dark:text-night">
+          <span className="min-w-[1.25rem] rounded-full bg-brand-sun px-1.5 py-0.5 text-center text-[10px] font-bold text-brand-ink dark:bg-teal-dark dark:text-night">
             {item.badge > 99 ? "99+" : item.badge}
           </span>
         ) : null}

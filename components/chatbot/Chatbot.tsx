@@ -10,9 +10,10 @@ import type { AssistantAction } from '@/lib/ai/assistantActions';
 
 const OPEN_EVENT = 'open-assistant';
 
-export function openAssistant() {
+/** 비서 열기. question을 주면 입력창에 미리 채워 둠 (보내기는 사용자가). */
+export function openAssistant(question?: string) {
   if (typeof window === 'undefined') return;
-  window.dispatchEvent(new Event(OPEN_EVENT));
+  window.dispatchEvent(new CustomEvent(OPEN_EVENT, { detail: { question } }));
 }
 
 type Bubble = ChatMessage & { actions?: AssistantAction[] };
@@ -50,7 +51,11 @@ export default function Chatbot() {
   }, [isOpen]);
 
   useEffect(() => {
-    const open = () => setIsOpen(true);
+    const open = (e: Event) => {
+      setIsOpen(true);
+      const q = (e as CustomEvent<{ question?: string }>).detail?.question;
+      if (q) setInput(q);
+    };
     window.addEventListener(OPEN_EVENT, open);
     return () => window.removeEventListener(OPEN_EVENT, open);
   }, []);
@@ -255,11 +260,10 @@ export default function Chatbot() {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className={`fixed ${dock} bg-gradient-to-br from-primary-500 to-accent-500 text-white p-5 rounded-2xl shadow-2xl hover:shadow-primary-500/50 transition-all hover:scale-110 z-50 group`}
+          className={`fixed ${dock} bg-primary-700 text-white p-5 rounded-2xl shadow-[0_10px_24px_-12px_rgba(14,38,35,0.6)] transition-colors hover:bg-primary-800 z-50 group`}
           aria-label={t('ariaOpen')}
         >
           <MessageCircle className="w-6 h-6 group-hover:rotate-12 transition-transform" />
-          <div className="absolute -top-1 -right-1 w-4 h-4 bg-accent-300 rounded-full animate-pulse"></div>
         </button>
       )}
 
