@@ -20,6 +20,11 @@ module.exports = {
         // LNK design system — values read directly from the Figma file.
         // Figma: bg #0e1a18, surface #101e1c, pill #1b332f, accent #3fa393,
         // text #f3f7f5, muted #9fb0ac, divider #2a3b38.
+        // B3 브랜드 (홈 시안 확정색): 청록 면 · 노랑 강조 · 민트 · 먹색
+        brand: {
+          DEFAULT: "#1f6f62", deep: "#14564c", mint: "#9fe0d2",
+          sun: "#ffcf3f", "sun-deep": "#f2bd1d", ink: "#111a19", mist: "#f1f4f3", line: "#d3dcda", soft: "#47605b",
+        },
         surface: { DEFAULT: "#F4F8F7", card: "#FFFFFF" },
         ink: { DEFAULT: "#0e1a18", muted: "#5b6b68" },
         night: { DEFAULT: "#0e1a18", card: "#101e1c", pill: "#1b332f" },
@@ -123,7 +128,7 @@ module.exports = {
         "pulse-ring": "pulse-ring 2.4s ease-out infinite",
       },
       fontFamily: {
-        sans: ["Pretendard", "system-ui", "sans-serif"],
+        sans: ['"Pretendard Variable"', "Pretendard", "-apple-system", "BlinkMacSystemFont", "system-ui", "sans-serif"],
       },
     },
   },

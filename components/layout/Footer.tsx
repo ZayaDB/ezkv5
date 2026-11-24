@@ -21,11 +21,12 @@ export default function Footer() {
   const bizItems = businessOrder.filter((k) => k !== "privacyOfficer" && business[k]);
   const locale = useLocale();
   const href = (path: string) => `/${locale}${path}`;
-  const link = "hover:text-white transition-colors";
+  const link = "transition-colors hover:text-brand-sun";
 
   return (
-    <footer className="mt-auto bg-[#0b1513] text-white dark:border-t dark:border-hairline-dark">
-      <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-7 px-4 py-10 sm:px-8 lg:px-20">
+    <footer className="relative mt-auto overflow-hidden bg-brand-ink text-white dark:border-t dark:border-hairline-dark">
+      <span aria-hidden="true" className="pointer-events-none absolute -bottom-[0.24em] right-[-0.04em] select-none text-[clamp(140px,24vw,360px)] font-black leading-none tracking-[-0.05em] text-white/[0.04]">LNK</span>
+      <div className="relative mx-auto flex w-full max-w-[1440px] flex-col gap-7 px-4 py-12 sm:px-8 lg:px-20">
         <div className="flex flex-col justify-between gap-8 md:flex-row">
           <div className="flex max-w-[470px] flex-col gap-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}

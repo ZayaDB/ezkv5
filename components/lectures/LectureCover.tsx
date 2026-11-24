@@ -44,13 +44,13 @@ export default function LectureCover({
   if (image) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
-      <img src={image} alt={alt} className={`w-full h-full object-cover ${className}`} />
+      <img src={image} alt={alt} className={`w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-[1.06] motion-reduce:transform-none ${className}`} />
     );
   }
   const Icon = ICONS[normalizeLectureCategory(category) ?? "other"];
   return (
     <div
-      className={`relative w-full h-full overflow-hidden bg-primary-50 dark:bg-night-pill ${className}`}
+      className={`relative w-full h-full overflow-hidden bg-primary-50 dark:bg-night-pill transition-transform duration-700 ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-[1.06] motion-reduce:transform-none ${className}`}
       role="img"
       aria-label={alt}
     >

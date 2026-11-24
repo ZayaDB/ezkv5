@@ -16,7 +16,7 @@ const pad: Record<NonNullable<PlatformCardProps["padding"]>, string> = {
 export default function PlatformCard({ children, className = "", padding = "md" }: PlatformCardProps) {
   return (
     <div
-      className={`rounded-2xl border border-hairline bg-white text-ink dark:border-hairline-dark dark:bg-night-card dark:text-snow ${pad[padding]} ${className}`.trim()}
+      className={`rounded-[24px] border border-brand-line bg-white text-brand-ink dark:border-hairline-dark dark:bg-night-card dark:text-snow ${pad[padding]} ${className}`.trim()}
     >
       {children}
     </div>

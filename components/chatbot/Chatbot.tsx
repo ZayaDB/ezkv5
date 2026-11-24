@@ -10,9 +10,10 @@ import type { AssistantAction } from '@/lib/ai/assistantActions';
 
 const OPEN_EVENT = 'open-assistant';
 
-export function openAssistant() {
+/** 비서 열기. question을 주면 입력창에 미리 채워 둠 (보내기는 사용자가). */
+export function openAssistant(question?: string) {
   if (typeof window === 'undefined') return;
-  window.dispatchEvent(new Event(OPEN_EVENT));
+  window.dispatchEvent(new CustomEvent(OPEN_EVENT, { detail: { question } }));
 }
 
 type Bubble = ChatMessage & { actions?: AssistantAction[] };
@@ -50,7 +51,11 @@ export default function Chatbot() {
   }, [isOpen]);
 
   useEffect(() => {
-    const open = () => setIsOpen(true);
+    const open = (e: Event) => {
+      setIsOpen(true);
+      const q = (e as CustomEvent<{ question?: string }>).detail?.question;
+      if (q) setInput(q);
+    };
     window.addEventListener(OPEN_EVENT, open);
     return () => window.removeEventListener(OPEN_EVENT, open);
   }, []);

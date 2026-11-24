@@ -19,7 +19,7 @@ export default function GuideCover({
   }
   const Icon = GUIDE_ICONS[topic] ?? GUIDE_ICONS.arrival;
   return (
-    <div className={`relative h-full w-full overflow-hidden bg-primary-50 dark:bg-night-pill ${className}`} role="img" aria-label={alt}>
+    <div className={`relative h-full w-full overflow-hidden bg-primary-50 dark:bg-night-pill transition-transform duration-700 ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-[1.06] motion-reduce:transform-none ${className}`} role="img" aria-label={alt}>
       <svg
         className="absolute inset-0 h-full w-full text-primary-200 dark:text-primary-900"
         viewBox="0 0 480 320"

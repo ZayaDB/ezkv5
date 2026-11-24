@@ -11,7 +11,8 @@ import GuideCover from '@/components/guides/GuideCover';
 import { GuideTopicIcon } from '@/components/guides/GuideTopicIcon';
 
 /* Figma "LNK • Life in Korea guide browser" — 레이아웃은 Figma, 강조색은 LNK 틸 */
-const card = 'bg-white dark:bg-night-card border border-hairline dark:border-hairline-dark';
+const card = 'bg-white dark:bg-night-card border border-brand-line dark:border-hairline-dark';
+const lift = 'transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(.22,1,.36,1)] hover:-translate-y-1 hover:border-brand hover:shadow-[0_24px_48px_-30px_rgba(17,26,25,.45)] motion-reduce:transform-none';
 const LANG_KEY: Record<string, string> = { ko: 'langKo', en: 'langEn', mn: 'langMn' };
 
 function guideStatus(g: StudyInfo, t: (k: string, v?: Record<string, string>) => string, locale: string) {
@@ -133,9 +134,9 @@ export default function GuidesBrowserClient({ guides, locale }: { guides: StudyI
         {featured && (
           <Link
             href={`/${locale}/study-in-korea/${featured.id}`}
-            className={`group grid overflow-hidden rounded-2xl md:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] ${card} hover:border-teal dark:hover:border-teal-dark`}
+            className={`group grid overflow-hidden rounded-[24px] md:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] ${card} ${lift}`}
           >
-            <div className="h-56 md:h-auto md:min-h-[300px]">
+            <div className="h-56 overflow-hidden md:h-auto md:min-h-[300px]">
               <GuideCover image={featured.image} topic={featured.category} alt={featured.title} />
             </div>
             <div className="flex flex-col justify-center gap-4 p-7 lg:p-9">
@@ -203,7 +204,7 @@ export default function GuidesBrowserClient({ guides, locale }: { guides: StudyI
                 <li key={g.id}>
                   <Link
                     href={`/${locale}/study-in-korea/${g.id}`}
-                    className={`group flex h-full flex-col gap-3 rounded-2xl p-6 ${card} hover:border-teal dark:hover:border-teal-dark`}
+                    className={`group flex h-full flex-col gap-3 rounded-[24px] p-6 ${card} ${lift}`}
                   >
                     <p className="flex items-center gap-2 text-xs font-semibold text-teal dark:text-teal-dark">
                       <GuideTopicIcon topic={g.category} />
