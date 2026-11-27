@@ -293,7 +293,7 @@ export default function AdminModerationPage() {
   };
 
   return (
-    <div className="bg-slate-50 rounded-2xl border border-slate-200">
+    <div className="bg-brand-mist rounded-2xl border border-brand-line">
       {toast && (
         <Toast
           message={toast.message}
@@ -305,8 +305,8 @@ export default function AdminModerationPage() {
       <div className="px-6 sm:px-8 py-10 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900">{t("title")}</h1>
-            <p className="text-sm text-slate-600 mt-1 max-w-xl leading-relaxed">{t("subtitle")}</p>
+            <h1 className="text-2xl font-bold tracking-tight text-brand-ink">{t("title")}</h1>
+            <p className="text-sm text-brand-soft mt-1 max-w-xl leading-relaxed">{t("subtitle")}</p>
           </div>
           <Link
             href={`/${locale}/admin/dashboard`}
@@ -323,9 +323,9 @@ export default function AdminModerationPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t("searchPlaceholder")}
-            className="flex-1 min-w-0 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            className="flex-1 min-w-0 rounded-xl border border-brand-line bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
           />
-          <span className="text-sm text-slate-500 whitespace-nowrap shrink-0">
+          <span className="text-sm text-brand-soft whitespace-nowrap shrink-0">
             {t("total", { count: totalRows })}
           </span>
         </PlatformCard>
@@ -333,9 +333,9 @@ export default function AdminModerationPage() {
         <div className={gridClass}>
           {(tab === "all" || tab === "mentor") && (
             <PlatformCard padding="lg">
-              <h2 className="text-base font-semibold text-slate-900 mb-4">{t("mentorTitle")}</h2>
+              <h2 className="text-base font-semibold text-brand-ink mb-4">{t("mentorTitle")}</h2>
               {pagedMentor.length === 0 ? (
-                <p className="text-sm text-slate-500">{t("emptyMentor")}</p>
+                <p className="text-sm text-brand-soft">{t("emptyMentor")}</p>
               ) : (
                 <div className="space-y-3">
                   {pagedMentor.map((item) => (
@@ -343,22 +343,22 @@ export default function AdminModerationPage() {
                       type="button"
                       key={item.id}
                       onClick={() => setReview({ kind: "mentor", item })}
-                      className="w-full text-left rounded-xl border border-slate-200 bg-slate-50/60 p-4 hover:bg-white hover:ring-1 hover:ring-primary-200 transition-colors"
+                      className="w-full text-left rounded-xl border border-brand-line bg-brand-mist/60 p-4 hover:bg-white hover:ring-1 hover:ring-primary-200 transition-colors"
                     >
                       <div className="flex items-start justify-between gap-3">
-                        <p className="font-semibold text-slate-900 text-sm">{item.title}</p>
+                        <p className="font-semibold text-brand-ink text-sm">{item.title}</p>
                         <span className="text-[11px] font-semibold text-primary-600 shrink-0">
                           {t("openReview")}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-500 mt-1">
+                      <p className="text-xs text-brand-soft mt-1">
                         {item.user?.name} · {item.user?.email}
                       </p>
-                      <p className="text-xs text-slate-500">
+                      <p className="text-xs text-brand-soft">
                         {item.location} · {t("mentorSpec")}:{" "}
                         {item.specialties.length ? item.specialties.join(", ") : "—"}
                       </p>
-                      <p className="text-xs text-slate-400 mt-1">
+                      <p className="text-xs text-brand-soft/70 mt-1">
                         {fd(new Date(item.createdAt), {
                           dateStyle: "medium",
                           timeStyle: "short",
@@ -374,18 +374,18 @@ export default function AdminModerationPage() {
                     type="button"
                     onClick={() => setPageMent((p) => Math.max(1, p - 1))}
                     disabled={pageMent === 1}
-                    className="rounded-lg bg-white px-3 py-2 text-sm font-medium text-slate-700 ring-1 ring-slate-200 disabled:opacity-50"
+                    className="rounded-lg bg-white px-3 py-2 text-sm font-medium text-brand-ink ring-1 ring-brand-line disabled:opacity-50"
                   >
                     {t("prev")}
                   </button>
-                  <span className="text-sm text-slate-600">
+                  <span className="text-sm text-brand-soft">
                     {t("page", { current: pageMent, total: totalPagesMent })}
                   </span>
                   <button
                     type="button"
                     onClick={() => setPageMent((p) => Math.min(totalPagesMent, p + 1))}
                     disabled={pageMent === totalPagesMent}
-                    className="rounded-lg bg-white px-3 py-2 text-sm font-medium text-slate-700 ring-1 ring-slate-200 disabled:opacity-50"
+                    className="rounded-lg bg-white px-3 py-2 text-sm font-medium text-brand-ink ring-1 ring-brand-line disabled:opacity-50"
                   >
                     {t("next")}
                   </button>
@@ -396,9 +396,9 @@ export default function AdminModerationPage() {
 
           {(tab === "all" || tab === "lecture") && (
             <PlatformCard padding="lg">
-              <h2 className="text-base font-semibold text-slate-900 mb-4">{t("lectureTitle")}</h2>
+              <h2 className="text-base font-semibold text-brand-ink mb-4">{t("lectureTitle")}</h2>
               {pagedLecture.length === 0 ? (
-                <p className="text-sm text-slate-500">{t("emptyLecture")}</p>
+                <p className="text-sm text-brand-soft">{t("emptyLecture")}</p>
               ) : (
                 <div className="space-y-3">
                   {pagedLecture.map((item) => (
@@ -406,21 +406,21 @@ export default function AdminModerationPage() {
                       type="button"
                       key={item.id}
                       onClick={() => setReview({ kind: "lecture", item })}
-                      className="w-full text-left rounded-xl border border-slate-200 bg-slate-50/60 p-4 hover:bg-white hover:ring-1 hover:ring-primary-200 transition-colors"
+                      className="w-full text-left rounded-xl border border-brand-line bg-brand-mist/60 p-4 hover:bg-white hover:ring-1 hover:ring-primary-200 transition-colors"
                     >
                       <div className="flex items-start justify-between gap-3">
-                        <p className="font-semibold text-slate-900 text-sm">{item.title}</p>
+                        <p className="font-semibold text-brand-ink text-sm">{item.title}</p>
                         <span className="text-[11px] font-semibold text-primary-600 shrink-0">
                           {t("openReview")}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-500 mt-1">
+                      <p className="text-xs text-brand-soft mt-1">
                         {item.user?.name} · {item.user?.email}
                       </p>
-                      <p className="text-xs text-slate-500">
+                      <p className="text-xs text-brand-soft">
                         {item.category} · {item.type === "offline" ? tl("offline") : tl("online")}
                       </p>
-                      <p className="text-xs text-slate-400 mt-1">
+                      <p className="text-xs text-brand-soft/70 mt-1">
                         {fd(new Date(item.createdAt), {
                           dateStyle: "medium",
                           timeStyle: "short",
@@ -436,18 +436,18 @@ export default function AdminModerationPage() {
                     type="button"
                     onClick={() => setPageLec((p) => Math.max(1, p - 1))}
                     disabled={pageLec === 1}
-                    className="rounded-lg bg-white px-3 py-2 text-sm font-medium text-slate-700 ring-1 ring-slate-200 disabled:opacity-50"
+                    className="rounded-lg bg-white px-3 py-2 text-sm font-medium text-brand-ink ring-1 ring-brand-line disabled:opacity-50"
                   >
                     {t("prev")}
                   </button>
-                  <span className="text-sm text-slate-600">
+                  <span className="text-sm text-brand-soft">
                     {t("page", { current: pageLec, total: totalPagesLec })}
                   </span>
                   <button
                     type="button"
                     onClick={() => setPageLec((p) => Math.min(totalPagesLec, p + 1))}
                     disabled={pageLec === totalPagesLec}
-                    className="rounded-lg bg-white px-3 py-2 text-sm font-medium text-slate-700 ring-1 ring-slate-200 disabled:opacity-50"
+                    className="rounded-lg bg-white px-3 py-2 text-sm font-medium text-brand-ink ring-1 ring-brand-line disabled:opacity-50"
                   >
                     {t("next")}
                   </button>
@@ -458,20 +458,20 @@ export default function AdminModerationPage() {
 
           {(tab === "all" || tab === "community") && (
             <PlatformCard padding="lg">
-              <h2 className="text-base font-semibold text-slate-900 mb-4">{t("communityTitle")}</h2>
+              <h2 className="text-base font-semibold text-brand-ink mb-4">{t("communityTitle")}</h2>
               {pagedCommunity.length === 0 ? (
-                <p className="text-sm text-slate-500">{t("emptyCommunity")}</p>
+                <p className="text-sm text-brand-soft">{t("emptyCommunity")}</p>
               ) : (
                 <div className="space-y-3">
                   {pagedCommunity.map((item) => (
                     <div
                       key={item.id}
-                      className="rounded-xl border border-slate-200 bg-slate-50/60 p-4"
+                      className="rounded-xl border border-brand-line bg-brand-mist/60 p-4"
                     >
-                      <p className="font-semibold text-slate-900 text-sm">
+                      <p className="font-semibold text-brand-ink text-sm">
                         {item.user?.name} → {item.group?.name}
                       </p>
-                      <p className="text-xs text-slate-500 mt-1">
+                      <p className="text-xs text-brand-soft mt-1">
                         {item.user?.email} ·{" "}
                         {fd(new Date(item.createdAt), {
                           dateStyle: "medium",
@@ -490,7 +490,7 @@ export default function AdminModerationPage() {
                         <button
                           type="button"
                           onClick={() => updateStatus("community", item.id, "rejected", "toastRejected")}
-                          className="rounded-lg bg-white px-2.5 py-1 text-xs font-semibold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50"
+                          className="rounded-lg bg-white px-2.5 py-1 text-xs font-semibold text-brand-ink ring-1 ring-brand-line hover:bg-brand-mist"
                         >
                           {t("reject")}
                         </button>
@@ -505,18 +505,18 @@ export default function AdminModerationPage() {
                     type="button"
                     onClick={() => setPageComm((p) => Math.max(1, p - 1))}
                     disabled={pageComm === 1}
-                    className="rounded-lg bg-white px-3 py-2 text-sm font-medium text-slate-700 ring-1 ring-slate-200 disabled:opacity-50"
+                    className="rounded-lg bg-white px-3 py-2 text-sm font-medium text-brand-ink ring-1 ring-brand-line disabled:opacity-50"
                   >
                     {t("prev")}
                   </button>
-                  <span className="text-sm text-slate-600">
+                  <span className="text-sm text-brand-soft">
                     {t("page", { current: pageComm, total: totalPagesComm })}
                   </span>
                   <button
                     type="button"
                     onClick={() => setPageComm((p) => Math.min(totalPagesComm, p + 1))}
                     disabled={pageComm === totalPagesComm}
-                    className="rounded-lg bg-white px-3 py-2 text-sm font-medium text-slate-700 ring-1 ring-slate-200 disabled:opacity-50"
+                    className="rounded-lg bg-white px-3 py-2 text-sm font-medium text-brand-ink ring-1 ring-brand-line disabled:opacity-50"
                   >
                     {t("next")}
                   </button>
@@ -527,20 +527,20 @@ export default function AdminModerationPage() {
 
           {(tab === "all" || tab === "freelancer") && (
             <PlatformCard padding="lg">
-              <h2 className="text-base font-semibold text-slate-900 mb-4">{t("freelancerTitle")}</h2>
+              <h2 className="text-base font-semibold text-brand-ink mb-4">{t("freelancerTitle")}</h2>
               {pagedFreelancer.length === 0 ? (
-                <p className="text-sm text-slate-500">{t("emptyFreelancer")}</p>
+                <p className="text-sm text-brand-soft">{t("emptyFreelancer")}</p>
               ) : (
                 <div className="space-y-3">
                   {pagedFreelancer.map((item) => (
                     <div
                       key={item.id}
-                      className="rounded-xl border border-slate-200 bg-slate-50/60 p-4"
+                      className="rounded-xl border border-brand-line bg-brand-mist/60 p-4"
                     >
-                      <p className="font-semibold text-slate-900 text-sm">
+                      <p className="font-semibold text-brand-ink text-sm">
                         {item.user?.name} → {item.group?.name}
                       </p>
-                      <p className="text-xs text-slate-500 mt-1">
+                      <p className="text-xs text-brand-soft mt-1">
                         {item.user?.email} ·{" "}
                         {fd(new Date(item.createdAt), {
                           dateStyle: "medium",
@@ -578,18 +578,18 @@ export default function AdminModerationPage() {
                     type="button"
                     onClick={() => setPageFree((p) => Math.max(1, p - 1))}
                     disabled={pageFree === 1}
-                    className="rounded-lg bg-white px-3 py-2 text-sm font-medium text-slate-700 ring-1 ring-slate-200 disabled:opacity-50"
+                    className="rounded-lg bg-white px-3 py-2 text-sm font-medium text-brand-ink ring-1 ring-brand-line disabled:opacity-50"
                   >
                     {t("prev")}
                   </button>
-                  <span className="text-sm text-slate-600">
+                  <span className="text-sm text-brand-soft">
                     {t("page", { current: pageFree, total: totalPagesFree })}
                   </span>
                   <button
                     type="button"
                     onClick={() => setPageFree((p) => Math.min(totalPagesFree, p + 1))}
                     disabled={pageFree === totalPagesFree}
-                    className="rounded-lg bg-white px-3 py-2 text-sm font-medium text-slate-700 ring-1 ring-slate-200 disabled:opacity-50"
+                    className="rounded-lg bg-white px-3 py-2 text-sm font-medium text-brand-ink ring-1 ring-brand-line disabled:opacity-50"
                   >
                     {t("next")}
                   </button>
@@ -600,23 +600,23 @@ export default function AdminModerationPage() {
 
           {tab === "posts" && (
             <PlatformCard padding="lg">
-              <h2 className="text-base font-semibold text-slate-900 mb-4">{t("postsTitle")}</h2>
+              <h2 className="text-base font-semibold text-brand-ink mb-4">{t("postsTitle")}</h2>
               {filteredPosts.length === 0 ? (
-                <p className="text-sm text-slate-500">{t("emptyPosts")}</p>
+                <p className="text-sm text-brand-soft">{t("emptyPosts")}</p>
               ) : (
                 <div className="space-y-3">
                   {filteredPosts.map((p) => (
                     <div
                       key={p.id}
-                      className="rounded-xl border border-slate-200 bg-slate-50/60 p-4 space-y-2"
+                      className="rounded-xl border border-brand-line bg-brand-mist/60 p-4 space-y-2"
                     >
-                      <p className="font-semibold text-slate-900 text-sm">{p.title}</p>
-                      <p className="text-xs text-slate-600 whitespace-pre-wrap">{p.bodyPreview}</p>
-                      <p className="text-xs text-slate-500">
+                      <p className="font-semibold text-brand-ink text-sm">{p.title}</p>
+                      <p className="text-xs text-brand-soft whitespace-pre-wrap">{p.bodyPreview}</p>
+                      <p className="text-xs text-brand-soft">
                         {p.channelType === "community" ? t("postChannelCommunity") : t("postChannelFreelancer")}{" "}
                         · {p.groupName || "—"} · {p.author.name} ({p.author.email})
                       </p>
-                      <p className="text-xs text-slate-400">
+                      <p className="text-xs text-brand-soft/70">
                         {fd(new Date(p.createdAt), {
                           dateStyle: "medium",
                           timeStyle: "short",
@@ -663,19 +663,19 @@ export default function AdminModerationPage() {
         {deleteTarget && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
             <div className="bg-white rounded-2xl shadow-xl max-w-lg w-full p-6 space-y-4">
-              <h3 className="text-lg font-semibold text-slate-900">{t("deletePostModalTitle")}</h3>
-              <p className="text-sm text-slate-600">
+              <h3 className="text-lg font-semibold text-brand-ink">{t("deletePostModalTitle")}</h3>
+              <p className="text-sm text-brand-soft">
                 「{deleteTarget.title}」 — {deleteTarget.author.name}
               </p>
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block text-xs font-semibold text-brand-ink mb-1">
                   {t("deleteReasonLabel")}
                 </label>
                 <textarea
                   value={deleteReason}
                   onChange={(e) => setDeleteReason(e.target.value)}
                   rows={4}
-                  className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+                  className="w-full rounded-xl border border-brand-line px-3 py-2 text-sm"
                   placeholder={t("deleteReasonPlaceholder")}
                 />
               </div>
@@ -686,7 +686,7 @@ export default function AdminModerationPage() {
                     setDeleteTarget(null);
                     setDeleteReason("");
                   }}
-                  className="rounded-lg px-4 py-2 text-sm font-semibold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50"
+                  className="rounded-lg px-4 py-2 text-sm font-semibold text-brand-ink ring-1 ring-brand-line hover:bg-brand-mist"
                 >
                   {tCommon("close")}
                 </button>

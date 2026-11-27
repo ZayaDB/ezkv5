@@ -162,34 +162,34 @@ export default function AdminUsersPage() {
   }
 
   return (
-    <div className="bg-slate-50 rounded-2xl border border-slate-200">
+    <div className="bg-brand-mist rounded-2xl border border-brand-line">
       {toast && <Toast message={toast.message} variant={toast.variant} onClose={() => setToast(null)} />}
 
       <div className="px-6 sm:px-8 py-10 space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">{t("usersTitle")}</h1>
-          <p className="text-slate-600 mt-1">{t("usersSubtitle")}</p>
+          <h1 className="text-3xl font-bold text-brand-ink">{t("usersTitle")}</h1>
+          <p className="text-brand-soft mt-1">{t("usersSubtitle")}</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="bg-white rounded-xl border border-slate-200 p-4">
-            <p className="text-sm text-slate-500">{t("roleMenteeLong")}</p>
-            <p className="text-3xl font-bold text-slate-900">{roleStats.mentee}</p>
+          <div className="bg-white rounded-xl border border-brand-line p-4">
+            <p className="text-sm text-brand-soft">{t("roleMenteeLong")}</p>
+            <p className="text-3xl font-bold text-brand-ink">{roleStats.mentee}</p>
           </div>
-          <div className="bg-white rounded-xl border border-slate-200 p-4">
-            <p className="text-sm text-slate-500">{t("roleMentor")}</p>
-            <p className="text-3xl font-bold text-slate-900">{roleStats.mentor}</p>
+          <div className="bg-white rounded-xl border border-brand-line p-4">
+            <p className="text-sm text-brand-soft">{t("roleMentor")}</p>
+            <p className="text-3xl font-bold text-brand-ink">{roleStats.mentor}</p>
           </div>
-          <div className="bg-white rounded-xl border border-slate-200 p-4">
-            <p className="text-sm text-slate-500">{t("roleAdmin")}</p>
-            <p className="text-3xl font-bold text-slate-900">{roleStats.admin}</p>
+          <div className="bg-white rounded-xl border border-brand-line p-4">
+            <p className="text-sm text-brand-soft">{t("roleAdmin")}</p>
+            <p className="text-3xl font-bold text-brand-ink">{roleStats.admin}</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200 p-5">
-          <h2 className="text-lg font-semibold text-slate-900 mb-3">{t("mentorReviewTitle")}</h2>
+        <div className="bg-white rounded-xl border border-brand-line p-5">
+          <h2 className="text-lg font-semibold text-brand-ink mb-3">{t("mentorReviewTitle")}</h2>
           {mentorPending.length === 0 ? (
-            <p className="text-sm text-slate-500">{t("noPendingMentors")}</p>
+            <p className="text-sm text-brand-soft">{t("noPendingMentors")}</p>
           ) : (
             <div className="space-y-3">
               {mentorPending.map((item) => (
@@ -197,18 +197,18 @@ export default function AdminUsersPage() {
                   type="button"
                   key={item.id}
                   onClick={() => setReviewMentor(item)}
-                  className="w-full text-left rounded-xl border border-slate-200 bg-slate-50 p-4 hover:bg-white hover:ring-1 hover:ring-primary-200"
+                  className="w-full text-left rounded-xl border border-brand-line bg-brand-mist p-4 hover:bg-white hover:ring-1 hover:ring-primary-200"
                 >
                   <div className="flex items-start justify-between gap-3">
-                    <p className="font-semibold text-slate-900">{item.title || t('mentorApplication')}</p>
+                    <p className="font-semibold text-brand-ink">{item.title || t('mentorApplication')}</p>
                     <span className="text-[11px] font-semibold text-primary-600 shrink-0">
                       {tMod('openReview')}
                     </span>
                   </div>
-                  <p className="text-xs text-slate-500 mt-1">
+                  <p className="text-xs text-brand-soft mt-1">
                     {item.user?.name} · {item.user?.email}
                   </p>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-brand-soft">
                     {item.location || '-'} · {(item.specialties || []).join(', ') || t('noSpecialty')}
                   </p>
                 </button>
@@ -218,8 +218,8 @@ export default function AdminUsersPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <form onSubmit={handleCreateAdmin} className="bg-white rounded-xl border border-slate-200 p-5 space-y-3">
-            <h2 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
+          <form onSubmit={handleCreateAdmin} className="bg-white rounded-xl border border-brand-line p-5 space-y-3">
+            <h2 className="text-lg font-semibold text-brand-ink flex items-center gap-2">
               <UserPlus className="w-5 h-5 text-primary-600" />
               {t("addAdmin")}
             </h2>
@@ -228,14 +228,14 @@ export default function AdminUsersPage() {
               placeholder={t("email")}
               value={adminForm.email}
               onChange={(e) => setAdminForm((p) => ({ ...p, email: e.target.value }))}
-              className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+              className="w-full rounded-lg border border-brand-line px-3 py-2 text-sm"
             />
             <input
               required
               placeholder={t("name")}
               value={adminForm.name}
               onChange={(e) => setAdminForm((p) => ({ ...p, name: e.target.value }))}
-              className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+              className="w-full rounded-lg border border-brand-line px-3 py-2 text-sm"
             />
             <input
               required
@@ -244,12 +244,12 @@ export default function AdminUsersPage() {
               placeholder={t("initialPassword")}
               value={adminForm.password}
               onChange={(e) => setAdminForm((p) => ({ ...p, password: e.target.value }))}
-              className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+              className="w-full rounded-lg border border-brand-line px-3 py-2 text-sm"
             />
             <select
               value={adminForm.locale}
               onChange={(e) => setAdminForm((p) => ({ ...p, locale: e.target.value as 'kr' | 'en' | 'mn' }))}
-              className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+              className="w-full rounded-lg border border-brand-line px-3 py-2 text-sm"
             >
               <option value="kr">kr</option>
               <option value="en">en</option>
@@ -260,15 +260,15 @@ export default function AdminUsersPage() {
             </button>
           </form>
 
-          <div className="lg:col-span-2 bg-white rounded-xl border border-slate-200 p-5">
+          <div className="lg:col-span-2 bg-white rounded-xl border border-brand-line p-5">
             <div className="flex flex-col md:flex-row gap-3">
               <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-soft/70" />
                 <input
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder={t("searchPlaceholder")}
-                  className="w-full pl-9 pr-3 py-2 rounded-lg border border-slate-200 text-sm"
+                  className="w-full pl-9 pr-3 py-2 rounded-lg border border-brand-line text-sm"
                 />
               </div>
               <select
@@ -277,7 +277,7 @@ export default function AdminUsersPage() {
                   setRoleFilter(e.target.value);
                   setPage(1);
                 }}
-                className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                className="rounded-lg border border-brand-line px-3 py-2 text-sm"
               >
                 <option value="">{t("all")}</option>
                 <option value="mentee">{t("roleMentee")}</option>
@@ -287,7 +287,7 @@ export default function AdminUsersPage() {
               <button
                 type="button"
                 onClick={() => void loadUsers()}
-                className="rounded-lg bg-slate-900 text-white px-4 py-2 text-sm font-semibold"
+                className="rounded-lg bg-brand-ink text-white px-4 py-2 text-sm font-semibold"
               >
                 {t("search")}
               </button>
@@ -300,7 +300,7 @@ export default function AdminUsersPage() {
                 <button
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
                   disabled={page === 1}
-                  className="px-3 py-1.5 rounded bg-slate-100 disabled:opacity-50"
+                  className="px-3 py-1.5 rounded bg-brand-mist disabled:opacity-50"
                 >
                   {tMod("prev")}
                 </button>
@@ -308,7 +308,7 @@ export default function AdminUsersPage() {
                 <button
                   onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                   disabled={page === totalPages}
-                  className="px-3 py-1.5 rounded bg-slate-100 disabled:opacity-50"
+                  className="px-3 py-1.5 rounded bg-brand-mist disabled:opacity-50"
                 >
                   {tMod("next")}
                 </button>

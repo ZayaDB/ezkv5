@@ -10,6 +10,7 @@ import ServiceGrid from "@/components/home/b3/ServiceGrid";
 import AskList, { AskButton } from "@/components/home/b3/AskList";
 import { HeroStart, TourButton } from "@/components/home/b3/HeroStart";
 import FirstVisitGuide from "@/components/home/b3/FirstVisitGuide";
+import VisaChip from "@/components/visa/VisaChip";
 import "./home.css";
 
 export const revalidate = 3600;
@@ -59,9 +60,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               <ul className="flex flex-wrap gap-2">
                 {CURRENT_VISAS.map((v) => (
                   <li key={v}>
-                    <Link href={`/${locale}/signup?visa=${encodeURIComponent(v)}`} className="b3-chip">
-                      {v}
-                    </Link>
+                    <VisaChip code={v} className="b3-chip" />
                   </li>
                 ))}
               </ul>
@@ -147,9 +146,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             <ul className="flex flex-wrap gap-2.5">
               {CURRENT_VISAS.map((v) => (
                 <li key={v}>
-                  <Link href={`/${locale}/signup?visa=${encodeURIComponent(v)}`} className="b3-visa-chip">
-                    {v}
-                  </Link>
+                  <VisaChip code={v} className="b3-visa-chip" />
                 </li>
               ))}
             </ul>

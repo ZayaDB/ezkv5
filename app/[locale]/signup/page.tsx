@@ -13,6 +13,7 @@ type ResidencyChoice = boolean | null;
 
 export default function SignupPage() {
   const t = useTranslations("auth");
+  const tVisa = useTranslations("visaShort");
   const locale = useLocale();
   const router = useRouter();
   const { user, signup } = useAuth();
@@ -220,7 +221,7 @@ export default function SignupPage() {
               <input type="text" list="lnk-visa-codes" value={formData.visaType} onChange={set("visaType")} required className={authInputPlain} placeholder={t("visaTypePlaceholder")} />
               <datalist id="lnk-visa-codes">
                 {["D-4", "D-2", "D-10", "E-7", "F-2", "F-2-7", "F-5", "F-6", "H-2", "C-3"].map((v) => (
-                  <option key={v} value={v} />
+                  <option key={v} value={v} label={`${v} · ${tVisa(v)}`} />
                 ))}
               </datalist>
             </AuthField>

@@ -61,14 +61,14 @@ export default function CommunityGroupChat({ groupId }: { groupId: string }) {
   };
 
   return (
-    <div className="rounded-2xl border border-zinc-200 bg-white overflow-hidden flex flex-col h-[420px] dark:bg-night-card dark:border-hairline-dark">
-      <div className="px-4 py-3 border-b border-zinc-100 dark:border-hairline-dark">
-        <h2 className="text-sm font-bold text-zinc-900 dark:text-snow">{t("chatTitle")}</h2>
-        <p className="text-xs text-zinc-500 dark:text-snow-muted">{t("chatHint")}</p>
+    <div className="rounded-2xl border border-brand-line bg-white overflow-hidden flex flex-col h-[420px] dark:bg-night-card dark:border-hairline-dark">
+      <div className="px-4 py-3 border-b border-brand-line dark:border-hairline-dark">
+        <h2 className="text-sm font-bold text-brand-ink dark:text-snow">{t("chatTitle")}</h2>
+        <p className="text-xs text-brand-soft dark:text-snow-muted">{t("chatHint")}</p>
       </div>
       <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
         {messages.length === 0 ? (
-          <p className="text-sm text-zinc-500 dark:text-snow-muted">{t("chatEmpty")}</p>
+          <p className="text-sm text-brand-soft dark:text-snow-muted">{t("chatEmpty")}</p>
         ) : (
           messages.map((m) => {
             const mine = user?.id === m.author.id;
@@ -77,13 +77,13 @@ export default function CommunityGroupChat({ groupId }: { groupId: string }) {
                 <div className={`max-w-[80%] ${mine ? "text-right" : ""}`}>
                   <Link
                     href={`/${locale}/users/${m.author.id}`}
-                    className="text-[11px] font-semibold text-zinc-500 hover:text-primary-600 dark:text-snow-muted"
+                    className="text-[11px] font-semibold text-brand-soft hover:text-primary-600 dark:text-snow-muted"
                   >
                     {m.author.name}
                   </Link>
                   <p
                     className={`mt-0.5 rounded-2xl px-3 py-2 text-sm whitespace-pre-wrap ${
-                      mine ? "bg-primary-600 text-white" : "bg-zinc-100 text-zinc-800 dark:text-snow dark:bg-night"
+                      mine ? "bg-primary-600 text-white" : "bg-brand-mist text-brand-ink dark:text-snow dark:bg-night"
                     }`}
                   >
                     {m.body}
@@ -96,7 +96,7 @@ export default function CommunityGroupChat({ groupId }: { groupId: string }) {
         <div ref={bottomRef} />
       </div>
       {isAuthenticated ? (
-        <div className="border-t border-zinc-100 p-3 flex gap-2 dark:border-hairline-dark">
+        <div className="border-t border-brand-line p-3 flex gap-2 dark:border-hairline-dark">
           <input
             value={text}
             onChange={(e) => setText(e.target.value)}
@@ -107,7 +107,7 @@ export default function CommunityGroupChat({ groupId }: { groupId: string }) {
               }
             }}
             placeholder={t("chatPlaceholder")}
-            className="flex-1 rounded-xl border border-zinc-200 px-3 py-2 text-sm dark:border-hairline-dark"
+            className="flex-1 rounded-xl border border-brand-line px-3 py-2 text-sm dark:border-hairline-dark"
           />
           <button
             type="button"
@@ -119,7 +119,7 @@ export default function CommunityGroupChat({ groupId }: { groupId: string }) {
           </button>
         </div>
       ) : (
-        <p className="border-t border-zinc-100 px-4 py-3 text-xs text-zinc-500 dark:text-snow-muted dark:border-hairline-dark">
+        <p className="border-t border-brand-line px-4 py-3 text-xs text-brand-soft dark:text-snow-muted dark:border-hairline-dark">
           {t("chatLogin")}
         </p>
       )}

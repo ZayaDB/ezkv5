@@ -61,8 +61,8 @@ export default function MyWishlistPage() {
             <PlatformCard key={item.id}>
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="font-semibold text-zinc-900 dark:text-snow">{item.lecture?.title || t("deleted")}</p>
-                  <p className="text-xs text-zinc-500 mt-1 dark:text-snow-muted">
+                  <p className="font-semibold text-brand-ink dark:text-snow">{item.lecture?.title || t("deleted")}</p>
+                  <p className="text-xs text-brand-soft mt-1 dark:text-snow-muted">
                     {lectureCategoryLabel(item.lecture?.category, tLec) || "-"} · {item.lecture?.duration || "-"} · ₩
                     {(item.lecture?.price || 0).toLocaleString("ko-KR")}
                   </p>

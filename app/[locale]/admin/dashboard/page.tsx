@@ -56,18 +56,18 @@ export default function AdminDashboardPage() {
 
   if (authLoading || loading || !stats || !currentUser) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center">
+      <div className="min-h-screen bg-white dark:bg-night-card flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">{t("statsLoading")}</p>
+          <p className="text-brand-soft">{t("statsLoading")}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-gradient-to-b from-gray-50 to-white rounded-2xl border border-gray-100">
-      <div className="bg-gradient-to-r from-primary-600 to-accent-500 py-10 rounded-t-2xl">
+    <div className="bg-white dark:bg-night-card rounded-2xl border border-brand-line">
+      <div className="bg-brand py-10 rounded-t-2xl">
         <div className="px-6 sm:px-8">
           <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-2">{t("dashboardTitle")}</h1>
           <p className="text-xl text-white/90">{t("welcome", { name: currentUser.name })}</p>

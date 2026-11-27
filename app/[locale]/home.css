@@ -62,7 +62,7 @@
 }
 .b3-hero-card:hover { transform: translateY(-4px) rotate(-.4deg); box-shadow: 0 26px 50px -30px rgba(0, 0, 0, .55); }
 .b3-chip {
-  display: inline-flex; align-items: center; min-height: 40px; padding: 0 14px; border-radius: 999px;
+  display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 6px 14px; border-radius: 999px;
   border: 2px solid var(--b-line); font-weight: 800; font-size: 14px; letter-spacing: -0.01em;
   transition: background-color .2s, border-color .2s, color .2s, transform .3s var(--b-ease);
 }
@@ -72,6 +72,11 @@
   color: #d5ebe5; text-decoration: underline; text-underline-offset: 5px;
 }
 .b3-tour-btn:hover { color: #fff; }
+
+/* 비자 칩 안: 코드 + 짧은 이름 */
+.b3-chip-code { font-weight: 800; }
+.b3-chip-name { font-weight: 600; font-size: .86em; opacity: .72; }
+.b3-chip:hover .b3-chip-name, .b3-visa-chip:hover .b3-chip-name { opacity: .9; }
 
 /* 큰 L N K */
 .b3-mono {
@@ -206,7 +211,7 @@
   font-size: clamp(140px, 22vw, 320px); line-height: 1; color: rgba(255, 255, 255, .05); pointer-events: none;
 }
 .b3-visa-chip {
-  display: inline-flex; align-items: center; min-height: 46px; padding: 0 18px; border-radius: 999px;
+  display: inline-flex; align-items: center; gap: 10px; min-height: 46px; padding: 8px 18px; border-radius: 999px;
   border: 2px solid #3a4846; color: #fff; font-weight: 800; font-size: 15px;
   transition: background-color .2s, color .2s, border-color .2s, transform .3s var(--b-ease);
 }

@@ -13,12 +13,12 @@ export default function Field({
 }) {
   return (
     <div>
-      <label className="block text-sm font-medium text-slate-700 mb-1">
+      <label className="block text-sm font-medium text-brand-ink mb-1">
         {label}
         {required ? <span className="text-red-500 ml-1">*</span> : null}
       </label>
       {children}
-      {help ? <p className="text-xs text-slate-500 mt-1">{help}</p> : null}
+      {help ? <p className="text-xs text-brand-soft mt-1">{help}</p> : null}
     </div>
   );
 }

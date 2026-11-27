@@ -29,8 +29,8 @@ export type MentorProfileView = {
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-[8.5rem_1fr] gap-x-3 gap-y-0.5 text-sm">
-      <span className="text-slate-500 shrink-0">{label}</span>
-      <div className="min-w-0 text-slate-800 whitespace-pre-wrap break-words">{children}</div>
+      <span className="text-brand-soft shrink-0">{label}</span>
+      <div className="min-w-0 text-brand-ink whitespace-pre-wrap break-words">{children}</div>
     </div>
   );
 }
@@ -71,13 +71,13 @@ export default function MentorApplicationDetails({
     <div
       className={
         framed
-          ? "mt-3 space-y-2 rounded-lg bg-white ring-1 ring-slate-200 p-3"
+          ? "mt-3 space-y-2 rounded-lg bg-white ring-1 ring-brand-line p-3"
           : "space-y-2"
       }
     >
       {item.photo ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={item.photo} alt={item.title} className="h-16 w-16 rounded-lg object-cover ring-1 ring-slate-200" />
+        <img src={item.photo} alt={item.title} className="h-16 w-16 rounded-lg object-cover ring-1 ring-brand-line" />
       ) : null}
       <Field label={tm("mentorTitleLabel")}>{dash(item.title)}</Field>
       <Field label={tm("locationLabel")}>{dash(item.location)}</Field>

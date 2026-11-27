@@ -58,10 +58,10 @@ export default function ScheduleLearningPanel({
   );
   return (
     <div className="lg:col-span-2 space-y-2">
-      {labels.title ? <h3 className="text-sm font-semibold text-zinc-800 dark:text-snow">{labels.title}</h3> : null}
+      {labels.title ? <h3 className="text-sm font-semibold text-brand-ink dark:text-snow">{labels.title}</h3> : null}
       {view === "month" && (
         <div>
-          <div className="grid grid-cols-7 gap-1 text-center text-xs font-semibold uppercase text-zinc-500 mb-2 dark:text-snow-muted">
+          <div className="grid grid-cols-7 gap-1 text-center text-xs font-semibold uppercase text-brand-soft mb-2 dark:text-snow-muted">
             {weekdayHeaders.map((d) => (
               <div key={d}>{d}</div>
             ))}
@@ -77,12 +77,12 @@ export default function ScheduleLearningPanel({
                 ...ll.map((ev: any) => ({
                   id: `life-${ev.id}`,
                   text: `${timeFmt(ev.startsAt)} ${ev.title}`,
-                  cls: "bg-violet-600 text-white",
+                  cls: "bg-brand-sun-deep text-brand-ink",
                 })),
                 ...ss.map((s: any) => ({
                   id: `session-${s.id}`,
                   text: `${s.date ? timeFmt(s.date) : ""} ${s.mentorName || s.menteeName || tr("names.session")}`.trim(),
-                  cls: "bg-blue-600 text-white",
+                  cls: "bg-brand-ink text-white",
                 })),
                 ...ee.map((e: any) => ({
                   id: `enroll-${e.id}`,
@@ -103,11 +103,11 @@ export default function ScheduleLearningPanel({
                   key={key}
                   type="button"
                   onClick={() => onOpenDay(date)}
-                  className={`min-h-[108px] rounded-lg border p-1.5 text-left transition hover:bg-zinc-50/80 ${
-                    inMonth ? "bg-white border-zinc-200 dark:bg-night-card dark:border-hairline-dark" : "bg-zinc-50 border-zinc-100 text-zinc-400 dark:text-snow-muted dark:bg-night dark:border-hairline-dark"
+                  className={`min-h-[108px] rounded-lg border p-1.5 text-left transition hover:bg-brand-mist/80 ${
+                    inMonth ? "bg-white border-brand-line dark:bg-night-card dark:border-hairline-dark" : "bg-brand-mist border-brand-line text-brand-soft/70 dark:text-snow-muted dark:bg-night dark:border-hairline-dark"
                   } ${isTodayDate(date) ? "ring-2 ring-primary-400" : ""}`}
                 >
-                  <div className="text-sm font-semibold text-zinc-800 dark:text-snow">{date.getDate()}</div>
+                  <div className="text-sm font-semibold text-brand-ink dark:text-snow">{date.getDate()}</div>
                   <div className="mt-1 space-y-1 min-h-[3.5rem]">
                     {visibleBars.map((bar) => (
                       <p
@@ -118,11 +118,11 @@ export default function ScheduleLearningPanel({
                         {bar.text}
                       </p>
                     ))}
-                    {hiddenCount > 0 && <p className="text-[11px] text-zinc-500 font-medium dark:text-snow-muted">+{hiddenCount}</p>}
-                    {!hasAny && <p className="text-xs text-zinc-400 dark:text-snow-muted"> </p>}
+                    {hiddenCount > 0 && <p className="text-[11px] text-brand-soft font-medium dark:text-snow-muted">+{hiddenCount}</p>}
+                    {!hasAny && <p className="text-xs text-brand-soft/70 dark:text-snow-muted"> </p>}
                   </div>
                   <div className="mt-1 flex flex-wrap gap-0.5">
-                    {ll.length > 0 && <span className="h-1.5 w-1.5 rounded-full bg-violet-600" title={labels.legendLife} />}
+                    {ll.length > 0 && <span className="h-1.5 w-1.5 rounded-full bg-brand-sun-deep" title={labels.legendLife} />}
                     {ss.length > 0 && <span className="h-1.5 w-1.5 rounded-full bg-primary-600" title={labels.legendSession} />}
                     {ee.length > 0 && <span className="h-1.5 w-1.5 rounded-full bg-amber-500" title={labels.legendEnrollment} />}
                     {bb.length > 0 && <span className="h-1.5 w-1.5 rounded-full bg-rose-500" title={labels.legendBudget} />}
@@ -131,9 +131,9 @@ export default function ScheduleLearningPanel({
               );
             })}
           </div>
-          <div className="mt-3 flex flex-wrap gap-3 text-sm text-zinc-600 dark:text-snow-muted">
+          <div className="mt-3 flex flex-wrap gap-3 text-sm text-brand-soft dark:text-snow-muted">
             <span className="inline-flex items-center gap-1">
-              <span className="h-2 w-2 rounded-full bg-violet-600" /> {labels.legendLife}
+              <span className="h-2 w-2 rounded-full bg-brand-sun-deep" /> {labels.legendLife}
             </span>
             <span className="inline-flex items-center gap-1">
               <span className="h-2 w-2 rounded-full bg-primary-600" /> {labels.legendSession}
@@ -156,16 +156,16 @@ export default function ScheduleLearningPanel({
             const ll = lifeOnDay(day);
             const bb = budgetOnDay(day);
             return (
-              <div key={day.toISOString()} className="rounded-xl border border-zinc-200 bg-zinc-50/80 p-3 min-h-[140px] dark:bg-night dark:border-hairline-dark">
+              <div key={day.toISOString()} className="rounded-xl border border-brand-line bg-brand-mist/80 p-3 min-h-[140px] dark:bg-night dark:border-hairline-dark">
                 <button
                   type="button"
                   onClick={() => onOpenDay(day)}
-                  className="text-sm font-semibold text-zinc-700 mb-2 w-full text-left hover:text-primary-700 dark:text-snow-muted"
+                  className="text-sm font-semibold text-brand-ink mb-2 w-full text-left hover:text-primary-700 dark:text-snow-muted"
                 >
                   {formatDayLabel(day)}
                 </button>
                 {ll.map((ev) => (
-                  <p key={ev.id} className="text-xs text-violet-900 font-medium truncate">
+                  <p key={ev.id} className="text-xs text-brand-ink font-medium truncate">
                     · {ev.title}
                   </p>
                 ))}
@@ -193,17 +193,17 @@ export default function ScheduleLearningPanel({
       {view === "day" && (
         <div className="space-y-4">
           <div>
-            <h4 className="text-sm font-semibold text-zinc-800 mb-2 dark:text-snow">{labels.dayLifeTitle}</h4>
+            <h4 className="text-sm font-semibold text-brand-ink mb-2 dark:text-snow">{labels.dayLifeTitle}</h4>
             {lifeOnDay(anchor).length === 0 ? (
-              <p className="text-sm text-zinc-500 dark:text-snow-muted">—</p>
+              <p className="text-sm text-brand-soft dark:text-snow-muted">—</p>
             ) : (
               <ul className="space-y-2">
                 {lifeOnDay(anchor).map((ev) => (
                   <li
                     key={ev.id}
-                    className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-violet-100 bg-violet-50/70 px-3 py-2 text-sm"
+                    className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-brand-sun/50 bg-[#fff8dc] px-3 py-2 text-sm"
                   >
-                    <span className="text-violet-950 font-medium">{ev.title}</span>
+                    <span className="text-brand-ink font-medium">{ev.title}</span>
                     <button
                       type="button"
                       onClick={() => onRemoveEvent(ev.id)}
@@ -217,13 +217,13 @@ export default function ScheduleLearningPanel({
             )}
           </div>
           <div>
-            <h4 className="text-sm font-semibold text-zinc-800 mb-2 dark:text-snow">{labels.sessionsTitle}</h4>
+            <h4 className="text-sm font-semibold text-brand-ink mb-2 dark:text-snow">{labels.sessionsTitle}</h4>
             {sessionsOnDay(anchor).length === 0 ? (
-              <p className="text-sm text-zinc-500 dark:text-snow-muted">—</p>
+              <p className="text-sm text-brand-soft dark:text-snow-muted">—</p>
             ) : (
               <ul className="space-y-2">
                 {sessionsOnDay(anchor).map((s) => (
-                  <li key={s.id} className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-zinc-100 bg-zinc-50 px-3 py-2 text-sm dark:bg-night dark:border-hairline-dark">
+                  <li key={s.id} className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-brand-line bg-brand-mist px-3 py-2 text-sm dark:bg-night dark:border-hairline-dark">
                     <span>
                       {s.date ? timeFmt(s.date) : "—"} ·{" "}
                       {labels.sessionWith(s.mentorName || s.menteeName || "—")}
@@ -243,9 +243,9 @@ export default function ScheduleLearningPanel({
             )}
           </div>
           <div>
-            <h4 className="text-sm font-semibold text-zinc-800 mb-2 dark:text-snow">{labels.enrollTitle}</h4>
+            <h4 className="text-sm font-semibold text-brand-ink mb-2 dark:text-snow">{labels.enrollTitle}</h4>
             {enrollmentsOnDay(anchor).length === 0 ? (
-              <p className="text-sm text-zinc-500 dark:text-snow-muted">—</p>
+              <p className="text-sm text-brand-soft dark:text-snow-muted">—</p>
             ) : (
               <ul className="space-y-2">
                 {enrollmentsOnDay(anchor).map((e) => (
@@ -257,9 +257,9 @@ export default function ScheduleLearningPanel({
             )}
           </div>
           <div>
-            <h4 className="text-sm font-semibold text-zinc-800 mb-2 dark:text-snow">{labels.budgetTitle}</h4>
+            <h4 className="text-sm font-semibold text-brand-ink mb-2 dark:text-snow">{labels.budgetTitle}</h4>
             {budgetOnDay(anchor).length === 0 ? (
-              <p className="text-sm text-zinc-500 dark:text-snow-muted">—</p>
+              <p className="text-sm text-brand-soft dark:text-snow-muted">—</p>
             ) : (
               <ul className="space-y-2">
                 {budgetOnDay(anchor).map((b) => (

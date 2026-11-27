@@ -20,10 +20,10 @@ export default function Button({
     variant === "primary"
       ? "bg-brand text-white hover:bg-brand-deep hover:-translate-y-0.5 hover:shadow-[0_14px_28px_-16px_rgba(20,86,76,.8)]"
       : variant === "secondary"
-        ? "bg-white dark:bg-slate-800 text-brand-ink dark:text-slate-100 ring-2 ring-brand-ink/90 dark:ring-slate-700 hover:bg-brand-ink hover:text-white dark:hover:bg-slate-700"
+        ? "bg-white dark:bg-night text-brand-ink dark:text-snow ring-2 ring-brand-ink/90 dark:ring-slate-700 hover:bg-brand-ink hover:text-white dark:hover:bg-night-pill"
         : variant === "danger"
           ? "bg-red-600 text-white hover:bg-red-700 shadow-sm"
-          : "bg-transparent text-slate-700 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800";
+          : "bg-transparent text-brand-ink dark:text-snow hover:bg-brand-mist dark:hover:bg-night-pill";
   const s =
     size === "sm" ? "px-3.5 py-2 text-xs" : size === "lg" ? "px-6 py-3.5 text-base" : "px-5 py-2.5 text-sm";
   return (

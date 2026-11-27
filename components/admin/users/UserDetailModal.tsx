@@ -26,37 +26,37 @@ export default function UserDetailModal({
 
   return (
     <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-2xl bg-white rounded-2xl border border-slate-200 p-6 max-h-[90vh] overflow-y-auto">
+      <div className="w-full max-w-2xl bg-white rounded-2xl border border-brand-line p-6 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between">
-          <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+          <h3 className="text-xl font-bold text-brand-ink flex items-center gap-2">
             <Users className="w-5 h-5 text-primary-600" />
             {t("userDetail")}
           </h3>
-          <button onClick={onClose} className="text-slate-500">
+          <button onClick={onClose} className="text-brand-soft">
             {tCommon("close")}
           </button>
         </div>
 
         {loading || !detail ? (
-          <p className="text-slate-500 mt-4">{tCommon("loadingShort")}</p>
+          <p className="text-brand-soft mt-4">{tCommon("loadingShort")}</p>
         ) : (
           <div className="mt-4 space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div className="p-3 rounded-lg bg-slate-50">
-                <p className="text-xs text-slate-500">{t("name")}</p>
-                <p className="font-semibold text-slate-900">{detail.user.name}</p>
+              <div className="p-3 rounded-lg bg-brand-mist">
+                <p className="text-xs text-brand-soft">{t("name")}</p>
+                <p className="font-semibold text-brand-ink">{detail.user.name}</p>
               </div>
-              <div className="p-3 rounded-lg bg-slate-50">
-                <p className="text-xs text-slate-500">{t("email")}</p>
-                <p className="font-semibold text-slate-900">{detail.user.email}</p>
+              <div className="p-3 rounded-lg bg-brand-mist">
+                <p className="text-xs text-brand-soft">{t("email")}</p>
+                <p className="font-semibold text-brand-ink">{detail.user.email}</p>
               </div>
-              <div className="p-3 rounded-lg bg-slate-50">
-                <p className="text-xs text-slate-500">{t("colRole")}</p>
-                <p className="font-semibold text-slate-900">{detail.user.role}</p>
+              <div className="p-3 rounded-lg bg-brand-mist">
+                <p className="text-xs text-brand-soft">{t("colRole")}</p>
+                <p className="font-semibold text-brand-ink">{detail.user.role}</p>
               </div>
-              <div className="p-3 rounded-lg bg-slate-50">
-                <p className="text-xs text-slate-500">{t("language")}</p>
-                <p className="font-semibold text-slate-900">{detail.user.locale}</p>
+              <div className="p-3 rounded-lg bg-brand-mist">
+                <p className="text-xs text-brand-soft">{t("language")}</p>
+                <p className="font-semibold text-brand-ink">{detail.user.locale}</p>
               </div>
             </div>
 
@@ -78,7 +78,7 @@ export default function UserDetailModal({
             )}
 
             <div className="border rounded-xl p-4">
-              <h4 className="font-semibold text-slate-900 flex items-center gap-2">
+              <h4 className="font-semibold text-brand-ink flex items-center gap-2">
                 <Shield className="w-4 h-4 text-red-600" />
                 {t("resetPasswordTitle")}
               </h4>
@@ -89,7 +89,7 @@ export default function UserDetailModal({
                   value={newPassword}
                   onChange={(e) => onChangePassword(e.target.value)}
                   placeholder={t("newPassword")}
-                  className="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                  className="flex-1 rounded-lg border border-brand-line px-3 py-2 text-sm"
                 />
                 <button
                   type="button"

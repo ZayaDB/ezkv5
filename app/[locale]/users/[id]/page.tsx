@@ -58,9 +58,9 @@ export default function PublicUserPage() {
 
   if (!profile) {
     return (
-      <div className="min-h-screen bg-zinc-50 dark:bg-slate-950">
+      <div className="min-h-screen bg-brand-mist dark:bg-night-card">
         <div className="max-w-3xl mx-auto px-4 py-16 text-center">
-          <p className="font-bold text-zinc-900 dark:text-white">{t("notFound")}</p>
+          <p className="font-bold text-brand-ink dark:text-white">{t("notFound")}</p>
           <Link
             href={`/${locale}/community`}
             className="text-primary-600 text-sm font-semibold mt-3 inline-block"
@@ -77,12 +77,12 @@ export default function PublicUserPage() {
   const initial = (profile.name || "?").charAt(0).toUpperCase();
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-slate-950">
-      <div className="bg-white dark:bg-slate-900 border-b border-zinc-200 dark:border-slate-800">
+    <div className="min-h-screen bg-brand-mist dark:bg-night-card">
+      <div className="bg-white dark:bg-night-card border-b border-brand-line dark:border-hairline-dark">
         <div className="max-w-3xl mx-auto px-4 py-8">
           <Link
             href={`/${locale}/community`}
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-soft hover:text-brand-ink dark:hover:text-white"
           >
             <ArrowLeft className="w-4 h-4" />
             {t("back")}
@@ -97,21 +97,21 @@ export default function PublicUserPage() {
                 className="w-20 h-20 rounded-full object-cover object-top ring-2 ring-zinc-100 dark:ring-slate-800 shrink-0"
               />
             ) : (
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary-500 to-violet-600 text-white flex items-center justify-center text-3xl font-bold shrink-0">
+              <div className="w-20 h-20 rounded-full bg-brand text-white flex items-center justify-center text-3xl font-bold shrink-0">
                 {initial}
               </div>
             )}
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
-                <h1 className="text-2xl font-bold text-zinc-900 dark:text-white truncate">
+                <h1 className="text-2xl font-bold text-brand-ink dark:text-white truncate">
                   {profile.name}
                 </h1>
-                <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-slate-800 text-zinc-600 dark:text-slate-300">
+                <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-brand-mist dark:bg-night text-brand-soft dark:text-snow-muted">
                   {tRoles(roleKey)}
                 </span>
               </div>
               {(profile.university || profile.nationality) && (
-                <p className="mt-1 text-sm text-zinc-500">
+                <p className="mt-1 text-sm text-brand-soft">
                   {[profile.university, profile.nationality].filter(Boolean).join(" · ")}
                 </p>
               )}
@@ -128,21 +128,21 @@ export default function PublicUserPage() {
             </div>
           </div>
 
-          <p className="mt-5 text-sm text-zinc-700 dark:text-slate-300 whitespace-pre-wrap leading-relaxed">
+          <p className="mt-5 text-sm text-brand-ink dark:text-snow-muted whitespace-pre-wrap leading-relaxed">
             {profile.bio?.trim() ? profile.bio : t("emptyBio")}
           </p>
 
           {mentor ? (
             <Link
               href={`/${locale}/mentors/${mentor.id}`}
-              className="mt-5 flex items-center gap-3 rounded-xl border border-zinc-200 dark:border-slate-700 bg-zinc-50 dark:bg-slate-800 px-4 py-3 hover:border-primary-300 dark:hover:border-primary-600"
+              className="mt-5 flex items-center gap-3 rounded-xl border border-brand-line dark:border-hairline-dark bg-brand-mist dark:bg-night px-4 py-3 hover:border-primary-300 dark:hover:border-primary-600"
             >
               <GraduationCap className="w-5 h-5 text-primary-600 dark:text-primary-400 shrink-0" />
               <div className="min-w-0">
-                <p className="text-sm font-semibold text-zinc-900 dark:text-white truncate">
+                <p className="text-sm font-semibold text-brand-ink dark:text-white truncate">
                   {mentor.title || t("viewMentor")}
                 </p>
-                <p className="text-xs text-zinc-500 dark:text-slate-400">{t("viewMentor")}</p>
+                <p className="text-xs text-brand-soft dark:text-snow-muted">{t("viewMentor")}</p>
               </div>
             </Link>
           ) : null}

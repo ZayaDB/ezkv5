@@ -20,8 +20,8 @@ export default function ModerationTabs({
           onClick={() => onChange(x.id)}
           className={`rounded-lg px-3 py-1.5 text-sm font-semibold transition-colors ${
             tab === x.id
-              ? "bg-slate-900 text-white"
-              : "bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50"
+              ? "bg-brand-ink text-white"
+              : "bg-white text-brand-soft ring-1 ring-brand-line hover:bg-brand-mist"
           }`}
         >
           {x.label}

@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import Link from 'next/link';
+import { langName } from '@/lib/i18n/languageNames';
 import MessageButton from '@/components/messages/MessageButton';
 import { ReviewList } from '@/components/reviews/Reviews';
 import { listMentorReviews, type Review } from '@/lib/supabase/reviews';
@@ -107,7 +108,7 @@ export default function MentorDetailPage() {
     { label: t('sessionLength'), value: t('minutes', { n: mentor.sessionDuration || 60 }) },
     { label: t('sessionFormat'), value: formatLabel },
     { label: t('experience'), value: mentor.yearsOfExperience ? t('years', { n: mentor.yearsOfExperience }) : '' },
-    { label: t('languages'), value: (mentor.languages || []).join(', ') },
+    { label: t('languages'), value: (mentor.languages || []).map((l) => langName(l, locale)).join(', ') },
     { label: t('timezone'), value: mentor.timezone || 'Asia/Seoul' },
   ].filter((d) => d.value);
 

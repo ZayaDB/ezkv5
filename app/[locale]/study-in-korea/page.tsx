@@ -14,7 +14,7 @@ export default async function StudyInKoreaPage({
   setRequestLocale(locale);
   let items: StudyInfo[] = [];
   try {
-    items = await queryStudyInfos();
+    items = await queryStudyInfos({ locale });
   } catch {
     items = [];
   }

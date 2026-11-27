@@ -76,7 +76,7 @@ export default function MyNotificationsPage() {
           )}
           <Link
             href={`/${locale}/my/dashboard`}
-            className="rounded-lg px-3 py-2 text-xs font-semibold text-zinc-700 ring-1 ring-zinc-200 hover:bg-zinc-50 dark:text-snow-muted dark:bg-night"
+            className="rounded-lg px-3 py-2 text-xs font-semibold text-brand-ink ring-1 ring-brand-line hover:bg-brand-mist dark:text-snow-muted dark:bg-night"
           >
             ←
           </Link>
@@ -85,7 +85,7 @@ export default function MyNotificationsPage() {
 
       <PlatformCard padding="lg">
         {items.length === 0 ? (
-          <p className="text-sm text-zinc-600 dark:text-snow-muted">{t("empty")}</p>
+          <p className="text-sm text-brand-soft dark:text-snow-muted">{t("empty")}</p>
         ) : (
           <ul className="space-y-4">
             {items.map((n) => (
@@ -99,10 +99,10 @@ export default function MyNotificationsPage() {
                       : "border-primary-100 bg-primary-50/40"
                 }`}
               >
-                <p className="text-sm font-semibold text-zinc-900 dark:text-snow">{n.title}</p>
-                {n.body && <p className="text-sm text-zinc-800 whitespace-pre-wrap mt-1 dark:text-snow">{n.body}</p>}
+                <p className="text-sm font-semibold text-brand-ink dark:text-snow">{n.title}</p>
+                {n.body && <p className="text-sm text-brand-ink whitespace-pre-wrap mt-1 dark:text-snow">{n.body}</p>}
                 {n.dueDate && (
-                  <p className="text-xs text-zinc-500 mt-1 dark:text-snow-muted">
+                  <p className="text-xs text-brand-soft mt-1 dark:text-snow-muted">
                     {t("dueDate", { date: fd(new Date(n.dueDate), { dateStyle: "medium" }) })}
                   </p>
                 )}
@@ -118,7 +118,7 @@ export default function MyNotificationsPage() {
                   <button
                     type="button"
                     onClick={() => void dismissOne(n.id)}
-                    className="text-xs font-semibold text-zinc-500 hover:text-zinc-800 dark:text-snow-muted"
+                    className="text-xs font-semibold text-brand-soft hover:text-brand-ink dark:text-snow-muted"
                   >
                     {t("dismiss")}
                   </button>

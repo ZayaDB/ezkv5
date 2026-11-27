@@ -37,14 +37,14 @@ function InfoRow({
   return (
     <div className={`flex gap-4 py-1.5 ${align === "start" ? "items-start" : "items-center"}`}>
       <span
-        className={`w-28 shrink-0 text-sm font-medium text-slate-700 dark:text-slate-300 ${
+        className={`w-28 shrink-0 text-sm font-medium text-brand-ink dark:text-snow-muted ${
           align === "start" ? "pt-2" : ""
         }`}
       >
         {label}
         {required ? <span className="text-red-500 ml-1">*</span> : null}
       </span>
-      <div className="min-w-0 flex-1 text-sm text-slate-900 dark:text-slate-100">{children}</div>
+      <div className="min-w-0 flex-1 text-sm text-brand-ink dark:text-snow">{children}</div>
     </div>
   );
 }
@@ -268,7 +268,7 @@ function ProfilePageContent() {
         )}
         {tab === "mentor" && mentorApproved && mentorDoc && (
           <>
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{tp("mentor.title")}</h2>
+            <h2 className="text-lg font-semibold text-brand-ink dark:text-snow">{tp("mentor.title")}</h2>
             <MentorApprovedPanel
               tp={tp}
               locale={locale}
@@ -282,7 +282,7 @@ function ProfilePageContent() {
         {tab === "info" && (
           <PlatformCard>
             <div className="flex items-center justify-between gap-3 mb-4">
-              <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{tp("info.title")}</h2>
+              <h2 className="text-lg font-semibold text-brand-ink dark:text-snow">{tp("info.title")}</h2>
               <div className="flex shrink-0 items-center gap-2">
                 {!isEditing ? (
                   <>
@@ -318,7 +318,7 @@ function ProfilePageContent() {
                 )}
               </div>
             </div>
-            <div className="divide-y divide-slate-100 dark:divide-slate-800">
+            <div className="divide-y divide-brand-line dark:divide-hairline-dark">
               <InfoRow label={tProf("name")} required>
                 {isEditing ? (
                   <Input
@@ -336,15 +336,15 @@ function ProfilePageContent() {
                       <img
                         src={formData.avatar}
                         alt={user.name}
-                        className="w-16 h-16 rounded-xl object-cover ring-1 ring-slate-200"
+                        className="w-16 h-16 rounded-xl object-cover ring-1 ring-brand-line"
                       />
                     ) : (
-                      <div className="w-16 h-16 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400 text-xs dark:text-snow-muted dark:bg-night">
+                      <div className="w-16 h-16 rounded-xl bg-brand-mist flex items-center justify-center text-brand-soft/70 text-xs dark:text-snow-muted dark:bg-night">
                         N/A
                       </div>
                     )}
                     <div className="flex flex-col gap-2">
-                      <label className="inline-flex cursor-pointer rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:text-snow-muted dark:bg-night dark:border-hairline-dark">
+                      <label className="inline-flex cursor-pointer rounded-lg border border-brand-line px-3 py-2 text-xs font-semibold text-brand-ink hover:bg-brand-mist dark:text-snow-muted dark:bg-night dark:border-hairline-dark">
                         {tp("info.avatarUpload")}
                         <input
                           type="file"
@@ -360,7 +360,7 @@ function ProfilePageContent() {
                         <button
                           type="button"
                           onClick={() => setFormData({ ...formData, avatar: "" })}
-                          className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:text-snow-muted dark:bg-night dark:border-hairline-dark"
+                          className="rounded-lg border border-brand-line px-3 py-2 text-xs font-semibold text-brand-ink hover:bg-brand-mist dark:text-snow-muted dark:bg-night dark:border-hairline-dark"
                         >
                           {tp("info.avatarRemove")}
                         </button>
@@ -371,16 +371,16 @@ function ProfilePageContent() {
                   <img
                     src={formData.avatar}
                     alt={user.name}
-                    className="w-16 h-16 rounded-xl object-cover ring-1 ring-slate-200"
+                    className="w-16 h-16 rounded-xl object-cover ring-1 ring-brand-line"
                   />
                 ) : (
-                  <p className="text-slate-500 dark:text-snow-muted">—</p>
+                  <p className="text-brand-soft dark:text-snow-muted">—</p>
                 )}
               </InfoRow>
               <InfoRow label={tProf("email")} align="start">
                 <div>
-                  <p className="text-slate-600 dark:text-slate-300">{user.email}</p>
-                  <p className="text-xs text-slate-400 mt-1 dark:text-snow-muted">{tp("info.emailHelp")}</p>
+                  <p className="text-brand-soft dark:text-snow-muted">{user.email}</p>
+                  <p className="text-xs text-brand-soft/70 mt-1 dark:text-snow-muted">{tp("info.emailHelp")}</p>
                 </div>
               </InfoRow>
               <InfoRow label={tProf("bio")} align="start">
@@ -391,7 +391,7 @@ function ProfilePageContent() {
                     onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                   />
                 ) : (
-                  <p className="whitespace-pre-wrap text-slate-700 dark:text-slate-200">{formData.bio || "—"}</p>
+                  <p className="whitespace-pre-wrap text-brand-ink dark:text-snow">{formData.bio || "—"}</p>
                 )}
               </InfoRow>
               <InfoRow label={tp("info.phoneLabel")} required>
@@ -419,13 +419,13 @@ function ProfilePageContent() {
               {isEditing && (
                 <>
                   <div className="pt-4">
-                    <p className="text-sm font-semibold text-slate-800 dark:text-snow">{tp("info.passwordTitle")}</p>
-                    <p className="text-xs text-slate-500 mt-1 dark:text-snow-muted">{tp("info.passwordHelp")}</p>
+                    <p className="text-sm font-semibold text-brand-ink dark:text-snow">{tp("info.passwordTitle")}</p>
+                    <p className="text-xs text-brand-soft mt-1 dark:text-snow-muted">{tp("info.passwordHelp")}</p>
                   </div>
                   <InfoRow label={tp("info.currentPassword")}>
                     <input
                       type="password"
-                      className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm dark:border-hairline-dark"
+                      className="w-full rounded-xl border border-brand-line px-3 py-2 text-sm dark:border-hairline-dark"
                       value={currentPassword}
                       onChange={(e) => setCurrentPassword(e.target.value)}
                       placeholder={tp("info.currentPassword")}
@@ -434,7 +434,7 @@ function ProfilePageContent() {
                   <InfoRow label={tp("info.newPassword")}>
                     <input
                       type="password"
-                      className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm dark:border-hairline-dark"
+                      className="w-full rounded-xl border border-brand-line px-3 py-2 text-sm dark:border-hairline-dark"
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                       placeholder={tp("info.newPassword")}
@@ -443,7 +443,7 @@ function ProfilePageContent() {
                   <InfoRow label={tp("info.confirmNewPassword")}>
                     <input
                       type="password"
-                      className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm dark:border-hairline-dark"
+                      className="w-full rounded-xl border border-brand-line px-3 py-2 text-sm dark:border-hairline-dark"
                       value={confirmNewPassword}
                       onChange={(e) => setConfirmNewPassword(e.target.value)}
                       placeholder={tp("info.confirmNewPassword")}
@@ -464,8 +464,8 @@ export default function ProfilePage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
-          <div className="w-10 h-10 border-2 border-slate-300 border-t-primary-600 rounded-full animate-spin dark:border-hairline-dark" />
+        <div className="min-h-screen bg-brand-mist dark:bg-night-card flex items-center justify-center">
+          <div className="w-10 h-10 border-2 border-brand-line border-t-primary-600 rounded-full animate-spin dark:border-hairline-dark" />
         </div>
       }
     >

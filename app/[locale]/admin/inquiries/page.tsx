@@ -59,15 +59,15 @@ export default function AdminInquiriesPage() {
 
   if (authLoading || loading || !currentUser) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-brand-mist">
         <div className="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="bg-gradient-to-b from-gray-50 to-white rounded-2xl border border-gray-100">
-      <div className="bg-gradient-to-r from-slate-700 to-primary-700 py-8 rounded-t-2xl">
+    <div className="bg-white dark:bg-night-card rounded-2xl border border-brand-line">
+      <div className="bg-brand-ink py-8 rounded-t-2xl">
         <div className="px-6 sm:px-8">
           <h1 className="text-3xl font-extrabold text-white">{t("inquiriesTitle")}</h1>
           <p className="text-white/85 mt-2 text-sm">
@@ -78,20 +78,20 @@ export default function AdminInquiriesPage() {
 
       <div className="px-6 sm:px-8 py-10 space-y-6">
         {items.length === 0 ? (
-          <p className="text-gray-600 text-sm">{t("noInquiries")}</p>
+          <p className="text-brand-soft text-sm">{t("noInquiries")}</p>
         ) : (
           items.map((q) => (
             <article
               key={q.id}
-              className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm space-y-4"
+              className="rounded-2xl border border-brand-line bg-white p-6 shadow-sm space-y-4"
             >
               <div className="flex flex-wrap justify-between gap-2">
                 <div>
-                  <p className="text-xs font-semibold uppercase text-gray-500">
+                  <p className="text-xs font-semibold uppercase text-brand-soft">
                     {q.status === "answered" ? t("answered") : t("received")}
                   </p>
-                  <h2 className="text-lg font-bold text-gray-900 mt-1">{q.subject}</h2>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <h2 className="text-lg font-bold text-brand-ink mt-1">{q.subject}</h2>
+                  <p className="text-xs text-brand-soft mt-1">
                     {q.user ? (
                       <>
                         {q.user.name} · {q.user.email}
@@ -104,8 +104,8 @@ export default function AdminInquiriesPage() {
                   </p>
                 </div>
               </div>
-              <div className="rounded-xl bg-gray-50 border border-gray-100 px-4 py-3">
-                <p className="text-sm text-gray-800 whitespace-pre-wrap">{q.body}</p>
+              <div className="rounded-xl bg-brand-mist border border-brand-line px-4 py-3">
+                <p className="text-sm text-brand-ink whitespace-pre-wrap">{q.body}</p>
               </div>
               {q.adminReply ? (
                 <div className="rounded-xl border border-emerald-100 bg-emerald-50/60 px-4 py-3">
@@ -114,13 +114,13 @@ export default function AdminInquiriesPage() {
                 </div>
               ) : null}
               <div className="space-y-2">
-                <label className="text-xs font-semibold text-gray-700">{t("adminReply")}</label>
+                <label className="text-xs font-semibold text-brand-ink">{t("adminReply")}</label>
                 <textarea
                   value={replyDraft[q.id] ?? ""}
                   onChange={(e) => setReplyDraft((d) => ({ ...d, [q.id]: e.target.value }))}
                   rows={4}
                   placeholder={t("replyPlaceholder")}
-                  className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm"
+                  className="w-full rounded-xl border border-brand-line px-3 py-2 text-sm"
                 />
                 <button
                   type="button"
