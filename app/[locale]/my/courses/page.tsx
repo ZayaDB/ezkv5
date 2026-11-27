@@ -192,7 +192,7 @@ function CoursesInner() {
 
       {tab === "learn" ? (
         <div className="space-y-4">
-          <p className="text-sm text-zinc-600 dark:text-snow-muted">{t("learnHint")}</p>
+          <p className="text-sm text-brand-soft dark:text-snow-muted">{t("learnHint")}</p>
           {learnItems.length === 0 ? (
             <EmptyState
               title={t("emptyLearn")}
@@ -204,10 +204,10 @@ function CoursesInner() {
               <PlatformCard key={item.id} padding="lg">
                 <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
                   <div>
-                    <h2 className="text-lg font-semibold text-zinc-900 dark:text-snow">
+                    <h2 className="text-lg font-semibold text-brand-ink dark:text-snow">
                       {item.lecture?.title || tMy("deleted")}
                     </h2>
-                    <p className="text-xs text-zinc-500 mt-1 dark:text-snow-muted">
+                    <p className="text-xs text-brand-soft mt-1 dark:text-snow-muted">
                       {lectureCategoryLabel(item.lecture?.category, tLec) || "—"} · {item.lecture?.duration || "—"}
                     </p>
                   </div>
@@ -231,22 +231,22 @@ function CoursesInner() {
                     {t("goLecture")}
                   </Link>
                 )}
-                <label className="block text-sm font-medium text-zinc-800 mb-1 dark:text-snow">{t("notesLabel")}</label>
+                <label className="block text-sm font-medium text-brand-ink mb-1 dark:text-snow">{t("notesLabel")}</label>
                 <textarea
                   value={notes[item.id] ?? ""}
                   onChange={(e) => persistNote(item.id, e.target.value)}
                   rows={5}
-                  className="w-full rounded-xl border border-zinc-200 px-3 py-2 text-sm text-zinc-800 focus:ring-2 focus:ring-primary-200 focus:border-primary-400 outline-none dark:text-snow dark:border-hairline-dark"
+                  className="w-full rounded-xl border border-brand-line px-3 py-2 text-sm text-brand-ink focus:ring-2 focus:ring-primary-200 focus:border-primary-400 outline-none dark:text-snow dark:border-hairline-dark"
                   placeholder=""
                 />
-                <p className="text-xs text-zinc-500 mt-1 dark:text-snow-muted">{t("notesSaved")}</p>
+                <p className="text-xs text-brand-soft mt-1 dark:text-snow-muted">{t("notesSaved")}</p>
               </PlatformCard>
             ))
           )}
         </div>
       ) : (
         <div className="space-y-4">
-          <p className="text-sm text-zinc-600 dark:text-snow-muted">{t("statusHelp")}</p>
+          <p className="text-sm text-brand-soft dark:text-snow-muted">{t("statusHelp")}</p>
           {items.length === 0 ? (
             <EmptyState
               title={tEnr("emptyTitle")}
@@ -259,13 +259,13 @@ function CoursesInner() {
                 <PlatformCard key={item.id}>
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
-                      <p className="text-xs text-zinc-500 mb-1 dark:text-snow-muted">
+                      <p className="text-xs text-brand-soft mb-1 dark:text-snow-muted">
                         {tMy("appliedAt")}:{" "}
                         {fd(new Date(item.enrolledAt), {
                           dateStyle: "medium",
                         })}
                       </p>
-                      <h3 className="text-lg font-semibold text-zinc-900 dark:text-snow">
+                      <h3 className="text-lg font-semibold text-brand-ink dark:text-snow">
                         {item.lecture?.title || tMy("deleted")}
                       </h3>
                       <p className="mt-2 text-base leading-[1.55] text-ink-muted dark:text-snow-muted">
@@ -284,7 +284,7 @@ function CoursesInner() {
                     </div>
                   </div>
                   <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-                    <div className="text-sm font-semibold text-zinc-800 dark:text-snow">
+                    <div className="text-sm font-semibold text-brand-ink dark:text-snow">
                       {typeof item.lecture?.price === "number"
                         ? fmt.number(item.lecture.price, {
                             style: "currency",
@@ -308,7 +308,7 @@ function CoursesInner() {
                             type="button"
                             onClick={() => handleStatus(item.id, "cancelled")}
                             disabled={updatingId === item.id}
-                            className="rounded-lg bg-white px-2.5 py-1 text-xs font-semibold text-zinc-700 ring-1 ring-zinc-200 hover:bg-zinc-50 disabled:opacity-60 dark:text-snow-muted dark:bg-night-card dark:bg-night"
+                            className="rounded-lg bg-white px-2.5 py-1 text-xs font-semibold text-brand-ink ring-1 ring-brand-line hover:bg-brand-mist disabled:opacity-60 dark:text-snow-muted dark:bg-night-card dark:bg-night"
                           >
                             {tEnr("cancel")}
                           </button>

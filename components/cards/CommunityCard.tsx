@@ -17,12 +17,12 @@ export default function CommunityCard({ group }: CommunityCardProps) {
 
   return (
     <Link href={`/${locale}/community/${group.id}`}>
-      <div className="group bg-white dark:bg-slate-900 rounded-[24px] border border-brand-line dark:border-slate-700 overflow-hidden hover:shadow-2xl transition-all duration-300 cursor-pointer hover:-translate-y-1 relative">
+      <div className="group bg-white dark:bg-night-card rounded-[24px] border border-brand-line dark:border-hairline-dark overflow-hidden hover:shadow-2xl transition-all duration-300 cursor-pointer hover:-translate-y-1 relative">
         {/* Gradient Image Header */}
-        <div className="relative h-40 bg-gradient-to-br from-primary-700 via-primary-600 to-accent-500 overflow-hidden">
+        <div className="relative h-40 bg-brand overflow-hidden">
           <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors"></div>
           <div className="absolute top-4 left-4">
-            <span className="px-3 py-1.5 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm text-gray-700 dark:text-slate-200 text-xs font-semibold rounded-lg">
+            <span className="px-3 py-1.5 bg-white/90 dark:bg-night backdrop-blur-sm text-brand-ink dark:text-snow text-xs font-semibold rounded-lg">
               {communityCategoryLabel(group.category, t)}
             </span>
           </div>
@@ -34,10 +34,10 @@ export default function CommunityCard({ group }: CommunityCardProps) {
         </div>
 
         <div className="p-6">
-          <h3 className="text-xl font-bold text-gray-900 dark:text-slate-100 mb-2 group-hover:text-primary-600 transition-colors">
+          <h3 className="text-xl font-bold text-brand-ink dark:text-snow mb-2 group-hover:text-primary-600 transition-colors">
             {group.name}
           </h3>
-          <p className="text-sm text-gray-600 dark:text-slate-400 mb-5 line-clamp-2 leading-relaxed">
+          <p className="text-sm text-brand-soft dark:text-snow-muted mb-5 line-clamp-2 leading-relaxed">
             {group.description}
           </p>
 
@@ -45,15 +45,15 @@ export default function CommunityCard({ group }: CommunityCardProps) {
             {group.tags.slice(0, 3).map((tag) => (
               <span
                 key={tag}
-                className="px-3 py-1 bg-gray-50 dark:bg-slate-800 text-gray-600 dark:text-slate-300 text-xs font-medium rounded-lg border border-gray-200 dark:border-slate-700"
+                className="px-3 py-1 bg-brand-mist dark:bg-night text-brand-soft dark:text-snow-muted text-xs font-medium rounded-lg border border-brand-line dark:border-hairline-dark"
               >
                 #{tag}
               </span>
             ))}
           </div>
 
-          <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-slate-700">
-            <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-slate-400">
+          <div className="flex items-center justify-between pt-4 border-t border-brand-line dark:border-hairline-dark">
+            <div className="flex items-center gap-2 text-sm text-brand-soft dark:text-snow-muted">
               <Users className="w-5 h-5 text-primary-500" />
               <span className="font-semibold">
                 {t("membersCount", { count: group.members.toLocaleString(intlLocale(locale)) })}

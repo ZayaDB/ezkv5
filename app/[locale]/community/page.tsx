@@ -10,7 +10,7 @@ export default async function CommunityPage({ params }: { params: Promise<{ loca
   setRequestLocale(locale);
   let groups: CommunityGroup[] = [];
   try {
-    groups = await queryCommunityGroups({ limit: 200 });
+    groups = await queryCommunityGroups({ limit: 200, locale });
   } catch {
     groups = [];
   }

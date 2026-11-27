@@ -1,5 +1,6 @@
 import { trError } from "@/lib/i18n/runtime";
 import { createClient } from "@/lib/supabase/client";
+import { currentLocale } from "@/lib/i18n/runtime";
 import { requireUserId } from "@/lib/supabase/requireUser";
 import {
   queryCommunityByIdWith,
@@ -10,23 +11,23 @@ import {
 } from "@/lib/supabase/catalog-core";
 
 export async function queryCommunityGroups(options?: { category?: string; limit?: number }) {
-  return queryCommunityGroupsWith(createClient(), options);
+  return queryCommunityGroupsWith(createClient(), { locale: currentLocale(), ...options });
 }
 
 export async function queryCommunityById(id: string) {
-  return queryCommunityByIdWith(createClient(), id);
+  return queryCommunityByIdWith(createClient(), id, currentLocale());
 }
 
 export async function queryFreelancerGroups(options?: { category?: string; limit?: number }) {
-  return queryFreelancerGroupsWith(createClient(), options);
+  return queryFreelancerGroupsWith(createClient(), { locale: currentLocale(), ...options });
 }
 
 export async function queryFreelancerById(id: string) {
-  return queryFreelancerByIdWith(createClient(), id);
+  return queryFreelancerByIdWith(createClient(), id, currentLocale());
 }
 
 export async function queryStudyInfos(options?: { category?: import("@/types").StudyInfo["category"] }) {
-  return queryStudyInfosWith(createClient(), options);
+  return queryStudyInfosWith(createClient(), { locale: currentLocale(), ...options });
 }
 
 export async function joinCommunityGroup(groupId: string) {

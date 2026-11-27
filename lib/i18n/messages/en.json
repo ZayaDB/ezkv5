@@ -58,7 +58,8 @@
     "prev": "Previous",
     "next": "Next",
     "scrollTop": "Back to top",
-    "peopleCount": "{count}"
+    "peopleCount": "{count}",
+    "navAssistantAi": "AI assistant"
   },
   "home": {
     "heroBadge": "Life assistant for international students",
@@ -243,7 +244,8 @@
     "loginToComment": "Log in to comment.",
     "writePost": "Post",
     "titlePlaceholder": "Title (optional)",
-    "bodyPlaceholder": "Share with the group"
+    "bodyPlaceholder": "Share with the group",
+    "untitledPost": "Untitled"
   },
   "publicProfile": {
     "loading": "Loading profile…",
@@ -285,9 +287,25 @@
     "error": "An error occurred. Please try again.",
     "relatedLinks": "Related links",
     "scrollTop": "Back to top",
-    "ariaOpen": "Open chatbot",
+    "ariaOpen": "Open the AI visa assistant",
     "ariaClose": "Close chatbot",
-    "ariaSend": "Send message"
+    "ariaSend": "Send message",
+    "launcher": "AI visa assistant",
+    "langKr": "한국어",
+    "langEn": "English",
+    "langMn": "Монгол",
+    "aiNotice": "AI answers can be wrong.",
+    "askHuman": "Ask a person",
+    "reportCta": "Wrong answer? Report it",
+    "reportPlaceholder": "Tell us what was wrong (optional)",
+    "reportSend": "Send report",
+    "reportSending": "Sending...",
+    "reportDone": "Thanks. We'll review and fix it.",
+    "reportFailed": "Couldn't send. Please try again.",
+    "reportSubject": "[AI wrong answer] Visa assistant",
+    "reportQuestion": "Question",
+    "reportAnswer": "AI answer",
+    "reportNote": "User note"
   },
   "auth": {
     "login": "Login",
@@ -2246,7 +2264,7 @@
     "heroCta2": "Start free",
     "heroCta2Mine": "My dashboard",
     "heroCardLabel": "Start with your visa",
-    "heroCardNote": "Pick your visa and it is filled in on the sign-up form.",
+    "heroCardNote": "Pick your visa to see what you need to prepare.",
     "tour": "Show the tour again",
     "learn": "Korean",
     "network": "Seniors · Admissions",
@@ -2365,7 +2383,7 @@
       }
     ],
     "closeTitle": "Start now with the visa you have.",
-    "closeSub": "Signing up is free. Pick your visa and it is filled in for you.",
+    "closeSub": "Signing up is free. Pick your current visa to begin.",
     "gLabel": "First time here?",
     "gClose": "Close",
     "gSkip": "Skip",
@@ -2389,5 +2407,20 @@
         "Tap an example to open the AI assistant. Important visa questions go to an expert."
       ]
     ]
+  },
+  "visaShort": {
+    "D-4": "Language study",
+    "D-2": "University study",
+    "D-10": "Job seeking",
+    "E-7": "Professional work",
+    "F-2": "Residence",
+    "F-2-7": "Points-based residence",
+    "F-5-10": "Permanent (degree)",
+    "F-5-16": "Permanent (points)",
+    "F-5-1": "Permanent (general)",
+    "F-5": "Permanent residence",
+    "F-6": "Marriage migrant",
+    "H-2": "Working visit",
+    "C-3": "Short-term visit"
   }
 }

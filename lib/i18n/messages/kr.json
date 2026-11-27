@@ -58,7 +58,8 @@
     "prev": "이전",
     "next": "다음",
     "scrollTop": "맨 위로 이동",
-    "peopleCount": "{count}명"
+    "peopleCount": "{count}명",
+    "navAssistantAi": "AI 비서"
   },
   "home": {
     "heroBadge": "유학생 생활 비서",
@@ -243,7 +244,8 @@
     "loginToComment": "로그인 후 댓글을 작성할 수 있습니다.",
     "writePost": "글 올리기",
     "titlePlaceholder": "제목 (선택)",
-    "bodyPlaceholder": "모임에 공유할 내용"
+    "bodyPlaceholder": "모임에 공유할 내용",
+    "untitledPost": "제목 없음"
   },
   "publicProfile": {
     "loading": "프로필을 불러오는 중…",
@@ -285,9 +287,25 @@
     "error": "오류가 발생했습니다. 다시 시도해주세요.",
     "relatedLinks": "관련 링크",
     "scrollTop": "맨 위로 이동",
-    "ariaOpen": "챗봇 열기",
+    "ariaOpen": "AI 비자 비서 열기",
     "ariaClose": "챗봇 닫기",
-    "ariaSend": "메시지 보내기"
+    "ariaSend": "메시지 보내기",
+    "launcher": "AI 비자 비서",
+    "langKr": "한국어",
+    "langEn": "English",
+    "langMn": "Монгол",
+    "aiNotice": "AI 답변이라 틀릴 수 있어요.",
+    "askHuman": "사람에게 묻기",
+    "reportCta": "답이 틀렸나요? 신고하기",
+    "reportPlaceholder": "어디가 틀렸는지 적어 주세요 (선택)",
+    "reportSend": "신고 보내기",
+    "reportSending": "보내는 중...",
+    "reportDone": "신고했어요. 확인 후 고칠게요.",
+    "reportFailed": "보내지 못했어요. 다시 시도해 주세요.",
+    "reportSubject": "[AI 오답 신고] 비자 비서",
+    "reportQuestion": "질문",
+    "reportAnswer": "AI 답변",
+    "reportNote": "사용자 메모"
   },
   "auth": {
     "login": "로그인",
@@ -2244,7 +2262,7 @@
     "heroCta2": "무료로 시작",
     "heroCta2Mine": "내 대시보드",
     "heroCardLabel": "지금 내 비자로 시작",
-    "heroCardNote": "비자를 고르면 가입 화면에 미리 채워져요.",
+    "heroCardNote": "비자를 고르면 무엇을 준비해야 하는지 바로 보여 드려요.",
     "tour": "가이드 다시 보기",
     "learn": "한국어",
     "network": "선배 · 입시",
@@ -2363,7 +2381,7 @@
       }
     ],
     "closeTitle": "지금 내 비자로 바로 시작해요.",
-    "closeSub": "가입은 무료예요. 비자를 고르면 가입 화면에 미리 채워져요.",
+    "closeSub": "가입은 무료예요. 지금 비자를 고르고 시작하세요.",
     "gLabel": "처음이세요?",
     "gClose": "닫기",
     "gSkip": "건너뛰기",
@@ -2387,5 +2405,20 @@
         "예시를 누르면 AI 비서가 열려요. 중요한 비자 질문은 전문가에게 이어져요."
       ]
     ]
+  },
+  "visaShort": {
+    "D-4": "어학연수",
+    "D-2": "유학",
+    "D-10": "구직",
+    "E-7": "전문직 취업",
+    "F-2": "거주",
+    "F-2-7": "점수제 거주",
+    "F-5-10": "영주 (학위·자격)",
+    "F-5-16": "영주 (점수제)",
+    "F-5-1": "영주 (일반)",
+    "F-5": "영주",
+    "F-6": "결혼이민",
+    "H-2": "방문취업",
+    "C-3": "단기방문"
   }
 }

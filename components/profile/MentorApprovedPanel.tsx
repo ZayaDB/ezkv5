@@ -79,7 +79,7 @@ function Field({
 }) {
   return (
     <div>
-      <label className="text-sm font-medium text-slate-700 dark:text-snow-muted">{label}</label>
+      <label className="text-sm font-medium text-brand-ink dark:text-snow-muted">{label}</label>
       <div className="mt-1">{children}</div>
       {error ? <p className="text-xs text-red-600 mt-1">{error}</p> : null}
     </div>
@@ -189,8 +189,8 @@ export default function MentorApprovedPanel({
       <PlatformCard>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h3 className="font-semibold text-slate-900 dark:text-snow">{tp("mentor.mentorRoleTitle")}</h3>
-            <p className="text-sm text-slate-600 mt-1 dark:text-snow-muted">{mentorDoc.title}</p>
+            <h3 className="font-semibold text-brand-ink dark:text-snow">{tp("mentor.mentorRoleTitle")}</h3>
+            <p className="text-sm text-brand-soft mt-1 dark:text-snow-muted">{mentorDoc.title}</p>
           </div>
           <div className="flex shrink-0 flex-wrap items-center gap-2">
             {!editing ? (
@@ -230,7 +230,7 @@ export default function MentorApprovedPanel({
         <div className="mt-3 flex flex-wrap gap-2">
           <Link
             href={`/${locale}/mentors/${mentorDoc.id}`}
-            className="rounded-lg bg-slate-900 px-3 py-2 text-xs font-semibold text-white"
+            className="rounded-lg bg-brand-ink px-3 py-2 text-xs font-semibold text-white"
           >
             {tp("mentor.publicProfile")}
           </Link>
@@ -274,7 +274,7 @@ export default function MentorApprovedPanel({
             <Field label={tp("mentor.sessionDurationLabel")} error={errors.sessionDuration}>
               <input
                 type="number"
-                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm dark:border-hairline-dark"
+                className="w-full rounded-xl border border-brand-line px-3 py-2 text-sm dark:border-hairline-dark"
                 value={form.sessionDuration}
                 onChange={(e) => set("sessionDuration", e.target.value)}
               />
@@ -292,7 +292,7 @@ export default function MentorApprovedPanel({
             <Field label={tp("mentor.yearsLabel")} error={errors.years}>
               <input
                 type="number"
-                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm dark:border-hairline-dark"
+                className="w-full rounded-xl border border-brand-line px-3 py-2 text-sm dark:border-hairline-dark"
                 value={form.yearsOfExperience}
                 onChange={(e) => set("yearsOfExperience", e.target.value)}
               />
@@ -350,7 +350,7 @@ export default function MentorApprovedPanel({
             </Field>
             <Field label={tp("mentor.avail")}>
               <select
-                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm dark:border-hairline-dark"
+                className="w-full rounded-xl border border-brand-line px-3 py-2 text-sm dark:border-hairline-dark"
                 value={form.availability}
                 onChange={(e) => set("availability", e.target.value as FormState["availability"])}
               >
@@ -368,7 +368,7 @@ export default function MentorApprovedPanel({
 
       {(userRole === "mentor" || userRole === "admin") && (
         <PlatformCard>
-          <p className="text-sm text-slate-600 dark:text-snow-muted">{tp("mentor.manageCoursesHint")}</p>
+          <p className="text-sm text-brand-soft dark:text-snow-muted">{tp("mentor.manageCoursesHint")}</p>
           <Link
             href={`/${locale}/my/lectures`}
             className="inline-flex mt-3 rounded-lg bg-primary-600 px-3 py-2 text-xs font-semibold text-white"

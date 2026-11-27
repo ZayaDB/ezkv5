@@ -132,16 +132,16 @@ export default function PublicFeedSection({
   return (
     <div className="space-y-4">
       {compose && isAuthenticated ? (
-        <div className="rounded-2xl border border-zinc-200 bg-white p-4 dark:bg-night-card dark:border-hairline-dark">
+        <div className="rounded-2xl border border-brand-line bg-white p-4 dark:bg-night-card dark:border-hairline-dark">
           <textarea
             value={body}
             onChange={(e) => setBody(e.target.value)}
             rows={3}
             placeholder={t("bodyPlaceholder")}
-            className="w-full rounded-xl border border-zinc-200 px-3 py-2 text-sm dark:border-hairline-dark"
+            className="w-full rounded-xl border border-brand-line px-3 py-2 text-sm dark:border-hairline-dark"
           />
           <div className="mt-2 flex items-center justify-between">
-            <p className="text-xs text-zinc-500 dark:text-snow-muted">{msg}</p>
+            <p className="text-xs text-brand-soft dark:text-snow-muted">{msg}</p>
             <button
               type="button"
               disabled={posting}
@@ -153,48 +153,48 @@ export default function PublicFeedSection({
           </div>
         </div>
       ) : compose && !isAuthenticated ? (
-        <p className="text-sm text-zinc-500 rounded-xl border border-zinc-100 bg-zinc-50 px-4 py-3 dark:text-snow-muted dark:bg-night dark:border-hairline-dark">
+        <p className="text-sm text-brand-soft rounded-xl border border-brand-line bg-brand-mist px-4 py-3 dark:text-snow-muted dark:bg-night dark:border-hairline-dark">
           {t("loginToComment")}
         </p>
       ) : null}
 
       {loading ? (
-        <p className="text-sm text-zinc-500 py-6 dark:text-snow-muted">{t("loading")}</p>
+        <p className="text-sm text-brand-soft py-6 dark:text-snow-muted">{t("loading")}</p>
       ) : posts.length === 0 ? (
-        <p className="text-sm text-zinc-600 dark:text-slate-400 py-4 bg-zinc-50 dark:bg-slate-900 rounded-xl px-4 border border-zinc-100 dark:border-slate-800">
+        <p className="text-sm text-brand-soft dark:text-snow-muted py-4 bg-brand-mist dark:bg-night-card rounded-xl px-4 border border-brand-line dark:border-hairline-dark">
           {emptyLabel || t("empty")}
         </p>
       ) : (
         posts.map((p) => (
-          <article key={p.id} className="rounded-2xl border border-zinc-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm">
+          <article key={p.id} className="rounded-2xl border border-brand-line dark:border-hairline-dark bg-white dark:bg-night-card p-5 shadow-sm">
             <header className="flex items-start gap-3 mb-3">
               {hideAuthor ? (
-                <p className="text-xs text-zinc-500 dark:text-snow-muted">
+                <p className="text-xs text-brand-soft dark:text-snow-muted">
                   {fd(new Date(p.createdAt), { dateStyle: "medium", timeStyle: "short" })}
                 </p>
               ) : (
                 <>
                   <Link
                     href={`/${locale}/users/${p.author.id}`}
-                    className="h-10 w-10 rounded-full bg-gradient-to-br from-primary-500 to-violet-600 text-white flex items-center justify-center text-sm font-bold shrink-0"
+                    className="h-10 w-10 rounded-full bg-brand text-white flex items-center justify-center text-sm font-bold shrink-0"
                   >
                     {(p.author.name || "?").charAt(0).toUpperCase()}
                   </Link>
                   <div className="min-w-0 flex-1">
                     <Link
                       href={`/${locale}/users/${p.author.id}`}
-                      className="font-semibold text-zinc-900 dark:text-white hover:text-primary-600"
+                      className="font-semibold text-brand-ink dark:text-white hover:text-primary-600"
                     >
                       {p.author.name}
                     </Link>
-                    <p className="text-xs text-zinc-500 dark:text-snow-muted">
+                    <p className="text-xs text-brand-soft dark:text-snow-muted">
                       {fd(new Date(p.createdAt), { dateStyle: "medium", timeStyle: "short" })}
                     </p>
                   </div>
                 </>
               )}
             </header>
-            <p className="text-sm text-zinc-800 dark:text-slate-200 whitespace-pre-wrap mb-3">{p.body}</p>
+            <p className="text-sm text-brand-ink dark:text-snow whitespace-pre-wrap mb-3">{p.body}</p>
             {p.attachmentUrls?.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-3">
                 {p.attachmentUrls.map((url) => (
@@ -204,19 +204,19 @@ export default function PublicFeedSection({
                       alt=""
                       width={200}
                       height={200}
-                      className="max-h-48 w-auto rounded-lg border border-zinc-100 object-cover dark:border-hairline-dark"
+                      className="max-h-48 w-auto rounded-lg border border-brand-line object-cover dark:border-hairline-dark"
                       unoptimized
                     />
                   </a>
                 ))}
               </div>
             )}
-            <div className="flex flex-wrap items-center gap-4 pt-2 border-t border-zinc-100 dark:border-slate-800">
+            <div className="flex flex-wrap items-center gap-4 pt-2 border-t border-brand-line dark:border-hairline-dark">
               <button
                 type="button"
                 onClick={() => void onLike(p.id)}
                 className={`inline-flex items-center gap-1.5 text-sm font-semibold ${
-                  p.likedByMe ? "text-rose-600" : "text-zinc-600 dark:text-slate-400"
+                  p.likedByMe ? "text-rose-600" : "text-brand-soft dark:text-snow-muted"
                 }`}
               >
                 <Heart className={`w-4 h-4 ${p.likedByMe ? "fill-current" : ""}`} />
@@ -232,19 +232,19 @@ export default function PublicFeedSection({
               </button>
             </div>
             {openId === p.id && (
-              <div className="mt-4 space-y-3 border-t border-zinc-100 dark:border-slate-800 pt-4">
+              <div className="mt-4 space-y-3 border-t border-brand-line dark:border-hairline-dark pt-4">
                 {(commentsByPost[p.id] || []).map((c) => (
-                  <div key={c.id} className="rounded-lg bg-zinc-50 dark:bg-slate-800 px-3 py-2 text-sm">
+                  <div key={c.id} className="rounded-lg bg-brand-mist dark:bg-night px-3 py-2 text-sm">
                     <Link
                       href={`/${locale}/users/${c.author.id}`}
-                      className="font-semibold text-zinc-800 dark:text-slate-100 hover:text-primary-600"
+                      className="font-semibold text-brand-ink dark:text-snow hover:text-primary-600"
                     >
                       {c.author.name}
                     </Link>
-                    <span className="text-zinc-400 text-xs ml-2 dark:text-snow-muted">
+                    <span className="text-brand-soft/70 text-xs ml-2 dark:text-snow-muted">
                       {fd(new Date(c.createdAt), { dateStyle: "short", timeStyle: "short" })}
                     </span>
-                    <p className="text-zinc-700 dark:text-slate-300 mt-1 whitespace-pre-wrap">{c.body}</p>
+                    <p className="text-brand-ink dark:text-snow-muted mt-1 whitespace-pre-wrap">{c.body}</p>
                   </div>
                 ))}
                 {isAuthenticated ? (
@@ -254,7 +254,7 @@ export default function PublicFeedSection({
                       onChange={(e) => setDraft((d) => ({ ...d, [p.id]: e.target.value }))}
                       rows={2}
                       placeholder={t("commentPlaceholder")}
-                      className="w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm dark:border-hairline-dark"
+                      className="w-full rounded-lg border border-brand-line px-3 py-2 text-sm dark:border-hairline-dark"
                     />
                     <button
                       type="button"
@@ -266,7 +266,7 @@ export default function PublicFeedSection({
                     </button>
                   </div>
                 ) : (
-                  <p className="text-xs text-zinc-500 dark:text-snow-muted">{t("loginToComment")}</p>
+                  <p className="text-xs text-brand-soft dark:text-snow-muted">{t("loginToComment")}</p>
                 )}
               </div>
             )}

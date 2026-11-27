@@ -19,7 +19,7 @@ export default function RouteRedirect({
   }, [router, to]);
 
   return (
-    <div className="flex min-h-[30vh] items-center justify-center text-sm text-zinc-500">
+    <div className="flex min-h-[30vh] items-center justify-center text-sm text-brand-soft">
       {message ?? t("redirecting")}
     </div>
   );

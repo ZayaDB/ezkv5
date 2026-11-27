@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState, useEffect } from 'react';
+import { langKey, langName } from '@/lib/i18n/languageNames';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -55,7 +56,7 @@ export default function MentorsPageClient({ initialMentors, locale }: Props) {
   const [format, setFormat] = useState<'' | 'online' | 'offline'>('');
 
   const languages = useMemo(
-    () => Array.from(new Set(initialMentors.flatMap((m) => m.languages || []))).sort(),
+    () => Array.from(new Set(initialMentors.flatMap((m) => (m.languages || []).map(langKey)))).sort(),
     [initialMentors]
   );
   const counts = useMemo(() => {
@@ -73,7 +74,7 @@ export default function MentorsPageClient({ initialMentors, locale }: Props) {
     const q = query.trim().toLowerCase();
     return initialMentors.filter((m) => {
       if (category && !mentorMatchesCategoryKey(m, category)) return false;
-      if (language && !(m.languages || []).includes(language)) return false;
+      if (language && !(m.languages || []).map(langKey).includes(language)) return false;
       if (format === 'online' && m.sessionFormat === 'offline') return false;
       if (format === 'offline' && m.sessionFormat === 'online') return false;
       if (q) {
@@ -139,7 +140,7 @@ export default function MentorsPageClient({ initialMentors, locale }: Props) {
               <option value="">{t('languageAll')}</option>
               {languages.map((l) => (
                 <option key={l} value={l}>
-                  {l}
+                  {langName(l, locale)}
                 </option>
               ))}
             </select>
@@ -198,7 +199,7 @@ export default function MentorsPageClient({ initialMentors, locale }: Props) {
                     <div className="mt-auto flex flex-col gap-3">
                       <div className="h-px w-full bg-hairline dark:bg-hairline-dark" />
                       <p className={`text-xs ${ui.muted}`}>
-                        {[(m.languages || []).join(' · '), m.sessionFormat === 'offline' ? t('offline') : m.sessionFormat === 'both' ? t('both') : t('online')]
+                        {[(m.languages || []).map((l) => langName(l, locale)).join(' · '), m.sessionFormat === 'offline' ? t('offline') : m.sessionFormat === 'both' ? t('both') : t('online')]
                           .filter(Boolean)
                           .join(' · ')}
                       </p>

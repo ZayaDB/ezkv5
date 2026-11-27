@@ -112,16 +112,16 @@ export default function MyInquiriesPage() {
       </div>
 
       <PlatformCard padding="lg">
-        <h2 className="text-sm font-semibold text-zinc-900 mb-3 dark:text-snow">{t("formTitle")}</h2>
+        <h2 className="text-sm font-semibold text-brand-ink mb-3 dark:text-snow">{t("formTitle")}</h2>
         <div className="space-y-3">
           <input
-            className="w-full rounded-xl border border-zinc-200 px-3 py-2 text-sm dark:border-hairline-dark"
+            className="w-full rounded-xl border border-brand-line px-3 py-2 text-sm dark:border-hairline-dark"
             placeholder={t("subject")}
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
           />
           <textarea
-            className="w-full min-h-[120px] rounded-xl border border-zinc-200 px-3 py-2 text-sm dark:border-hairline-dark"
+            className="w-full min-h-[120px] rounded-xl border border-brand-line px-3 py-2 text-sm dark:border-hairline-dark"
             placeholder={t("body")}
             value={body}
             onChange={(e) => setBody(e.target.value)}
@@ -138,10 +138,10 @@ export default function MyInquiriesPage() {
       </PlatformCard>
 
       {loading ? (
-        <p className="text-sm text-zinc-500 dark:text-snow-muted">{t("loading")}</p>
+        <p className="text-sm text-brand-soft dark:text-snow-muted">{t("loading")}</p>
       ) : list.length === 0 ? (
         <PlatformCard>
-          <p className="text-sm text-zinc-600 dark:text-snow-muted">{t("empty")}</p>
+          <p className="text-sm text-brand-soft dark:text-snow-muted">{t("empty")}</p>
         </PlatformCard>
       ) : (
         <ul className="space-y-4">
@@ -150,12 +150,12 @@ export default function MyInquiriesPage() {
               {editingId === q.id ? (
                 <div className="space-y-2">
                   <input
-                    className="w-full rounded-lg border border-zinc-200 px-2 py-1.5 text-sm dark:border-hairline-dark"
+                    className="w-full rounded-lg border border-brand-line px-2 py-1.5 text-sm dark:border-hairline-dark"
                     value={editSubject}
                     onChange={(e) => setEditSubject(e.target.value)}
                   />
                   <textarea
-                    className="w-full min-h-[100px] rounded-lg border border-zinc-200 px-2 py-1.5 text-sm dark:border-hairline-dark"
+                    className="w-full min-h-[100px] rounded-lg border border-brand-line px-2 py-1.5 text-sm dark:border-hairline-dark"
                     value={editBody}
                     onChange={(e) => setEditBody(e.target.value)}
                   />
@@ -170,7 +170,7 @@ export default function MyInquiriesPage() {
                     <button
                       type="button"
                       onClick={() => setEditingId(null)}
-                      className="text-xs text-zinc-500 dark:text-snow-muted"
+                      className="text-xs text-brand-soft dark:text-snow-muted"
                     >
                       {t("cancel")}
                     </button>
@@ -179,18 +179,18 @@ export default function MyInquiriesPage() {
               ) : (
                 <>
                   <div className="flex flex-wrap items-start justify-between gap-2">
-                    <h3 className="font-semibold text-zinc-900 dark:text-snow">{q.subject}</h3>
-                    <span className="text-xs font-medium text-zinc-500 dark:text-snow-muted">
+                    <h3 className="font-semibold text-brand-ink dark:text-snow">{q.subject}</h3>
+                    <span className="text-xs font-medium text-brand-soft dark:text-snow-muted">
                       {q.status === "answered" ? t("statusAnswered") : t("statusOpen")}
                     </span>
                   </div>
-                  <p className="text-sm text-zinc-600 mt-2 whitespace-pre-wrap dark:text-snow-muted">{q.body}</p>
+                  <p className="text-sm text-brand-soft mt-2 whitespace-pre-wrap dark:text-snow-muted">{q.body}</p>
                   {q.adminReply ? (
                     <div className="mt-4 rounded-xl bg-primary-50/80 border border-primary-100 px-3 py-3 text-sm">
                       <p className="text-xs font-semibold text-primary-800 mb-1">
                         {t("adminReply")}
                       </p>
-                      <p className="text-zinc-800 whitespace-pre-wrap dark:text-snow">{q.adminReply}</p>
+                      <p className="text-brand-ink whitespace-pre-wrap dark:text-snow">{q.adminReply}</p>
                     </div>
                   ) : null}
                   {q.status === "open" && (

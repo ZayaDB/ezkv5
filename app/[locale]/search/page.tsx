@@ -34,8 +34,8 @@ export default async function SearchPage({
   const [mentorsR, lecturesR, communitiesR, studyInfosR] = await Promise.all([
     queryMentorsSupabase({ limit: 120 }),
     queryLecturesSupabase({ limit: 120 }),
-    queryCommunityGroups({ limit: 120 }),
-    queryStudyInfos(),
+    queryCommunityGroups({ limit: 120, locale }),
+    queryStudyInfos({ locale }),
   ]);
 
   const mentors = mentorsR.mentors.filter((m) =>
@@ -67,21 +67,21 @@ export default async function SearchPage({
         </div>
 
         {total === 0 && (
-          <div className="ds-panel p-6 text-sm text-slate-600 dark:text-slate-400">
+          <div className="ds-panel p-6 text-sm text-brand-soft dark:text-snow-muted">
             {t("noResults")}
           </div>
         )}
 
         {mentors.length > 0 && (
           <section className="space-y-3">
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+            <h2 className="text-lg font-semibold text-brand-ink dark:text-snow">
               {t("mentors")} ({mentors.length})
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {mentors.slice(0, 8).map((m) => (
                 <Link key={m.id} href={`/${locale}/mentors/${m.id}`} className="ds-panel p-4 hover:ring-primary-300 transition-colors">
-                  <p className="font-semibold text-slate-900 dark:text-slate-100">{m.name}</p>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">{m.title}</p>
+                  <p className="font-semibold text-brand-ink dark:text-snow">{m.name}</p>
+                  <p className="text-sm text-brand-soft dark:text-snow-muted">{m.title}</p>
                 </Link>
               ))}
             </div>
@@ -90,14 +90,14 @@ export default async function SearchPage({
 
         {lectures.length > 0 && (
           <section className="space-y-3">
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+            <h2 className="text-lg font-semibold text-brand-ink dark:text-snow">
               {t("lectures")} ({lectures.length})
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {lectures.slice(0, 8).map((l) => (
                 <Link key={l.id} href={`/${locale}/lectures/${l.id}`} className="ds-panel p-4 hover:ring-primary-300 transition-colors">
-                  <p className="font-semibold text-slate-900 dark:text-slate-100">{l.title}</p>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">{l.instructor}</p>
+                  <p className="font-semibold text-brand-ink dark:text-snow">{l.title}</p>
+                  <p className="text-sm text-brand-soft dark:text-snow-muted">{l.instructor}</p>
                 </Link>
               ))}
             </div>
@@ -106,14 +106,14 @@ export default async function SearchPage({
 
         {communities.length > 0 && (
           <section className="space-y-3">
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+            <h2 className="text-lg font-semibold text-brand-ink dark:text-snow">
               {t("community")} ({communities.length})
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {communities.slice(0, 8).map((c) => (
                 <Link key={c.id} href={`/${locale}/community/${c.id}`} className="ds-panel p-4 hover:ring-primary-300 transition-colors">
-                  <p className="font-semibold text-slate-900 dark:text-slate-100">{c.name}</p>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">{c.description}</p>
+                  <p className="font-semibold text-brand-ink dark:text-snow">{c.name}</p>
+                  <p className="text-sm text-brand-soft dark:text-snow-muted">{c.description}</p>
                 </Link>
               ))}
             </div>
@@ -122,14 +122,14 @@ export default async function SearchPage({
 
         {studyInfos.length > 0 && (
           <section className="space-y-3">
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+            <h2 className="text-lg font-semibold text-brand-ink dark:text-snow">
               {t("studyInfo")} ({studyInfos.length})
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {studyInfos.slice(0, 8).map((s) => (
                 <Link key={s.id} href={`/${locale}/study-in-korea/${s.id}`} className="ds-panel p-4 hover:ring-primary-300 transition-colors">
-                  <p className="font-semibold text-slate-900 dark:text-slate-100">{s.title}</p>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">{tStudy.has(s.category) ? tStudy(s.category) : s.category}</p>
+                  <p className="font-semibold text-brand-ink dark:text-snow">{s.title}</p>
+                  <p className="text-sm text-brand-soft dark:text-snow-muted">{tStudy.has(s.category) ? tStudy(s.category) : s.category}</p>
                 </Link>
               ))}
             </div>

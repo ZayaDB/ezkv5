@@ -26,6 +26,8 @@ type HomeData = Awaited<ReturnType<typeof getControlCenter>>;
  */
 export default function MyDashboardOverview() {
   const t = useTranslations("myPages.overview");
+  const tVisa = useTranslations("visaShort");
+  const visaLabel = (code: string) => (code && tVisa.has(code) ? `${code} · ${tVisa(code)}` : code);
   const locale = useLocale();
   const { user } = useAuth();
   const [data, setData] = useState<HomeData | null>(null);
@@ -139,7 +141,7 @@ export default function MyDashboardOverview() {
     <div className="flex flex-col gap-10">
       <PageIntro
         size="md"
-        status={visaDday != null ? t("visaStatus", { visa: String(data?.statusCard?.visaType || ""), days: String(visaDday) }) : t("statusDefault")}
+        status={visaDday != null ? t("visaStatus", { visa: visaLabel(String(data?.statusCard?.visaType || "")), days: String(visaDday) }) : t("statusDefault")}
         title={t("greeting", { name: user?.name ?? "" })}
         subtitle={t("subtitle")}
       />

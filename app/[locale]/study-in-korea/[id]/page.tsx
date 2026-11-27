@@ -30,7 +30,7 @@ export default async function GuideDetailPage({
   let guide: StudyInfo | null = null;
   let all: StudyInfo[] = [];
   try {
-    [guide, all] = await Promise.all([queryStudyInfoById(id), queryStudyInfos()]);
+    [guide, all] = await Promise.all([queryStudyInfoById(id, locale), queryStudyInfos({ locale })]);
   } catch {
     guide = null;
   }

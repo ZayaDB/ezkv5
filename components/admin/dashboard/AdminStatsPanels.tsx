@@ -36,7 +36,7 @@ export default function AdminStatsPanels({ locale, stats, period, onPeriodChange
 
   return (
     <>
-      <div className="mb-8 bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+      <div className="mb-8 bg-white rounded-2xl p-6 shadow-lg border border-brand-line">
         <div className="flex flex-wrap gap-3">
           {PERIODS.map((key) => (
             <button
@@ -45,8 +45,8 @@ export default function AdminStatsPanels({ locale, stats, period, onPeriodChange
               onClick={() => onPeriodChange(key)}
               className={`px-6 py-3 rounded-xl font-semibold transition-all ${
                 period === key
-                  ? "bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-md"
-                  : "bg-white border-2 border-gray-200 text-gray-700 hover:border-primary-300"
+                  ? "bg-brand text-white shadow-md"
+                  : "bg-white border-2 border-brand-line text-brand-ink hover:border-primary-300"
               }`}
             >
               {t(periodKey[key])}
@@ -65,12 +65,12 @@ export default function AdminStatsPanels({ locale, stats, period, onPeriodChange
           deltaClass="text-primary-600"
         />
         <StatCard
-          icon={<GraduationCap className="w-6 h-6 text-accent-600" />}
-          iconBg="bg-accent-100"
+          icon={<GraduationCap className="w-6 h-6 text-brand-deep" />}
+          iconBg="bg-brand-sun/30"
           value={stats.totals.mentors}
           label={t("roleMentor")}
           delta={stats.periodStats.newMentors}
-          deltaClass="text-accent-600"
+          deltaClass="text-brand-deep"
         />
         <StatCard
           icon={<UserPlus className="w-6 h-6 text-green-600" />}
@@ -91,8 +91,8 @@ export default function AdminStatsPanels({ locale, stats, period, onPeriodChange
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+        <div className="bg-white rounded-2xl p-6 shadow-lg border border-brand-line">
+          <h2 className="text-2xl font-bold text-brand-ink mb-6 flex items-center gap-2">
             <BarChart3 className="w-6 h-6 text-primary-500" />
             {t("roleStats")}
           </h2>
@@ -100,24 +100,24 @@ export default function AdminStatsPanels({ locale, stats, period, onPeriodChange
             <button
               type="button"
               onClick={() => router.push(`/${locale}/admin/users?role=mentee`)}
-              className="w-full flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors text-left"
+              className="w-full flex items-center justify-between p-4 bg-brand-mist rounded-xl hover:bg-brand-mist transition-colors text-left"
             >
               <RoleRow icon={<Users className="w-5 h-5 text-primary-600" />} bg="bg-primary-100" label={t("roleMenteeLong")} />
               <span className="text-2xl font-bold text-primary-600">{stats.roleStats.mentee}</span>
             </button>
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-              <RoleRow icon={<GraduationCap className="w-5 h-5 text-accent-600" />} bg="bg-accent-100" label={t("roleMentor")} />
-              <span className="text-2xl font-bold text-accent-600">{stats.roleStats.mentor}</span>
+            <div className="flex items-center justify-between p-4 bg-brand-mist rounded-xl">
+              <RoleRow icon={<GraduationCap className="w-5 h-5 text-brand-deep" />} bg="bg-brand-sun/30" label={t("roleMentor")} />
+              <span className="text-2xl font-bold text-brand-deep">{stats.roleStats.mentor}</span>
             </div>
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+            <div className="flex items-center justify-between p-4 bg-brand-mist rounded-xl">
               <RoleRow icon={<Users className="w-5 h-5 text-purple-600" />} bg="bg-purple-100" label={t("roleAdmin")} />
               <span className="text-2xl font-bold text-purple-600">{stats.roleStats.admin}</span>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+        <div className="bg-white rounded-2xl p-6 shadow-lg border border-brand-line">
+          <h2 className="text-2xl font-bold text-brand-ink mb-6 flex items-center gap-2">
             <BookOpen className="w-6 h-6 text-primary-500" />
             {t("sessionStatus")}
           </h2>
@@ -128,20 +128,20 @@ export default function AdminStatsPanels({ locale, stats, period, onPeriodChange
       </div>
 
       {stats.monthlySignups.length > 0 && (
-        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+        <div className="bg-white rounded-2xl p-6 shadow-lg border border-brand-line">
+          <h2 className="text-2xl font-bold text-brand-ink mb-6 flex items-center gap-2">
             <TrendingUp className="w-6 h-6 text-primary-500" />
             {t("monthlySignups")}
           </h2>
           <div className="space-y-3">
             {stats.monthlySignups.map((item, index) => (
               <div key={`${item.year}-${item.month}-${index}`} className="flex items-center gap-4">
-                <div className="w-24 text-sm text-gray-600">
+                <div className="w-24 text-sm text-brand-soft">
                   {formatDate(new Date(item.year, item.month - 1, 1), locale, { year: "numeric", month: "short" })}
                 </div>
-                <div className="flex-1 bg-gray-100 rounded-full h-8 relative overflow-hidden">
+                <div className="flex-1 bg-brand-mist rounded-full h-8 relative overflow-hidden">
                   <div
-                    className="bg-gradient-to-r from-primary-500 to-accent-500 h-full rounded-full flex items-center justify-end pr-3 min-w-[2rem]"
+                    className="bg-brand h-full rounded-full flex items-center justify-end pr-3 min-w-[2rem]"
                     style={{ width: `${(item.count / maxSignup) * 100}%` }}
                   >
                     <span className="text-white text-sm font-semibold">{item.count}</span>
@@ -173,13 +173,13 @@ function StatCard({
 }) {
   const t = useTranslations("admin");
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+    <div className="bg-white rounded-2xl p-6 shadow-lg border border-brand-line">
       <div className="flex items-center justify-between mb-4">
         <div className={`w-12 h-12 ${iconBg} rounded-xl flex items-center justify-center`}>{icon}</div>
-        <span className="text-2xl font-bold text-gray-900">{value}</span>
+        <span className="text-2xl font-bold text-brand-ink">{value}</span>
       </div>
-      <p className="text-gray-600 font-medium">{label}</p>
-      <p className="text-sm text-gray-500 mt-1">
+      <p className="text-brand-soft font-medium">{label}</p>
+      <p className="text-sm text-brand-soft mt-1">
         {t("newInPeriod")} <span className={`font-semibold ${deltaClass}`}>{delta}</span>
       </p>
     </div>
@@ -190,15 +190,15 @@ function RoleRow({ icon, bg, label }: { icon: React.ReactNode; bg: string; label
   return (
     <div className="flex items-center gap-3">
       <div className={`w-10 h-10 ${bg} rounded-lg flex items-center justify-center`}>{icon}</div>
-      <span className="font-semibold text-gray-900">{label}</span>
+      <span className="font-semibold text-brand-ink">{label}</span>
     </div>
   );
 }
 
 function SessionRow({ label, value, color }: { label: string; value: number; color: string }) {
   return (
-    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl mb-4 last:mb-0">
-      <span className="font-semibold text-gray-900">{label}</span>
+    <div className="flex items-center justify-between p-4 bg-brand-mist rounded-xl mb-4 last:mb-0">
+      <span className="font-semibold text-brand-ink">{label}</span>
       <span className={`text-2xl font-bold ${color}`}>{value}</span>
     </div>
   );

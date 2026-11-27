@@ -90,7 +90,7 @@ export default function GroupPostFeed({
   };
 
   const submitPost = async () => {
-    const tTitle = title.trim() || "글";
+    const tTitle = title.trim() || t("untitledPost");
     const tBody = body.trim();
     if (!tBody || posting) return;
     setPosting(true);
@@ -109,19 +109,19 @@ export default function GroupPostFeed({
   return (
     <div className="space-y-4">
       {isAuthenticated ? (
-        <div className="rounded-2xl border border-zinc-200 bg-white p-4 space-y-2 dark:bg-night-card dark:border-hairline-dark">
+        <div className="rounded-2xl border border-brand-line bg-white p-4 space-y-2 dark:bg-night-card dark:border-hairline-dark">
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder={t("titlePlaceholder")}
-            className="w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm dark:border-hairline-dark"
+            className="w-full rounded-lg border border-brand-line px-3 py-2 text-sm dark:border-hairline-dark"
           />
           <textarea
             value={body}
             onChange={(e) => setBody(e.target.value)}
             rows={3}
             placeholder={t("bodyPlaceholder")}
-            className="w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm dark:border-hairline-dark"
+            className="w-full rounded-lg border border-brand-line px-3 py-2 text-sm dark:border-hairline-dark"
           />
           {postErr ? <p className="text-xs text-red-600">{postErr}</p> : null}
           <button
@@ -134,25 +134,25 @@ export default function GroupPostFeed({
           </button>
         </div>
       ) : (
-        <p className="text-xs text-zinc-500 dark:text-snow-muted">{t("loginToComment")}</p>
+        <p className="text-xs text-brand-soft dark:text-snow-muted">{t("loginToComment")}</p>
       )}
 
       {loading ? (
-        <p className="text-sm text-gray-500 py-6 dark:text-snow-muted">{t("loading")}</p>
+        <p className="text-sm text-brand-soft py-6 dark:text-snow-muted">{t("loading")}</p>
       ) : posts.length === 0 ? (
-        <p className="text-sm text-gray-600 py-4 bg-gray-50 rounded-xl px-4 border border-gray-100 dark:text-snow-muted dark:bg-night dark:border-hairline-dark">
+        <p className="text-sm text-brand-soft py-4 bg-brand-mist rounded-xl px-4 border border-brand-line dark:text-snow-muted dark:bg-night dark:border-hairline-dark">
           {t("empty")}
         </p>
       ) : (
         posts.map((p) => (
-          <div key={p.id} className="p-5 bg-white rounded-xl border border-gray-100 dark:bg-night-card dark:border-hairline-dark">
+          <div key={p.id} className="p-5 bg-white rounded-xl border border-brand-line dark:bg-night-card dark:border-hairline-dark">
             <div className="flex flex-wrap items-start justify-between gap-2 mb-2">
-              <h3 className="font-semibold text-gray-900 dark:text-snow">{p.title}</h3>
-              <span className="text-xs text-gray-500 whitespace-nowrap dark:text-snow-muted">
+              <h3 className="font-semibold text-brand-ink dark:text-snow">{p.title}</h3>
+              <span className="text-xs text-brand-soft whitespace-nowrap dark:text-snow-muted">
                 {fd(new Date(p.createdAt), { dateStyle: "medium", timeStyle: "short" })}
               </span>
             </div>
-            <p className="text-sm text-gray-700 whitespace-pre-wrap mb-2 dark:text-snow-muted">{p.body}</p>
+            <p className="text-sm text-brand-ink whitespace-pre-wrap mb-2 dark:text-snow-muted">{p.body}</p>
             <Link
               href={`/${locale}/users/${p.author.id}`}
               className="text-xs font-semibold text-primary-600 hover:underline"
@@ -170,22 +170,22 @@ export default function GroupPostFeed({
               </button>
             </div>
             {openId === p.id && (
-              <div className="mt-4 pt-4 border-t border-gray-200 space-y-3 dark:border-hairline-dark">
+              <div className="mt-4 pt-4 border-t border-brand-line space-y-3 dark:border-hairline-dark">
                 {loadingComments === p.id ? (
-                  <p className="text-xs text-gray-500 dark:text-snow-muted">{t("loading")}</p>
+                  <p className="text-xs text-brand-soft dark:text-snow-muted">{t("loading")}</p>
                 ) : (
                   (commentsByPost[p.id] || []).map((c) => (
-                    <div key={c.id} className="rounded-lg bg-gray-50 p-3 dark:bg-night">
+                    <div key={c.id} className="rounded-lg bg-brand-mist p-3 dark:bg-night">
                       <Link
                         href={`/${locale}/users/${c.author.id}`}
-                        className="text-xs font-semibold text-gray-800 hover:text-primary-600 dark:text-snow"
+                        className="text-xs font-semibold text-brand-ink hover:text-primary-600 dark:text-snow"
                       >
                         {c.author.name}
                       </Link>
-                      <span className="font-normal text-gray-400 ml-2 text-xs dark:text-snow-muted">
+                      <span className="font-normal text-brand-soft/70 ml-2 text-xs dark:text-snow-muted">
                         {fd(new Date(c.createdAt), { dateStyle: "short", timeStyle: "short" })}
                       </span>
-                      <p className="text-sm text-gray-700 whitespace-pre-wrap mt-1 dark:text-snow-muted">{c.body}</p>
+                      <p className="text-sm text-brand-ink whitespace-pre-wrap mt-1 dark:text-snow-muted">{c.body}</p>
                     </div>
                   ))
                 )}
@@ -198,7 +198,7 @@ export default function GroupPostFeed({
                       }
                       rows={2}
                       placeholder={t("addCommentPlaceholder")}
-                      className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm dark:border-hairline-dark"
+                      className="w-full rounded-lg border border-brand-line px-3 py-2 text-sm dark:border-hairline-dark"
                     />
                     <button
                       type="button"
@@ -210,7 +210,7 @@ export default function GroupPostFeed({
                     </button>
                   </div>
                 ) : (
-                  <p className="text-xs text-gray-500 dark:text-snow-muted">{t("loginToComment")}</p>
+                  <p className="text-xs text-brand-soft dark:text-snow-muted">{t("loginToComment")}</p>
                 )}
               </div>
             )}

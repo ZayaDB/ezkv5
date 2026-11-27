@@ -16,7 +16,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   if (loading || !user || user.role !== "admin") {
     return (
-      <div className="min-h-[50vh] flex items-center justify-center bg-zinc-50 dark:bg-slate-950">
+      <div className="min-h-[50vh] flex items-center justify-center bg-brand-mist dark:bg-night-card">
         <div className="w-10 h-10 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );

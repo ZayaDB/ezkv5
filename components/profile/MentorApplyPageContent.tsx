@@ -183,21 +183,21 @@ export default function MentorApplyPageContent() {
       <div className="ds-container py-8 space-y-6">
         <Link
           href={`/${locale}/my/profile`}
-          className="inline-flex items-center text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100"
+          className="inline-flex items-center text-sm font-medium text-brand-soft hover:text-brand-ink dark:text-snow-muted dark:hover:text-snow"
         >
           <ArrowLeft className="w-4 h-4 mr-1" />
           {tp("mentor.backToProfile")}
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{tp("mentor.formTitle")}</h1>
-          <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">{tp("mentor.applyLead")}</p>
+          <h1 className="text-2xl font-bold text-brand-ink dark:text-snow">{tp("mentor.formTitle")}</h1>
+          <p className="text-sm text-brand-soft dark:text-snow-muted mt-1">{tp("mentor.applyLead")}</p>
         </div>
 
         {!mentorDoc ? (
           <PlatformCard>
             <div className="space-y-3">
               <div>
-                <label className="text-sm font-medium text-slate-700 dark:text-snow-muted">{tp("mentor.mentorTitleLabel")}</label>
+                <label className="text-sm font-medium text-brand-ink dark:text-snow-muted">{tp("mentor.mentorTitleLabel")}</label>
                 <Input
                   className="mt-1"
                   value={mentorTitle}
@@ -206,7 +206,7 @@ export default function MentorApplyPageContent() {
                 {mentorErrors.title && <p className="text-xs text-red-600 mt-1">{mentorErrors.title}</p>}
               </div>
               <div>
-                <label className="text-sm font-medium text-slate-700 dark:text-snow-muted">{tp("mentor.locationLabel")}</label>
+                <label className="text-sm font-medium text-brand-ink dark:text-snow-muted">{tp("mentor.locationLabel")}</label>
                 <Input
                   className="mt-1"
                   value={mentorLocation}
@@ -215,7 +215,7 @@ export default function MentorApplyPageContent() {
                 {mentorErrors.location && <p className="text-xs text-red-600 mt-1">{mentorErrors.location}</p>}
               </div>
               <div>
-                <label className="text-sm font-medium text-slate-700 dark:text-snow-muted">{tp("mentor.bioLabel")}</label>
+                <label className="text-sm font-medium text-brand-ink dark:text-snow-muted">{tp("mentor.bioLabel")}</label>
                 <Textarea
                   rows={4}
                   className="mt-1"
@@ -225,7 +225,7 @@ export default function MentorApplyPageContent() {
                 {mentorErrors.bio && <p className="text-xs text-red-600 mt-1">{mentorErrors.bio}</p>}
               </div>
               <div>
-                <label className="text-sm font-medium text-slate-700 dark:text-snow-muted">{tp("mentor.languagesLabel")}</label>
+                <label className="text-sm font-medium text-brand-ink dark:text-snow-muted">{tp("mentor.languagesLabel")}</label>
                 <Input
                   className="mt-1"
                   value={mentorLangs}
@@ -234,7 +234,7 @@ export default function MentorApplyPageContent() {
                 {mentorErrors.languages && <p className="text-xs text-red-600 mt-1">{mentorErrors.languages}</p>}
               </div>
               <div>
-                <label className="text-sm font-medium text-slate-700 dark:text-snow-muted">{tp("mentor.specialtiesLabel")}</label>
+                <label className="text-sm font-medium text-brand-ink dark:text-snow-muted">{tp("mentor.specialtiesLabel")}</label>
                 <Input
                   className="mt-1"
                   value={mentorSpecs}
@@ -243,7 +243,7 @@ export default function MentorApplyPageContent() {
                 {mentorErrors.specialties && <p className="text-xs text-red-600 mt-1">{mentorErrors.specialties}</p>}
               </div>
               <div>
-                <label className="text-sm font-medium text-slate-700 dark:text-snow-muted">{tp("mentor.priceLabel")}</label>
+                <label className="text-sm font-medium text-brand-ink dark:text-snow-muted">{tp("mentor.priceLabel")}</label>
                 <Input
                   type="number"
                   className="mt-1"
@@ -253,10 +253,10 @@ export default function MentorApplyPageContent() {
                 {mentorErrors.price && <p className="text-xs text-red-600 mt-1">{mentorErrors.price}</p>}
               </div>
               <div>
-                <label className="text-sm font-medium text-slate-700 dark:text-snow-muted">{tp("mentor.sessionDurationLabel")}</label>
+                <label className="text-sm font-medium text-brand-ink dark:text-snow-muted">{tp("mentor.sessionDurationLabel")}</label>
                 <input
                   type="number"
-                  className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm dark:border-hairline-dark"
+                  className="mt-1 w-full rounded-xl border border-brand-line px-3 py-2 text-sm dark:border-hairline-dark"
                   value={sessionDuration}
                   onChange={(e) => setSessionDuration(e.target.value)}
                 />
@@ -265,7 +265,7 @@ export default function MentorApplyPageContent() {
                 )}
               </div>
               <div>
-                <label className="text-sm font-medium text-slate-700 dark:text-snow-muted">{tp("mentor.sessionFormatLabel")}</label>
+                <label className="text-sm font-medium text-brand-ink dark:text-snow-muted">{tp("mentor.sessionFormatLabel")}</label>
                 <Select
                   className="mt-1"
                   value={sessionFormat}
@@ -277,53 +277,53 @@ export default function MentorApplyPageContent() {
                 </Select>
               </div>
               <div>
-                <label className="text-sm font-medium text-slate-700 dark:text-snow-muted">{tp("mentor.yearsLabel")}</label>
+                <label className="text-sm font-medium text-brand-ink dark:text-snow-muted">{tp("mentor.yearsLabel")}</label>
                 <input
                   type="number"
-                  className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm dark:border-hairline-dark"
+                  className="mt-1 w-full rounded-xl border border-brand-line px-3 py-2 text-sm dark:border-hairline-dark"
                   value={yearsOfExperience}
                   onChange={(e) => setYearsOfExperience(e.target.value)}
                 />
                 {mentorErrors.years && <p className="text-xs text-red-600 mt-1">{mentorErrors.years}</p>}
               </div>
               <div>
-                <label className="text-sm font-medium text-slate-700 dark:text-snow-muted">{tp("mentor.educationLabel")}</label>
+                <label className="text-sm font-medium text-brand-ink dark:text-snow-muted">{tp("mentor.educationLabel")}</label>
                 <input
-                  className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm dark:border-hairline-dark"
+                  className="mt-1 w-full rounded-xl border border-brand-line px-3 py-2 text-sm dark:border-hairline-dark"
                   value={education}
                   onChange={(e) => setEducation(e.target.value)}
                 />
               </div>
               <div>
-                <label className="text-sm font-medium text-slate-700 dark:text-snow-muted">{tp("mentor.careerSummaryLabel")}</label>
+                <label className="text-sm font-medium text-brand-ink dark:text-snow-muted">{tp("mentor.careerSummaryLabel")}</label>
                 <textarea
                   rows={3}
-                  className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm dark:border-hairline-dark"
+                  className="mt-1 w-full rounded-xl border border-brand-line px-3 py-2 text-sm dark:border-hairline-dark"
                   value={careerSummary}
                   onChange={(e) => setCareerSummary(e.target.value)}
                 />
               </div>
               <div>
-                <label className="text-sm font-medium text-slate-700 dark:text-snow-muted">{tp("mentor.responseTimeLabel")}</label>
+                <label className="text-sm font-medium text-brand-ink dark:text-snow-muted">{tp("mentor.responseTimeLabel")}</label>
                 <input
-                  className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm dark:border-hairline-dark"
+                  className="mt-1 w-full rounded-xl border border-brand-line px-3 py-2 text-sm dark:border-hairline-dark"
                   placeholder={tp("mentor.responseTimePlaceholder")}
                   value={responseTime}
                   onChange={(e) => setResponseTime(e.target.value)}
                 />
               </div>
               <div>
-                <label className="text-sm font-medium text-slate-700 dark:text-snow-muted">{tp("mentor.timezoneLabel")}</label>
+                <label className="text-sm font-medium text-brand-ink dark:text-snow-muted">{tp("mentor.timezoneLabel")}</label>
                 <input
-                  className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm dark:border-hairline-dark"
+                  className="mt-1 w-full rounded-xl border border-brand-line px-3 py-2 text-sm dark:border-hairline-dark"
                   value={timezone}
                   onChange={(e) => setTimezone(e.target.value)}
                 />
               </div>
               <div>
-                <label className="text-sm font-medium text-slate-700 dark:text-snow-muted">{tp("mentor.introVideoLabel")}</label>
+                <label className="text-sm font-medium text-brand-ink dark:text-snow-muted">{tp("mentor.introVideoLabel")}</label>
                 <input
-                  className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm dark:border-hairline-dark"
+                  className="mt-1 w-full rounded-xl border border-brand-line px-3 py-2 text-sm dark:border-hairline-dark"
                   value={introVideoUrl}
                   onChange={(e) => setIntroVideoUrl(e.target.value)}
                 />
@@ -332,10 +332,10 @@ export default function MentorApplyPageContent() {
                 )}
               </div>
               <div>
-                <label className="text-sm font-medium text-slate-700 dark:text-snow-muted">{tp("mentor.portfolioLabel")}</label>
+                <label className="text-sm font-medium text-brand-ink dark:text-snow-muted">{tp("mentor.portfolioLabel")}</label>
                 <textarea
                   rows={3}
-                  className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm dark:border-hairline-dark"
+                  className="mt-1 w-full rounded-xl border border-brand-line px-3 py-2 text-sm dark:border-hairline-dark"
                   value={portfolioLinks}
                   onChange={(e) => setPortfolioLinks(e.target.value)}
                 />
@@ -344,10 +344,10 @@ export default function MentorApplyPageContent() {
                 )}
               </div>
               <div>
-                <label className="text-sm font-medium text-slate-700 dark:text-snow-muted">{tp("mentor.mentoringStyleLabel")}</label>
+                <label className="text-sm font-medium text-brand-ink dark:text-snow-muted">{tp("mentor.mentoringStyleLabel")}</label>
                 <textarea
                   rows={3}
-                  className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm dark:border-hairline-dark"
+                  className="mt-1 w-full rounded-xl border border-brand-line px-3 py-2 text-sm dark:border-hairline-dark"
                   value={mentoringStyle}
                   onChange={(e) => setMentoringStyle(e.target.value)}
                 />
@@ -356,27 +356,27 @@ export default function MentorApplyPageContent() {
                 )}
               </div>
               <div>
-                <label className="text-sm font-medium text-slate-700 dark:text-snow-muted">{tp("mentor.recommendedForLabel")}</label>
+                <label className="text-sm font-medium text-brand-ink dark:text-snow-muted">{tp("mentor.recommendedForLabel")}</label>
                 <textarea
                   rows={2}
-                  className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm dark:border-hairline-dark"
+                  className="mt-1 w-full rounded-xl border border-brand-line px-3 py-2 text-sm dark:border-hairline-dark"
                   value={recommendedFor}
                   onChange={(e) => setRecommendedFor(e.target.value)}
                 />
               </div>
               <div>
-                <label className="text-sm font-medium text-slate-700 dark:text-snow-muted">{tp("mentor.notRecommendedForLabel")}</label>
+                <label className="text-sm font-medium text-brand-ink dark:text-snow-muted">{tp("mentor.notRecommendedForLabel")}</label>
                 <textarea
                   rows={2}
-                  className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm dark:border-hairline-dark"
+                  className="mt-1 w-full rounded-xl border border-brand-line px-3 py-2 text-sm dark:border-hairline-dark"
                   value={notRecommendedFor}
                   onChange={(e) => setNotRecommendedFor(e.target.value)}
                 />
               </div>
               <div>
-                <label className="text-sm font-medium text-slate-700 dark:text-snow-muted">{tp("mentor.avail")}</label>
+                <label className="text-sm font-medium text-brand-ink dark:text-snow-muted">{tp("mentor.avail")}</label>
                 <select
-                  className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm dark:border-hairline-dark"
+                  className="mt-1 w-full rounded-xl border border-brand-line px-3 py-2 text-sm dark:border-hairline-dark"
                   value={mentorAvail}
                   onChange={(e) => setMentorAvail(e.target.value as typeof mentorAvail)}
                 >

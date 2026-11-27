@@ -72,12 +72,12 @@ export default function RoadmapChecklist({
         <div className="flex items-center gap-0 overflow-x-auto pb-1">
           {[0, 1, 2, 3].map((i) => (
             <div key={i} className="flex items-center">
-              <div className="w-8 h-8 rounded-full border-2 border-dashed border-gray-300 dark:border-slate-600 shrink-0" />
-              {i < 3 ? <div className="w-8 sm:w-12 h-px bg-gray-200 dark:bg-slate-700" /> : null}
+              <div className="w-8 h-8 rounded-full border-2 border-dashed border-brand-line dark:border-hairline-dark shrink-0" />
+              {i < 3 ? <div className="w-8 sm:w-12 h-px bg-brand-line dark:bg-night-pill" /> : null}
             </div>
           ))}
         </div>
-        {emptyHint ? <p className="text-xs text-gray-400 mt-3 dark:text-snow-muted">{emptyHint}</p> : null}
+        {emptyHint ? <p className="text-xs text-brand-soft/70 mt-3 dark:text-snow-muted">{emptyHint}</p> : null}
       </div>
     );
   }
@@ -127,7 +127,7 @@ export default function RoadmapChecklist({
               className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold ${
                 r.id === selected.id
                   ? "bg-teal text-white dark:bg-teal-dark dark:text-night"
-                  : "bg-zinc-100 text-zinc-500 dark:bg-slate-800"
+                  : "bg-brand-mist text-brand-soft dark:bg-night"
               }`}
             >
               {roadmapTitle(r)}
@@ -135,7 +135,7 @@ export default function RoadmapChecklist({
           ))}
         </div>
       ) : (
-        <p className="text-xs font-semibold text-zinc-500 dark:text-slate-400 mb-3">{roadmapTitle(selected)}</p>
+        <p className="text-xs font-semibold text-brand-soft dark:text-snow-muted mb-3">{roadmapTitle(selected)}</p>
       )}
 
       <div className="overflow-x-auto -mx-1 px-1">
@@ -159,8 +159,8 @@ export default function RoadmapChecklist({
                       done
                         ? "bg-emerald-500 border-emerald-500 text-white"
                         : current
-                          ? "border-primary-500 bg-white dark:bg-slate-900 text-primary-600"
-                          : "border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-gray-300"
+                          ? "border-primary-500 bg-white dark:bg-night-card text-primary-600"
+                          : "border-brand-line dark:border-hairline-dark bg-white dark:bg-night-card text-brand-soft/70"
                     } ${focused ? "ring-2 ring-offset-2 ring-teal dark:ring-teal-dark dark:ring-offset-night-card" : ""}`}
                   >
                     {done ? <Check className="w-4 h-4" strokeWidth={3} /> : <span className="text-[11px] font-bold">{i + 1}</span>}
@@ -169,17 +169,17 @@ export default function RoadmapChecklist({
                     title={title}
                     className={`mt-1.5 text-[11px] leading-tight text-center line-clamp-2 w-full ${
                       done
-                        ? "text-zinc-700 dark:text-slate-200"
+                        ? "text-brand-ink dark:text-snow"
                         : current
-                          ? "text-zinc-900 dark:text-white font-semibold"
-                          : "text-gray-400 dark:text-snow-muted"
+                          ? "text-brand-ink dark:text-white font-semibold"
+                          : "text-brand-soft/70 dark:text-snow-muted"
                     }`}
                   >
                     {title}
                   </span>
                 </button>
                 {i < selected.steps.length - 1 ? (
-                  <div className={`mt-4 w-6 sm:w-10 h-0.5 shrink-0 ${done ? "bg-emerald-400" : "bg-gray-200 dark:bg-slate-700"}`} />
+                  <div className={`mt-4 w-6 sm:w-10 h-0.5 shrink-0 ${done ? "bg-emerald-400" : "bg-brand-line dark:bg-night-pill"}`} />
                 ) : null}
               </div>
             );
@@ -210,7 +210,7 @@ export default function RoadmapChecklist({
               onClick={() => onToggle(selected.id, focus.id, !focus.completed)}
               className={
                 focus.completed
-                  ? "rounded-full border border-zinc-200 dark:border-slate-700 px-3 py-1.5 text-xs font-semibold text-zinc-700 dark:text-slate-200"
+                  ? "rounded-full border border-brand-line dark:border-hairline-dark px-3 py-1.5 text-xs font-semibold text-brand-ink dark:text-snow"
                   : "rounded-full bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700"
               }
             >
@@ -219,14 +219,14 @@ export default function RoadmapChecklist({
             {focusVisa ? (
               <Link
                 href={`/${locale}/my/visa/${visaSlug(focusVisa)}`}
-                className="rounded-full border border-zinc-200 dark:border-slate-700 px-3 py-1.5 text-xs font-semibold text-zinc-700 dark:text-slate-200 hover:border-primary-400"
+                className="rounded-full border border-brand-line dark:border-hairline-dark px-3 py-1.5 text-xs font-semibold text-brand-ink dark:text-snow hover:border-primary-400"
               >
                 {tv("more")}
               </Link>
             ) : null}
             <Link
               href={stuckHref}
-              className="rounded-full border border-zinc-200 dark:border-slate-700 px-3 py-1.5 text-xs font-semibold text-zinc-700 dark:text-slate-200 hover:border-primary-400"
+              className="rounded-full border border-brand-line dark:border-hairline-dark px-3 py-1.5 text-xs font-semibold text-brand-ink dark:text-snow hover:border-primary-400"
             >
               {t("stuck")}
             </Link>

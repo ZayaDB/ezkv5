@@ -16,7 +16,7 @@ interface ToastProps {
 const styles: Record<ToastVariant, string> = {
   success: "bg-emerald-950 text-white border-emerald-800",
   error: "bg-red-950 text-white border-red-800",
-  info: "bg-slate-900 text-white border-slate-700",
+  info: "bg-brand-ink text-white border-brand-ink",
 };
 
 export default function Toast({
